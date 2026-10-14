@@ -1,0 +1,120 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/blackbaud/main/json-schema/blackbaud-student-learning-profile-add-schema.json",
+  "title": "StudentLearningProfileAdd",
+  "x-generated": "2026-10-14",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/blackbaud-academics-api-openapi.yml#/components/schemas/StudentLearningProfileAdd",
+  "required": [
+    "profile_form_id",
+    "start",
+    "status",
+    "student_id"
+  ],
+  "type": "object",
+  "properties": {
+    "student_id": {
+      "maximum": 2147483647,
+      "minimum": 1,
+      "type": "integer",
+      "description": "The user ID of the student",
+      "format": "int32"
+    },
+    "author_id": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "description": "The user ID of the author",
+      "format": "int32"
+    },
+    "profile_form_id": {
+      "maximum": 2147483647,
+      "minimum": 1,
+      "type": "integer",
+      "description": "The ID of the learning profile form, See the <a href=\"https://developer.sky.blackbaud.com/docs/services/afe-edaca/operations/V1LearningprofilesFormsGet\" target=\"_blank\">Learning Profile form list(Get)</a> endpoint for this value. If the form type is <strong>File</strong> then the learning_profile_file is required.",
+      "format": "int32"
+    },
+    "start": {
+      "type": "string",
+      "description": "The start date of the student’s learning profile",
+      "format": "date-time"
+    },
+    "status": {
+      "minLength": 1,
+      "type": "string",
+      "description": "The student's status for the learning profile. This value is based on the ApprovalRequired value of the selected Learning Profile Form (referenced by profile_form_id). When ApprovalRequired is set to True, the valid status values are <strong>Needs Approval and Pending</strong>; when ApprovalRequired is set to False, the valid status values are <strong>Approved and Pending</strong>."
+    },
+    "inactive_date": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "The date the student’s learning profile is inactive.",
+      "format": "date-time"
+    },
+    "supplemental_files": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "$ref": "#/$defs/NewAttachment"
+      },
+      "description": "An array of supporting document attachments. Each object in the array has attachment file information, including the reference name for the attachment’s temporary storage location and the original file name. The file's reference information is produced using the upload process that begins with the <a href=\"https://developer.sky.blackbaud.com/api#api=afe-edcor&operation=V1AttachmentsGet\" target=\"_blank\">Attachment (Upload) endpoint</a>. See also <a href=\"https://developer.blackbaud.com/skyapi/docs/in-depth-topics/physical-attachments\" target=\"_blank\">Creating physical attachments</a>."
+    },
+    "learning_profile_file": {
+      "$ref": "#/$defs/LearningProfileFileAttachment"
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "LearningProfileFileAttachment": {
+      "required": [
+        "temp_name"
+      ],
+      "type": "object",
+      "properties": {
+        "original_name": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The original name of the file that may be shown in the UI."
+        },
+        "temp_name": {
+          "minLength": 1,
+          "pattern": ".*\\S.*",
+          "type": "string",
+          "description": "The temporary file location provided by the Attachment (Create) process."
+        }
+      },
+      "additionalProperties": false,
+      "description": "This field is required if the learning profile form's type is <strong>File</strong> (see <a href=\"https://developer.sky.blackbaud.com/docs/services/afe-edaca/operations/V1LearningprofilesFormsGet\" target=\"_blank\">Learning Profile form list(Get)</a> ). Include an attachment object, including the reference name for the attachment’s temporary storage location and the original file name. The file's reference information is produced using the upload process that begins with the <a href=\"https://developer.sky.blackbaud.com/api#api=afe-edcor&operation=V1AttachmentsGet\" target=\"_blank\">Attachment (Upload) endpoint</a>. See also <a href=\"https://developer.blackbaud.com/skyapi/docs/in-depth-topics/physical-attachments\" target=\"_blank\">Creating physical attachments</a>."
+    },
+    "NewAttachment": {
+      "required": [
+        "temp_name"
+      ],
+      "type": "object",
+      "properties": {
+        "original_name": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The original name of the file that may be shown in the UI."
+        },
+        "temp_name": {
+          "minLength": 1,
+          "pattern": ".*\\S.*",
+          "type": "string",
+          "description": "The temporary file location provided by the Attachment (Create) process."
+        }
+      },
+      "additionalProperties": false,
+      "description": "An object with attachment file name information, including the reference name for the attachment’s temporary storage location. and the original file name. The file's reference information is produced using the upload process that begins with the <a href=\"https://developer.sky.blackbaud.com/api#api=afe-edcor&operation=V1AttachmentsGet\" target=\"_blank\">Attachment (Upload) endpoint</a>. See also <a href=\"https://developer.blackbaud.com/skyapi/docs/in-depth-topics/physical-attachments\" target=\"_blank\">Creating physical attachments</a>. This field is in Preview."
+    }
+  }
+}

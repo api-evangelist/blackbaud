@@ -1,0 +1,506 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/blackbaud/main/json-schema/blackbaud-save-ad-hoc-query-request-schema.json",
+  "title": "SaveAdHocQueryRequest",
+  "description": "Request to create or update an ad-hoc query. Omit ID to create a new query; supply an existing ID to update it. name, query_view_id, and at least one select_fields entry are required.",
+  "x-generated": "2026-10-14",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/blackbaud-altru-analysis-api-openapi.yml#/components/schemas/SaveAdHocQueryRequest",
+  "required": [
+    "name",
+    "query_view_id",
+    "select_fields"
+  ],
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "ID of an existing saved query to update. Omit (or leave null) to create a new query; supply the existing ID to update it in place.",
+      "format": "uuid"
+    },
+    "name": {
+      "minLength": 1,
+      "type": "string",
+      "description": "Display name of the query. Required."
+    },
+    "description": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Optional free-text description of the query."
+    },
+    "query_view_id": {
+      "type": "string",
+      "description": "ID of the query view the query runs against. Required. Stable across environments, so safe to embed in caller code.",
+      "format": "uuid"
+    },
+    "select_fields": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/AdHocQuerySelectField"
+      },
+      "description": "Output (Select) fields. Required (at least one)."
+    },
+    "filter_fields": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "$ref": "#/$defs/AdHocQueryFilterField"
+      },
+      "description": "Filter fields (WHERE-clause predicates)."
+    },
+    "sort_fields": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "$ref": "#/$defs/AdHocQuerySortField"
+      },
+      "description": "Sort fields (ORDER BY)."
+    },
+    "group_filter_fields": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "$ref": "#/$defs/AdHocQueryGroupFilterField"
+      },
+      "description": "Group-filter fields (HAVING-clause predicates over aggregates)."
+    },
+    "folder_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Folder to file the saved query under.",
+      "format": "uuid"
+    },
+    "site_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Site to scope the saved query to.",
+      "format": "uuid"
+    },
+    "category_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Category to file the saved query under.",
+      "format": "uuid"
+    },
+    "default_data_form_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Default data form to open results in.",
+      "format": "uuid"
+    },
+    "others_can_modify": {
+      "type": [
+        "boolean",
+        "null"
+      ],
+      "description": "When true, other users may modify this saved query."
+    },
+    "mobilize": {
+      "type": [
+        "boolean",
+        "null"
+      ],
+      "description": "When true, the query is available on mobile. Omitting this field leaves mobile availability unchanged on update; on create, an omitted value defaults to false."
+    },
+    "is_favorite": {
+      "type": [
+        "boolean",
+        "null"
+      ],
+      "description": "When true, adds the query to the caller's favorites. False or omitted removes it from favorites; favorite status is reasserted on every save, so it must be resent on every update to persist."
+    },
+    "suppress_duplicate_rows": {
+      "type": [
+        "boolean",
+        "null"
+      ],
+      "description": "Suppress duplicate full rows in the query's output."
+    },
+    "run_security_level": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Run-permission security level. AppFx security-level enum name, passed through verbatim (e.g. \"SelectedRoles\"). Pair with permissioned_run_roles."
+    },
+    "edit_security_level": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Edit-permission security level. AppFx security-level enum name, passed through verbatim (e.g. \"SelectedRoles\"). Pair with permissioned_edit_roles."
+    },
+    "permissioned_run_roles": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "$ref": "#/$defs/AdHocQueryPermissionedRole"
+      },
+      "description": "System roles granted or denied Run permission. Used when run_security_level restricts run access to selected roles."
+    },
+    "permissioned_edit_roles": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "$ref": "#/$defs/AdHocQueryPermissionedRole"
+      },
+      "description": "System roles granted or denied Edit permission. Used when edit_security_level restricts edit access to selected roles."
+    },
+    "id_set_info": {
+      "$ref": "#/$defs/AdHocQueryIdSetInfo"
+    }
+  },
+  "additionalProperties": false,
+  "x-display-name": "Save ad-hoc query request",
+  "x-display-id": "SaveAdHocQueryRequest",
+  "$defs": {
+    "AdHocQueryFilterField": {
+      "required": [
+        "column_name",
+        "filter_operator",
+        "object_name"
+      ],
+      "type": "object",
+      "properties": {
+        "object_name": {
+          "minLength": 1,
+          "type": "string",
+          "description": "View / table object name. Required."
+        },
+        "column_name": {
+          "minLength": 1,
+          "type": "string",
+          "description": "Column name on the object. Required."
+        },
+        "parent_path": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Join path to the object."
+        },
+        "display_path": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Human-readable join-path display."
+        },
+        "filter_operator": {
+          "minLength": 1,
+          "type": "string",
+          "description": "Filter operator (e.g. IsEqualTo, IsOneOf, IsBlank, BeginsWith). Required for the row to be applied."
+        },
+        "compare_type": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Boolean connector to the previous filter (None, And, Or). The first filter typically uses None."
+        },
+        "values": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "string"
+          },
+          "description": "Comparison values. Most operators need one; IsOneOf / IsBetween need more."
+        },
+        "data_type": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Data type of the values (String, Integer, Date, Money, Boolean, Guid, etc.). Optional for most operators."
+        },
+        "include_blanks": {
+          "type": [
+            "boolean",
+            "null"
+          ],
+          "description": "When true, blank values in the source pass the filter alongside the comparison."
+        },
+        "is_id_set_field": {
+          "type": [
+            "boolean",
+            "null"
+          ],
+          "description": "True when this filter references an ID set (selection) rather than a scalar."
+        },
+        "use_left_parenthesis": {
+          "type": [
+            "boolean",
+            "null"
+          ],
+          "description": "Open-parenthesis grouping for compound expressions."
+        },
+        "use_right_parenthesis": {
+          "type": [
+            "boolean",
+            "null"
+          ],
+          "description": "Close-parenthesis grouping for compound expressions."
+        },
+        "left_parenthesis_count": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "description": "Number of opening parens to emit when nested deeper than one level.",
+          "format": "int32"
+        },
+        "right_parenthesis_count": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "description": "Number of closing parens to emit when nested deeper than one level.",
+          "format": "int32"
+        }
+      },
+      "additionalProperties": false,
+      "description": "One element of filter_fields (a WHERE-clause predicate).",
+      "x-display-name": "Ad-hoc query filter field",
+      "x-display-id": "AdHocQueryFilterField"
+    },
+    "AdHocQueryGroupFilterField": {
+      "type": "object",
+      "properties": {
+        "object_name": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Object name the aggregate runs over."
+        },
+        "column_name": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Column on the object."
+        },
+        "parent_path": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Join path."
+        },
+        "aggregate_type": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Aggregate to apply (Count, Sum, etc.)."
+        },
+        "filter_operator": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "HAVING-side filter operator (e.g. IsGreaterThan)."
+        },
+        "values": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "string"
+          },
+          "description": "Comparison values."
+        }
+      },
+      "additionalProperties": false,
+      "description": "One element of group_filter_fields (a HAVING-clause predicate over an aggregate).",
+      "x-display-name": "Ad-hoc query group filter field",
+      "x-display-id": "AdHocQueryGroupFilterField"
+    },
+    "AdHocQueryIdSetInfo": {
+      "type": "object",
+      "properties": {
+        "is_static": {
+          "type": [
+            "boolean",
+            "null"
+          ],
+          "description": "When true, the selection is static (materialized); false yields a dynamic selection."
+        },
+        "use_in_query_designer": {
+          "type": [
+            "boolean",
+            "null"
+          ],
+          "description": "When true, the selection is shown in the Query Designer. Optional."
+        },
+        "num_rows": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "description": "Row count for a static selection. Optional; the server computes it when omitted.",
+          "format": "int32"
+        },
+        "id_set_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "ID of an existing selection (IDSETREGISTER.ID) to reuse; omit or leave empty to let the server assign one.",
+          "format": "uuid"
+        }
+      },
+      "additionalProperties": false,
+      "description": "Selection / ID-set options for a saved query. Providing this marks the query as producing a selection.",
+      "x-display-name": "Ad-hoc query ID set info",
+      "x-display-id": "AdHocQueryIdSetInfo"
+    },
+    "AdHocQueryPermissionedRole": {
+      "type": "object",
+      "properties": {
+        "system_role_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "System role being granted or denied (SYSTEMROLE.ID).",
+          "format": "uuid"
+        },
+        "grant_or_deny": {
+          "type": [
+            "boolean",
+            "null"
+          ],
+          "description": "True grants the role the permission; false denies it."
+        }
+      },
+      "additionalProperties": false,
+      "description": "A system-role grant or deny on a saved query's run or edit permission.",
+      "x-display-name": "Ad-hoc query permissioned role",
+      "x-display-id": "AdHocQueryPermissionedRole"
+    },
+    "AdHocQuerySelectField": {
+      "required": [
+        "column_name",
+        "object_name"
+      ],
+      "type": "object",
+      "properties": {
+        "object_name": {
+          "minLength": 1,
+          "type": "string",
+          "description": "View / table object name. Required."
+        },
+        "column_name": {
+          "minLength": 1,
+          "type": "string",
+          "description": "Column name on the object. Required."
+        },
+        "parent_path": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Query-view join path leading to the object. Required for every select field; for root-table fields it equals object_name (defaulted when omitted). For joined fields, supply the full backslash-delimited path (e.g. V_QUERY_CONSTITUENT\\Interactions)."
+        },
+        "display_path": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Human-readable join-path display. Used in error messages and output column captions; usually mirrors parent_path."
+        },
+        "alias_name": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Alias to apply to the output column. Optional; one is generated when omitted."
+        },
+        "aggregate_type": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Aggregate to apply (None, Count, Sum, Min, Max, Average)."
+        },
+        "is_id_set_field": {
+          "type": [
+            "boolean",
+            "null"
+          ],
+          "description": "True when this field references an ID set (selection) rather than a scalar column."
+        },
+        "is_hidden": {
+          "type": [
+            "boolean",
+            "null"
+          ],
+          "description": "Suppresses the field from output while still allowing it to participate in filter/sort/group expressions."
+        }
+      },
+      "additionalProperties": false,
+      "description": "One element of select_fields. Field names map 1:1 to the underlying query definition.",
+      "x-display-name": "Ad-hoc query select field",
+      "x-display-id": "AdHocQuerySelectField"
+    },
+    "AdHocQuerySortField": {
+      "type": "object",
+      "properties": {
+        "alias_name": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Output-column alias to sort on. Either this or field_name must be supplied."
+        },
+        "field_name": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Raw field reference, typically in ObjectName.ColumnName form."
+        },
+        "sort_order": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Ascending or Descending. Defaults to Ascending when omitted."
+        }
+      },
+      "additionalProperties": false,
+      "description": "One element of sort_fields (an ORDER BY entry). Each sort field must reference a select field.",
+      "x-display-name": "Ad-hoc query sort field",
+      "x-display-id": "AdHocQuerySortField"
+    }
+  }
+}

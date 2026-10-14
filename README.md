@@ -66,3 +66,5 @@
 
 Blackbaud is a company surfaced via the API Evangelist harvest backlog (source: market-layer:nonprofit) and added to the network as a stub for full-pipeline profiling.
 - https://www.blackbaud.com/
+
+Blackbaud is a cloud software company for the social impact sector (nonprofits, foundations, schools, healthcare and corporate giving). Developers build on the SKY API (api.sky.blackbaud.com): 60 published APIs, 1,937 operations, profiled here as OpenAPI 3.0 documents assembled from Blackbaud's own public API Management developer data (developer.sky.blackbaud.com). Partner apps are listed in the Blackbaud Marketplace (app.blackbaud.com/marketplace).

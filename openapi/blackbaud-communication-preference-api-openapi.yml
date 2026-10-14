@@ -1,0 +1,1115 @@
+openapi: 3.0.1
+info:
+  title: 'Blackbaud SKY API: Communication Preference'
+  description: This API manages constituent communication preference information and related entities such as constituent
+    consent.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/communication-preference
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations,
+      examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/commpref
+paths:
+  /v1/consent/categories:
+    get:
+      operationId: ListConsentCategories
+      summary: Consent categories
+      description: Returns a list of consent categories.
+      parameters:
+      - name: include_inactive
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: Set this parameter to "true" to include inactive results in the response.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a <a href="https://developer.blackbaud.com/skyapi/api/entity-reference/communication-preference#ConsentCategoryCollection">collection</a>
+            of <a href="https://developer.blackbaud.com/skyapi/api/entity-reference/communication-preference#ConsentCategory">consent
+            categories</a>.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsentCategoryCollection'
+              example:
+                count: 3
+                value:
+                - description: Fundraising
+                  inactive: false
+                  sequence: 1
+                - description: Advocacy
+                  inactive: true
+                  sequence: 2
+                - description: Newsletters
+                  sequence: 7
+  /v1/consent/channelcategories:
+    get:
+      operationId: ListConsentChannelCategories
+      summary: Consent channel categories
+      description: Returns a list of valid consent channel category combinations.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a <a href="https://developer.blackbaud.com/skyapi/api/entity-reference/communication-preference#ConsentChannelCategoryCollection">collection</a>
+            of <a href="https://developer.blackbaud.com/skyapi/api/entity-reference/communication-preference#ConsentChannelCategory">consent
+            channel category combinations</a>.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsentChannelCategoryCollection'
+              example:
+                count: 3
+                value:
+                - channel: Email
+                  category: Newsletter
+                  sequence: 1
+                - channel: Email
+                  sequence: 2
+                - channel: Phone
+                  sequence: 3
+  /v1/consent/channels:
+    get:
+      operationId: ListConsentChannels
+      summary: Consent channels
+      description: Returns a list of consent channels.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a <a href="https://developer.blackbaud.com/skyapi/api/entity-reference/communication-preference#ConsentChannelCollection">collection</a>
+            of <a href="https://developer.blackbaud.com/skyapi/api/entity-reference/communication-preference#ConsentChannel">consent
+            channels</a>.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsentChannelCollection'
+              example:
+                count: 2
+                value:
+                - description: Email
+                - description: Phone
+  /v1/consent/consents:
+    post:
+      operationId: CreateConstituentConsent
+      summary: Constituent consent (Create)
+      description: Creates a consent record for a constituent.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConstituentConsentAdd'
+            example:
+              constituent_id: '280'
+              channel: Email
+              category: Fundraising
+              source: Web form
+              consent_date: '2018-07-30T23:04:52Z'
+              constituent_consent_response: OptIn
+              privacy_notice: Sample privacy notice
+              consent_statement: Sample consent statement
+        description: The constituent's consent record.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the ID of the new consent record.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse'
+              example:
+                id: '4343'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1ConsentConsentsPost400ApplicationJsonResponse'
+              example:
+              - message: The request body is not in the appropriate format.
+                error_name: BadRequest
+                error_code: 400
+                raw_message: The request body is not in the appropriate format.
+        '403':
+          description: Returned when the user does not have permission to create a consent record.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1ConsentConsentsPost403ApplicationJsonResponse'
+              example:
+              - message: The user does not have permission to create a record.
+                error_name: Forbidden
+                error_code: 403
+                raw_message: The user does not have permission to create a record.
+        '404':
+          description: Returned when the specified constituent cannot be found or when the provided channel, category, or
+            source cannot be resolved.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1ConsentConsentsPost404ApplicationJsonResponse'
+              example:
+              - message: The requested record was not found.
+                error_name: NotFound
+                error_code: 404
+                raw_message: The requested record was not found.
+  /v1/consent/sources:
+    get:
+      operationId: ListConsentSources
+      summary: Consent sources
+      description: Returns a list of consent sources.
+      parameters:
+      - name: include_inactive
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: Set this parameter to "true" to include inactive results in the response.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a <a href="https://developer.blackbaud.com/skyapi/api/entity-reference/communication-preference#ConsentSourceCollection">collection</a>
+            of <a href="https://developer.blackbaud.com/skyapi/api/entity-reference/communication-preference#ConsentSource">consent
+            sources</a>.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsentSourceCollection'
+              example:
+                count: 3
+                value:
+                - description: Web form
+                  inactive: false
+                  sequence: 1
+                - description: Phone call inbound
+                  inactive: true
+                  sequence: 2
+                - description: Mail response
+                  sequence: 7
+  /v1/consents/{consent_id}:
+    delete:
+      operationId: DeleteConstituentConsent
+      summary: Constituent consent
+      description: Deletes a constituent consent record.
+      parameters:
+      - name: consent_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The immutable system record ID of the consent record to delete.
+      responses:
+        '200':
+          description: Returned when the operation successfully deletes the constituent consent record.
+        '400':
+          description: Returned when the specified consent_id in the request URL is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Consents-consent_id-Delete400ApplicationJsonResponse'
+              example:
+              - message: The request body is not in the appropriate format.
+                error_name: BadRequest
+                error_code: 400
+                raw_message: The request body is not in the appropriate format.
+        '403':
+          description: Returned when the user does not have rights to delete a consent record.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Consents-consent_id-Delete403ApplicationJsonResponse'
+              example:
+              - message: The user does not have permission to create a record.
+                error_name: Forbidden
+                error_code: 403
+                raw_message: The user does not have permission to create a record.
+  /v1/constituents/{constituent_id}/consents:
+    get:
+      operationId: ListConstituentConsent
+      summary: Constituent consent list
+      description: Returns a list of constituent consent records.
+      parameters:
+      - name: constituent_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The immutable system record ID of the constituent to retrieve consent records for.
+      - name: most_recent_only
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: Set this parameter to "true" to include only the most recent record for each channel category combination
+          in the response.
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Format - int32. Set this parameter to return only the specified number of records in the response. Defaults
+          to return all records.
+      - name: skip
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Format - int32. Set this parameter to skip the specified number of records in the response. Defaults
+          to skip no records.
+      - name: channels
+        in: query
+        required: false
+        schema:
+          type: array
+        description: Set this parameter to return records of the specified channels. For example, "channels=Phone&channels=Email"
+          returns consent records with either "Phone" or "Email" as the channel. Defaults to return consent records with any
+          channel.
+      - name: categories
+        in: query
+        required: false
+        schema:
+          type: array
+        description: Set this parameter to return records of the specified categories. For example, "categories=Fundraising&categories=Newsletter"
+          returns consent records with either "Fundraising" or "Newsletter" as the category. Defaults to return consent records
+          with any category.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a <a href="https://developer.blackbaud.com/skyapi/api/entity-reference/communication-preference#ConstituentConsentReadCollection">collection</a>
+            of <a href="https://developer.blackbaud.com/skyapi/api/entity-reference/communication-preference#ConstituentConsentRead">consent
+            records</a>.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConstituentConsentReadCollection'
+              example:
+                count: 3
+                value:
+                - id: '1'
+                  channel: Email
+                  category: Fundraising
+                  source: Web form
+                  consent_date: '2018-07-31T00:00:00Z'
+                  constituent_consent_response: OptIn
+                  privacy_notice: Sample privacy notice
+                  consent_statement: Sample consent statement
+                  date_added: '2018-07-30T20:39:00Z'
+                  user_name: Joe Bob
+                - id: '15'
+                  channel: Phone
+                  category: Fundraising
+                  source: Phone call inbound
+                  consent_date: '2018-06-22T00:00:00Z'
+                  constituent_consent_response: OptOut
+                  privacy_notice: Sample privacy notice
+                  consent_statement: Sample consent statement
+                  date_added: '2018-06-23T18:59:00Z'
+                  user_name: Joe Bob
+                - id: '121'
+                  channel: Email
+                  category: Newsletter
+                  source: Phone call outbound
+                  consent_date: '2018-05-03T00:00:00Z'
+                  constituent_consent_response: NoResponse
+                  privacy_notice: Sample privacy notice
+                  consent_statement: Sample consent statement
+                  date_added: '2018-05-02T11:56:00Z'
+                  user_name: Joe Bob
+        '400':
+          description: Returned when constituent_id is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Constituents-constituent_id-ConsentsGet400ApplicationJsonResponse'
+              example:
+              - message: The request body is not in the appropriate format.
+                error_name: BadRequest
+                error_code: 400
+                raw_message: The request body is not in the appropriate format.
+        '403':
+          description: Returned when the user does not have rights to view the constituent.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Constituents-constituent_id-ConsentsGet403ApplicationJsonResponse'
+              example:
+              - message: The user does not have permission to create a record.
+                error_name: Forbidden
+                error_code: 403
+                raw_message: The user does not have permission to create a record.
+        '404':
+          description: Returned when the specified constituent cannot be found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Constituents-constituent_id-ConsentsGet404ApplicationJsonResponse'
+              example:
+              - message: The requested record was not found.
+                error_name: NotFound
+                error_code: 404
+                raw_message: The requested record was not found.
+  /v1/constituents/{constituent_id}/constituentsolicitcodes:
+    get:
+      operationId: ListConstituentSolicitCodesSingleConstituent
+      summary: Constituent solicit code list (Single constituent)
+      description: Returns a list of solicit codes for the specified constituent.
+      parameters:
+      - name: constituent_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The immutable system record ID of the constituent to retrieve the solicit codes for.
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Format - int32. Set this parameter to return only the specified number of records in the response. Defaults
+          to return all records.
+      - name: skip
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Format - int32. Set this parameter to skip the specified number of records in the response. Defaults
+          to skip no records.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a <a href="https://developer.blackbaud.com/skyapi/api/entity-reference/communication-preference#ConstituentSolicitCodeReadCollection">collection</a>
+            of <a href="https://developer.blackbaud.com/skyapi/api/entity-reference/communication-preference#ConstituentSolicitCodeRead">constituent
+            solicit codes</a>.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConstituentSolicitCodeReadCollection'
+              example:
+                count: 2
+                value:
+                - id: '1'
+                  constituent_id: '280'
+                  end_date: '2019-04-03T04:00:00Z'
+                  solicit_code: Do not call on weekends
+                  start_date: '2013-04-03T04:00:00Z'
+                - id: '43'
+                  constituent_id: '280'
+                  end_date: '2017-04-04T04:00:00Z'
+                  solicit_code: Unavailable between 3-5pm on business days
+                  start_date: '2016-12-04T05:00:00Z'
+        '400':
+          description: Returned when constituent_id is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Constituents-constituent_id-ConstituentsolicitcodesGet400ApplicationJsonResponse'
+              example:
+              - message: The request body is not in the appropriate format.
+                error_name: BadRequest
+                error_code: 400
+                raw_message: The request body is not in the appropriate format.
+        '403':
+          description: Returned when the user does not have rights to view the constituent or solicit codes.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Constituents-constituent_id-ConstituentsolicitcodesGet403ApplicationJsonResponse'
+              example:
+              - message: The user does not have permission to create a record.
+                error_name: Forbidden
+                error_code: 403
+                raw_message: The user does not have permission to create a record.
+        '404':
+          description: Returned when the specified constituent cannot be found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Constituents-constituent_id-ConstituentsolicitcodesGet404ApplicationJsonResponse'
+              example:
+              - message: The requested record was not found.
+                error_name: NotFound
+                error_code: 404
+                raw_message: The requested record was not found.
+  /v1/constituentsolicitcodes:
+    post:
+      operationId: CreateConstituentSolicitCode
+      summary: Constituent solicit code (Create)
+      description: Creates a constituent solicit code.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConstituentSolicitCodeAdd'
+            example:
+              constituent_id: '280'
+              end_date: '2019-04-03T04:00:00Z'
+              solicit_code: Do not call on weekends
+              start_date: '2011-04-03T04:00:00Z'
+        description: An object that represents the constituent solicit code to create.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the ID of the new constituent solicit
+            code.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse'
+              example:
+                id: '4343'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1ConstituentsolicitcodesPost400ApplicationJsonResponse'
+              example:
+              - message: The request body is not in the appropriate format.
+                error_name: BadRequest
+                error_code: 400
+                raw_message: The request body is not in the appropriate format.
+        '403':
+          description: Returned when the user does not have permission to create a constituent solicit code.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1ConstituentsolicitcodesPost403ApplicationJsonResponse'
+              example:
+              - message: The user does not have permission to create a record.
+                error_name: Forbidden
+                error_code: 403
+                raw_message: The user does not have permission to create a record.
+        '404':
+          description: Returned when the specified constituent or solicit code cannot be found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1ConstituentsolicitcodesPost404ApplicationJsonResponse'
+              example:
+              - message: The requested record was not found.
+                error_name: NotFound
+                error_code: 404
+                raw_message: The requested record was not found.
+  /v1/constituentsolicitcodes/{constituent_solicit_code_id}:
+    delete:
+      operationId: DeleteConstituentSolicitCode
+      summary: Constituent solicit code
+      description: Deletes a constituent solicit code.
+      parameters:
+      - name: constituent_solicit_code_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The immutable system record ID of the constituent solicit code to delete.
+      responses:
+        '200':
+          description: Returned when the operation successfully deletes the constituent solicit code.
+        '400':
+          description: Returned when the specified constituent_solicit_code_id in the request URL is not in the appropriate
+            format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Constituentsolicitcodes-constituent_solicit_code_id-Delete400ApplicationJsonResponse'
+              example:
+              - message: The request body is not in the appropriate format.
+                error_name: BadRequest
+                error_code: 400
+                raw_message: The request body is not in the appropriate format.
+        '403':
+          description: Returned when the user does not have rights to delete a constituent solicit code.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Constituentsolicitcodes-constituent_solicit_code_id-Delete403ApplicationJsonResponse'
+              example:
+              - message: The user does not have permission to create a record.
+                error_name: Forbidden
+                error_code: 403
+                raw_message: The user does not have permission to create a record.
+    patch:
+      operationId: EditConstituentSolicitCode
+      summary: Constituent solicit code (Edit)
+      description: Edits a constituent solicit code.
+      parameters:
+      - name: constituent_solicit_code_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The immutable system record ID of the constituent solicit code to edit.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/V1Constituentsolicitcodes-constituent_solicit_code_id-PatchRequest'
+            example:
+              end_date: '2019-04-03T04:00:00Z'
+              solicit_code: Do not call on weekends
+              start_date: '2011-04-03T04:00:00Z'
+        description: An object that represents the properties of the constituent solicit code to edit.
+      responses:
+        '200':
+          description: Returned when the operation successfully edits the constituent solicit code.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Constituentsolicitcodes-constituent_solicit_code_id-Patch400ApplicationJsonResponse'
+              example:
+              - message: The request body is not in the appropriate format.
+                error_name: BadRequest
+                error_code: 400
+                raw_message: The request body is not in the appropriate format.
+        '403':
+          description: Returned when the user does not have permission to edit a constituent solicit code.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Constituentsolicitcodes-constituent_solicit_code_id-Patch403ApplicationJsonResponse'
+              example:
+              - message: The user does not have permission to create a record.
+                error_name: Forbidden
+                error_code: 403
+                raw_message: The user does not have permission to create a record.
+        '404':
+          description: Returned when the specified constituent solicit code from the web view cannot be found or when the
+            solicit code from the database view cannot be resolved.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Constituentsolicitcodes-constituent_solicit_code_id-Patch404ApplicationJsonResponse'
+              example:
+              - message: The requested record was not found.
+                error_name: NotFound
+                error_code: 404
+                raw_message: The requested record was not found.
+  /v1/solicitcodes:
+    get:
+      operationId: ListSolicitCodes
+      summary: Solicit codes
+      description: Returns a list of available solicit code types.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a <a href="https://developer.blackbaud.com/skyapi/api/entity-reference/communication-preference#SolicitCodeCollection">collection</a>
+            of <a href="https://developer.blackbaud.com/skyapi/api/entity-reference/communication-preference#SolicitCode">solicit
+            codes</a>.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SolicitCodeCollection'
+              example:
+                count: 3
+                value:
+                - description: Don't call me on Thursdays
+                - description: Unavailable between 3-5pm on business days
+                - description: Only reach out through fax
+components:
+  schemas:
+    ConsentCategory:
+      type: object
+      properties:
+        description:
+          type: string
+          description: The name of the consent category.
+          nullable: true
+        inactive:
+          type: boolean
+          description: Indicates whether the consent category is inactive.
+          nullable: true
+        sequence:
+          type: integer
+          description: The placement of the category in the order of category table values, if defined.
+          format: int32
+          nullable: true
+      additionalProperties: false
+      description: Represents the consent category entity.
+    ConsentCategoryCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of consent categories in the list.
+          format: int32
+          readOnly: true
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConsentCategory'
+          description: The set of consent categories included in the response.
+          nullable: true
+      additionalProperties: false
+      description: A collection of consent categories.
+    ConsentChannel:
+      type: object
+      properties:
+        description:
+          type: string
+          description: The name of the consent channel.
+          nullable: true
+      additionalProperties: false
+      description: Represents the consent channel entity.
+    ConsentChannelCategory:
+      type: object
+      properties:
+        channel:
+          type: string
+          description: The name of the channel included in the channel/category combination.
+          nullable: true
+        category:
+          type: string
+          description: The name of the category included in the channel/category combination.
+          nullable: true
+        sequence:
+          type: integer
+          description: The placement of the channel/category in the order of channel/category table values, if defined.
+          format: int32
+          nullable: true
+      additionalProperties: false
+      description: Represents a valid consent channel category combination.
+    ConsentChannelCategoryCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of consent channel categories in the list.
+          format: int32
+          readOnly: true
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConsentChannelCategory'
+          description: The set of consent channel categories included in the response.
+          nullable: true
+      additionalProperties: false
+      description: A collection of consent channel categories.
+    ConsentChannelCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of consent channels in the list.
+          format: int32
+          readOnly: true
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConsentChannel'
+          description: The set of consent channels included in the response.
+          nullable: true
+      additionalProperties: false
+      description: A collection of consent channels.
+    ConsentSource:
+      type: object
+      properties:
+        description:
+          type: string
+          description: The name of the consent source.
+          nullable: true
+        inactive:
+          type: boolean
+          description: Indicates whether the consent source is inactive.
+          nullable: true
+        sequence:
+          type: integer
+          description: The placement of the source in the order of source table values, if defined.
+          format: int32
+          nullable: true
+      additionalProperties: false
+      description: Represents the consent source entity.
+    ConsentSourceCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of consent sources in the list.
+          format: int32
+          readOnly: true
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConsentSource'
+          description: The set of consent sources included in the response.
+          nullable: true
+      additionalProperties: false
+      description: A collection of consent sources.
+    ConstituentConsentAdd:
+      required:
+      - channel
+      - consent_date
+      - constituent_consent_response
+      - constituent_id
+      type: object
+      properties:
+        constituent_id:
+          type: string
+          description: The immutable system record ID of the constituent associated with the consent record.
+        channel:
+          type: string
+          description: The channel that the consent response applies to. Available values can be obtained from the <a href="https://developer.sky.blackbaud.com/docs/services/communication-preference/operations/ListConsentChannels">Consent
+            Channels List</a>.
+        category:
+          type: string
+          description: The category that the consent response applies to. Available values can be obtained from the <a href="https://developer.sky.blackbaud.com/docs/services/communication-preference/operations/ListConsentCategories">Consent
+            Categories List</a>.
+          nullable: true
+        source:
+          type: string
+          description: The source of the consent response from the constituent. Available values can be obtained from the
+            <a href="https://developer.sky.blackbaud.com/docs/services/communication-preference/operations/ListConsentSources">Consent
+            Sources List</a>.
+          nullable: true
+        consent_date:
+          type: string
+          description: The date the consent response was received.
+          format: date-time
+        constituent_consent_response:
+          title: ConstituentConsentResponse
+          enum:
+          - OptIn
+          - OptOut
+          - NoResponse
+          type: string
+          description: How the constituent responded to consent for the specified channel/category. Available values are <i>OptIn</i>,
+            <i>OptOut</i>, and <i>NoResponse</i>.
+        privacy_notice:
+          maxLength: 7999
+          type: string
+          description: The privacy notice provided to the constituent.
+          nullable: true
+        consent_statement:
+          maxLength: 7999
+          type: string
+          description: The statement the constituent responded to when providing consent.
+          nullable: true
+        user_name:
+          maxLength: 255
+          type: string
+          description: The user name associated with the consent. If not supplied, will have a default set based on the user's
+            account.
+          nullable: true
+      additionalProperties: false
+      description: Represents the consent entity to add to the specified constituent.
+    ConstituentConsentRead:
+      required:
+      - channel
+      - consent_date
+      - constituent_consent_response
+      - id
+      type: object
+      properties:
+        id:
+          type: string
+          description: The immutable system record ID of the consent record.
+        channel:
+          type: string
+          description: The channel that the consent response applies to. Available values can be obtained from the <a href="https://developer.sky.blackbaud.com/docs/services/communication-preference/operations/ListConsentChannels">Consent
+            Channels List</a>.
+        category:
+          type: string
+          description: The category that the consent response applies to. Available values can be obtained from the <a href="https://developer.sky.blackbaud.com/docs/services/communication-preference/operations/ListConsentCategories">Consent
+            Categories List</a>.
+          nullable: true
+        source:
+          type: string
+          description: The source of the consent response from the constituent. Available values can be obtained from the
+            <a href="https://developer.sky.blackbaud.com/docs/services/communication-preference/operations/ListConsentSources">Consent
+            Sources List</a>.
+          nullable: true
+        consent_date:
+          type: string
+          description: The date the consent response was received.
+          format: date-time
+        constituent_consent_response:
+          title: ConstituentConsentResponse
+          enum:
+          - OptIn
+          - OptOut
+          - NoResponse
+          type: string
+          description: How the constituent responded to consent for the specified channel/category. Available values are <i>OptIn</i>,
+            <i>OptOut</i>, and <i>NoResponse</i>.
+        privacy_notice:
+          maxLength: 7999
+          type: string
+          description: The privacy notice provided to the constituent.
+          nullable: true
+        consent_statement:
+          maxLength: 7999
+          type: string
+          description: The statement the constituent responded to when providing consent.
+          nullable: true
+        date_added:
+          type: string
+          description: The date the consent response was added.
+          format: date-time
+          nullable: true
+        user_name:
+          type: string
+          description: The user that added the consent response.
+          nullable: true
+      additionalProperties: false
+      description: Represents a consent entity for a constituent.
+    ConstituentConsentReadCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of consent records in the list.
+          format: int32
+          readOnly: true
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConstituentConsentRead'
+          description: The set of consent records included in the response.
+          nullable: true
+      additionalProperties: false
+      description: A collection of consent records.
+    ConstituentSolicitCodeAdd:
+      required:
+      - constituent_id
+      - solicit_code
+      type: object
+      properties:
+        constituent_id:
+          type: string
+          description: The immutable system record ID of the constituent associated with the solicit code.
+        end_date:
+          type: string
+          description: 'The end date of the solicit code. Uses <a href="https://tools.ietf.org/html/rfc3339">ISO-8601 format:
+            </a><i>1969-11-21T10:29:43</i>.'
+          format: date-time
+          nullable: true
+        solicit_code:
+          type: string
+          description: Communication instructions and/or restrictions for a constituent. Available values can be obtained
+            from the <a href="https://developer.sky.blackbaud.com/docs/services/communication-preference/operations/ListSolicitCodes">Solicit
+            Codes List</a>.
+        start_date:
+          type: string
+          description: 'The start date of the solicit code. Uses <a href="https://tools.ietf.org/html/rfc3339">ISO-8601 format:
+            </a><i>1969-11-21T10:29:43</i>.'
+          format: date-time
+          nullable: true
+      additionalProperties: false
+      description: Solicit codes provide guidance on how to contact constituents. These rules describe instructions and restrictions
+        about when to reach out to constituents and how to tailor communications to honor their requests.
+    ConstituentSolicitCodeRead:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The immutable system record ID of the constituent solicit code.
+          nullable: true
+        constituent_id:
+          type: string
+          description: The immutable system record ID of the constituent associated with the solicit code.
+          nullable: true
+        end_date:
+          type: string
+          description: 'The end date of the solicit code. Uses <a href="https://tools.ietf.org/html/rfc3339">ISO-8601 format:
+            </a><i>1969-11-21T10:29:43</i>.'
+          format: date-time
+          nullable: true
+        solicit_code:
+          type: string
+          description: Communication instructions and/or restrictions for a constituent. Available values can be obtained
+            from the <a href="https://developer.sky.blackbaud.com/docs/services/communication-preference/operations/ListSolicitCodes">Solicit
+            Codes List</a>.
+          nullable: true
+        start_date:
+          type: string
+          description: 'The start date of the solicit code. Uses <a href="https://tools.ietf.org/html/rfc3339">ISO-8601 format:
+            </a><i>1969-11-21T10:29:43</i>.'
+          format: date-time
+          nullable: true
+      additionalProperties: false
+      description: Solicit codes provide guidance on how to contact constituents. These rules describe instructions and restrictions
+        about when to reach out to constituents and how to tailor communications to honor their requests.
+    ConstituentSolicitCodeReadCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of constituent solicit codes in the list.
+          format: int32
+          readOnly: true
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConstituentSolicitCodeRead'
+          description: The set of constituent solicit codes included in the response.
+          nullable: true
+      additionalProperties: false
+      description: A collection of constituent solicit codes.
+    PostResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Id of the created record.
+          nullable: true
+      additionalProperties: false
+      description: Response for creating a record.
+    ServiceError:
+      type: object
+      properties:
+        message:
+          type: string
+          description: The message of the service error with any string arguments replaced.
+          nullable: true
+        error_name:
+          type: string
+          description: The name of the service error.
+          nullable: true
+        error_code:
+          type: integer
+          description: Code number of the service error.
+          format: int32
+        raw_message:
+          type: string
+          description: 'The raw message of the service error. This message may contain string replacement arguments (ie: {0},
+            {1}, etc) that map to the ''error_args'' property and will be replaced when you get the full message from the
+            ''message'' property.'
+          nullable: true
+        error_args:
+          type: array
+          items:
+            type: string
+          description: A list of arguments to be replaced in the raw message. Useful for when the message needs to be localized.
+          nullable: true
+      additionalProperties: false
+      description: Base service error contract.
+    SolicitCode:
+      type: object
+      properties:
+        description:
+          type: string
+          description: The name of the solicit code.
+          nullable: true
+      additionalProperties: false
+      description: Represents the solicit code entity.
+    SolicitCodeCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of solicit codes in the list.
+          format: int32
+          readOnly: true
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/SolicitCode'
+          description: The set of solicit codes included in the response.
+          nullable: true
+      additionalProperties: false
+      description: A collection of solicit codes.
+    V1ConsentConsentsPost400ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    V1ConsentConsentsPost403ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    V1ConsentConsentsPost404ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    V1Constituents-constituent_id-ConsentsGet400ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    V1Constituents-constituent_id-ConsentsGet403ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    V1Constituents-constituent_id-ConsentsGet404ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    V1Consents-consent_id-Delete400ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    V1Consents-consent_id-Delete403ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    V1Constituents-constituent_id-ConstituentsolicitcodesGet400ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    V1Constituents-constituent_id-ConstituentsolicitcodesGet403ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    V1Constituents-constituent_id-ConstituentsolicitcodesGet404ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    V1ConstituentsolicitcodesPost400ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    V1ConstituentsolicitcodesPost403ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    V1ConstituentsolicitcodesPost404ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    V1Constituentsolicitcodes-constituent_solicit_code_id-PatchRequest:
+      x-apim-inline: true
+    V1Constituentsolicitcodes-constituent_solicit_code_id-Patch400ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    V1Constituentsolicitcodes-constituent_solicit_code_id-Patch403ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    V1Constituentsolicitcodes-constituent_solicit_code_id-Patch404ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    V1Constituentsolicitcodes-constituent_solicit_code_id-Delete400ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    V1Constituentsolicitcodes-constituent_solicit_code_id-Delete403ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []

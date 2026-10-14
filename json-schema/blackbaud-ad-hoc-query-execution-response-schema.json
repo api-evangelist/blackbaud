@@ -1,0 +1,147 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/blackbaud/main/json-schema/blackbaud-ad-hoc-query-execution-response-schema.json",
+  "title": "AdHocQueryExecutionResponse",
+  "description": "Result of an ad-hoc query execution. When status is `ready`, column metadata plus positionally-aligned result rows are included; when `deferred`/`running`, status, deferred_result_key, and infinity_session are set (poll GetAdHocQueryExecution).",
+  "x-generated": "2026-10-14",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/blackbaud-altru-analysis-api-openapi.yml#/components/schemas/AdHocQueryExecutionResponse",
+  "type": "object",
+  "properties": {
+    "status": {
+      "enum": [
+        "ready",
+        "deferred",
+        "running"
+      ],
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Outcome discriminator. `ready`: the result set is present. `deferred`: the run was queued — poll GetAdHocQueryExecution with deferred_result_key. `running`: (fetch) still executing — poll again with the same key."
+    },
+    "deferred_result_key": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Key to fetch the completed result via GetAdHocQueryExecution. Present when status is `deferred` or `running`; null once `ready`."
+    },
+    "infinity_session": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Load-balancer session-affinity cookie value. Returned alongside a `deferred`/`running` status; pass it back (with deferred_result_key) on GetAdHocQueryExecution and DeleteAdHocQueryExecution via the infinity_session query parameter so the poll/cancel reach the same server session that holds the result. Null once `ready`."
+    },
+    "fields": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "$ref": "#/$defs/AdHocQueryRunResponseField"
+      },
+      "description": "Output column metadata in execution order. The implicit QUERYRECID primary-key column appears unless suppress_primary_key_field was set."
+    },
+    "rows": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "$ref": "#/$defs/AdHocQueryRunResponseRow"
+      },
+      "description": "Result rows. Each row's values array is positionally aligned with fields. Empty when do_return_data was false."
+    },
+    "row_count": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "description": "Total row count when reported. Null when bypass_record_count was set or the query view doesn't supply one.",
+      "format": "int64"
+    },
+    "had_more_results": {
+      "type": "boolean",
+      "description": "True when the result set was truncated. Paginate via start/limit to fetch the remainder."
+    },
+    "sql": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "The generated T-SQL. Populated when do_return_data was false (SQL-only) or include_security_sql was true; otherwise null."
+    },
+    "record_type_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "The record type associated with the executed query. Null when not reported.",
+      "format": "uuid"
+    },
+    "query_was_cancelled": {
+      "type": [
+        "boolean",
+        "null"
+      ],
+      "description": "True when the query was cancelled before completion. Null when not reported."
+    }
+  },
+  "additionalProperties": false,
+  "x-display-name": "Ad-hoc query execution response",
+  "x-display-id": "AdHocQueryExecutionResponse",
+  "$defs": {
+    "AdHocQueryRunResponseField": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Column name as it appears in result rows."
+        },
+        "data_type": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Data type of the column (String, Integer, Date, Guid, etc.)."
+        },
+        "is_primary_key": {
+          "type": "boolean",
+          "description": "True for the synthetic QUERYRECID primary-key column."
+        }
+      },
+      "additionalProperties": false,
+      "description": "Output-column metadata.",
+      "x-display-name": "Ad-hoc query response field",
+      "x-display-id": "AdHocQueryRunResponseField"
+    },
+    "AdHocQueryRunResponseRow": {
+      "type": "object",
+      "properties": {
+        "values": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "description": "Cell values, one per output field, in the same order as fields. An individual entry is null when the underlying cell was null."
+        }
+      },
+      "additionalProperties": false,
+      "description": "A single result row. Values are positionally aligned with the response fields.",
+      "x-display-name": "Ad-hoc query response row",
+      "x-display-id": "AdHocQueryRunResponseRow"
+    }
+  }
+}

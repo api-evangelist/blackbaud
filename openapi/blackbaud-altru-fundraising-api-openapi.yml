@@ -1,0 +1,2353 @@
+openapi: 3.0.1
+info:
+  title: 'Blackbaud SKY API: Altru Fundraising'
+  description: Altru Fundraising SKY API
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/alt-fndmg
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations,
+      examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/alt-fndmg
+paths:
+  /campaigns/search:
+    get:
+      operationId: SearchCampaign
+      summary: Search for campaigns
+      description: Search for campaigns.
+      parameters:
+      - name: name
+        in: query
+        required: false
+        schema:
+          type: string
+        description: campaign name
+      - name: user_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: lookup id
+      - name: campaign_type
+        in: query
+        required: false
+        schema:
+          type: string
+        description: campaign type code
+      - name: site_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: site id
+      - name: exact_match_only
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: match all criteria exactly
+      - name: only_orphan_campaigns
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: only orphan campaigns
+      - name: include_inactive
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: include inactive campaigns
+      - name: exclusion_list_string
+        in: query
+        required: false
+        schema:
+          type: string
+        description: comma-separated campaign IDs to exclude
+      - name: inclusion_list_string
+        in: query
+        required: false
+        schema:
+          type: string
+        description: comma-separated campaign IDs to include
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of result entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignSearchCollection'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to view the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+  /designations/hierarchies/list:
+    get:
+      operationId: ListDesignationHierarchies
+      summary: List designation hierarchies
+      description: Returns all of the designation hierarchies.
+      parameters:
+      - name: combined_search
+        in: query
+        required: false
+        schema:
+          type: string
+        description: search for
+      - name: designation_level_type
+        in: query
+        required: false
+        schema:
+          type: string
+        description: type SimpleDataListID=5135618a-3055-4e02-ab1e-a2c091ad05e5.
+      - name: active_only
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: only show active designations
+      - name: sort_field
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - Purpose
+          - Designation lookup ID
+          - Public designation name
+          - Type
+          - Revenue designation
+          - Is active
+        description: sort by
+      - name: sort_dir
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - Ascending
+          - Descending
+        description: sort direction
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Limits the number of records to return.
+      - name: session_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: A unique key provided by user for paging results. The same key will be returned in a successful response.
+      - name: infinity_session
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Values for cookies related to the Infinity load balancer session.
+      - name: more_rows_range_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Key for accessing cached results on subsequent calls to this data list.
+      - name: start_row_index
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Number of rows to skip,get result after these rows.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of result entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DesignationHierarchyListCollection'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to view the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+  /designations/list:
+    get:
+      operationId: ListDesignations
+      summary: List designations
+      description: List of all designations.
+      parameters:
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Limits the number of records to return.
+      - name: session_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: A unique key provided by user for paging results. The same key will be returned in a successful response.
+      - name: infinity_session
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Values for cookies related to the Infinity load balancer session.
+      - name: more_rows_range_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Key for accessing cached results on subsequent calls to this data list.
+      - name: start_row_index
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Number of rows to skip,get result after these rows.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of result entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DesignationListCollection'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to view the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+  /designations/search:
+    get:
+      operationId: SearchDesignations
+      summary: Search for designations
+      description: Designation Search.
+      parameters:
+      - name: description
+        in: query
+        required: false
+        schema:
+          type: string
+        description: description
+      - name: include_inactive
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: include inactive
+      - name: site_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: site
+      - name: designation_name
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Designation name search filter.
+      - name: user_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Lookup ID search filter.
+      - name: vanity_name
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Public name search filter.
+      - name: combined_search
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Combined search across lookup ID, designation, and public name.
+      - name: include_all_designations
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: Include all designations, not just revenue designations.
+      - name: vse_category
+        in: query
+        required: false
+        schema:
+          type: string
+        description: VSE category filter.
+      - name: vse_subcategory
+        in: query
+        required: false
+        schema:
+          type: string
+        description: VSE subcategory filter.
+      - name: designation_report_code_1
+        in: query
+        required: false
+        schema:
+          type: string
+        description: First designation report code filter.
+      - name: designation_report_code_2
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Second designation report code filter.
+      - name: designation_use
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Designation use code filter.
+      - name: designation_level_type
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Purpose type filter.
+      - name: designation_level_category
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Purpose category filter.
+      - name: purpose_report_code_1
+        in: query
+        required: false
+        schema:
+          type: string
+        description: First purpose report code filter.
+      - name: purpose_report_code_2
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Second purpose report code filter.
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Limits the number of records to return.
+      - name: infinity_session
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Values for cookies related to the Infinity load balancer session.
+      - name: session_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: A unique key provided by user for paging results. The same key will be returned in a successful response.
+      - name: more_rows_range_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Key for accessing cached results on subsequent calls to this search list.
+      - name: start_row_index
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Number of rows to skip, get result after these rows.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of result entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DesignationSearchCollection'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to read the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  /educationalhistory/search:
+    get:
+      operationId: SearchEducationalHistories
+      summary: Search for educational histories
+      description: This search list provides the ability to search for educational history records.
+      parameters:
+      - name: full_name_educational_institution
+        in: query
+        required: false
+        schema:
+          type: string
+        description: full name educational institution
+      - name: key_name
+        in: query
+        required: false
+        schema:
+          type: string
+        description: last/org name
+      - name: first_name
+        in: query
+        required: false
+        schema:
+          type: string
+        description: first name
+      - name: lookup_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: lookup id
+      - name: exact_match_only
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: match all criteria exactly
+      - name: check_nickname
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: check nickname
+      - name: check_aliases
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: check aliases
+      - name: check_alternate_lookup_ids
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: check alternate lookup ids
+      - name: educational_institution
+        in: query
+        required: false
+        schema:
+          type: string
+        description: educational institution SimpleDataListID=0e239b5a-8c99-4e1e-9c10-06adce4b6500.
+      - name: academic_catalog_program
+        in: query
+        required: false
+        schema:
+          type: string
+        description: academic catalog program SimpleDataListID=d411c16b-8bcf-4fc8-a747-754e1e89e9bc.
+      - name: educational_program
+        in: query
+        required: false
+        schema:
+          type: string
+        description: educational program This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/EDUCATIONALPROGRAMCODE/entries
+      - name: constituency_status
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - All statuses
+          - Unknown
+          - Currently attending
+          - Incomplete
+          - Graduated
+        description: status
+      - name: educational_history_status
+        in: query
+        required: false
+        schema:
+          type: string
+        description: status SimpleDataListID=086c5bfb-1a80-46cf-a2f5-05ef51120891.
+      - name: academic_catalog_degree
+        in: query
+        required: false
+        schema:
+          type: string
+        description: academic catalog degree SimpleDataListID=73c67942-07ad-412e-8596-a042e5e68002.
+      - name: educational_degree
+        in: query
+        required: false
+        schema:
+          type: string
+        description: educational degree This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/EDUCATIONALDEGREECODE/entries
+      - name: class_of
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: class year
+      - name: primary_only
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: only search primary records
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Limits the number of records to return.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of result entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EducationalHistorySearchCollection'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to view the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+  /fundraisingpurposerecipients:
+    post:
+      operationId: CreateFundraisingPurposeRecipient
+      summary: Create a fundraising purpose recipient
+      description: Operation for adding a recipient for a fundraising purpose.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewFundraisingPurposeRecipient'
+            example:
+              designation_level_id: 834C287E-C865-45B4-8CBA-FC0FD4C3AB2B
+              constituent_id: 2913CDDF-A739-4471-8325-499BB207B67F
+              educational_history: ''
+              date: '2018-01-03T12:00:00Z'
+              amount: 120
+              status: ''
+              type: ''
+              comments: ''
+              published_name: ''
+              scholarship_term: ''
+              ferpa: false
+              base_currency_id: ''
+              user_defined_id: ''
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully creates the resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to create the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  /fundraisingpurposerecipients/{fundraising_purpose_recipient_id}:
+    delete:
+      operationId: DeleteFundraisingPurposeRecipient
+      summary: Delete a fundraising purpose recipient
+      description: This delete method handles the basic deletion rules for a fundraising purpose recipient.
+      parameters:
+      - name: fundraising_purpose_recipient_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The fundraising purpose recipient id
+      responses:
+        '200':
+          description: Returned when the operation successfully deletes the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to delete the resource.
+    patch:
+      operationId: EditFundraisingPurposeRecipient
+      summary: Edit a fundraising purpose recipient
+      description: This operation is for editing a given fundraising purpose recipient.
+      parameters:
+      - name: fundraising_purpose_recipient_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The fundraising purpose recipient id.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditFundraisingPurposeRecipient'
+            example:
+              date: '2016-02-18T12:00:00Z'
+              amount: 100
+              constituent: Robert Hernandez
+              constituent_id: 38F89C2B-F27D-4219-AEB0-2882766B9B9B
+              individual: true
+              educational_history: ''
+              status: ''
+              type: ''
+              comments: ''
+              published_name: ''
+              scholarship_term: ''
+              ferpa: false
+              base_currency_id: ''
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully edits the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to edit the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  /fundraisingpurposerecipients/{fundraising_purpose_recipient_id}/view:
+    get:
+      operationId: GetFundraisingPurposeRecipient
+      summary: Get a fundraising purpose recipient
+      description: This operation is for editing a given fundraising purpose recipient.
+      parameters:
+      - name: fundraising_purpose_recipient_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The fundraising purpose recipient id.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the specified resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FundraisingPurposeRecipient'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to get the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  /fundraisingpurposes:
+    post:
+      operationId: CreateFundraisingPurpose
+      summary: Create a fundraising purpose
+      description: Operation for adding a fundraising purpose record.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewFundraisingPurpose'
+            example:
+              name: 2018 Annual Fund
+              description: 2018 annual campaign fund
+              designation_level_type: Fund
+              designation_level_category: Annual
+              stewardship_package_process: ''
+              administrator_id: ''
+              lookup_id: 2018ANNUAL
+              designation_report_code_1: ''
+              designation_report_code_2: ''
+              site_id: ''
+              site_required: false
+              vanity_name: ''
+              time_period: Annually
+              endowed: false
+              fully_funded: false
+              income_to_principal: false
+              income_to_principal_percent: 0
+              statement_wording: ''
+              endowment_min_amount: 0
+              endowment_target_date: ''
+              endowment_min_amount_date_met: ''
+              base_currency_id: ''
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully creates the resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to create the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  /fundraisingpurposes/search:
+    get:
+      operationId: SearchFundraisingPurposes
+      summary: Search for fundraising purposes
+      description: Search screen for finding fundraising purpose records.
+      parameters:
+      - name: name
+        in: query
+        required: false
+        schema:
+          type: string
+        description: name
+      - name: designation_level_category
+        in: query
+        required: false
+        schema:
+          type: string
+        description: category This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/DESIGNATIONLEVELCATEGORYCODE/entries
+      - name: exact_match_only
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: match all criteria exactly
+      - name: type
+        in: query
+        required: false
+        schema:
+          type: string
+        description: type SimpleDataListID=5135618a-3055-4e02-ab1e-a2c091ad05e5.
+      - name: user_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: lookup id
+      - name: site_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: site
+      - name: hierarchy
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: is hierarchy
+      - name: for_financial_info_batch
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: for financial information batch
+      - name: combined_search
+        in: query
+        required: false
+        schema:
+          type: string
+        description: search for
+      - name: vanity_name
+        in: query
+        required: false
+        schema:
+          type: string
+        description: public name
+      - name: only_show_unused_purposes
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: only include purposes that are not used in the following branch
+      - name: unused_in_designation_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: branch
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Limits the number of records to return.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of result entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FundraisingPurposeSearchCollection'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to view the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+  /fundraisingpurposes/{fundraising_purpose_id}:
+    delete:
+      operationId: DeleteFundraisingPurpose
+      summary: Delete a fundraising purpose
+      description: This delete method handles the basic deletion rules for a fundraising purpose.
+      parameters:
+      - name: fundraising_purpose_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The fundraising purpose id
+      responses:
+        '200':
+          description: Returned when the operation successfully deletes the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to delete the resource.
+    patch:
+      operationId: EditFundraisingPurpose
+      summary: Edit a fundraising purpose
+      description: Operation used for editing a fundraising purpose.
+      parameters:
+      - name: fundraising_purpose_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The fundraising purpose id.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditFundraisingPurpose'
+            example:
+              name: 2018 Annual Fund
+              description: 2018 annual campaign fund
+              designation_level_name: ''
+              has_administrator: false
+              designation_level_category: ''
+              stewardship_package_process: ''
+              administrator_id: ''
+              lookup_id: ''
+              designation_report_code_1: ''
+              designation_report_code_2: ''
+              site_id: ''
+              site_required: false
+              vanity_name: ''
+              time_period: Annually
+              endowed: false
+              fully_funded: false
+              income_to_principal: false
+              income_to_principal_percent: 0
+              statement_wording: ''
+              endowment_min_amount: 0
+              endowment_target_date: ''
+              endowment_min_amount_date_met: ''
+              base_currency_id: ''
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully edits the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to edit the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  /fundraisingpurposetypes:
+    get:
+      operationId: ListFundraisingPurposeTypes
+      summary: List fundraising purpose types
+      description: This returns a list of fundraising purpose types.
+      parameters:
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Limits the number of records to return.
+      - name: session_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: A unique key provided by user for paging results. The same key will be returned in a successful response.
+      - name: infinity_session
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Values for cookies related to the Infinity load balancer session.
+      - name: more_rows_range_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Key for accessing cached results on subsequent calls to this data list.
+      - name: start_row_index
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Number of rows to skip,get result after these rows.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of result entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FundraisingPurposeTypeListCollection'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to view the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+  /recurringgiftinstallmenthistories/{revenue_id}/list:
+    get:
+      operationId: ListRecurringGiftInstallmentHistories
+      summary: List recurring gift installment histories
+      description: A operation of recurring gift installments and activity.
+      parameters:
+      - name: revenue_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The revenue id.
+      - name: payments_write_offs_only
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: payments/write-offs only
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Limits the number of records to return.
+      - name: session_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: A unique key provided by user for paging results. The same key will be returned in a successful response.
+      - name: infinity_session
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Values for cookies related to the Infinity load balancer session.
+      - name: more_rows_range_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Key for accessing cached results on subsequent calls to this data list.
+      - name: start_row_index
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Number of rows to skip,get result after these rows.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of result entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecurringGiftInstallmentHistoryListCollection'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to view the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+components:
+  schemas:
+    Delete:
+      type: object
+      additionalProperties: false
+      description: DeleteFundraisingPurpose
+      x-display-name: Fundraising Purpose Delete
+      x-display-id: Fundraising Purpose Delete
+    PostResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The newly created ID.
+      additionalProperties: false
+      description: Defines the shape of a post response object.
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when
+            dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]).
+            When this member is not present, its value is assumed to be "about:blank".
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence
+            of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231],
+            Section 3.4).
+        status:
+          type: integer
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the
+            problem.
+          format: int32
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type: string
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further
+            information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: false
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-display-name: Problem details
+      x-display-id: ProblemDetails
+    DesignationHierarchyListSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID.
+        designation_level_id:
+          type: string
+          description: The designation level ID.
+        designation_level_name:
+          type: string
+          description: The purpose.
+        designation_level_type:
+          type: string
+          description: The designation level type.
+        active:
+          type: boolean
+          description: Indicates whether is active?.
+        parent_id:
+          type: string
+          description: The parent ID.
+        level:
+          type: integer
+          description: The level.
+          format: int32
+        designation_level_type_hierarchy_item_id:
+          type: string
+          description: The hierarchy item ID.
+        hierarchy_child_count:
+          type: integer
+          description: The hierarchy item child count.
+          format: int32
+        purpose_type:
+          type: string
+          description: The type.
+        revenue_designation:
+          type: boolean
+          description: Indicates whether revenue designation.
+        vanity_name:
+          type: string
+          description: The public designation name.
+        user_id:
+          type: string
+          description: The designation lookup ID.
+        path_name:
+          type: string
+          description: The designation.
+      additionalProperties: false
+      description: ListDesignationHierarchies
+      x-display-name: Designation Hierarchies List
+      x-display-id: Designation Hierarchies List
+    DesignationHierarchyListCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items available for retrieval into the collection after applying any request parameters.
+          format: int32
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/DesignationHierarchyListSummary'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+        infinity_session:
+          type: string
+          description: Values for cookies related to the Infinity load balancer session.
+          format: string
+        session_key:
+          type: string
+          description: Session key for paging provided by user in request query parameter.
+          format: string
+        total_available_rows:
+          type: integer
+          description: The number of total rows available.
+          format: int32
+        more_rows_range_key:
+          type: string
+          description: Key for accessing cached results on subsequent calls to this data list.
+          format: string
+        data_no_longer_available:
+          type: boolean
+          description: Indicates data is no longer available in the context of this session.
+          format: boolean
+      additionalProperties: false
+      description: A collection of items. Data lists can contain paginated results.
+    DesignationListSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The designation ID.
+        designation_level_1_id:
+          type: string
+          description: The designation level 1 ID.
+        designation_level_2_id:
+          type: string
+          description: The designation level 2 ID.
+        designation_level_3_id:
+          type: string
+          description: The designation level 3 ID.
+        designation_level_4_id:
+          type: string
+          description: The designation level 4 ID.
+        designation_level_5_id:
+          type: string
+          description: The designation level 5 ID.
+        active:
+          type: boolean
+          description: Indicates whether is active.
+        vanity_name:
+          type: string
+          description: The public name.
+        user_id:
+          type: string
+          description: The lookup ID.
+      additionalProperties: false
+      description: ListDesignations
+      x-display-name: Designations Data List
+      x-display-id: Designations Data List
+    DesignationListCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items available for retrieval into the collection after applying any request parameters.
+          format: int32
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/DesignationListSummary'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+        infinity_session:
+          type: string
+          description: Values for cookies related to the Infinity load balancer session.
+          format: string
+        session_key:
+          type: string
+          description: Session key for paging provided by user in request query parameter.
+          format: string
+        total_available_rows:
+          type: integer
+          description: The number of total rows available.
+          format: int32
+        more_rows_range_key:
+          type: string
+          description: Key for accessing cached results on subsequent calls to this data list.
+          format: string
+        data_no_longer_available:
+          type: boolean
+          description: Indicates data is no longer available in the context of this session.
+          format: boolean
+      additionalProperties: false
+      description: A collection of items. Data lists can contain paginated results.
+    DesignationSearchSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: id
+        designation_level_id:
+          type: string
+          description: designation level
+        description:
+          type: string
+          description: description
+        designation_level_type:
+          type: string
+          description: designation level type
+        user_id:
+          type: string
+          description: user id
+        vanity_name:
+          type: string
+          description: vanity name
+        site_id:
+          type: string
+          description: site
+        designation:
+          type: string
+          description: The designation name.
+        active:
+          type: boolean
+          description: Indicates whether the designation is active.
+        vse_category:
+          type: string
+          description: The VSE category.
+        alternate_lookup_ids:
+          type: string
+          description: The alternate lookup IDs.
+        vse_subcategory:
+          type: string
+          description: The VSE subcategory.
+        revenue_designation:
+          type: boolean
+          description: Indicates whether the designation is a revenue designation.
+        designation_report_code_1:
+          type: string
+          description: The first designation report code.
+        designation_report_code_2:
+          type: string
+          description: The second designation report code.
+        designation_use_code:
+          type: string
+          description: The designation use code.
+        designation_level_category_code:
+          type: string
+          description: The designation level category code.
+        site:
+          type: string
+          description: The site name.
+        purpose_report_code_1:
+          type: string
+          description: The first purpose report code.
+        purpose_report_code_2:
+          type: string
+          description: The second purpose report code.
+      additionalProperties: false
+      description: SearchDesignations
+      x-display-name: Designation Search
+      x-display-id: Designation Search
+    DesignationSearchCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items available for retrieval into the collection after applying any request parameters.
+          format: int32
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/DesignationSearchSummary'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+        infinity_session:
+          type: string
+          description: Values for cookies related to the Infinity load balancer session.
+          format: string
+        session_key:
+          type: string
+          description: Session key for paging provided by user in request query parameter.
+          format: string
+        total_available_rows:
+          type: integer
+          description: The number of total rows available.
+          format: int32
+        more_rows_range_key:
+          type: string
+          description: Key for accessing cached results on subsequent calls to this data list.
+          format: string
+        data_no_longer_available:
+          type: boolean
+          description: Indicates data is no longer available in the context of this session.
+          format: boolean
+      additionalProperties: false
+      description: A collection of items. Data lists can contain paginated results.
+    EditFundraisingPurpose:
+      type: object
+      properties:
+        name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The name.
+        description:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The description.
+        designation_level_name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The designation level name. Read-only in the SOAP API.
+        has_administrator:
+          type: boolean
+          description: Indicates whether has administrator. Read-only in the SOAP API.
+        designation_level_category:
+          type: string
+          description: The category. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/designationlevelcategorycode/entries
+        stewardship_package_process:
+          type: string
+          description: The stewardship package. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/0b31b2ce-e673-4feb-8aa7-3d55e2f7dc7e.
+        administrator_id:
+          type: string
+          description: The administrator.
+        lookup_id:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The lookup ID.
+        designation_report_code_1:
+          type: string
+          description: The report code 1. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/designationreport1code/entries
+        designation_report_code_2:
+          type: string
+          description: The report code 2. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/designationreport2code/entries
+        site_id:
+          type: string
+          description: The site.
+        site_required:
+          type: boolean
+          description: Indicates whether site required. Read-only in the SOAP API.
+        vanity_name:
+          maxLength: 512
+          minLength: 0
+          type: string
+          description: The public name.
+        time_period:
+          type: string
+          description: The frequency. Available values are <i>annually</i>, <i>quarterly</i>, <i>monthly</i>
+        endowed:
+          type: boolean
+          description: Indicates whether endowed.
+        fully_funded:
+          type: boolean
+          description: Indicates whether fully funded.
+        income_to_principal:
+          type: boolean
+          description: Indicates whether income to principal.
+        income_to_principal_percent:
+          type: number
+          description: The income to principal %.
+          format: double
+        statement_wording:
+          maxLength: 1024
+          minLength: 0
+          type: string
+          description: The statement wording.
+        endowment_min_amount:
+          type: number
+          description: The minimum amount for endowment.
+          format: double
+        endowment_target_date:
+          type: string
+          description: 'The target date for endowment. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        endowment_min_amount_date_met:
+          type: string
+          description: 'The date minimum amount met. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        base_currency_id:
+          type: string
+          description: The base currency. Read-only in the SOAP API.
+      additionalProperties: false
+      description: EditFundraisingPurpose
+      example:
+        name: 2018 Annual Fund
+        description: 2018 annual campaign fund
+        designation_level_name: ''
+        has_administrator: false
+        designation_level_category: ''
+        stewardship_package_process: ''
+        administrator_id: ''
+        lookup_id: ''
+        designation_report_code_1: ''
+        designation_report_code_2: ''
+        site_id: ''
+        site_required: false
+        vanity_name: ''
+        time_period: Annually
+        endowed: false
+        fully_funded: false
+        income_to_principal: false
+        income_to_principal_percent: 0
+        statement_wording: ''
+        endowment_min_amount: 0
+        endowment_target_date: ''
+        endowment_min_amount_date_met: ''
+        base_currency_id: ''
+      x-display-name: Fundraising Purpose Edit Form 3
+      x-display-id: Fundraising Purpose Edit Form 3
+    EditFundraisingPurposeRecipient:
+      type: object
+      properties:
+        date:
+          type: string
+          description: 'The award date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        amount:
+          type: number
+          description: The award amount.
+          format: double
+        constituent:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The constituent. Read-only in the SOAP API.
+        constituent_id:
+          type: string
+          description: The ID. Read-only in the SOAP API.
+        individual:
+          type: boolean
+          description: Indicates whether isindividual. Read-only in the SOAP API.
+        educational_history:
+          type: string
+          description: The education. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/69864b69-5d2e-4bda-93b6-fae5b0c375cf?parameters=constituent_id,{constituent_id}.
+        status:
+          type: string
+          description: The status. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/purposerecipientstatuscode/entries
+        type:
+          type: string
+          description: The type. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/purposerecipienttypecode/entries
+        comments:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The comments.
+        published_name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The published name.
+        scholarship_term:
+          type: string
+          description: The scholarship term. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/d3e6db7f-9da3-410b-a34f-9366ba20008d.
+        ferpa:
+          type: boolean
+          description: Indicates whether ferpa documentation received.
+        base_currency_id:
+          type: string
+          description: The currency. Read-only in the SOAP API.
+      additionalProperties: false
+      description: EditFundraisingPurposeRecipient
+      example:
+        date: '2016-02-18T12:00:00Z'
+        amount: 100
+        constituent: Robert Hernandez
+        constituent_id: 38F89C2B-F27D-4219-AEB0-2882766B9B9B
+        individual: true
+        educational_history: ''
+        status: ''
+        type: ''
+        comments: ''
+        published_name: ''
+        scholarship_term: ''
+        ferpa: false
+        base_currency_id: ''
+      x-display-name: Fundraising Purpose Recipient Edit Form 2
+      x-display-id: Fundraising Purpose Recipient Edit Form 2
+    EducationalHistorySearchSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID.
+        full_name_educational_institution:
+          type: string
+          description: The full name\educational institution.
+        constituent_name:
+          type: string
+          description: The constituent name.
+        constituent_lookup_id:
+          type: string
+          description: The constituent lookup ID.
+        constituent_address:
+          type: string
+          description: The constituent address.
+        constituent_city:
+          type: string
+          description: The constituent city.
+        constituent_state:
+          type: string
+          description: The constituent state.
+        constituent_postcode:
+          type: string
+          description: The constituent zip/postal code.
+        educational_institution:
+          type: string
+          description: The educational institution.
+        program:
+          type: string
+          description: The program.
+        degree:
+          type: string
+          description: The degree.
+        status:
+          type: string
+          description: The status.
+        class_year:
+          type: string
+          description: The class year.
+        educational_history_status:
+          type: string
+          description: The status.
+      additionalProperties: false
+      description: SearchEducationalHistories
+      x-display-name: Educational History Search
+      x-display-id: Educational History Search
+    EducationalHistorySearchCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items available for retrieval into the collection after applying any request parameters.
+          format: int32
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/EducationalHistorySearchSummary'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+      additionalProperties: false
+      description: A collection of items. Data lists can contain paginated results.
+    FundraisingPurposeRecipient:
+      required:
+      - amount
+      type: object
+      properties:
+        date:
+          type: string
+          description: 'The award date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        amount:
+          type: number
+          description: The award amount.
+          format: double
+        constituent:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The constituent. Read-only in the SOAP API.
+        constituent_id:
+          type: string
+          description: The ID. Read-only in the SOAP API.
+        individual:
+          type: boolean
+          description: Indicates whether isindividual. Read-only in the SOAP API.
+        educational_history:
+          type: string
+          description: The education. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/69864b69-5d2e-4bda-93b6-fae5b0c375cf?parameters=constituent_id,{constituent_id}.
+        status:
+          type: string
+          description: The status. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/purposerecipientstatuscode/entries
+        type:
+          type: string
+          description: The type. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/purposerecipienttypecode/entries
+        comments:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The comments.
+        published_name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The published name.
+        scholarship_term:
+          type: string
+          description: The scholarship term. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/d3e6db7f-9da3-410b-a34f-9366ba20008d.
+        ferpa:
+          type: boolean
+          description: Indicates whether ferpa documentation received.
+        base_currency_id:
+          type: string
+          description: The currency. Read-only in the SOAP API.
+      additionalProperties: false
+      description: GetFundraisingPurposeRecipient
+      x-display-name: Fundraising Purpose Recipient Edit Form 2
+      x-display-id: Fundraising Purpose Recipient Edit Form 2
+    FundraisingPurposeSearchSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID.
+        name:
+          type: string
+          description: The name.
+        type:
+          type: string
+          description: The type.
+        category:
+          type: string
+          description: The category.
+        user_id:
+          type: string
+          description: The lookup ID.
+        designation_report_code_1_id:
+          type: string
+          description: The report code 1.
+        designation_report_code_2_id:
+          type: string
+          description: The report code 2.
+        site:
+          type: string
+          description: The site.
+        vanity_name:
+          type: string
+          description: The public name.
+      additionalProperties: false
+      description: SearchFundraisingPurposes
+      x-display-name: Fundraising Purpose Search
+      x-display-id: Fundraising Purpose Search
+    FundraisingPurposeSearchCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items available for retrieval into the collection after applying any request parameters.
+          format: int32
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/FundraisingPurposeSearchSummary'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+      additionalProperties: false
+      description: A collection of items. Data lists can contain paginated results.
+    CampaignSearchSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID.
+        name:
+          type: string
+          description: The name.
+        type_description:
+          type: string
+          description: The type description.
+        user_id:
+          type: string
+          description: The lookup ID.
+        site_name:
+          type: string
+          description: The site name.
+      additionalProperties: false
+      description: SearchCampaign
+      x-display-name: Campaign Search
+      x-display-id: Campaign Search
+    CampaignSearchCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items available for retrieval into the collection after applying any request parameters.
+          format: int32
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/CampaignSearchSummary'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+      additionalProperties: false
+      description: A collection of items. Data lists can contain paginated results.
+    FundraisingPurposeTypeListSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The system ID.
+        description:
+          type: string
+          description: The description.
+        has_administrator:
+          type: boolean
+          description: Indicates whether has administrator.
+        has_recipients:
+          type: boolean
+          description: Indicates whether has recipients.
+        has_donor_information:
+          type: boolean
+          description: Indicates whether has donor information.
+        has_financial_information:
+          type: boolean
+          description: Indicates whether has financial information.
+      additionalProperties: false
+      description: ListFundraisingPurposeTypes
+      x-display-name: Fundraising Purpose Type List 3
+      x-display-id: Fundraising Purpose Type List 3
+    FundraisingPurposeTypeListCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items available for retrieval into the collection after applying any request parameters.
+          format: int32
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/FundraisingPurposeTypeListSummary'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+        infinity_session:
+          type: string
+          description: Values for cookies related to the Infinity load balancer session.
+          format: string
+        session_key:
+          type: string
+          description: Session key for paging provided by user in request query parameter.
+          format: string
+        total_available_rows:
+          type: integer
+          description: The number of total rows available.
+          format: int32
+        more_rows_range_key:
+          type: string
+          description: Key for accessing cached results on subsequent calls to this data list.
+          format: string
+        data_no_longer_available:
+          type: boolean
+          description: Indicates data is no longer available in the context of this session.
+          format: boolean
+      additionalProperties: false
+      description: A collection of items. Data lists can contain paginated results.
+    NewFundraisingPurpose:
+      required:
+      - name
+      - designation_level_type
+      - lookup_id
+      type: object
+      properties:
+        name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The name.
+        description:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The description.
+        designation_level_type:
+          type: string
+          description: The type. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/5135618a-3055-4e02-ab1e-a2c091ad05e5.
+        designation_level_category:
+          type: string
+          description: The category. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/designationlevelcategorycode/entries
+        stewardship_package_process:
+          type: string
+          description: The stewardship package. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/0b31b2ce-e673-4feb-8aa7-3d55e2f7dc7e.
+        administrator_id:
+          type: string
+          description: The administrator.
+        lookup_id:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The lookup ID.
+        designation_report_code_1:
+          type: string
+          description: The report code 1. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/designationreport1code/entries
+        designation_report_code_2:
+          type: string
+          description: The report code 2. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/designationreport2code/entries
+        site_id:
+          type: string
+          description: The site.
+        site_required:
+          type: boolean
+          description: Indicates whether site required. Read-only in the SOAP API.
+        vanity_name:
+          maxLength: 512
+          minLength: 0
+          type: string
+          description: The public name.
+        time_period:
+          type: string
+          description: The frequency. Available values are <i>annually</i>, <i>quarterly</i>, <i>monthly</i>
+        endowed:
+          type: boolean
+          description: Indicates whether endowed.
+        fully_funded:
+          type: boolean
+          description: Indicates whether fully funded.
+        income_to_principal:
+          type: boolean
+          description: Indicates whether income to principal.
+        income_to_principal_percent:
+          type: number
+          description: The income to principal %.
+          format: double
+        statement_wording:
+          maxLength: 1024
+          minLength: 0
+          type: string
+          description: The statement wording.
+        endowment_min_amount:
+          type: number
+          description: The minimum amount for endowment.
+          format: double
+        endowment_target_date:
+          type: string
+          description: 'The target date for endowment. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        endowment_min_amount_date_met:
+          type: string
+          description: 'The date minimum amount met. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        base_currency_id:
+          type: string
+          description: The base currency. Read-only in the SOAP API.
+      additionalProperties: false
+      description: CreateFundraisingPurpose
+      example:
+        name: 2018 Annual Fund
+        description: 2018 annual campaign fund
+        designation_level_type: Fund
+        designation_level_category: Annual
+        stewardship_package_process: ''
+        administrator_id: ''
+        lookup_id: 2018ANNUAL
+        designation_report_code_1: ''
+        designation_report_code_2: ''
+        site_id: ''
+        site_required: false
+        vanity_name: ''
+        time_period: Annually
+        endowed: false
+        fully_funded: false
+        income_to_principal: false
+        income_to_principal_percent: 0
+        statement_wording: ''
+        endowment_min_amount: 0
+        endowment_target_date: ''
+        endowment_min_amount_date_met: ''
+        base_currency_id: ''
+      x-display-name: Fundraising Purpose Add Form
+      x-display-id: Fundraising Purpose Add Form
+    NewFundraisingPurposeRecipient:
+      required:
+      - designation_level_id
+      - constituent_id
+      - amount
+      type: object
+      properties:
+        designation_level_id:
+          type: string
+          description: The designation level ID.
+        constituent_id:
+          type: string
+          description: The constituent.
+        educational_history:
+          type: string
+          description: The education. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/69864b69-5d2e-4bda-93b6-fae5b0c375cf?parameters=constituent_id,{constituent_id}.
+        date:
+          type: string
+          description: 'The award date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        amount:
+          type: number
+          description: The award amount.
+          format: double
+        status:
+          type: string
+          description: The status. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/purposerecipientstatuscode/entries
+        type:
+          type: string
+          description: The type. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/purposerecipienttypecode/entries
+        comments:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The comments.
+        published_name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The published name.
+        scholarship_term:
+          type: string
+          description: The scholarship term. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/d3e6db7f-9da3-410b-a34f-9366ba20008d.
+        ferpa:
+          type: boolean
+          description: Indicates whether ferpa documentation received.
+        base_currency_id:
+          type: string
+          description: The currency. Read-only in the SOAP API.
+      additionalProperties: false
+      description: CreateFundraisingPurposeRecipient
+      example:
+        designation_level_id: 834C287E-C865-45B4-8CBA-FC0FD4C3AB2B
+        constituent_id: 2913CDDF-A739-4471-8325-499BB207B67F
+        educational_history: ''
+        date: '2018-01-03T12:00:00Z'
+        amount: 120
+        status: ''
+        type: ''
+        comments: ''
+        published_name: ''
+        scholarship_term: ''
+        ferpa: false
+        base_currency_id: ''
+        user_defined_id: ''
+      x-display-name: Fundraising Purpose Recipient Add Form
+      x-display-id: Fundraising Purpose Recipient Add Form
+    RecurringGiftInstallmentHistoryListSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID.
+        parent_id:
+          type: string
+          description: The parentid.
+        activity_type:
+          type: string
+          description: The activity.
+        amount:
+          type: number
+          description: The amount.
+          format: double
+        balance:
+          type: number
+          description: The balance.
+          format: double
+        date:
+          type: string
+          description: 'The date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        payment_id:
+          type: string
+          description: The paymentid.
+        transaction_currency_id:
+          type: string
+          description: The transaction currency ID.
+        child_or_parent_id:
+          type: string
+          description: The child or parent ID.
+      additionalProperties: false
+      description: ListRecurringGiftInstallmentHistories
+      x-display-name: Recurring Gift Installment History Data List
+      x-display-id: Recurring Gift Installment History Data List
+    RecurringGiftInstallmentHistoryListCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items available for retrieval into the collection after applying any request parameters.
+          format: int32
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/RecurringGiftInstallmentHistoryListSummary'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+        infinity_session:
+          type: string
+          description: Values for cookies related to the Infinity load balancer session.
+          format: string
+        session_key:
+          type: string
+          description: Session key for paging provided by user in request query parameter.
+          format: string
+        total_available_rows:
+          type: integer
+          description: The number of total rows available.
+          format: int32
+        more_rows_range_key:
+          type: string
+          description: Key for accessing cached results on subsequent calls to this data list.
+          format: string
+        data_no_longer_available:
+          type: boolean
+          description: Indicates data is no longer available in the context of this session.
+          format: boolean
+      additionalProperties: false
+      description: A collection of items. Data lists can contain paginated results.
+    Fundraisingpurposes-fundraising_purpose_id-DeleteRequest:
+      type: string
+      x-apim-inline: true
+    Fundraisingpurposes-fundraising_purpose_id-PatchRequest:
+      type: string
+      x-apim-inline: true
+    Fundraisingpurposerecipients-fundraising_purpose_recipient_id-ViewGetRequest:
+      type: string
+      x-apim-inline: true
+    FundraisingpurposetypesGetRequest:
+      type: integer
+      x-apim-inline: true
+    FundraisingpurposetypesGetRequest-1:
+      type: string
+      x-apim-inline: true
+    FundraisingpurposetypesGetRequest-2:
+      type: string
+      x-apim-inline: true
+    FundraisingpurposetypesGetRequest-3:
+      type: string
+      x-apim-inline: true
+    FundraisingpurposetypesGetRequest-4:
+      type: integer
+      x-apim-inline: true
+    EducationalhistorySearchGetRequest:
+      type: string
+      x-apim-inline: true
+    EducationalhistorySearchGetRequest-1:
+      type: string
+      x-apim-inline: true
+    EducationalhistorySearchGetRequest-2:
+      type: string
+      x-apim-inline: true
+    EducationalhistorySearchGetRequest-3:
+      type: string
+      x-apim-inline: true
+    EducationalhistorySearchGetRequest-4:
+      type: boolean
+      x-apim-inline: true
+    EducationalhistorySearchGetRequest-5:
+      type: boolean
+      x-apim-inline: true
+    EducationalhistorySearchGetRequest-6:
+      type: boolean
+      x-apim-inline: true
+    EducationalhistorySearchGetRequest-7:
+      type: boolean
+      x-apim-inline: true
+    EducationalhistorySearchGetRequest-8:
+      type: string
+      x-apim-inline: true
+    EducationalhistorySearchGetRequest-9:
+      type: string
+      x-apim-inline: true
+    EducationalhistorySearchGetRequest-10:
+      type: string
+      x-apim-inline: true
+    EducationalhistorySearchGetRequest-11:
+      enum:
+      - All statuses
+      - Unknown
+      - Currently attending
+      - Incomplete
+      - Graduated
+      type: string
+      x-apim-inline: true
+    EducationalhistorySearchGetRequest-12:
+      type: string
+      x-apim-inline: true
+    EducationalhistorySearchGetRequest-13:
+      type: string
+      x-apim-inline: true
+    EducationalhistorySearchGetRequest-14:
+      type: string
+      x-apim-inline: true
+    EducationalhistorySearchGetRequest-15:
+      type: integer
+      x-apim-inline: true
+    EducationalhistorySearchGetRequest-16:
+      type: boolean
+      x-apim-inline: true
+    EducationalhistorySearchGetRequest-17:
+      type: integer
+      x-apim-inline: true
+    FundraisingpurposesSearchGetRequest:
+      type: string
+      x-apim-inline: true
+    FundraisingpurposesSearchGetRequest-1:
+      type: string
+      x-apim-inline: true
+    FundraisingpurposesSearchGetRequest-2:
+      type: boolean
+      x-apim-inline: true
+    FundraisingpurposesSearchGetRequest-3:
+      type: string
+      x-apim-inline: true
+    FundraisingpurposesSearchGetRequest-4:
+      type: string
+      x-apim-inline: true
+    FundraisingpurposesSearchGetRequest-5:
+      type: string
+      x-apim-inline: true
+    FundraisingpurposesSearchGetRequest-6:
+      type: boolean
+      x-apim-inline: true
+    FundraisingpurposesSearchGetRequest-7:
+      type: boolean
+      x-apim-inline: true
+    FundraisingpurposesSearchGetRequest-8:
+      type: string
+      x-apim-inline: true
+    FundraisingpurposesSearchGetRequest-9:
+      type: string
+      x-apim-inline: true
+    FundraisingpurposesSearchGetRequest-10:
+      type: boolean
+      x-apim-inline: true
+    FundraisingpurposesSearchGetRequest-11:
+      type: string
+      x-apim-inline: true
+    FundraisingpurposesSearchGetRequest-12:
+      type: integer
+      x-apim-inline: true
+    Fundraisingpurposerecipients-fundraising_purpose_recipient_id-DeleteRequest:
+      type: string
+      x-apim-inline: true
+    Fundraisingpurposerecipients-fundraising_purpose_recipient_id-PatchRequest:
+      type: string
+      x-apim-inline: true
+    DesignationsHierarchiesListGetRequest:
+      type: string
+      x-apim-inline: true
+    DesignationsHierarchiesListGetRequest-1:
+      type: string
+      x-apim-inline: true
+    DesignationsHierarchiesListGetRequest-2:
+      type: boolean
+      x-apim-inline: true
+    DesignationsHierarchiesListGetRequest-3:
+      enum:
+      - Purpose
+      - Designation lookup ID
+      - Public designation name
+      - Type
+      - Revenue designation
+      - Is active
+      type: string
+      x-apim-inline: true
+    DesignationsHierarchiesListGetRequest-4:
+      enum:
+      - Ascending
+      - Descending
+      type: string
+      x-apim-inline: true
+    DesignationsHierarchiesListGetRequest-5:
+      type: integer
+      x-apim-inline: true
+    DesignationsHierarchiesListGetRequest-6:
+      type: string
+      x-apim-inline: true
+    DesignationsHierarchiesListGetRequest-7:
+      type: string
+      x-apim-inline: true
+    DesignationsHierarchiesListGetRequest-8:
+      type: string
+      x-apim-inline: true
+    DesignationsHierarchiesListGetRequest-9:
+      type: integer
+      x-apim-inline: true
+    DesignationsListGetRequest:
+      type: integer
+      x-apim-inline: true
+    DesignationsListGetRequest-1:
+      type: string
+      x-apim-inline: true
+    DesignationsListGetRequest-2:
+      type: string
+      x-apim-inline: true
+    DesignationsListGetRequest-3:
+      type: string
+      x-apim-inline: true
+    DesignationsListGetRequest-4:
+      type: integer
+      x-apim-inline: true
+    DesignationsSearchGetRequest:
+      type: string
+      x-apim-inline: true
+    DesignationsSearchGetRequest-1:
+      type: boolean
+      x-apim-inline: true
+    DesignationsSearchGetRequest-2:
+      type: string
+      x-apim-inline: true
+    DesignationsSearchGetRequest-3:
+      type: string
+      x-apim-inline: true
+    DesignationsSearchGetRequest-4:
+      type: string
+      x-apim-inline: true
+    DesignationsSearchGetRequest-5:
+      type: string
+      x-apim-inline: true
+    DesignationsSearchGetRequest-6:
+      type: string
+      x-apim-inline: true
+    DesignationsSearchGetRequest-7:
+      type: boolean
+      x-apim-inline: true
+    DesignationsSearchGetRequest-8:
+      type: string
+      x-apim-inline: true
+    DesignationsSearchGetRequest-9:
+      type: string
+      x-apim-inline: true
+    DesignationsSearchGetRequest-10:
+      type: string
+      x-apim-inline: true
+    DesignationsSearchGetRequest-11:
+      type: string
+      x-apim-inline: true
+    DesignationsSearchGetRequest-12:
+      type: string
+      x-apim-inline: true
+    DesignationsSearchGetRequest-13:
+      type: string
+      x-apim-inline: true
+    DesignationsSearchGetRequest-14:
+      type: string
+      x-apim-inline: true
+    DesignationsSearchGetRequest-15:
+      type: string
+      x-apim-inline: true
+    DesignationsSearchGetRequest-16:
+      type: string
+      x-apim-inline: true
+    DesignationsSearchGetRequest-17:
+      type: integer
+      x-apim-inline: true
+    DesignationsSearchGetRequest-18:
+      type: string
+      x-apim-inline: true
+    DesignationsSearchGetRequest-19:
+      type: string
+      x-apim-inline: true
+    DesignationsSearchGetRequest-20:
+      type: string
+      x-apim-inline: true
+    DesignationsSearchGetRequest-21:
+      type: integer
+      x-apim-inline: true
+    Recurringgiftinstallmenthistories-revenue_id-ListGetRequest:
+      type: string
+      x-apim-inline: true
+    Recurringgiftinstallmenthistories-revenue_id-ListGetRequest-1:
+      type: boolean
+      x-apim-inline: true
+    Recurringgiftinstallmenthistories-revenue_id-ListGetRequest-2:
+      type: integer
+      x-apim-inline: true
+    Recurringgiftinstallmenthistories-revenue_id-ListGetRequest-3:
+      type: string
+      x-apim-inline: true
+    Recurringgiftinstallmenthistories-revenue_id-ListGetRequest-4:
+      type: string
+      x-apim-inline: true
+    Recurringgiftinstallmenthistories-revenue_id-ListGetRequest-5:
+      type: string
+      x-apim-inline: true
+    Recurringgiftinstallmenthistories-revenue_id-ListGetRequest-6:
+      type: integer
+      x-apim-inline: true
+    CampaignsSearchGetRequest:
+      type: string
+      x-apim-inline: true
+    CampaignsSearchGetRequest-1:
+      type: string
+      x-apim-inline: true
+    CampaignsSearchGetRequest-2:
+      type: string
+      x-apim-inline: true
+    CampaignsSearchGetRequest-3:
+      type: string
+      x-apim-inline: true
+    CampaignsSearchGetRequest-4:
+      type: boolean
+      x-apim-inline: true
+    CampaignsSearchGetRequest-5:
+      type: boolean
+      x-apim-inline: true
+    CampaignsSearchGetRequest-6:
+      type: boolean
+      x-apim-inline: true
+    CampaignsSearchGetRequest-7:
+      type: string
+      x-apim-inline: true
+    CampaignsSearchGetRequest-8:
+      type: string
+      x-apim-inline: true
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []

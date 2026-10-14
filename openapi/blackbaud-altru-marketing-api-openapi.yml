@@ -1,0 +1,2346 @@
+openapi: 3.0.1
+info:
+  title: 'Blackbaud SKY API: Altru Marketing'
+  description: Altru Marketing SKY API
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/alt-mktmg
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations,
+      examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/alt-mktmg
+paths:
+  /appeals:
+    post:
+      operationId: CreateMarketingAppeal
+      summary: Create a marketing appeal
+      description: Operation for adding a appeal record.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewMarketingAppeal'
+            example:
+              name: ''
+              description: ''
+              appeal_category: ''
+              business_unit: ''
+              business_units:
+              - business_unit: ''
+                percent_value: 0
+              start_date: ''
+              end_date: ''
+              goal: 0
+              appeal_report_1: ''
+              site_id: ''
+              membership_program: ''
+              site_required: false
+              base_currency_id: ''
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully creates the resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to create the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  /appeals/list:
+    get:
+      operationId: ListMarketingAppeals
+      summary: List marketing appeals
+      description: Returns a list of all appeals.
+      parameters:
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Limits the number of records to return.
+      - name: session_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: A unique key provided by user for paging results. The same key will be returned in a successful response.
+      - name: infinity_session
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Values for cookies related to the Infinity load balancer session.
+      - name: more_rows_range_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Key for accessing cached results on subsequent calls to this data list.
+      - name: start_row_index
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Number of rows to skip,get result after these rows.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of result entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MarketingAppealListCollection'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to view the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+  /appeals/search:
+    get:
+      operationId: SearchMarketingAppeals
+      summary: Search for marketing appeals
+      description: Search screen for finding appeal records.
+      parameters:
+      - name: name
+        in: query
+        required: false
+        schema:
+          type: string
+        description: name
+      - name: business_unit
+        in: query
+        required: false
+        schema:
+          type: string
+        description: business unit This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/BUSINESSUNITCODE/entries
+      - name: appeal_category
+        in: query
+        required: false
+        schema:
+          type: string
+        description: category This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/APPEALCATEGORYCODE/entries
+      - name: include_inactive
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: indicates whether or not to include inactive appeals in the search
+      - name: report_code
+        in: query
+        required: false
+        schema:
+          type: string
+        description: report code This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/APPEALREPORT1CODE/entries
+      - name: site_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: site
+      - name: exact_match_only
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: exact match only
+      - name: event_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: event
+      - name: description
+        in: query
+        required: false
+        schema:
+          type: string
+        description: description
+      - name: category_name
+        in: query
+        required: false
+        schema:
+          type: string
+        description: category name
+      - name: base_currency_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: base currency id
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Limits the number of records to return.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of result entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MarketingAppealSearchCollection'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to view the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+  /appeals/{appeal_id}:
+    delete:
+      operationId: DeleteMarketingAppeal
+      summary: Delete a marketing appeal
+      description: This handles the deletion of an appeal.
+      parameters:
+      - name: appeal_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The appeal id
+      responses:
+        '200':
+          description: Returned when the operation successfully deletes the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to delete the resource.
+    patch:
+      operationId: EditMarketingAppeal
+      summary: Edit a marketing appeal
+      description: Operation used for editing an appeal.
+      parameters:
+      - name: appeal_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The appeal id.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditMarketingAppeal'
+            example:
+              name: ''
+              description: ''
+              appeal_category: ''
+              business_unit: ''
+              business_units:
+              - business_unit: ''
+                percent_value: 0
+              start_date: ''
+              end_date: ''
+              goal: 0
+              appeal_report_1: ''
+              site_id: ''
+              membership_program: ''
+              site_required: false
+              base_currency_id: ''
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully edits the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to edit the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+    get:
+      operationId: GetMarketingAppeal
+      summary: Get a marketing appeal
+      description: Operation used for editing an appeal.
+      parameters:
+      - name: appeal_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The appeal id.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the specified resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MarketingAppeal'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to get the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  /correspondencecodes:
+    post:
+      operationId: CreateCorrespondenceCode
+      summary: Create a correspondence code
+      description: This operation is used to add a correspondence code.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewCorrespondenceCode'
+            example:
+              name: 20205KRUN
+              description: 2020 5K Run Email
+              category: ''
+              site_id: ''
+              site_required: false
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully creates the resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to create the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  /correspondencecodes/list:
+    get:
+      operationId: ListCorrespondenceCodes
+      summary: List correspondence codes
+      description: This operation returns the correspondence code operation.
+      parameters:
+      - name: include_inactive
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: include inactive
+      - name: site_filter_mode
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - All sites
+          - My site
+          - My site's branch
+          - Selected sites
+        description: sites
+      - name: sites_selected
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Format - XML. sites selected
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Limits the number of records to return.
+      - name: session_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: A unique key provided by user for paging results. The same key will be returned in a successful response.
+      - name: infinity_session
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Values for cookies related to the Infinity load balancer session.
+      - name: more_rows_range_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Key for accessing cached results on subsequent calls to this data list.
+      - name: start_row_index
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Number of rows to skip,get result after these rows.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of result entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CorrespondenceCodeListCollection'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to view the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+  /correspondencecodes/{correspondence_code_id}:
+    delete:
+      operationId: DeleteCorrespondenceCode
+      summary: Delete a correspondence code
+      description: This deletion handles only the basic deletion rules for a correspondence code (currently none).
+      parameters:
+      - name: correspondence_code_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The correspondence code id
+      responses:
+        '200':
+          description: Returned when the operation successfully deletes the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to delete the resource.
+    patch:
+      operationId: EditCorrespondenceCode
+      summary: Edit a correspondence code
+      description: This operation is for editing a correspondence code.
+      parameters:
+      - name: correspondence_code_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The correspondence code id.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditCorrespondenceCode'
+            example:
+              name: 20205KRUN
+              description: 2020 5K Run Email
+              category: ''
+              site_id: ''
+              site_required: false
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully edits the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to edit the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+    get:
+      operationId: GetCorrespondenceCode
+      summary: Get a correspondence code
+      description: This operation is for editing a correspondence code.
+      parameters:
+      - name: correspondence_code_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The correspondence code id.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the specified resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CorrespondenceCode'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to get the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  /responsecategories:
+    post:
+      operationId: CreateResponseCategory
+      summary: Create a response category
+      description: This operation is used to add response categories.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewResponseCategory'
+            example:
+              id: ''
+              name: ''
+              sort_method: Alpha
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully creates the resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to create the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  /responsecategories/{response_category_id}:
+    delete:
+      operationId: DeleteResponseCategory
+      summary: Delete a response category
+      description: This handles the deletion of a response category.
+      parameters:
+      - name: response_category_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The response category id
+      responses:
+        '200':
+          description: Returned when the operation successfully deletes the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to delete the resource.
+    patch:
+      operationId: EditResponseCategory
+      summary: Edit a response category
+      description: This operation is used to edit response categories.
+      parameters:
+      - name: response_category_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The response category id.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditResponseCategory'
+            example:
+              name: letter sent
+              sort_method_code: 0
+              inactive: true
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully edits the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to edit the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+    get:
+      operationId: GetResponseCategory
+      summary: Get a response category
+      description: This operation is used to edit response categories.
+      parameters:
+      - name: response_category_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The response category id.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the specified resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseCategory'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to get the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  /segments:
+    post:
+      operationId: CreateMarketingSegment
+      summary: Create a marketing segment
+      description: Adds a segment.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewMarketingSegment'
+            example:
+              query_view_catalog: ''
+              name: ''
+              description: ''
+              site_id: ''
+              site_required: false
+              segment_category: ''
+              code: ''
+              code_value: ''
+              smart_queries_exist: false
+              selections:
+              - selection_id: ''
+              groups:
+              - segment_group_id: ''
+                sequence: 0
+              segment_type_code: 0
+              segment_part_definition_id: ''
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully creates the resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to create the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  /segments/recordsources:
+    get:
+      operationId: ListMarketingSegments
+      summary: List marketing segments
+      description: Displays a list of all possible record sources available for use in segmentations and lists.
+      parameters:
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Limits the number of records to return.
+      - name: session_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: A unique key provided by user for paging results. The same key will be returned in a successful response.
+      - name: infinity_session
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Values for cookies related to the Infinity load balancer session.
+      - name: more_rows_range_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Key for accessing cached results on subsequent calls to this data list.
+      - name: start_row_index
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Number of rows to skip,get result after these rows.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of result entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MarketingSegmentListCollection'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to view the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+  /segments/{segment_id}:
+    delete:
+      operationId: DeleteMarketingSegment
+      summary: Delete a marketing segment
+      description: Removes a segment from the system.
+      parameters:
+      - name: segment_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The segment id
+      responses:
+        '200':
+          description: Returned when the operation successfully deletes the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to delete the resource.
+    patch:
+      operationId: EditMarketingSegment
+      summary: Edit a marketing segment
+      description: Operation used for editing a segment.
+      parameters:
+      - name: segment_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The segment id.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditMarketingSegment'
+            example:
+              name: ''
+              description: ''
+              site_id: ''
+              site_required: false
+              segment_category: ''
+              code: ''
+              segment_part_definition_id: ''
+              code_value: ''
+              query_view_catalog: ''
+              selections:
+              - selection_id: ''
+                name: ''
+                description: ''
+                record_type: ''
+                record_type_id: ''
+                query_view_id: ''
+                query_id: ''
+                query_type: Other
+                can_edit: false
+                user_granted_rights: false
+              groups:
+              - segment_group_id: ''
+                name: ''
+                sequence: 0
+              smart_queries_exist: false
+              in_use: false
+              date_changed: ''
+              allow_code_update: false
+              form_id: ''
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully edits the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to edit the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+    get:
+      operationId: GetMarketingSegment
+      summary: Get a marketing segment
+      description: Operation used for editing a segment.
+      parameters:
+      - name: segment_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The segment id.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the specified resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MarketingSegment'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to get the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  /solicitcodes/list:
+    get:
+      operationId: ListMarketingSolicitCodes
+      summary: List marketing solicit codes
+      description: Solicit code list
+      parameters:
+      - name: include_inactive
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: include inactive
+      - name: site_filter_mode
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - All sites
+          - My site
+          - My site's branch
+          - Selected sites
+        description: sites
+      - name: sites_selected
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Format - XML. sites selected
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Limits the number of records to return.
+      - name: session_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: A unique key provided by user for paging results. The same key will be returned in a successful response.
+      - name: infinity_session
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Values for cookies related to the Infinity load balancer session.
+      - name: more_rows_range_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Key for accessing cached results on subsequent calls to this data list.
+      - name: start_row_index
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Number of rows to skip,get result after these rows.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of result entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MarketingSolicitCodeListCollection'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to view the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+  /solicitcodes/search:
+    get:
+      operationId: SearchMarketingSolicitCodes
+      summary: Search for marketing solicit codes
+      description: Search for a solict codes.
+      parameters:
+      - name: description
+        in: query
+        required: false
+        schema:
+          type: string
+        description: name
+      - name: site_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: site
+      - name: include_inactive
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: include inactive
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Limits the number of records to return.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of result entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MarketingSolicitCodeSearchCollection'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to view the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+components:
+  schemas:
+    CorrespondenceCode:
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The name.
+        description:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The description.
+        category:
+          type: string
+          description: The category. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/correspondencecategorycode/entries
+        site_id:
+          type: string
+          description: The site.
+        site_required:
+          type: boolean
+          description: Indicates whether site required. Read-only in the SOAP API.
+      additionalProperties: false
+      description: GetCorrespondenceCode
+      x-display-name: Correspondence Code Edit Form 3
+      x-display-id: Correspondence Code Edit Form 3
+    PostResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The newly created ID.
+      additionalProperties: false
+      description: Defines the shape of a post response object.
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when
+            dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]).
+            When this member is not present, its value is assumed to be "about:blank".
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence
+            of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231],
+            Section 3.4).
+        status:
+          type: integer
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the
+            problem.
+          format: int32
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type: string
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further
+            information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: false
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-display-name: Problem details
+      x-display-id: ProblemDetails
+    CorrespondenceCodeListSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID.
+        name:
+          type: string
+          description: The name.
+        description:
+          type: string
+          description: The description.
+        active:
+          type: boolean
+          description: Indicates whether active.
+        category:
+          type: string
+          description: The category.
+        site:
+          type: string
+          description: The site.
+      additionalProperties: false
+      description: ListCorrespondenceCodes
+      x-display-name: Correspondence Code List
+      x-display-id: Correspondence Code List
+    CorrespondenceCodeListCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items available for retrieval into the collection after applying any request parameters.
+          format: int32
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/CorrespondenceCodeListSummary'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+        infinity_session:
+          type: string
+          description: Values for cookies related to the Infinity load balancer session.
+          format: string
+        session_key:
+          type: string
+          description: Session key for paging provided by user in request query parameter.
+          format: string
+        total_available_rows:
+          type: integer
+          description: The number of total rows available.
+          format: int32
+        more_rows_range_key:
+          type: string
+          description: Key for accessing cached results on subsequent calls to this data list.
+          format: string
+        data_no_longer_available:
+          type: boolean
+          description: Indicates data is no longer available in the context of this session.
+          format: boolean
+      additionalProperties: false
+      description: A collection of items. Data lists can contain paginated results.
+    Delete:
+      type: object
+      additionalProperties: false
+      description: DeleteMarketingAppeal
+      x-display-name: Appeal Delete
+      x-display-id: Appeal Delete
+    EditCorrespondenceCode:
+      type: object
+      properties:
+        name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The name.
+        description:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The description.
+        category:
+          type: string
+          description: The category. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/correspondencecategorycode/entries
+        site_id:
+          type: string
+          description: The site.
+        site_required:
+          type: boolean
+          description: Indicates whether site required. Read-only in the SOAP API.
+      additionalProperties: false
+      description: EditCorrespondenceCode
+      example:
+        name: 20205KRUN
+        description: 2020 5K Run Email
+        category: ''
+        site_id: ''
+        site_required: false
+      x-display-name: Correspondence Code Edit Form 3
+      x-display-id: Correspondence Code Edit Form 3
+    EditMarketingAppeal:
+      type: object
+      properties:
+        name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The name.
+        description:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The description.
+        appeal_category:
+          type: string
+          description: The category. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/appealcategorycode/entries
+        business_unit:
+          type: string
+          description: The business unit. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/businessunitcode/entries
+        business_units:
+          type: array
+          items:
+            $ref: '#/components/schemas/EditMarketingAppealBusinessUnits'
+          description: Business units.
+        start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        end_date:
+          type: string
+          description: 'The end date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        goal:
+          type: number
+          description: The goal.
+          format: double
+        appeal_report_1:
+          type: string
+          description: The report code. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/appealreport1code/entries
+        site_id:
+          type: string
+          description: The site.
+        membership_program:
+          type: string
+          description: The membership. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/c5d11ce5-e9df-4aff-b45c-e5fb99ba6bb7?parameters=site_id,{site_id}.
+        site_required:
+          type: boolean
+          description: Indicates whether site required. Read-only in the SOAP API.
+        base_currency_id:
+          type: string
+          description: The base currency. Read-only in the SOAP API.
+      additionalProperties: false
+      description: EditMarketingAppeal
+      example:
+        name: ''
+        description: ''
+        appeal_category: ''
+        business_unit: ''
+        business_units:
+        - business_unit: ''
+          percent_value: 0
+        start_date: ''
+        end_date: ''
+        goal: 0
+        appeal_report_1: ''
+        site_id: ''
+        membership_program: ''
+        site_required: false
+        base_currency_id: ''
+      x-display-name: Appeal Edit Form 2
+      x-display-id: Appeal Edit Form 2
+    EditMarketingAppealBusinessUnits:
+      required:
+      - business_unit
+      - percent_value
+      type: object
+      properties:
+        business_unit:
+          type: string
+          description: The business unit. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/businessunitcode/entries
+        percent_value:
+          type: number
+          description: '% credit for revenue'
+      description: EditMarketingAppealBusinessUnits
+      x-display-name: business_units
+      x-display-id: business_units
+    EditMarketingSegment:
+      type: object
+      properties:
+        name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The name.
+        description:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The description.
+        site_id:
+          type: string
+          description: The site.
+        site_required:
+          type: boolean
+          description: Indicates whether site required?. Read-only in the SOAP API.
+        segment_category:
+          type: string
+          description: The category. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/mktsegmentcategorycode/entries
+        code:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: The code.
+        segment_part_definition_id:
+          type: string
+          description: The segment part definition ID. Read-only in the SOAP API.
+        code_value:
+          type: string
+          description: The code value ID. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/78b8b763-9ba2-4bff-ba83-563edff889d8?parameters=part_definition_id,{segment_part_definition_id}&parameters=only_special_character_formats,{0}&parameters=valid_values_only,{1}.
+        query_view_catalog:
+          type: string
+          description: The record source. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/a8477659-6ee9-4b49-861e-41711df69c9b.
+        selections:
+          type: array
+          items:
+            $ref: '#/components/schemas/EditMarketingSegmentSelections'
+          description: Selections.
+        groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/EditMarketingSegmentGroups'
+          description: Groups.
+        smart_queries_exist:
+          type: boolean
+          description: Indicates whether smart queries exist. Read-only in the SOAP API.
+        in_use:
+          type: boolean
+          description: Indicates whether is in use. Read-only in the SOAP API.
+        date_changed:
+          type: string
+          description: 'The date changed. Read-only in the SOAP API. Uses the format YYYY-MM-DDThh:mm:ss. An example date:
+            <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        allow_code_update:
+          type: boolean
+          description: Indicates whether allows the client to indicate that the form is being launched in such a way that
+            the segment's code cannot be updated without causing concurrency problems..
+        form_id:
+          type: string
+          description: The form ID. Read-only in the SOAP API.
+      additionalProperties: false
+      description: EditMarketingSegment
+      example:
+        name: ''
+        description: ''
+        site_id: ''
+        site_required: false
+        segment_category: ''
+        code: ''
+        segment_part_definition_id: ''
+        code_value: ''
+        query_view_catalog: ''
+        selections:
+        - selection_id: ''
+          name: ''
+          description: ''
+          record_type: ''
+          record_type_id: ''
+          query_view_id: ''
+          query_id: ''
+          query_type: Other
+          can_edit: false
+          user_granted_rights: false
+        groups:
+        - segment_group_id: ''
+          name: ''
+          sequence: 0
+        smart_queries_exist: false
+        in_use: false
+        date_changed: ''
+        allow_code_update: false
+        form_id: ''
+      x-display-name: Constituent Segment Edit Form 2
+      x-display-id: Constituent Segment Edit Form 2
+    EditMarketingSegmentSelections:
+      type: object
+      properties:
+        selection_id:
+          type: string
+          description: selectionid
+        name:
+          type: string
+          description: name
+        description:
+          type: string
+          description: description
+        record_type:
+          type: string
+          description: recordtype
+        record_type_id:
+          type: string
+          description: recordtypeid
+        query_view_id:
+          type: string
+          description: queryviewid
+        query_id:
+          type: string
+          description: queryid
+        query_type:
+          type: string
+          description: The querytype. Read-only in the SOAP API. Available values are <i>other</i>, <i>ad-hoc</i>, <i>smart</i>
+        can_edit:
+          type: boolean
+          description: canedit
+        user_granted_rights:
+          type: boolean
+          description: usergrantedrights
+      description: EditMarketingSegmentSelections
+      x-display-name: selections
+      x-display-id: selections
+    EditMarketingSegmentGroups:
+      type: object
+      properties:
+        segment_group_id:
+          type: string
+          description: segmentgroupid
+        name:
+          type: string
+          description: name
+        sequence:
+          type: integer
+          description: sequence
+      description: EditMarketingSegmentGroups
+      x-display-name: groups
+      x-display-id: groups
+    EditResponseCategory:
+      type: object
+      properties:
+        name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The name.
+        sort_method:
+          type: string
+          description: The sort method. Available values are <i>alpha</i>, <i>user-defined</i>
+        inactive:
+          type: boolean
+          description: Indicates whether inactive.
+      additionalProperties: false
+      description: EditResponseCategory
+      example:
+        name: letter sent
+        sort_method_code: 0
+        inactive: true
+      x-display-name: Response Category Edit Form
+      x-display-id: Response Category Edit Form
+    MarketingAppeal:
+      required:
+      - name
+      - description
+      type: object
+      properties:
+        name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The name.
+        description:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The description.
+        appeal_category:
+          type: string
+          description: The category. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/appealcategorycode/entries
+        business_unit:
+          type: string
+          description: The business unit. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/businessunitcode/entries
+        business_units:
+          type: array
+          items:
+            $ref: '#/components/schemas/MarketingAppealBusinessUnits'
+          description: Business units.
+        start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        end_date:
+          type: string
+          description: 'The end date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        goal:
+          type: number
+          description: The goal.
+          format: double
+        appeal_report_1:
+          type: string
+          description: The report code. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/appealreport1code/entries
+        site_id:
+          type: string
+          description: The site.
+        membership_program:
+          type: string
+          description: The membership. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/c5d11ce5-e9df-4aff-b45c-e5fb99ba6bb7?parameters=site_id,{site_id}.
+        site_required:
+          type: boolean
+          description: Indicates whether site required. Read-only in the SOAP API.
+        base_currency_id:
+          type: string
+          description: The base currency. Read-only in the SOAP API.
+      additionalProperties: false
+      description: GetMarketingAppeal
+      x-display-name: Appeal Edit Form 2
+      x-display-id: Appeal Edit Form 2
+    MarketingAppealBusinessUnits:
+      required:
+      - business_unit
+      - percent_value
+      type: object
+      properties:
+        business_unit:
+          type: string
+          description: The business unit. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/businessunitcode/entries
+        percent_value:
+          type: number
+          description: '% credit for revenue'
+      description: MarketingAppealBusinessUnits
+      x-display-name: business_units
+      x-display-id: business_units
+    MarketingAppealListSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID.
+        name:
+          type: string
+          description: The name.
+        active:
+          type: boolean
+          description: Indicates whether is active.
+      additionalProperties: false
+      description: ListMarketingAppeals
+      x-display-name: All Appeals Data List
+      x-display-id: All Appeals Data List
+    MarketingAppealListCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items available for retrieval into the collection after applying any request parameters.
+          format: int32
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/MarketingAppealListSummary'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+        infinity_session:
+          type: string
+          description: Values for cookies related to the Infinity load balancer session.
+          format: string
+        session_key:
+          type: string
+          description: Session key for paging provided by user in request query parameter.
+          format: string
+        total_available_rows:
+          type: integer
+          description: The number of total rows available.
+          format: int32
+        more_rows_range_key:
+          type: string
+          description: Key for accessing cached results on subsequent calls to this data list.
+          format: string
+        data_no_longer_available:
+          type: boolean
+          description: Indicates data is no longer available in the context of this session.
+          format: boolean
+      additionalProperties: false
+      description: A collection of items. Data lists can contain paginated results.
+    MarketingAppealSearchSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID.
+        name:
+          type: string
+          description: The name.
+        description:
+          type: string
+          description: The description.
+        category:
+          type: string
+          description: The category.
+        active:
+          type: boolean
+          description: Indicates whether is active.
+        site:
+          type: string
+          description: The site.
+        event:
+          type: string
+          description: The event.
+        cms_appeal_id:
+          type: integer
+          description: The cms appeal ID.
+          format: int32
+      additionalProperties: false
+      description: SearchMarketingAppeals
+      x-display-name: Appeal Search
+      x-display-id: Appeal Search
+    MarketingAppealSearchCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items available for retrieval into the collection after applying any request parameters.
+          format: int32
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/MarketingAppealSearchSummary'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+      additionalProperties: false
+      description: A collection of items. Data lists can contain paginated results.
+    MarketingSegment:
+      required:
+      - name
+      - query_view_catalog
+      type: object
+      properties:
+        name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The name.
+        description:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The description.
+        site_id:
+          type: string
+          description: The site.
+        site_required:
+          type: boolean
+          description: Indicates whether site required?. Read-only in the SOAP API.
+        segment_category:
+          type: string
+          description: The category. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/mktsegmentcategorycode/entries
+        code:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: The code.
+        segment_part_definition_id:
+          type: string
+          description: The segment part definition ID. Read-only in the SOAP API.
+        code_value:
+          type: string
+          description: The code value ID. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/78b8b763-9ba2-4bff-ba83-563edff889d8?parameters=part_definition_id,{segment_part_definition_id}&parameters=only_special_character_formats,{0}&parameters=valid_values_only,{1}.
+        query_view_catalog:
+          type: string
+          description: The record source. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/a8477659-6ee9-4b49-861e-41711df69c9b.
+        selections:
+          type: array
+          items:
+            $ref: '#/components/schemas/MarketingSegmentSelections'
+          description: Selections.
+        groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/MarketingSegmentGroups'
+          description: Groups.
+        smart_queries_exist:
+          type: boolean
+          description: Indicates whether smart queries exist. Read-only in the SOAP API.
+        in_use:
+          type: boolean
+          description: Indicates whether is in use. Read-only in the SOAP API.
+        date_changed:
+          type: string
+          description: 'The date changed. Read-only in the SOAP API. Uses the format YYYY-MM-DDThh:mm:ss. An example date:
+            <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        allow_code_update:
+          type: boolean
+          description: Indicates whether allows the client to indicate that the form is being launched in such a way that
+            the segment's code cannot be updated without causing concurrency problems..
+        form_id:
+          type: string
+          description: The form ID. Read-only in the SOAP API.
+      additionalProperties: false
+      description: GetMarketingSegment
+      x-display-name: Constituent Segment Edit Form 2
+      x-display-id: Constituent Segment Edit Form 2
+    MarketingSegmentSelections:
+      type: object
+      properties:
+        selection_id:
+          type: string
+          description: selectionid
+        name:
+          type: string
+          description: name
+        description:
+          type: string
+          description: description
+        record_type:
+          type: string
+          description: recordtype
+        record_type_id:
+          type: string
+          description: recordtypeid
+        query_view_id:
+          type: string
+          description: queryviewid
+        query_id:
+          type: string
+          description: queryid
+        query_type:
+          type: string
+          description: The querytype. Read-only in the SOAP API. Available values are <i>other</i>, <i>ad-hoc</i>, <i>smart</i>
+        can_edit:
+          type: boolean
+          description: canedit
+        user_granted_rights:
+          type: boolean
+          description: usergrantedrights
+      description: MarketingSegmentSelections
+      x-display-name: selections
+      x-display-id: selections
+    MarketingSegmentGroups:
+      type: object
+      properties:
+        segment_group_id:
+          type: string
+          description: segmentgroupid
+        name:
+          type: string
+          description: name
+        sequence:
+          type: integer
+          description: sequence
+      description: MarketingSegmentGroups
+      x-display-name: groups
+      x-display-id: groups
+    MarketingSegmentListSummary:
+      type: object
+      properties:
+        query_view_catalog_id:
+          type: string
+          description: The queryviewcatalogid.
+        name:
+          type: string
+          description: The name.
+        code:
+          type: string
+          description: The code.
+        type:
+          type: string
+          description: The type.
+        description:
+          type: string
+          description: The description.
+        person_field_mappings_defined:
+          type: boolean
+          description: Indicates whether person field mappings defined.
+        gift_field_mappings_defined:
+          type: boolean
+          description: Indicates whether gift field mappings defined.
+        appeal_field_mappings_defined:
+          type: boolean
+          description: Indicates whether appeal field mappings defined.
+        duplicate_criteria_defined:
+          type: boolean
+          description: Indicates whether duplicate criteria defined.
+        duplicate_id:
+          type: string
+          description: The duplicateid.
+        smart_queries_exist:
+          type: boolean
+          description: Indicates whether smartqueriesexist.
+        consolidated_id:
+          type: string
+          description: The consolidatedid.
+        source_analysis_rule_id:
+          type: string
+          description: The source analysis rule ID.
+      additionalProperties: false
+      description: ListMarketingSegments
+      x-display-name: Record Source List
+      x-display-id: Record Source List
+    MarketingSegmentListCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items available for retrieval into the collection after applying any request parameters.
+          format: int32
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/MarketingSegmentListSummary'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+        infinity_session:
+          type: string
+          description: Values for cookies related to the Infinity load balancer session.
+          format: string
+        session_key:
+          type: string
+          description: Session key for paging provided by user in request query parameter.
+          format: string
+        total_available_rows:
+          type: integer
+          description: The number of total rows available.
+          format: int32
+        more_rows_range_key:
+          type: string
+          description: Key for accessing cached results on subsequent calls to this data list.
+          format: string
+        data_no_longer_available:
+          type: boolean
+          description: Indicates data is no longer available in the context of this session.
+          format: boolean
+      additionalProperties: false
+      description: A collection of items. Data lists can contain paginated results.
+    MarketingSolicitCodeListSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID.
+        description:
+          type: string
+          description: The name.
+        site:
+          type: string
+          description: The site.
+        default_exclusion:
+          type: boolean
+          description: Indicates whether default exclusion.
+        active:
+          type: boolean
+          description: Indicates whether active.
+        exclusion:
+          type: string
+          description: The type.
+        enable_edit:
+          type: boolean
+          description: Indicates whether enable edit.
+        exclusion_code:
+          type: integer
+          description: The exclusion code.
+          format: int32
+      additionalProperties: false
+      description: ListMarketingSolicitCodes
+      x-display-name: Solicit Codes
+      x-display-id: Solicit Codes
+    MarketingSolicitCodeListCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items available for retrieval into the collection after applying any request parameters.
+          format: int32
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/MarketingSolicitCodeListSummary'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+        infinity_session:
+          type: string
+          description: Values for cookies related to the Infinity load balancer session.
+          format: string
+        session_key:
+          type: string
+          description: Session key for paging provided by user in request query parameter.
+          format: string
+        total_available_rows:
+          type: integer
+          description: The number of total rows available.
+          format: int32
+        more_rows_range_key:
+          type: string
+          description: Key for accessing cached results on subsequent calls to this data list.
+          format: string
+        data_no_longer_available:
+          type: boolean
+          description: Indicates data is no longer available in the context of this session.
+          format: boolean
+      additionalProperties: false
+      description: A collection of items. Data lists can contain paginated results.
+    MarketingSolicitCodeSearchSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID.
+        description:
+          type: string
+          description: The name.
+        site:
+          type: string
+          description: The site.
+      additionalProperties: false
+      description: SearchMarketingSolicitCodes
+      x-display-name: Solicit Code Search
+      x-display-id: Solicit Code Search
+    MarketingSolicitCodeSearchCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items available for retrieval into the collection after applying any request parameters.
+          format: int32
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/MarketingSolicitCodeSearchSummary'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+      additionalProperties: false
+      description: A collection of items. Data lists can contain paginated results.
+    NewCorrespondenceCode:
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The name.
+        description:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The description.
+        category:
+          type: string
+          description: The category. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/correspondencecategorycode/entries
+        site_id:
+          type: string
+          description: The site.
+        site_required:
+          type: boolean
+          description: Indicates whether site required. Read-only in the SOAP API.
+      additionalProperties: false
+      description: CreateCorrespondenceCode
+      example:
+        name: 20205KRUN
+        description: 2020 5K Run Email
+        category: ''
+        site_id: ''
+        site_required: false
+      x-display-name: Correspondence Code Add Form
+      x-display-id: Correspondence Code Add Form
+    NewMarketingAppeal:
+      required:
+      - name
+      - description
+      type: object
+      properties:
+        name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The name.
+        description:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The description.
+        appeal_category:
+          type: string
+          description: The category. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/appealcategorycode/entries
+        business_unit:
+          type: string
+          description: The business unit. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/businessunitcode/entries
+        business_units:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewMarketingAppealBusinessUnits'
+          description: Business units.
+        start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        end_date:
+          type: string
+          description: 'The end date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        goal:
+          type: number
+          description: The goal.
+          format: double
+        appeal_report_1:
+          type: string
+          description: The report code. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/appealreport1code/entries
+        site_id:
+          type: string
+          description: The site.
+        membership_program:
+          type: string
+          description: The membership. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/c5d11ce5-e9df-4aff-b45c-e5fb99ba6bb7?parameters=site_id,{site_id}.
+        site_required:
+          type: boolean
+          description: Indicates whether site required. Read-only in the SOAP API.
+        base_currency_id:
+          type: string
+          description: The base currency. Read-only in the SOAP API.
+      additionalProperties: false
+      description: CreateMarketingAppeal
+      example:
+        name: ''
+        description: ''
+        appeal_category: ''
+        business_unit: ''
+        business_units:
+        - business_unit: ''
+          percent_value: 0
+        start_date: ''
+        end_date: ''
+        goal: 0
+        appeal_report_1: ''
+        site_id: ''
+        membership_program: ''
+        site_required: false
+        base_currency_id: ''
+      x-display-name: Appeal Add Form
+      x-display-id: Appeal Add Form
+    NewMarketingAppealBusinessUnits:
+      required:
+      - business_unit
+      - percent_value
+      type: object
+      properties:
+        business_unit:
+          type: string
+          description: The business unit. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/businessunitcode/entries
+        percent_value:
+          type: number
+          description: '% credit for revenue'
+      description: NewMarketingAppealBusinessUnits
+      x-display-name: business_units
+      x-display-id: business_units
+    NewMarketingSegment:
+      required:
+      - query_view_catalog
+      - name
+      type: object
+      properties:
+        query_view_catalog:
+          type: string
+          description: The record source. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/a8477659-6ee9-4b49-861e-41711df69c9b.
+        name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The name.
+        description:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The description.
+        site_id:
+          type: string
+          description: The site.
+        site_required:
+          type: boolean
+          description: Indicates whether site required?. Read-only in the SOAP API.
+        segment_category:
+          type: string
+          description: The category. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/mktsegmentcategorycode/entries
+        code:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: The code.
+        code_value:
+          type: string
+          description: The code value ID. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/78b8b763-9ba2-4bff-ba83-563edff889d8?parameters=part_definition_id,{segment_part_definition_id}&parameters=only_special_character_formats,{0}&parameters=valid_values_only,{1}.
+        smart_queries_exist:
+          type: boolean
+          description: Indicates whether smart queries exist. Read-only in the SOAP API.
+        selections:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewMarketingSegmentSelections'
+          description: Selections.
+        groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewMarketingSegmentGroups'
+          description: Groups.
+        segment_type_code:
+          type: integer
+          description: The segment type code.
+          format: int32
+        segment_part_definition_id:
+          type: string
+          description: The segment part definition ID. Read-only in the SOAP API.
+      additionalProperties: false
+      description: CreateMarketingSegment
+      example:
+        query_view_catalog: ''
+        name: ''
+        description: ''
+        site_id: ''
+        site_required: false
+        segment_category: ''
+        code: ''
+        code_value: ''
+        smart_queries_exist: false
+        selections:
+        - selection_id: ''
+        groups:
+        - segment_group_id: ''
+          sequence: 0
+        segment_type_code: 0
+        segment_part_definition_id: ''
+      x-display-name: Constituent Segment Add Form
+      x-display-id: Constituent Segment Add Form
+    NewMarketingSegmentSelections:
+      type: object
+      properties:
+        selection_id:
+          type: string
+          description: selectionid
+      description: NewMarketingSegmentSelections
+      x-display-name: selections
+      x-display-id: selections
+    NewMarketingSegmentGroups:
+      type: object
+      properties:
+        segment_group_id:
+          type: string
+          description: segmentgroupid
+        sequence:
+          type: integer
+          description: sequence
+      description: NewMarketingSegmentGroups
+      x-display-name: groups
+      x-display-id: groups
+    NewResponseCategory:
+      required:
+      - name
+      - sort_method
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID.
+        name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The name.
+        sort_method:
+          type: string
+          description: The sort method. Available values are <i>alpha</i>, <i>user-defined</i>
+      additionalProperties: false
+      description: CreateResponseCategory
+      example:
+        id: ''
+        name: ''
+        sort_method: Alpha
+      x-display-name: Response Category Add Form
+      x-display-id: Response Category Add Form
+    ResponseCategory:
+      required:
+      - name
+      - sort_method
+      type: object
+      properties:
+        name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The name.
+        sort_method:
+          type: string
+          description: The sort method. Available values are <i>alpha</i>, <i>user-defined</i>
+        inactive:
+          type: boolean
+          description: Indicates whether inactive.
+      additionalProperties: false
+      description: GetResponseCategory
+      x-display-name: Response Category Edit Form
+      x-display-id: Response Category Edit Form
+    Correspondencecodes-correspondence_code_id-GetRequest:
+      type: string
+      x-apim-inline: true
+    Correspondencecodes-correspondence_code_id-DeleteRequest:
+      type: string
+      x-apim-inline: true
+    Correspondencecodes-correspondence_code_id-PatchRequest:
+      type: string
+      x-apim-inline: true
+    Appeals-appeal_id-DeleteRequest:
+      type: string
+      x-apim-inline: true
+    Appeals-appeal_id-GetRequest:
+      type: string
+      x-apim-inline: true
+    Appeals-appeal_id-PatchRequest:
+      type: string
+      x-apim-inline: true
+    Segments-segment_id-DeleteRequest:
+      type: string
+      x-apim-inline: true
+    Segments-segment_id-GetRequest:
+      type: string
+      x-apim-inline: true
+    Segments-segment_id-PatchRequest:
+      type: string
+      x-apim-inline: true
+    AppealsListGetRequest:
+      type: integer
+      x-apim-inline: true
+    AppealsListGetRequest-1:
+      type: string
+      x-apim-inline: true
+    AppealsListGetRequest-2:
+      type: string
+      x-apim-inline: true
+    AppealsListGetRequest-3:
+      type: string
+      x-apim-inline: true
+    AppealsListGetRequest-4:
+      type: integer
+      x-apim-inline: true
+    Responsecategories-response_category_id-DeleteRequest:
+      type: string
+      x-apim-inline: true
+    Responsecategories-response_category_id-PatchRequest:
+      type: string
+      x-apim-inline: true
+    Responsecategories-response_category_id-GetRequest:
+      type: string
+      x-apim-inline: true
+    CorrespondencecodesListGetRequest:
+      type: boolean
+      x-apim-inline: true
+    CorrespondencecodesListGetRequest-1:
+      enum:
+      - All sites
+      - My site
+      - My site's branch
+      - Selected sites
+      type: string
+      x-apim-inline: true
+    CorrespondencecodesListGetRequest-2:
+      type: string
+      format: XML
+      x-apim-inline: true
+    CorrespondencecodesListGetRequest-3:
+      type: integer
+      x-apim-inline: true
+    CorrespondencecodesListGetRequest-4:
+      type: string
+      x-apim-inline: true
+    CorrespondencecodesListGetRequest-5:
+      type: string
+      x-apim-inline: true
+    CorrespondencecodesListGetRequest-6:
+      type: string
+      x-apim-inline: true
+    CorrespondencecodesListGetRequest-7:
+      type: integer
+      x-apim-inline: true
+    SegmentsRecordsourcesGetRequest:
+      type: integer
+      x-apim-inline: true
+    SegmentsRecordsourcesGetRequest-1:
+      type: string
+      x-apim-inline: true
+    SegmentsRecordsourcesGetRequest-2:
+      type: string
+      x-apim-inline: true
+    SegmentsRecordsourcesGetRequest-3:
+      type: string
+      x-apim-inline: true
+    SegmentsRecordsourcesGetRequest-4:
+      type: integer
+      x-apim-inline: true
+    SolicitcodesListGetRequest:
+      type: boolean
+      x-apim-inline: true
+    SolicitcodesListGetRequest-1:
+      enum:
+      - All sites
+      - My site
+      - My site's branch
+      - Selected sites
+      type: string
+      x-apim-inline: true
+    SolicitcodesListGetRequest-2:
+      type: string
+      format: XML
+      x-apim-inline: true
+    SolicitcodesListGetRequest-3:
+      type: integer
+      x-apim-inline: true
+    SolicitcodesListGetRequest-4:
+      type: string
+      x-apim-inline: true
+    SolicitcodesListGetRequest-5:
+      type: string
+      x-apim-inline: true
+    SolicitcodesListGetRequest-6:
+      type: string
+      x-apim-inline: true
+    SolicitcodesListGetRequest-7:
+      type: integer
+      x-apim-inline: true
+    AppealsSearchGetRequest:
+      type: string
+      x-apim-inline: true
+    AppealsSearchGetRequest-1:
+      type: string
+      x-apim-inline: true
+    AppealsSearchGetRequest-2:
+      type: string
+      x-apim-inline: true
+    AppealsSearchGetRequest-3:
+      type: boolean
+      x-apim-inline: true
+    AppealsSearchGetRequest-4:
+      type: string
+      x-apim-inline: true
+    AppealsSearchGetRequest-5:
+      type: string
+      x-apim-inline: true
+    AppealsSearchGetRequest-6:
+      type: boolean
+      x-apim-inline: true
+    AppealsSearchGetRequest-7:
+      type: string
+      x-apim-inline: true
+    AppealsSearchGetRequest-8:
+      type: string
+      x-apim-inline: true
+    AppealsSearchGetRequest-9:
+      type: string
+      x-apim-inline: true
+    AppealsSearchGetRequest-10:
+      type: string
+      x-apim-inline: true
+    AppealsSearchGetRequest-11:
+      type: integer
+      x-apim-inline: true
+    SolicitcodesSearchGetRequest:
+      type: string
+      x-apim-inline: true
+    SolicitcodesSearchGetRequest-1:
+      type: string
+      x-apim-inline: true
+    SolicitcodesSearchGetRequest-2:
+      type: boolean
+      x-apim-inline: true
+    SolicitcodesSearchGetRequest-3:
+      type: integer
+      x-apim-inline: true
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []

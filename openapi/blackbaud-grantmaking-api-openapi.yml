@@ -1,0 +1,3581 @@
+openapi: 3.0.1
+info:
+  title: 'Blackbaud SKY API: Grantmaking'
+  description: This API manages grantmaking information.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/grantmaking
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations,
+      examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/grantmaking
+paths:
+  /api/v1/activities/classifications:
+    get:
+      operationId: GetActivityClassifications
+      summary: Gets the classifications for Activities.
+      description: Fetches the coding tables associated with the Activities.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationResponse'
+              example:
+                classifications:
+                - code_table_id: 0
+                  code_table:
+                  - id: 0
+                    code: string
+                    description: string
+                    description_with_code: string
+                    full_path_description_code: string
+                    full_path_description: string
+                    depth: 0
+                    parent_id: 0
+                    is_active: true
+                    full_path: string
+                    full_path_with_code: string
+  /api/v1/activities/search:
+    post:
+      operationId: SearchActivity
+      summary: Search for Activities which meet the provided criteria.
+      description: Fetches Grantmaking Activities that meet the provided search criteria.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ActivitySearchRequest'
+            example:
+              id: 0
+              class_id: 0
+              type_id: 0
+              done_date:
+                start_date: string
+                end_date: string
+                is: string
+              received_date:
+                start_date: string
+                end_date: string
+                is: string
+              request_id: string
+              staff_id: string
+              contact_id: string
+              organization_id: string
+              create_date:
+                start_date: string
+                end_date: string
+                is: string
+              change_date:
+                start_date: string
+                end_date: string
+                is: string
+              custom_fields:
+              - string
+              per_page: 0
+              page: 0
+        description: An instance of Blackbaud.CFS.MiddlewareService.DataAccess.Models.SKYAPI.Activity.ActivitySearchRequest.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActivitySearchResponse'
+              example:
+                activities:
+                - id: 0
+                  request:
+                    request_id: string
+                    project_title: string
+                    disposition: string
+                  organization:
+                    organization_id: string
+                    name: string
+                  contact:
+                    email: string
+                    contact_id: string
+                    name: string
+                  payment:
+                    id: 0
+                    amount: 0
+                  type:
+                    classification_id: 0
+                    code: string
+                    description: string
+                  class:
+                    classification_id: 0
+                    code: string
+                    description: string
+                  schedule_date: string
+                  duration: 0
+                  done_date: string
+                  staff:
+                    login_id: string
+                    name: string
+                  is_done: true
+                  notes: string
+                  long_notes: string
+                  branch:
+                    classification_id: 0
+                    code: string
+                    description: string
+                  create_date: string
+                  change_date: string
+                  custom_fields: {}
+  /api/v1/activities/{activity_id}:
+    get:
+      operationId: GetActivity
+      summary: Return an Activity.
+      description: Fetches an Activity from the Grantmaking system.
+      parameters:
+      - name: activity_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: An activity ID.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiActivity'
+              example:
+                id: 0
+                request:
+                  request_id: string
+                  project_title: string
+                  disposition: string
+                organization:
+                  organization_id: string
+                  name: string
+                contact:
+                  email: string
+                  contact_id: string
+                  name: string
+                payment:
+                  id: 0
+                  amount: 0
+                type:
+                  classification_id: 0
+                  code: string
+                  description: string
+                class:
+                  classification_id: 0
+                  code: string
+                  description: string
+                schedule_date: string
+                duration: 0
+                done_date: string
+                staff:
+                  login_id: string
+                  name: string
+                is_done: true
+                notes: string
+                long_notes: string
+                branch:
+                  classification_id: 0
+                  code: string
+                  description: string
+                create_date: string
+                change_date: string
+                custom_fields: {}
+  /api/v1/contacts/classifications:
+    get:
+      operationId: GetContactClassifications
+      summary: Gets the classifications for Contacts.
+      description: Fetches the coding tables associated with the Contacts. Includes coding sheet properties when applicable.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationResponse'
+              example:
+                classifications:
+                - code_table_id: 0
+                  code_table:
+                  - id: 0
+                    code: string
+                    description: string
+                    description_with_code: string
+                    full_path_description_code: string
+                    full_path_description: string
+                    depth: 0
+                    parent_id: 0
+                    is_active: true
+                    full_path: string
+                    full_path_with_code: string
+  /api/v1/contacts/search:
+    post:
+      operationId: SearchContact
+      summary: Search for Contacts which meet the provided criteria.
+      description: Fetches Grantmaking Contacts that meet the provided search criteria.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContactSearchRequest'
+            example:
+              id: string
+              state:
+                is: string
+                contains: string
+                begins_with: string
+                ends_with: string
+              city:
+                is: string
+                contains: string
+                begins_with: string
+                ends_with: string
+              postal_code:
+                is: string
+                contains: string
+                begins_with: string
+                ends_with: string
+              contact_type_id: 0
+              reviewer_type_id: 0
+              active_student: true
+              create_date:
+                start_date: string
+                end_date: string
+                is: string
+              change_date:
+                start_date: string
+                end_date: string
+                is: string
+              custom_fields:
+              - string
+              per_page: 0
+              page: 0
+        description: An instance of Blackbaud.CFS.MiddlewareService.DataAccess.Models.SKYAPI.Contact.ContactSearchRequest.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContactSearchResponse'
+              example:
+                contacts:
+                - id: string
+                  first_name: string
+                  middle_name: string
+                  last_name: string
+                  email: string
+                  primary_organization:
+                    organization_id: string
+                    name: string
+                  informal_salutation: string
+                  addressee_salutation: string
+                  suffix: string
+                  salutation: string
+                  is_student: true
+                  prefix: string
+                  type:
+                    classification_id: 0
+                    code: string
+                    description: string
+                  highest_degree_year: 0
+                  highest_degree:
+                    classification_id: 0
+                    code: string
+                    description: string
+                  notes: string
+                  reviewer_type:
+                    classification_id: 0
+                    code: string
+                    description: string
+                  reviewer_user:
+                    login_id: string
+                    name: string
+                  birth_date: string
+                  spouse_name: string
+                  country_of_citizenship: string
+                  primary_address:
+                    id: 0
+                    address_1: string
+                    address_2: string
+                    city: string
+                    state_province: string
+                    country: string
+                    postal_code: string
+                    telephone: string
+                    telephone_ext: string
+                    alternate_telephone: string
+                    alternate_telephone_ext: string
+                  office_address:
+                    id: 0
+                    address_1: string
+                    address_2: string
+                    city: string
+                    state_province: string
+                    country: string
+                    postal_code: string
+                    telephone: string
+                    telephone_ext: string
+                    alternate_telephone: string
+                    alternate_telephone_ext: string
+                  home_address:
+                    id: 0
+                    address_1: string
+                    address_2: string
+                    city: string
+                    state_province: string
+                    country: string
+                    postal_code: string
+                    telephone: string
+                    telephone_ext: string
+                    alternate_telephone: string
+                    alternate_telephone_ext: string
+                  branch:
+                    classification_id: 0
+                    code: string
+                    description: string
+                  alert_text: string
+                  codings:
+                  - id: 0
+                    code_table:
+                      id: 0
+                      description: string
+                    level_1:
+                      classification_id: 0
+                      code: string
+                      description: string
+                    level_2:
+                      classification_id: 0
+                      code: string
+                      description: string
+                    level_3:
+                      classification_id: 0
+                      code: string
+                      description: string
+                    level_4:
+                      classification_id: 0
+                      code: string
+                      description: string
+                    level_5:
+                      classification_id: 0
+                      code: string
+                      description: string
+                    allocation_percentage: 0
+                    allocation_amount: 0
+                    primary_flag: true
+                  create_date: string
+                  change_date: string
+                  codes_ids: string
+                  custom_fields: {}
+  /api/v1/contacts/{contact_id}:
+    get:
+      operationId: GetContact
+      summary: Return a Contact.
+      description: Fetches a Contact from the Grantmaking system.
+      parameters:
+      - name: contact_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: A contact ID.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiContact'
+              example:
+                id: string
+                first_name: string
+                middle_name: string
+                last_name: string
+                email: string
+                primary_organization:
+                  organization_id: string
+                  name: string
+                informal_salutation: string
+                addressee_salutation: string
+                suffix: string
+                salutation: string
+                is_student: true
+                prefix: string
+                type:
+                  classification_id: 0
+                  code: string
+                  description: string
+                highest_degree_year: 0
+                highest_degree:
+                  classification_id: 0
+                  code: string
+                  description: string
+                notes: string
+                reviewer_type:
+                  classification_id: 0
+                  code: string
+                  description: string
+                reviewer_user:
+                  login_id: string
+                  name: string
+                birth_date: string
+                spouse_name: string
+                country_of_citizenship: string
+                primary_address:
+                  id: 0
+                  address_1: string
+                  address_2: string
+                  city: string
+                  state_province: string
+                  country: string
+                  postal_code: string
+                  telephone: string
+                  telephone_ext: string
+                  alternate_telephone: string
+                  alternate_telephone_ext: string
+                office_address:
+                  id: 0
+                  address_1: string
+                  address_2: string
+                  city: string
+                  state_province: string
+                  country: string
+                  postal_code: string
+                  telephone: string
+                  telephone_ext: string
+                  alternate_telephone: string
+                  alternate_telephone_ext: string
+                home_address:
+                  id: 0
+                  address_1: string
+                  address_2: string
+                  city: string
+                  state_province: string
+                  country: string
+                  postal_code: string
+                  telephone: string
+                  telephone_ext: string
+                  alternate_telephone: string
+                  alternate_telephone_ext: string
+                branch:
+                  classification_id: 0
+                  code: string
+                  description: string
+                alert_text: string
+                codings:
+                - id: 0
+                  code_table:
+                    id: 0
+                    description: string
+                  level_1:
+                    classification_id: 0
+                    code: string
+                    description: string
+                  level_2:
+                    classification_id: 0
+                    code: string
+                    description: string
+                  level_3:
+                    classification_id: 0
+                    code: string
+                    description: string
+                  level_4:
+                    classification_id: 0
+                    code: string
+                    description: string
+                  level_5:
+                    classification_id: 0
+                    code: string
+                    description: string
+                  allocation_percentage: 0
+                  allocation_amount: 0
+                  primary_flag: true
+                create_date: string
+                change_date: string
+                codes_ids: string
+                custom_fields: {}
+  /api/v1/organizations/classifications:
+    get:
+      operationId: GetOrganizationClassifications
+      summary: Gets the classifications for Organizations.
+      description: Fetches the coding tables associated with the Organizations. Includes coding sheet properties when applicable.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationResponse'
+              example:
+                classifications:
+                - code_table_id: 0
+                  code_table:
+                  - id: 0
+                    code: string
+                    description: string
+                    description_with_code: string
+                    full_path_description_code: string
+                    full_path_description: string
+                    depth: 0
+                    parent_id: 0
+                    is_active: true
+                    full_path: string
+                    full_path_with_code: string
+  /api/v1/organizations/search:
+    post:
+      operationId: SearchOrganization
+      summary: Search for Organizations which meet the provided criteria.
+      description: Fetches Grantmaking Organizations that meet the provided search criteria.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrganizationSearchRequest'
+            example:
+              name:
+                is: string
+                contains: string
+                begins_with: string
+                ends_with: string
+              legal_name:
+                is: string
+                contains: string
+                begins_with: string
+                ends_with: string
+              id: string
+              state:
+                is: string
+                contains: string
+                begins_with: string
+                ends_with: string
+              city:
+                is: string
+                contains: string
+                begins_with: string
+                ends_with: string
+              postal_code:
+                is: string
+                contains: string
+                begins_with: string
+                ends_with: string
+              tax_status1_id: 0
+              tax_status2_id: 0
+              organization_type_id: 0
+              create_date:
+                start_date: string
+                end_date: string
+                is: string
+              change_date:
+                start_date: string
+                end_date: string
+                is: string
+              custom_fields:
+              - string
+              per_page: 0
+              page: 0
+        description: An instance of Blackbaud.CFS.MiddlewareService.DataAccess.Models.SKYAPI.Organization.OrganizationSearchRequest.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationSearchResponse'
+              example:
+                organizations:
+                - id: string
+                  name: string
+                  primary_contact:
+                    email: string
+                    contact_id: string
+                    name: string
+                  primary_address:
+                    id: 0
+                    address_1: string
+                    address_2: string
+                    city: string
+                    state_province: string
+                    country: string
+                    postal_code: string
+                    telephone: string
+                    telephone_ext: string
+                    alternate_telephone: string
+                    alternate_telephone_ext: string
+                  aka: string
+                  tax_registration_date: string
+                  financial_report_date: string
+                  tax_notes: string
+                  url: string
+                  tax_status_next_verify_date: string
+                  united_way_flag: true
+                  legal_name: string
+                  tax_id: string
+                  tax_status_verify_date: string
+                  background: string
+                  sort_as: string
+                  vendor_no: string
+                  branch:
+                    classification_id: 0
+                    code: string
+                    description: string
+                  charitable_flag: true
+                  alert_text: string
+                  tax_status_verifier_staff:
+                    login_id: string
+                    name: string
+                  email: string
+                  codings:
+                  - id: 0
+                    code_table:
+                      id: 0
+                      description: string
+                    level_1:
+                      classification_id: 0
+                      code: string
+                      description: string
+                    level_2:
+                      classification_id: 0
+                      code: string
+                      description: string
+                    level_3:
+                      classification_id: 0
+                      code: string
+                      description: string
+                    level_4:
+                      classification_id: 0
+                      code: string
+                      description: string
+                    level_5:
+                      classification_id: 0
+                      code: string
+                      description: string
+                    allocation_percentage: 0
+                    allocation_amount: 0
+                    primary_flag: true
+                  create_date: string
+                  change_date: string
+                  codes_ids: string
+                  custom_fields: {}
+  /api/v1/organizations/update:
+    post:
+      operationId: AssignOrganizationValues
+      summary: Updates an Organization in the Grantmaking system.
+      description: Updates an Organization in the Grantmaking system
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateOrganizationRequest'
+            example:
+              id: string
+              tax_id: string
+              vendor_no: string
+        description: A Blackbaud.CFS.MiddlewareService.DataAccess.Models.SKYAPI.Organization.UpdateOrganizationRequest
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateOrganizationResponse'
+              example:
+                message: string
+                status: string
+  /api/v1/organizations/{organization_id}:
+    get:
+      operationId: GetOrganization
+      summary: Return an Organization.
+      description: Fetches an Organization from the Grantmaking system.
+      parameters:
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: An organization ID.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiOrganization'
+              example:
+                id: string
+                name: string
+                primary_contact:
+                  email: string
+                  contact_id: string
+                  name: string
+                primary_address:
+                  id: 0
+                  address_1: string
+                  address_2: string
+                  city: string
+                  state_province: string
+                  country: string
+                  postal_code: string
+                  telephone: string
+                  telephone_ext: string
+                  alternate_telephone: string
+                  alternate_telephone_ext: string
+                aka: string
+                tax_registration_date: string
+                financial_report_date: string
+                tax_notes: string
+                url: string
+                tax_status_next_verify_date: string
+                united_way_flag: true
+                legal_name: string
+                tax_id: string
+                tax_status_verify_date: string
+                background: string
+                sort_as: string
+                vendor_no: string
+                branch:
+                  classification_id: 0
+                  code: string
+                  description: string
+                charitable_flag: true
+                alert_text: string
+                tax_status_verifier_staff:
+                  login_id: string
+                  name: string
+                email: string
+                codings:
+                - id: 0
+                  code_table:
+                    id: 0
+                    description: string
+                  level_1:
+                    classification_id: 0
+                    code: string
+                    description: string
+                  level_2:
+                    classification_id: 0
+                    code: string
+                    description: string
+                  level_3:
+                    classification_id: 0
+                    code: string
+                    description: string
+                  level_4:
+                    classification_id: 0
+                    code: string
+                    description: string
+                  level_5:
+                    classification_id: 0
+                    code: string
+                    description: string
+                  allocation_percentage: 0
+                  allocation_amount: 0
+                  primary_flag: true
+                create_date: string
+                change_date: string
+                codes_ids: string
+                custom_fields: {}
+  /api/v1/payments/cancel:
+    post:
+      operationId: AssignPaymentCancel
+      summary: Set the status of a Payment to Canceled.
+      description: Update the status of a Grantmaking Payment to the Canceled status.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssignPaymentCancelRequest'
+            example:
+              id: 12345
+        description: A Blackbaud.CFS.MiddlewareService.DataAccess.Models.SKYAPI.Payment.AssignPaymentCancelRequest
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssignPaymentCancelResponse'
+              example:
+                message: Payment 13 updated.
+  /api/v1/payments/classifications:
+    get:
+      operationId: GetPaymentClassifications
+      summary: Gets the classifications for Payments.
+      description: Fetches the coding tables associated with the Payments.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationResponse'
+              example:
+                classifications:
+                - code_table_id: 0
+                  code_table:
+                  - id: 0
+                    code: string
+                    description: string
+                    description_with_code: string
+                    full_path_description_code: string
+                    full_path_description: string
+                    depth: 0
+                    parent_id: 0
+                    is_active: true
+                    full_path: string
+                    full_path_with_code: string
+  /api/v1/payments/pay:
+    post:
+      operationId: AssignPaymentPaid
+      summary: Set the status of a Payment to Paid.
+      description: Update the status of a Grantmaking Payment to the Paid status.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssignPaymentPaidRequest'
+            example:
+              notes: Here you can add notes around paying this Payment.
+              id: 12345
+              paid_date: '2026-10-08T08:05:24Z'
+              check_number: '3'
+        description: A Blackbaud.CFS.MiddlewareService.DataAccess.Models.SKYAPI.Payment.AssignPaymentPaidRequest
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssignPaymentPaidResponse'
+              example:
+                message: Payment 13 paid.
+  /api/v1/payments/refund:
+    post:
+      operationId: CreatePaymentRefund
+      summary: Create a Refund Payment in Grantmaking.
+      description: Create a Refund Payment record in Grantmaking associated with the same Refund from the payment service.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePaymentRefundRequest'
+            example:
+              amount: 0
+              id: 0
+              fiscal_year: 0
+              schedule_date: string
+              payment_date: string
+        description: A Blackbaud.CFS.MiddlewareService.DataAccess.Models.SKYAPI.Payment.CreatePaymentRefundRequest
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreatePaymentRefundResponse'
+              example:
+                message: string
+                status: string
+  /api/v1/payments/search:
+    post:
+      operationId: SearchPayment
+      summary: Search for Payments which meet the provided criteria.
+      description: Fetches Grantmaking Payments that meet the provided search criteria.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentSearchRequest'
+            example:
+              schedule_date:
+                start_date: string
+                end_date: string
+                is: string
+              amount:
+                min_value: 0
+                max_value: 0
+                is: 0
+              gl_account_id: 0
+              fund_id: 0
+              payment_type_id: 0
+              support_type_id: 0
+              create_date:
+                start_date: string
+                end_date: string
+                is: string
+              change_date:
+                start_date: string
+                end_date: string
+                is: string
+              request_id: string
+              custom_fields:
+              - string
+              per_page: 0
+              page: 0
+        description: An instance of Blackbaud.CFS.MiddlewareService.DataAccess.Models.SKYAPI.Payment.PaymentSearchRequest.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentSearchResponse'
+              example:
+                payments:
+                - amount: 0
+                  date_paid: string
+                  id: 0
+                  schedule_date: string
+                  status_date: string
+                  request:
+                    request_id: string
+                    project_title: string
+                    disposition: string
+                  tax_value_amount: 0
+                  book_value_amount: 0
+                  in_kind_description: string
+                  deductible_amount: 0
+                  quid_pro_quo_amount: 0
+                  quid_pro_quo_description: string
+                  payment_number: 0
+                  contact:
+                    email: string
+                    contact_id: string
+                    name: string
+                  organization:
+                    organization_id: string
+                    name: string
+                  check_no: string
+                  notes: string
+                  check_cleared_date: string
+                  invoice_no: string
+                  subdivision: string
+                  void_date: string
+                  void_id: 0
+                  reissue_id: 0
+                  original_id: 0
+                  alert_text: string
+                  classifications: {}
+                  create_date: string
+                  change_date: string
+                  custom_fields: {}
+  /api/v1/payments/search/scheduled:
+    post:
+      operationId: SearchScheduledPayment
+      summary: Return the Scheduled Payments.
+      description: Fetches the Scheduled Payments from the Grantmaking system.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetScheduledPaymentsRequest'
+            example:
+              start_date: string
+              end_date: string
+              custom_fields:
+              - string
+              per_page: 0
+              page: 0
+        description: The Blackbaud.CFS.MiddlewareService.DataAccess.Models.SKYAPI.Payment.GetScheduledPaymentsRequest that
+          specifies the parameters for the request.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetScheduledPaymentsResponse'
+              example:
+                payments:
+                - amount: 0
+                  date_paid: string
+                  id: 0
+                  schedule_date: string
+                  status_date: string
+                  request:
+                    request_id: string
+                    project_title: string
+                    disposition: string
+                  tax_value_amount: 0
+                  book_value_amount: 0
+                  in_kind_description: string
+                  deductible_amount: 0
+                  quid_pro_quo_amount: 0
+                  quid_pro_quo_description: string
+                  payment_number: 0
+                  contact:
+                    email: string
+                    contact_id: string
+                    name: string
+                  organization:
+                    organization_id: string
+                    name: string
+                  check_no: string
+                  notes: string
+                  check_cleared_date: string
+                  invoice_no: string
+                  subdivision: string
+                  void_date: string
+                  void_id: 0
+                  reissue_id: 0
+                  original_id: 0
+                  alert_text: string
+                  classifications: {}
+                  create_date: string
+                  change_date: string
+                  custom_fields: {}
+  /api/v1/payments/update:
+    post:
+      operationId: AssignPaymentValues
+      summary: Updates a Payment in the Grantmaking system.
+      description: Updates a Payment in the Grantmaking system
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePaymentRequest'
+            example:
+              id: 0
+              ap_invoice_number: string
+        description: A Blackbaud.CFS.MiddlewareService.DataAccess.Models.SKYAPI.Payment.UpdatePaymentRequest
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdatePaymentResponse'
+              example:
+                message: string
+                status: string
+  /api/v1/payments/void:
+    post:
+      operationId: AssignPaymentVoid
+      summary: Void a Paid Payment.
+      description: Void a Paid Payment, creating a new Payment with a status of Void and a negative amount.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VoidPaymentRequest'
+            example:
+              id: 12345
+        description: A Blackbaud.CFS.MiddlewareService.DataAccess.Models.SKYAPI.Payment.VoidPaymentRequest
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VoidPaymentResponse'
+              example:
+                message: Here is information regarding your void Payment request.
+                status: A value indicating whether or not the void operation was successful.
+  /api/v1/payments/{payment_id}:
+    get:
+      operationId: GetPayment
+      summary: Return a Payment.
+      description: Fetches a Payment from the Grantmaking system.
+      parameters:
+      - name: payment_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: A payment ID.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiPayment'
+              example:
+                amount: 1200.25
+                date_paid: '2026-10-08T12:00:00Z'
+                id: 50
+                schedule_date: '2026-10-08T12:00:00Z'
+                status_date: '2026-10-08T12:00:00Z'
+                request:
+                  request_id: '2345'
+                  project_title: Baseball field upkeep for 8 local parks
+                  disposition: Pending
+                tax_value_amount: 1200.25
+                book_value_amount: 1200.25
+                in_kind_description: Upkeep
+                deductible_amount: 1200.25
+                quid_pro_quo_amount: 1200.25
+                quid_pro_quo_description: Funds for upkeep
+                payment_number: 3
+                contact:
+                  email: fake@city.gov
+                  contact_id: '34234'
+                  name: Fake Contact
+                organization:
+                  organization_id: '523425342'
+                  name: Fake City
+                check_no: '3'
+                notes: Give them money
+                check_cleared_date: '2026-10-08T12:00:00Z'
+                invoice_no: '234'
+                subdivision: '1200'
+                void_date: '2026-10-08T12:00:00Z'
+                void_id: 12345
+                reissue_id: 1234
+                original_id: 3423242
+                alert_text: ALERT!
+                classifications:
+                  Status:
+                    classification_id: 34
+                    code: Scheduled
+                    description: Scheduled
+                  Type:
+                    classification_id: 99
+                    code: In Kind
+                    description: In Kind Payment
+                  Fund:
+                    classification_id: 328
+                    code: General
+                    description: General Fund
+                  SupportType:
+                    classification_id: 256
+                    code: Funds
+                    description: Funds for Upkeep
+                  GlAccount:
+                    classification_id: 9121
+                    code: '90887'
+                    description: '90887'
+                  Branch:
+                    classification_id: 2131
+                    code: Headquarters
+                    description: headquarters
+                custom_fields:
+                  Custom Field 1: 1234
+                  Custom Field 2: 1200.25
+                  Custom Field 3: Long Text Goes Here
+  /api/v1/requests:
+    post:
+      operationId: AssignRequestCustomProperties
+      summary: Updates a Request in the Grantmaking system.
+      description: Updates a Request in the Grantmaking system.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestUpdateRequest'
+            example:
+              id: string
+              custom:
+              - name: string
+                value: {}
+        description: A Blackbaud.CFS.MiddlewareService.DataAccess.Models.SKYAPI.Request.RequestUpdateRequest.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestUpdateResponse'
+              example:
+                status: string
+                message: string
+  /api/v1/requests/classifications:
+    get:
+      operationId: GetRequestClassifications
+      summary: Gets the classifications for Requests.
+      description: Fetches the coding tables associated with the Requests. Includes coding sheet properties when applicable.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationResponse'
+              example:
+                classifications:
+                - code_table_id: 0
+                  code_table:
+                  - id: 0
+                    code: string
+                    description: string
+                    description_with_code: string
+                    full_path_description_code: string
+                    full_path_description: string
+                    depth: 0
+                    parent_id: 0
+                    is_active: true
+                    full_path: string
+                    full_path_with_code: string
+  /api/v1/requests/ids:
+    post:
+      operationId: GetRequestsById
+      summary: Return Requests with the provided IDs.
+      description: Fetches Requests from the Grantmaking system.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestGetByIdRequest'
+            example:
+              ids:
+              - string
+              custom_fields:
+              - string
+              per_page: 0
+              page: 0
+        description: A Blackbaud.CFS.MiddlewareService.DataAccess.Models.SKYAPI.Request.RequestGetByIdRequest containg the
+          Request IDs and any desired custom fields./
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestSearchResponse'
+              example:
+                requests:
+                - id: string
+                  project_title: string
+                  request_date: string
+                  approval_date: string
+                  disposition: string
+                  disposition_date: string
+                  request_amount: 0
+                  recommended_amount: 0
+                  grant_amount: 0
+                  paid_amount: 0
+                  balance: 0
+                  organization:
+                    organization_id: string
+                    name: string
+                  contact:
+                    email: string
+                    contact_id: string
+                    name: string
+                  status:
+                    classification_id: 0
+                    code: string
+                    description: string
+                  status_date: string
+                  type:
+                    classification_id: 0
+                    code: string
+                    description: string
+                  reference_number: string
+                  project_start_date: string
+                  project_end_date: string
+                  declination_reason:
+                    classification_id: 0
+                    code: string
+                    description: string
+                  declination_notes: string
+                  is_complete: true
+                  complete_date: string
+                  grant_fiscal_year: 0
+                  term_months: 0
+                  complete_notes: string
+                  meeting_date: string
+                  meeting_minutes: string
+                  docket_number: string
+                  branch:
+                    classification_id: 0
+                    code: string
+                    description: string
+                  staff:
+                    login_id: string
+                    name: string
+                  secondary_staff:
+                    login_id: string
+                    name: string
+                  subdivision: string
+                  payments_count: 0
+                  alert: string
+                  change_date: string
+                  create_date: string
+                  codings:
+                  - id: 0
+                    code_table:
+                      id: 0
+                      description: string
+                    level_1:
+                      classification_id: 0
+                      code: string
+                      description: string
+                    level_2:
+                      classification_id: 0
+                      code: string
+                      description: string
+                    level_3:
+                      classification_id: 0
+                      code: string
+                      description: string
+                    level_4:
+                      classification_id: 0
+                      code: string
+                      description: string
+                    level_5:
+                      classification_id: 0
+                      code: string
+                      description: string
+                    allocation_percentage: 0
+                    allocation_amount: 0
+                    primary_flag: true
+                  application_id: 0
+                  codes_ids: string
+                  custom_fields: {}
+  /api/v1/requests/search:
+    post:
+      operationId: SearchRequest
+      summary: Search for Requests which meet the provided criteria.
+      description: Fetches Grantmaking Requests that meet the provided search criteria.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestSearchRequest'
+            example:
+              id: string
+              request_date:
+                start_date: string
+                end_date: string
+                is: string
+              branch_id: 0
+              disposition: string
+              disposition_date:
+                start_date: string
+                end_date: string
+                is: string
+              grant_amount:
+                min_value: 0
+                max_value: 0
+                is: 0
+              project_start_date:
+                start_date: string
+                end_date: string
+                is: string
+              project_end_date:
+                start_date: string
+                end_date: string
+                is: string
+              recommended_amount:
+                min_value: 0
+                max_value: 0
+                is: 0
+              requested_amount:
+                min_value: 0
+                max_value: 0
+                is: 0
+              request_type_id: 0
+              request_status_id: 0
+              staff_id: string
+              secondary_staff_id: string
+              primary_contact_id: string
+              organization_id: string
+              change_date:
+                start_date: string
+                end_date: string
+                is: string
+              create_date:
+                start_date: string
+                end_date: string
+                is: string
+              custom_criteria:
+              - field_name: string
+                date_criteria:
+                  start_date: string
+                  end_date: string
+                  is: string
+                decimal_criteria:
+                  min_value: 0
+                  max_value: 0
+                  is: 0
+                string_criteria:
+                  is: string
+                  contains: string
+                  begins_with: string
+                  ends_with: string
+                integer_criteria: 0
+                boolean_criteria: true
+              custom_fields:
+              - string
+              per_page: 0
+              page: 0
+        description: An instance of Blackbaud.CFS.MiddlewareService.DataAccess.Models.SKYAPI.Request.RequestSearchRequest.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestSearchResponse'
+              example:
+                requests:
+                - id: string
+                  project_title: string
+                  request_date: string
+                  approval_date: string
+                  disposition: string
+                  disposition_date: string
+                  request_amount: 0
+                  recommended_amount: 0
+                  grant_amount: 0
+                  paid_amount: 0
+                  balance: 0
+                  organization:
+                    organization_id: string
+                    name: string
+                  contact:
+                    email: string
+                    contact_id: string
+                    name: string
+                  status:
+                    classification_id: 0
+                    code: string
+                    description: string
+                  status_date: string
+                  type:
+                    classification_id: 0
+                    code: string
+                    description: string
+                  reference_number: string
+                  project_start_date: string
+                  project_end_date: string
+                  declination_reason:
+                    classification_id: 0
+                    code: string
+                    description: string
+                  declination_notes: string
+                  is_complete: true
+                  complete_date: string
+                  grant_fiscal_year: 0
+                  term_months: 0
+                  complete_notes: string
+                  meeting_date: string
+                  meeting_minutes: string
+                  docket_number: string
+                  branch:
+                    classification_id: 0
+                    code: string
+                    description: string
+                  staff:
+                    login_id: string
+                    name: string
+                  secondary_staff:
+                    login_id: string
+                    name: string
+                  subdivision: string
+                  payments_count: 0
+                  alert: string
+                  change_date: string
+                  create_date: string
+                  codings:
+                  - id: 0
+                    code_table:
+                      id: 0
+                      description: string
+                    level_1:
+                      classification_id: 0
+                      code: string
+                      description: string
+                    level_2:
+                      classification_id: 0
+                      code: string
+                      description: string
+                    level_3:
+                      classification_id: 0
+                      code: string
+                      description: string
+                    level_4:
+                      classification_id: 0
+                      code: string
+                      description: string
+                    level_5:
+                      classification_id: 0
+                      code: string
+                      description: string
+                    allocation_percentage: 0
+                    allocation_amount: 0
+                    primary_flag: true
+                  application_id: 0
+                  codes_ids: string
+                  custom_fields: {}
+  /api/v1/requests/{request_id}:
+    get:
+      operationId: GetRequest
+      summary: Return a Request.
+      description: Fetches a Request from the Grantmaking system.
+      parameters:
+      - name: request_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: A request ID.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiRequest'
+              example:
+                id: string
+                project_title: string
+                request_date: string
+                approval_date: string
+                disposition: string
+                disposition_date: string
+                request_amount: 0
+                recommended_amount: 0
+                grant_amount: 0
+                paid_amount: 0
+                balance: 0
+                organization:
+                  organization_id: string
+                  name: string
+                contact:
+                  email: string
+                  contact_id: string
+                  name: string
+                status:
+                  classification_id: 0
+                  code: string
+                  description: string
+                status_date: string
+                type:
+                  classification_id: 0
+                  code: string
+                  description: string
+                reference_number: string
+                project_start_date: string
+                project_end_date: string
+                declination_reason:
+                  classification_id: 0
+                  code: string
+                  description: string
+                declination_notes: string
+                is_complete: true
+                complete_date: string
+                grant_fiscal_year: 0
+                term_months: 0
+                complete_notes: string
+                meeting_date: string
+                meeting_minutes: string
+                docket_number: string
+                branch:
+                  classification_id: 0
+                  code: string
+                  description: string
+                staff:
+                  login_id: string
+                  name: string
+                secondary_staff:
+                  login_id: string
+                  name: string
+                subdivision: string
+                payments_count: 0
+                alert: string
+                change_date: string
+                create_date: string
+                codings:
+                - id: 0
+                  code_table:
+                    id: 0
+                    description: string
+                  level_1:
+                    classification_id: 0
+                    code: string
+                    description: string
+                  level_2:
+                    classification_id: 0
+                    code: string
+                    description: string
+                  level_3:
+                    classification_id: 0
+                    code: string
+                    description: string
+                  level_4:
+                    classification_id: 0
+                    code: string
+                    description: string
+                  level_5:
+                    classification_id: 0
+                    code: string
+                    description: string
+                  allocation_percentage: 0
+                  allocation_amount: 0
+                  primary_flag: true
+                application_id: 0
+                codes_ids: string
+                custom_fields: {}
+  /api/v1/requirements/classifications:
+    get:
+      operationId: GetRequirementClassifications
+      summary: Gets the classifications for Requirements.
+      description: Fetches the coding tables associated with the Requirements.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationResponse'
+              example:
+                classifications:
+                - code_table_id: 0
+                  code_table:
+                  - id: 0
+                    code: string
+                    description: string
+                    description_with_code: string
+                    full_path_description_code: string
+                    full_path_description: string
+                    depth: 0
+                    parent_id: 0
+                    is_active: true
+                    full_path: string
+                    full_path_with_code: string
+  /api/v1/requirements/search:
+    post:
+      operationId: SearchRequirement
+      summary: Search for Requirements which meet the provided criteria.
+      description: Fetches Grantmaking Requirements that meet the provided search criteria.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequirementSearchRequest'
+            example:
+              id: 0
+              type_id: 0
+              done_date:
+                start_date: string
+                end_date: string
+                is: string
+              staff_id: string
+              create_date:
+                start_date: string
+                end_date: string
+                is: string
+              change_date:
+                start_date: string
+                end_date: string
+                is: string
+              custom_fields:
+              - string
+              per_page: 0
+              page: 0
+        description: An instance of Blackbaud.CFS.MiddlewareService.DataAccess.Models.SKYAPI.Requirement.RequirementSearchRequest.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequirementSearchResponse'
+              example:
+                requirements:
+                - id: 0
+                  staff:
+                    login_id: string
+                    name: string
+                  type:
+                    classification_id: 0
+                    code: string
+                    description: string
+                  received_date: string
+                  done_date: string
+                  notes: string
+                  long_notes: string
+                  class:
+                    classification_id: 0
+                    code: string
+                    description: string
+                  organization:
+                    organization_id: string
+                    name: string
+                  contact:
+                    email: string
+                    contact_id: string
+                    name: string
+                  request:
+                    request_id: string
+                    project_title: string
+                    disposition: string
+                  payment:
+                    id: 0
+                    amount: 0
+                  schedule_date: string
+                  is_done: true
+                  branch:
+                    classification_id: 0
+                    code: string
+                    description: string
+                  is_payment_contingent: true
+                  done_user:
+                    login_id: string
+                    name: string
+                  create_date: string
+                  change_date: string
+                  custom_fields: {}
+  /api/v1/requirements/{requirement_id}:
+    get:
+      operationId: GetRequirement
+      summary: Return a Requirement.
+      description: Fetches a Requirement from the Grantmaking system.
+      parameters:
+      - name: requirement_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: A requirement ID.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiRequirement'
+              example:
+                id: 0
+                staff:
+                  login_id: string
+                  name: string
+                type:
+                  classification_id: 0
+                  code: string
+                  description: string
+                received_date: string
+                done_date: string
+                notes: string
+                long_notes: string
+                class:
+                  classification_id: 0
+                  code: string
+                  description: string
+                organization:
+                  organization_id: string
+                  name: string
+                contact:
+                  email: string
+                  contact_id: string
+                  name: string
+                request:
+                  request_id: string
+                  project_title: string
+                  disposition: string
+                payment:
+                  id: 0
+                  amount: 0
+                schedule_date: string
+                is_done: true
+                branch:
+                  classification_id: 0
+                  code: string
+                  description: string
+                is_payment_contingent: true
+                done_user:
+                  login_id: string
+                  name: string
+                create_date: string
+                change_date: string
+                custom_fields: {}
+components:
+  schemas:
+    ActivitySearchRequest:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: An Activity ID.
+          format: int32
+          nullable: true
+        class_id:
+          type: integer
+          description: An activity class ID.
+          format: int32
+          nullable: true
+        type_id:
+          type: integer
+          description: An activity type ID.
+          format: int32
+          nullable: true
+        done_date:
+          $ref: '#/components/schemas/DateSearchCriteria'
+        received_date:
+          $ref: '#/components/schemas/DateSearchCriteria'
+        request_id:
+          type: string
+          description: A string value representing the associated Request ID.
+          nullable: true
+        staff_id:
+          type: string
+          description: A string value representing the associated staff member.
+          nullable: true
+        contact_id:
+          type: string
+          description: A string value representing the associated Contact ID.
+          nullable: true
+        organization_id:
+          type: string
+          description: A string value representing the associated Organization ID.
+          nullable: true
+        create_date:
+          $ref: '#/components/schemas/DateSearchCriteria'
+        change_date:
+          $ref: '#/components/schemas/DateSearchCriteria'
+        custom_fields:
+          type: array
+          items:
+            type: string
+          description: Represents the list of custom fields to return on the entities in the result.
+          nullable: true
+        per_page:
+          maximum: 100
+          minimum: 1
+          type: integer
+          description: The page size for paged output.
+          format: int32
+        page:
+          type: integer
+          description: The page number for paged output.
+          format: int32
+      additionalProperties: false
+      description: A request model for searching Activities.
+      x-bb-suppressions:
+      - request_body_has_required_property
+    ActivitySearchResponse:
+      type: object
+      properties:
+        activities:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApiActivity'
+          description: The results of the activity search.
+          nullable: true
+      additionalProperties: false
+      description: A response model for activity search.
+    Address:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The address's ID.
+          format: int32
+        address_1:
+          type: string
+          description: The address's address line 1.
+          nullable: true
+        address_2:
+          type: string
+          description: The address's address line 2.
+          nullable: true
+        city:
+          type: string
+          description: The address's city.
+          nullable: true
+        state_province:
+          type: string
+          description: The address's state/province.
+          nullable: true
+        country:
+          type: string
+          description: The address's country.
+          nullable: true
+        postal_code:
+          type: string
+          description: The address's postal code.
+          nullable: true
+        telephone:
+          type: string
+          description: The address's telephone number.
+          nullable: true
+        telephone_ext:
+          type: string
+          description: The address's telephone extension.
+          nullable: true
+        alternate_telephone:
+          type: string
+          description: The address's alternate telephone number.
+          nullable: true
+        alternate_telephone_ext:
+          type: string
+          description: The address's alternate telephone extension.
+          nullable: true
+      additionalProperties: false
+      description: Represents an entity's address.
+    ApiActivity:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The Activity's ID.
+          format: int32
+        request:
+          $ref: '#/components/schemas/RequestReference'
+        organization:
+          $ref: '#/components/schemas/OrganizationReference'
+        contact:
+          $ref: '#/components/schemas/ContactReference'
+        payment:
+          $ref: '#/components/schemas/PaymentReference'
+        type:
+          $ref: '#/components/schemas/IdCodeDescription'
+        class:
+          $ref: '#/components/schemas/IdCodeDescription'
+        schedule_date:
+          type: string
+          description: The Activity's schedule date.
+          format: date-time
+          nullable: true
+        duration:
+          type: integer
+          description: The Activity's duration.
+          format: int32
+          nullable: true
+        done_date:
+          type: string
+          description: The Activity's done date.
+          format: date-time
+          nullable: true
+        staff:
+          $ref: '#/components/schemas/Staff'
+        is_done:
+          type: boolean
+          description: Indicates whether the current activity is done.
+          x-bb-suppressions:
+          - parameter_property_name
+        notes:
+          type: string
+          description: The Activity's notes.
+          nullable: true
+        long_notes:
+          type: string
+          description: The Activity's long notes.
+          nullable: true
+        branch:
+          $ref: '#/components/schemas/IdCodeDescription'
+        create_date:
+          type: string
+          description: The Activity's created date.
+          format: date-time
+          nullable: true
+        change_date:
+          type: string
+          description: The Activity's last modified date.
+          format: date-time
+          nullable: true
+        custom_fields:
+          type: object
+          additionalProperties: {}
+          description: The Entity's custom field data.
+          nullable: true
+      additionalProperties: false
+      description: A SKY API specific version of a Grantmaking Activity entity.
+    ApiContact:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The Contact's ID.
+          nullable: true
+        first_name:
+          type: string
+          description: The Contact's first name.
+          nullable: true
+        middle_name:
+          type: string
+          description: The Contact's middle name.
+          nullable: true
+        last_name:
+          type: string
+          description: The Contact's last name.
+          nullable: true
+        email:
+          type: string
+          description: The Contact's email.
+          nullable: true
+        primary_organization:
+          $ref: '#/components/schemas/OrganizationReference'
+        informal_salutation:
+          type: string
+          description: The Contact's informal salutation.
+          nullable: true
+        addressee_salutation:
+          type: string
+          description: The Contact's addressee salutation.
+          nullable: true
+        suffix:
+          type: string
+          description: The Contact's suffix.
+          nullable: true
+        salutation:
+          type: string
+          description: The Contact's salutation.
+          nullable: true
+        is_student:
+          type: boolean
+          description: The Contact is student.
+          nullable: true
+          x-bb-suppressions:
+          - parameter_property_name
+        prefix:
+          type: string
+          description: The Contact's prefix.
+          nullable: true
+        type:
+          $ref: '#/components/schemas/IdCodeDescription'
+        highest_degree_year:
+          type: integer
+          description: The Contact's highest degree year.
+          format: int32
+          nullable: true
+        highest_degree:
+          $ref: '#/components/schemas/IdCodeDescription'
+        notes:
+          type: string
+          description: The Contact's notes.
+          nullable: true
+        reviewer_type:
+          $ref: '#/components/schemas/IdCodeDescription'
+        reviewer_user:
+          $ref: '#/components/schemas/Staff'
+        birth_date:
+          type: string
+          description: The Contact's birth date.
+          format: date-time
+          nullable: true
+        spouse_name:
+          type: string
+          description: The Contact's spouse name.
+          nullable: true
+        country_of_citizenship:
+          type: string
+          description: The Contact's citizenship.
+          nullable: true
+        primary_address:
+          $ref: '#/components/schemas/Address'
+        office_address:
+          $ref: '#/components/schemas/Address'
+        home_address:
+          $ref: '#/components/schemas/Address'
+        branch:
+          $ref: '#/components/schemas/IdCodeDescription'
+        alert_text:
+          type: string
+          description: The Contact's alert text.
+          nullable: true
+        codings:
+          type: array
+          items:
+            $ref: '#/components/schemas/Coding'
+          description: The Contact's codings list.
+          nullable: true
+        create_date:
+          type: string
+          description: The Contact's create date.
+          format: date-time
+          nullable: true
+        change_date:
+          type: string
+          description: The Contact's change date.
+          format: date-time
+          nullable: true
+        codes_ids:
+          type: string
+          description: The Contact's list of code IDs.
+          nullable: true
+        custom_fields:
+          type: object
+          additionalProperties: {}
+          description: The Entity's custom field data.
+          nullable: true
+      additionalProperties: false
+      description: A SKY API specific version of a Grantmaking Contact entity.
+    ApiOrganization:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The Organization's ID.
+          nullable: true
+        name:
+          type: string
+          description: The Organization's name.
+          nullable: true
+        primary_contact:
+          $ref: '#/components/schemas/ContactReference'
+        primary_address:
+          $ref: '#/components/schemas/Address'
+        aka:
+          type: string
+          description: The Organization's also known as name.
+          nullable: true
+        tax_registration_date:
+          type: string
+          description: The Organization's tax registration date.
+          format: date-time
+          nullable: true
+        financial_report_date:
+          type: string
+          description: The Organization's financial report date.
+          format: date-time
+          nullable: true
+        tax_notes:
+          type: string
+          description: The Organization's tax notes.
+          nullable: true
+        url:
+          type: string
+          description: The Organization's url.
+          nullable: true
+        tax_status_next_verify_date:
+          type: string
+          description: The Organization's tax status verify date.
+          format: date-time
+          nullable: true
+        united_way_flag:
+          type: boolean
+          description: The Organization's United Way flag.
+        legal_name:
+          type: string
+          description: The Organization's legal name.
+          nullable: true
+        tax_id:
+          type: string
+          description: The Organization's tax ID.
+          nullable: true
+        tax_status_verify_date:
+          type: string
+          description: The Organization's tax status verify date.
+          format: date-time
+          nullable: true
+        background:
+          type: string
+          description: The Organization's background.
+          nullable: true
+        sort_as:
+          type: string
+          description: The Organization's sort as name.
+          nullable: true
+        vendor_no:
+          type: string
+          description: The Organization's vendor number.
+          nullable: true
+        branch:
+          $ref: '#/components/schemas/IdCodeDescription'
+        charitable_flag:
+          type: boolean
+          description: The Organization's is charitable flag.
+        alert_text:
+          type: string
+          description: The Organization's alert text.
+          nullable: true
+        tax_status_verifier_staff:
+          $ref: '#/components/schemas/Staff'
+        email:
+          type: string
+          description: The Organization's email address.
+          nullable: true
+        codings:
+          type: array
+          items:
+            $ref: '#/components/schemas/Coding'
+          description: The Organization's coding sheet values.
+          nullable: true
+        create_date:
+          type: string
+          description: The Organization's create date.
+          format: date-time
+          nullable: true
+        change_date:
+          type: string
+          description: The Organization's change date.
+          format: date-time
+          nullable: true
+        codes_ids:
+          type: string
+          description: The Organization's list of code IDs.
+          nullable: true
+        custom_fields:
+          type: object
+          additionalProperties: {}
+          description: The Entity's custom field data.
+          nullable: true
+      additionalProperties: false
+      description: A SKY API specific version of a Grantmaking Organization entity.
+    ApiPayment:
+      type: object
+      properties:
+        amount:
+          type: number
+          description: The Payment's amount.
+          format: double
+          nullable: true
+        date_paid:
+          type: string
+          description: The date the Payment was set to Paid.
+          format: date-time
+          nullable: true
+        id:
+          type: integer
+          description: The Payment's ID.
+          format: int32
+        schedule_date:
+          type: string
+          description: The date the Payment is scheduled.
+          format: date-time
+          nullable: true
+        status_date:
+          type: string
+          description: The date the Payment's status was last changed.
+          format: date-time
+          nullable: true
+        request:
+          $ref: '#/components/schemas/RequestReference'
+        tax_value_amount:
+          type: number
+          description: The in-kind tax value.
+          format: double
+          nullable: true
+        book_value_amount:
+          type: number
+          description: The in-kind book value.
+          format: double
+          nullable: true
+        in_kind_description:
+          type: string
+          description: The in-kind description.
+          nullable: true
+        deductible_amount:
+          type: number
+          description: The quid pro quo deductible amount.
+          format: double
+          nullable: true
+        quid_pro_quo_amount:
+          type: number
+          description: The quid pro quo amount
+          format: double
+          nullable: true
+          x-bb-suppressions:
+          - parameter_property_name
+        quid_pro_quo_description:
+          type: string
+          description: The quid pro quo description
+          nullable: true
+          x-bb-suppressions:
+          - parameter_property_name
+        payment_number:
+          type: integer
+          description: The Payment number related to the Request.
+          format: int32
+          nullable: true
+        contact:
+          $ref: '#/components/schemas/ContactReference'
+        organization:
+          $ref: '#/components/schemas/OrganizationReference'
+        check_no:
+          type: string
+          description: The check number.
+          nullable: true
+        notes:
+          type: string
+          description: The Payment notes.
+          nullable: true
+        check_cleared_date:
+          type: string
+          description: The check cleared date.
+          format: date-time
+          nullable: true
+        invoice_no:
+          type: string
+          description: The AP invoice number.
+          nullable: true
+        subdivision:
+          type: string
+          description: The subdivision.
+          nullable: true
+        void_date:
+          type: string
+          description: The Void date.
+          format: date-time
+          nullable: true
+        void_id:
+          type: integer
+          description: The ID of the associated Void Payment
+          format: int32
+          nullable: true
+        reissue_id:
+          type: integer
+          description: The ID of the associated reissue Payment
+          format: int32
+          nullable: true
+        original_id:
+          type: integer
+          description: The Payment's original ID.
+          format: int32
+          nullable: true
+        alert_text:
+          type: string
+          description: The current alert text.
+          nullable: true
+        classifications:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/IdCodeDescription'
+          description: A dictionary of classifications.
+          nullable: true
+        create_date:
+          type: string
+          description: The Payment's create date.
+          format: date-time
+          nullable: true
+        change_date:
+          type: string
+          description: The Payment's change date.
+          format: date-time
+          nullable: true
+        custom_fields:
+          type: object
+          additionalProperties: {}
+          description: The Entity's custom field data.
+          nullable: true
+      additionalProperties: false
+      description: A SKY API specific version of the DCS Payment entity.
+    ApiRequest:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The Request's ID.
+          nullable: true
+        project_title:
+          type: string
+          description: The Request's project title.
+          nullable: true
+        request_date:
+          type: string
+          description: The Request's request date.
+          format: date-time
+          nullable: true
+        approval_date:
+          type: string
+          description: The Request's approval date.
+          format: date-time
+          nullable: true
+        disposition:
+          type: string
+          description: The Request's disposition.
+          nullable: true
+        disposition_date:
+          type: string
+          description: The Request's disposition date.
+          format: date-time
+          nullable: true
+        request_amount:
+          type: number
+          description: The Request's request amount.
+          format: double
+          nullable: true
+        recommended_amount:
+          type: number
+          description: The Request's recommended amount.
+          format: double
+          nullable: true
+        grant_amount:
+          type: number
+          description: The Request's grant amount.
+          format: double
+          nullable: true
+        paid_amount:
+          type: number
+          description: The Request's paid amount.
+          format: double
+          nullable: true
+        balance:
+          type: number
+          description: The Request's balance.
+          format: double
+          nullable: true
+        organization:
+          $ref: '#/components/schemas/OrganizationReference'
+        contact:
+          $ref: '#/components/schemas/ContactReference'
+        status:
+          $ref: '#/components/schemas/IdCodeDescription'
+        status_date:
+          type: string
+          description: The Request's status date.
+          format: date-time
+          nullable: true
+        type:
+          $ref: '#/components/schemas/IdCodeDescription'
+        reference_number:
+          type: string
+          description: The Request's reference number.
+          nullable: true
+        project_start_date:
+          type: string
+          description: The Request's project start date.
+          format: date-time
+          nullable: true
+        project_end_date:
+          type: string
+          description: The Request's project end date.
+          format: date-time
+          nullable: true
+        declination_reason:
+          $ref: '#/components/schemas/IdCodeDescription'
+        declination_notes:
+          type: string
+          description: The Request's declination notes.
+          nullable: true
+        is_complete:
+          type: boolean
+          description: The Request's is complete.
+          x-bb-suppressions:
+          - parameter_property_name
+        complete_date:
+          type: string
+          description: The Request's complete date.
+          format: date-time
+          nullable: true
+        grant_fiscal_year:
+          type: integer
+          description: The Request's grant fiscal year.
+          format: int32
+          nullable: true
+        term_months:
+          type: integer
+          description: The Request's term months.
+          format: int32
+          nullable: true
+        complete_notes:
+          type: string
+          description: The Request's complete notes.
+          nullable: true
+        meeting_date:
+          type: string
+          description: The Request's meeting date.
+          format: date-time
+          nullable: true
+        meeting_minutes:
+          type: string
+          description: The Request's meeting minutes.
+          nullable: true
+        docket_number:
+          type: string
+          description: The Request's docket number.
+          nullable: true
+        branch:
+          $ref: '#/components/schemas/IdCodeDescription'
+        staff:
+          $ref: '#/components/schemas/Staff'
+        secondary_staff:
+          $ref: '#/components/schemas/Staff'
+        subdivision:
+          type: string
+          description: The Request's subdivision.
+          nullable: true
+        payments_count:
+          type: integer
+          description: The Request's payments count.
+          format: int32
+          nullable: true
+        alert:
+          type: string
+          description: The Request's alert.
+          nullable: true
+        change_date:
+          type: string
+          description: The Request's change date.
+          format: date-time
+          nullable: true
+        create_date:
+          type: string
+          description: The Request's create date.
+          format: date-time
+          nullable: true
+        codings:
+          type: array
+          items:
+            $ref: '#/components/schemas/Coding'
+          description: The Request's coding list.
+          nullable: true
+        application_id:
+          type: integer
+          description: The Request's application ID.
+          format: int32
+          nullable: true
+        codes_ids:
+          type: string
+          description: The Request's list of code IDs.
+          nullable: true
+        custom_fields:
+          type: object
+          additionalProperties: {}
+          description: The Entity's custom field data.
+          nullable: true
+      additionalProperties: false
+      description: A SKY API specific version of a Grantmaking Request entity.
+    ApiRequirement:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The Requirement's ID.
+          format: int32
+          nullable: true
+        staff:
+          $ref: '#/components/schemas/Staff'
+        type:
+          $ref: '#/components/schemas/IdCodeDescription'
+        received_date:
+          type: string
+          description: The Requirement's received Date.
+          format: date-time
+          nullable: true
+        done_date:
+          type: string
+          description: The Requirement's done date.
+          format: date-time
+          nullable: true
+        notes:
+          type: string
+          description: The Requirement's notes.
+          nullable: true
+        long_notes:
+          type: string
+          description: The Requirement's long notes.
+          nullable: true
+        class:
+          $ref: '#/components/schemas/IdCodeDescription'
+        organization:
+          $ref: '#/components/schemas/OrganizationReference'
+        contact:
+          $ref: '#/components/schemas/ContactReference'
+        request:
+          $ref: '#/components/schemas/RequestReference'
+        payment:
+          $ref: '#/components/schemas/PaymentReference'
+        schedule_date:
+          type: string
+          description: The Requirement's schedule date.
+          format: date-time
+          nullable: true
+        is_done:
+          type: boolean
+          description: The Requirement's isdone.
+          x-bb-suppressions:
+          - parameter_property_name
+        branch:
+          $ref: '#/components/schemas/IdCodeDescription'
+        is_payment_contingent:
+          type: boolean
+          description: The Requirement's IsPaymentContingent.
+          x-bb-suppressions:
+          - parameter_property_name
+        done_user:
+          $ref: '#/components/schemas/Staff'
+        create_date:
+          type: string
+          description: The Requirement's created date.
+          format: date-time
+          nullable: true
+        change_date:
+          type: string
+          description: The Requirement's last modified date.
+          format: date-time
+          nullable: true
+        custom_fields:
+          type: object
+          additionalProperties: {}
+          description: The Entity's custom field data.
+          nullable: true
+      additionalProperties: false
+      description: A SKY API specific version of a Grantmaking Requirement entity.
+    AssignPaymentCancelRequest:
+      required:
+      - id
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID of the Payment to cancel.
+          format: int32
+      additionalProperties: false
+      description: Request model for canceling a Payment.
+    AssignPaymentCancelResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Response message.
+          nullable: true
+        status:
+          type: string
+          description: Result status.
+          nullable: true
+      additionalProperties: false
+      description: Response object for canceling a Payment.
+    AssignPaymentPaidRequest:
+      required:
+      - id
+      type: object
+      properties:
+        notes:
+          type: string
+          description: Payment notes text field.
+          nullable: true
+        id:
+          type: integer
+          description: ID of the Payment to pay.
+          format: int32
+        paid_date:
+          type: string
+          description: Date which the Payment is paid.
+          format: date-time
+          nullable: true
+        check_number:
+          type: string
+          description: The check number of this Payment in a series of payments.
+          nullable: true
+      additionalProperties: false
+      description: Request model for paying a Payment.
+    AssignPaymentPaidResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Response message.
+          nullable: true
+        status:
+          type: string
+          description: Result status.
+          nullable: true
+      additionalProperties: false
+      description: Response object for paying a Payment.
+    ClassificationResponse:
+      type: object
+      properties:
+        classifications:
+          type: array
+          items:
+            $ref: '#/components/schemas/CodeInfoList'
+          description: The classifications for the entity type.
+          nullable: true
+      additionalProperties: false
+      description: A response model for classifications.
+    CodeInfo:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the coding table value
+          format: int32
+        code:
+          type: string
+          description: The code value of the coding table value
+          nullable: true
+        description:
+          type: string
+          description: The description value of the coding table value
+          nullable: true
+        description_with_code:
+          type: string
+          description: The code and the description shown to the user
+          nullable: true
+        full_path_description_code:
+          type: string
+          description: The code and the description shown to the user preceded by the parent values
+          nullable: true
+        full_path_description:
+          type: string
+          description: The description shown to the user
+          nullable: true
+        depth:
+          type: integer
+          description: The level that this code resides in within the coding table hierarchy
+          format: int32
+        parent_id:
+          type: integer
+          description: The ID of the parent code to this one, 0 if this is a top level code
+          format: int32
+        is_active:
+          type: boolean
+          description: To determine if this is an active code
+          x-bb-suppressions:
+          - parameter_property_name
+        full_path:
+          type: string
+          description: The full path to the description in the coding table hierarchy
+          nullable: true
+        full_path_with_code:
+          type: string
+          description: The full path including code and description to the code in the coding table hierarchy
+          nullable: true
+      additionalProperties: false
+      description: Model for coding options data
+    CodeInfoList:
+      type: object
+      properties:
+        code_table_id:
+          type: integer
+          description: Gets or sets the table ID.
+          format: int32
+        code_table:
+          type: array
+          items:
+            $ref: '#/components/schemas/CodeInfo'
+          description: Gets or sets the list of coding values in the table.
+          nullable: true
+      additionalProperties: false
+      description: Coding table model.
+    CodeTable:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The code's ID.
+          format: int32
+        description:
+          type: string
+          description: The code's description.
+          nullable: true
+      additionalProperties: false
+      description: Represents a Classification value.
+    Coding:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The coding selection's ID.
+          format: int32
+        code_table:
+          $ref: '#/components/schemas/CodeTable'
+        level_1:
+          $ref: '#/components/schemas/IdCodeDescription'
+        level_2:
+          $ref: '#/components/schemas/IdCodeDescription'
+        level_3:
+          $ref: '#/components/schemas/IdCodeDescription'
+        level_4:
+          $ref: '#/components/schemas/IdCodeDescription'
+        level_5:
+          $ref: '#/components/schemas/IdCodeDescription'
+        allocation_percentage:
+          type: integer
+          description: The coding selection's allocation percentage.
+          format: int32
+          nullable: true
+        allocation_amount:
+          type: number
+          description: The coding selection's allocation amount.
+          format: double
+          nullable: true
+        primary_flag:
+          type: boolean
+          description: The coding selection's primary flag.
+          x-bb-suppressions:
+          - parameter_property_name
+      additionalProperties: false
+      description: Represents a Coding Sheet Classification selection.
+    ContactReference:
+      type: object
+      properties:
+        email:
+          type: string
+          description: The contact's email address.
+          nullable: true
+        contact_id:
+          type: string
+          description: The related contact's ID.
+          nullable: true
+        name:
+          type: string
+          description: The contact's full name.
+          nullable: true
+      additionalProperties: false
+      description: Represents related Contact information.
+    ContactSearchRequest:
+      type: object
+      properties:
+        id:
+          type: string
+          description: An Contact ID.
+          nullable: true
+        state:
+          $ref: '#/components/schemas/StringSearchCriteria'
+        city:
+          $ref: '#/components/schemas/StringSearchCriteria'
+        postal_code:
+          $ref: '#/components/schemas/StringSearchCriteria'
+        contact_type_id:
+          type: integer
+          description: A classification ID value representing the Contact type.
+          format: int32
+          nullable: true
+        reviewer_type_id:
+          type: integer
+          description: A classification ID value representing the Reviewer type.
+          format: int32
+          nullable: true
+        active_student:
+          type: boolean
+          description: A boolean value representing whether the Contact is a student.
+          nullable: true
+        create_date:
+          $ref: '#/components/schemas/DateSearchCriteria'
+        change_date:
+          $ref: '#/components/schemas/DateSearchCriteria'
+        custom_fields:
+          type: array
+          items:
+            type: string
+          description: Represents the list of custom fields to return on the entities in the result.
+          nullable: true
+        per_page:
+          maximum: 100
+          minimum: 1
+          type: integer
+          description: The page size for paged output.
+          format: int32
+        page:
+          type: integer
+          description: The page number for paged output.
+          format: int32
+      additionalProperties: false
+      description: A request model for searching Contacts.
+      x-bb-suppressions:
+      - request_body_has_required_property
+    ContactSearchResponse:
+      type: object
+      properties:
+        contacts:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApiContact'
+          description: The results of the contact search.
+          nullable: true
+      additionalProperties: false
+      description: A response model for contact search.
+    CreatePaymentRefundRequest:
+      required:
+      - id
+      type: object
+      properties:
+        amount:
+          type: number
+          description: Payment amount for the created Refund Payment.
+          format: double
+          nullable: true
+        id:
+          type: integer
+          description: ID of the Payment to refund.
+          format: int32
+        fiscal_year:
+          type: integer
+          description: Fiscal year for the created Refund Payment.
+          format: int32
+          nullable: true
+        schedule_date:
+          type: string
+          description: Payment schedule date for the created Refund Payment.
+          format: date-time
+          nullable: true
+        payment_date:
+          type: string
+          description: Payment date for the created Refund Payment.
+          format: date-time
+          nullable: true
+      additionalProperties: false
+      description: Request model for creating a Refund Payment.
+    CreatePaymentRefundResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Response message.
+          nullable: true
+        status:
+          type: string
+          description: Result status.
+          nullable: true
+      additionalProperties: false
+      description: Response object for creating a Refund Payment.
+    CustomSearchCriteria:
+      type: object
+      properties:
+        field_name:
+          type: string
+          description: A string custom field name criteria.
+          nullable: true
+        date_criteria:
+          $ref: '#/components/schemas/DateSearchCriteria'
+        decimal_criteria:
+          $ref: '#/components/schemas/DecimalSearchCriteria'
+        string_criteria:
+          $ref: '#/components/schemas/StringSearchCriteria'
+        integer_criteria:
+          type: integer
+          description: An integer criteria value.
+          format: int32
+          nullable: true
+        boolean_criteria:
+          type: boolean
+          description: A boolean criteria value.
+          nullable: true
+      additionalProperties: false
+      description: A model with custom field search criteria.
+    DateSearchCriteria:
+      type: object
+      properties:
+        start_date:
+          type: string
+          description: An earliest date criteria.
+          format: date-time
+          nullable: true
+        end_date:
+          type: string
+          description: A latest date criteria.
+          format: date-time
+          nullable: true
+        is:
+          type: string
+          description: An exact match criteria.
+          format: date-time
+          nullable: true
+      additionalProperties: false
+      description: A model with date search criteria.
+    DecimalSearchCriteria:
+      type: object
+      properties:
+        min_value:
+          type: number
+          description: A lowest value criteria.
+          format: double
+          nullable: true
+        max_value:
+          type: number
+          description: A highest value criteria.
+          format: double
+          nullable: true
+        is:
+          type: number
+          description: An exact match criteria.
+          format: double
+          nullable: true
+      additionalProperties: false
+      description: A model with decimal search criteria.
+    GetScheduledPaymentsRequest:
+      type: object
+      properties:
+        start_date:
+          type: string
+          description: The start date (inclusive).
+          format: date-time
+          nullable: true
+        end_date:
+          type: string
+          description: The end date (inclusive).
+          format: date-time
+          nullable: true
+        custom_fields:
+          type: array
+          items:
+            type: string
+          description: Represents the list of custom fields to return on the entities in the result.
+          nullable: true
+        per_page:
+          maximum: 100
+          minimum: 1
+          type: integer
+          description: The page size for paged output.
+          format: int32
+        page:
+          type: integer
+          description: The page number for paged output.
+          format: int32
+      additionalProperties: false
+      description: Request model for getting Scheduled Payments.
+      x-bb-suppressions:
+      - request_body_has_required_property
+    GetScheduledPaymentsResponse:
+      type: object
+      properties:
+        payments:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApiPayment'
+          description: Gets or sets the Scheduled Payments
+          nullable: true
+      additionalProperties: false
+      description: Response model for Scheduled Payments.
+    IdCodeDescription:
+      type: object
+      properties:
+        classification_id:
+          type: integer
+          description: Classification's ID.
+          format: int32
+        code:
+          type: string
+          description: Classification's code.
+          nullable: true
+        description:
+          type: string
+          description: Classification's description.
+          nullable: true
+      additionalProperties: false
+      description: Represents a Classification value.
+    OrganizationReference:
+      type: object
+      properties:
+        organization_id:
+          type: string
+          description: The related Organization's ID.
+          nullable: true
+        name:
+          type: string
+          description: Related Organization's name.
+          nullable: true
+      additionalProperties: false
+      description: Represents related Contact information.
+    OrganizationSearchRequest:
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/StringSearchCriteria'
+        legal_name:
+          $ref: '#/components/schemas/StringSearchCriteria'
+        id:
+          type: string
+          description: An Organization ID.
+          nullable: true
+        state:
+          $ref: '#/components/schemas/StringSearchCriteria'
+        city:
+          $ref: '#/components/schemas/StringSearchCriteria'
+        postal_code:
+          $ref: '#/components/schemas/StringSearchCriteria'
+        tax_status1_id:
+          type: integer
+          description: A classification ID value representing the first TaxId value.
+          format: int32
+          nullable: true
+        tax_status2_id:
+          type: integer
+          description: A classification ID value representing the second TaxId value.
+          format: int32
+          nullable: true
+        organization_type_id:
+          type: integer
+          description: A classification ID value representing an Organization type value.
+          format: int32
+          nullable: true
+        create_date:
+          $ref: '#/components/schemas/DateSearchCriteria'
+        change_date:
+          $ref: '#/components/schemas/DateSearchCriteria'
+        custom_fields:
+          type: array
+          items:
+            type: string
+          description: Represents the list of custom fields to return on the entities in the result.
+          nullable: true
+        per_page:
+          maximum: 100
+          minimum: 1
+          type: integer
+          description: The page size for paged output.
+          format: int32
+        page:
+          type: integer
+          description: The page number for paged output.
+          format: int32
+      additionalProperties: false
+      description: A request model for searching Organizations.
+      x-bb-suppressions:
+      - request_body_has_required_property
+    OrganizationSearchResponse:
+      type: object
+      properties:
+        organizations:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApiOrganization'
+          description: The results of the organization search.
+          nullable: true
+      additionalProperties: false
+      description: A response model for organization search.
+    PaymentReference:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The related Payment's ID.
+          format: int32
+        amount:
+          type: number
+          description: The related Payment's Amount.
+          format: double
+          nullable: true
+      additionalProperties: false
+      description: Represents related Payment information.
+    PaymentSearchRequest:
+      type: object
+      properties:
+        schedule_date:
+          $ref: '#/components/schemas/DateSearchCriteria'
+        amount:
+          $ref: '#/components/schemas/DecimalSearchCriteria'
+        gl_account_id:
+          type: integer
+          description: A general ledger account ID.
+          format: int32
+          nullable: true
+        fund_id:
+          type: integer
+          description: A fund ID.
+          format: int32
+          nullable: true
+        payment_type_id:
+          type: integer
+          description: A payment type ID.
+          format: int32
+          nullable: true
+        support_type_id:
+          type: integer
+          description: A support type ID.
+          format: int32
+          nullable: true
+        create_date:
+          $ref: '#/components/schemas/DateSearchCriteria'
+        change_date:
+          $ref: '#/components/schemas/DateSearchCriteria'
+        request_id:
+          type: string
+          description: A request ID.
+          nullable: true
+        custom_fields:
+          type: array
+          items:
+            type: string
+          description: Represents the list of custom fields to return on the entities in the result.
+          nullable: true
+        per_page:
+          maximum: 100
+          minimum: 1
+          type: integer
+          description: The page size for paged output.
+          format: int32
+        page:
+          type: integer
+          description: The page number for paged output.
+          format: int32
+      additionalProperties: false
+      description: A request model for searching Payments.
+      x-bb-suppressions:
+      - request_body_has_required_property
+    PaymentSearchResponse:
+      type: object
+      properties:
+        payments:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApiPayment'
+          description: The results of the payment search.
+          nullable: true
+      additionalProperties: false
+      description: A response model for payment search.
+    RequestGetByIdRequest:
+      required:
+      - ids
+      type: object
+      properties:
+        ids:
+          type: array
+          items:
+            type: string
+          description: The IDs of the requests to fetch.
+        custom_fields:
+          type: array
+          items:
+            type: string
+          description: Represents the list of custom fields to return on the entities in the result.
+          nullable: true
+        per_page:
+          maximum: 100
+          minimum: 1
+          type: integer
+          description: The page size for paged output.
+          format: int32
+        page:
+          type: integer
+          description: The page number for paged output.
+          format: int32
+      additionalProperties: false
+      description: A request model for getting Requests by ID.
+    RequestReference:
+      type: object
+      properties:
+        request_id:
+          type: string
+          description: The related request's ID.
+          nullable: true
+        project_title:
+          type: string
+          description: The request's project title.
+          nullable: true
+        disposition:
+          type: string
+          description: The request's disposition.
+          nullable: true
+      additionalProperties: false
+      description: Represents related Request information
+    RequestSearchRequest:
+      type: object
+      properties:
+        id:
+          type: string
+          description: A Request ID.
+          nullable: true
+        request_date:
+          $ref: '#/components/schemas/DateSearchCriteria'
+        branch_id:
+          type: integer
+          description: An integer value representing the Request Branch ID.
+          format: int32
+          nullable: true
+        disposition:
+          type: string
+          description: A string value representing the Request Disposition. Valid values are "Approved", "Pending", or "Declined".
+          nullable: true
+        disposition_date:
+          $ref: '#/components/schemas/DateSearchCriteria'
+        grant_amount:
+          $ref: '#/components/schemas/DecimalSearchCriteria'
+        project_start_date:
+          $ref: '#/components/schemas/DateSearchCriteria'
+        project_end_date:
+          $ref: '#/components/schemas/DateSearchCriteria'
+        recommended_amount:
+          $ref: '#/components/schemas/DecimalSearchCriteria'
+        requested_amount:
+          $ref: '#/components/schemas/DecimalSearchCriteria'
+        request_type_id:
+          type: integer
+          description: A classification ID value representing the Request Type.
+          format: int32
+          nullable: true
+        request_status_id:
+          type: integer
+          description: A classification ID value representing the Request Status.
+          format: int32
+          nullable: true
+        staff_id:
+          type: string
+          description: A string value representing the staff person assigned to the Request to query.
+          nullable: true
+        secondary_staff_id:
+          type: string
+          description: A string value representing the secondary staff person assigned to the Request to query.
+          nullable: true
+        primary_contact_id:
+          type: string
+          description: A string value representing the Primary Contact ID.
+          nullable: true
+        organization_id:
+          type: string
+          description: A string value representing the associated Organization ID.
+          nullable: true
+        change_date:
+          $ref: '#/components/schemas/DateSearchCriteria'
+        create_date:
+          $ref: '#/components/schemas/DateSearchCriteria'
+        custom_criteria:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomSearchCriteria'
+          description: A list containing request custom field search criteria.
+          nullable: true
+        custom_fields:
+          type: array
+          items:
+            type: string
+          description: Represents the list of custom fields to return on the entities in the result.
+          nullable: true
+        per_page:
+          maximum: 100
+          minimum: 1
+          type: integer
+          description: The page size for paged output.
+          format: int32
+        page:
+          type: integer
+          description: The page number for paged output.
+          format: int32
+      additionalProperties: false
+      description: A request model for searching Requests.
+      x-bb-suppressions:
+      - request_body_has_required_property
+    RequestSearchResponse:
+      type: object
+      properties:
+        requests:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApiRequest'
+          description: The results of the request search.
+          nullable: true
+      additionalProperties: false
+      description: A response model for request search.
+    RequestUpdateRequest:
+      required:
+      - id
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the request to update.
+        custom:
+          type: array
+          items:
+            $ref: '#/components/schemas/SimpleCustomProperty'
+          description: A list of Blackbaud.CFS.MiddlewareService.DataAccess.Models.SKYAPI.Common.CustomPropertyData objects
+            for request update.
+          nullable: true
+      additionalProperties: false
+      description: A request model for request update.
+    RequestUpdateResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          description: A string indicating the status of the operation.
+          nullable: true
+        message:
+          type: string
+          description: A string containing a message regarding the operation.
+          nullable: true
+      additionalProperties: false
+      description: A response model for request update.
+    RequirementSearchRequest:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: A Requirement ID.
+          format: int32
+          nullable: true
+        type_id:
+          type: integer
+          description: A requirement type ID.
+          format: int32
+          nullable: true
+        done_date:
+          $ref: '#/components/schemas/DateSearchCriteria'
+        staff_id:
+          type: string
+          description: A string value representing the associated staff member.
+          nullable: true
+        create_date:
+          $ref: '#/components/schemas/DateSearchCriteria'
+        change_date:
+          $ref: '#/components/schemas/DateSearchCriteria'
+        custom_fields:
+          type: array
+          items:
+            type: string
+          description: Represents the list of custom fields to return on the entities in the result.
+          nullable: true
+        per_page:
+          maximum: 100
+          minimum: 1
+          type: integer
+          description: The page size for paged output.
+          format: int32
+        page:
+          type: integer
+          description: The page number for paged output.
+          format: int32
+      additionalProperties: false
+      description: A request model for searching Requirements.
+      x-bb-suppressions:
+      - request_body_has_required_property
+    RequirementSearchResponse:
+      type: object
+      properties:
+        requirements:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApiRequirement'
+          description: The results of the requirement search.
+          nullable: true
+      additionalProperties: false
+      description: A response model for the requirement search.
+    SimpleCustomProperty:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the custom property.
+          nullable: true
+        value:
+          description: The value of the custom property.
+          nullable: true
+      additionalProperties: false
+      description: A simple representation of a custom property.
+    Staff:
+      type: object
+      properties:
+        login_id:
+          type: string
+          description: The staff member's login ID.
+          nullable: true
+        name:
+          type: string
+          description: The staff member's name.
+          nullable: true
+      additionalProperties: false
+      description: Represents a Grantmaking staff user.
+    StringSearchCriteria:
+      type: object
+      properties:
+        is:
+          type: string
+          description: A exact match criteria.
+          nullable: true
+        contains:
+          type: string
+          description: A partial match criteria.
+          nullable: true
+        begins_with:
+          type: string
+          description: A beginning match criteria.
+          nullable: true
+        ends_with:
+          type: string
+          description: A ending match criteria.
+          nullable: true
+      additionalProperties: false
+      description: A model with string search criteria.
+    UpdateOrganizationRequest:
+      required:
+      - id
+      type: object
+      properties:
+        id:
+          type: string
+          description: ID of the Organization to update.
+        tax_id:
+          type: string
+          description: Tax ID to update the Organization with.
+          nullable: true
+        vendor_no:
+          type: string
+          description: Vendor number to update the Organization with.
+          nullable: true
+      additionalProperties: false
+      description: Request model for updating an Organization.
+    UpdateOrganizationResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Response message.
+          nullable: true
+        status:
+          type: string
+          description: Result status.
+          nullable: true
+      additionalProperties: false
+      description: Response object for updating an Organization.
+    UpdatePaymentRequest:
+      required:
+      - id
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID of the Payment to update.
+          format: int32
+        ap_invoice_number:
+          type: string
+          description: AP Invoice Number to update the Payment with.
+          nullable: true
+      additionalProperties: false
+      description: Request model for updating a Payment.
+    UpdatePaymentResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Response message.
+          nullable: true
+        status:
+          type: string
+          description: Result status.
+          nullable: true
+      additionalProperties: false
+      description: Response object for updating a Payment.
+    VoidPaymentRequest:
+      required:
+      - id
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID of the Payment to void.
+          format: int32
+      additionalProperties: false
+      description: Request model for voiding a Payment.
+    VoidPaymentResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Response message.
+          nullable: true
+        status:
+          type: string
+          description: Result status.
+          nullable: true
+      additionalProperties: false
+      description: Response object for voiding a Payment.
+    ApiV1Activities-activity_id-GetRequest:
+      type: string
+      x-apim-inline: true
+    ApiV1Contacts-contact_id-GetRequest:
+      type: string
+      x-apim-inline: true
+    ApiV1Organizations-organization_id-GetRequest:
+      type: string
+      x-apim-inline: true
+    ApiV1Payments-payment_id-GetRequest:
+      type: string
+      x-apim-inline: true
+    ApiV1Requests-request_id-GetRequest:
+      type: string
+      x-apim-inline: true
+    ApiV1Requirements-requirement_id-GetRequest:
+      type: string
+      x-apim-inline: true
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []

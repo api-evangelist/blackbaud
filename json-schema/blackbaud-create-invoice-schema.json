@@ -1,0 +1,580 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/blackbaud/main/json-schema/blackbaud-create-invoice-schema.json",
+  "title": "CreateInvoice",
+  "description": "Contract for creating invoice.",
+  "x-generated": "2026-10-14",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/blackbaud-accounts-payable-api-openapi.yml#/components/schemas/CreateInvoice",
+  "required": [
+    "amount",
+    "distributions",
+    "due_date",
+    "invoice_date",
+    "payment_details",
+    "post_date",
+    "vendor_id"
+  ],
+  "type": "object",
+  "properties": {
+    "vendor_id": {
+      "type": "integer",
+      "description": "The id of the vendor for this invoice.",
+      "format": "int32"
+    },
+    "purchase_order_number": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "The purchase order number for this invoice."
+    },
+    "amount": {
+      "type": "number",
+      "description": "The amount of this invoice.",
+      "format": "decimal"
+    },
+    "description": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "The description for this invoice."
+    },
+    "invoice_number": {
+      "maxLength": 2147483647,
+      "minLength": 1,
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "The invoice number."
+    },
+    "approval_status": {
+      "$ref": "#/$defs/ApprovalStatus"
+    },
+    "due_date": {
+      "type": "string",
+      "description": "The due date for this invoice.",
+      "format": "date-time"
+    },
+    "payment_details": {
+      "$ref": "#/$defs/CreateInvoicePaymentDetails"
+    },
+    "invoice_date": {
+      "type": "string",
+      "description": "The date for the invoice.",
+      "format": "date-time"
+    },
+    "post_status": {
+      "$ref": "#/$defs/InvoicePostStatus"
+    },
+    "post_date": {
+      "type": "string",
+      "description": "The post date for this invoice.",
+      "format": "date-time"
+    },
+    "distribute_discounts": {
+      "type": "boolean",
+      "description": "If to distribute discounts to invoice expense accounts."
+    },
+    "distributions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/CreateDistribution"
+      },
+      "description": "The distributions of this invoice."
+    },
+    "custom_fields": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "$ref": "#/$defs/CreateCustomField"
+      },
+      "description": "The custom fields on this invoice."
+    },
+    "form_1099_box_numbers": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "$ref": "#/$defs/InvoiceBoxNumber"
+      },
+      "description": "The 1099 box numbers on this invoice."
+    },
+    "include_tax": {
+      "type": "boolean",
+      "description": "If or not to include tax on this invoice (CANADA and AUSTRALIA only)."
+    },
+    "amount_before_tax": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "description": "The amount before tax of this invoice (CANADA and AUSTRALIA only).",
+      "format": "decimal"
+    },
+    "gst_tax_type_id": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "description": "The gst tax type id for this invoice (CANADA and AUSTRALIA only).",
+      "format": "int32"
+    },
+    "psb_activity_code_id": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "description": "The Psb activity code id for this invoice (CANADA only).",
+      "format": "int32"
+    },
+    "tax_amount": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "description": "The tax amount of this invoice (CANADA and AUSTRALIA only).",
+      "format": "decimal"
+    },
+    "gst_rebate_amount": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "description": "The gst rebate amount of this invoice (CANADA only).",
+      "format": "decimal"
+    },
+    "pst_rebate_amount": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "description": "The pst rebate amount of this invoice (CANADA only).",
+      "format": "decimal"
+    },
+    "gst_rebate_distribution": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "$ref": "#/$defs/CreateRebateDistribution"
+      },
+      "description": "The gst rebate distribution of this invoice (CANADA only)."
+    },
+    "pst_rebate_distribution": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "$ref": "#/$defs/CreateRebateDistribution"
+      },
+      "description": "The pst rebate distribution of this invoice (CANADA only)."
+    },
+    "tax_distribution": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "$ref": "#/$defs/CreateRebateDistribution"
+      },
+      "description": "The tax distribution of this invoice (AUSTRALIA only)."
+    },
+    "gst_sales_tax_detail_list": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "$ref": "#/$defs/CreateGSTSalesTaxDetail"
+      },
+      "description": "The GST Sales Tax Detail of this invoice (CANADA and AUSTRALIA only)."
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "ApprovalStatus": {
+      "title": "ApprovalStatus",
+      "enum": [
+        "Pending",
+        "Approved",
+        "Deleted",
+        "Paid",
+        "PartiallyPaid"
+      ],
+      "type": "string"
+    },
+    "CreateCustomField": {
+      "required": [
+        "field_name",
+        "value"
+      ],
+      "type": "object",
+      "properties": {
+        "field_name": {
+          "minLength": 1,
+          "type": "string",
+          "description": "The name of the custom field."
+        },
+        "value": {
+          "type": "string",
+          "description": "The value for this custom field."
+        },
+        "comments": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The description for this custom field."
+        },
+        "date": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The date on this custom field.",
+          "format": "date-time"
+        }
+      },
+      "additionalProperties": false,
+      "description": "The create contract for custom fields."
+    },
+    "CreateDistribution": {
+      "required": [
+        "distribution_splits"
+      ],
+      "type": "object",
+      "properties": {
+        "distribution_id": {
+          "type": "integer",
+          "description": "The distribution identifier.",
+          "format": "int32"
+        },
+        "distribution_splits": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/DistributionSplit"
+          },
+          "description": "The distribution split."
+        },
+        "amount": {
+          "type": "number",
+          "description": "The distribution amount.",
+          "format": "decimal"
+        },
+        "description": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The description for this distribution."
+        },
+        "account_number": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The account number for this distribution."
+        },
+        "type_code": {
+          "$ref": "#/$defs/DistributionTypeCode"
+        },
+        "custom_fields": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "$ref": "#/$defs/CreateCustomField"
+          },
+          "description": "The custom fields of the distribution."
+        }
+      },
+      "additionalProperties": false,
+      "description": "Contract for creating distribution."
+    },
+    "CreateGSTSalesTaxDetail": {
+      "type": "object",
+      "properties": {
+        "tax_entity": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The sales tax entity code."
+        },
+        "amount": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "The sales tax entity amount.",
+          "format": "decimal"
+        }
+      },
+      "additionalProperties": false,
+      "description": "Contract for creating gst sales tax detail (Canada and Australia only)."
+    },
+    "CreateInvoicePaymentDetails": {
+      "type": "object",
+      "properties": {
+        "remit_to": {
+          "$ref": "#/$defs/RemitToAddressId"
+        },
+        "payment_method": {
+          "$ref": "#/$defs/PaymentMethod"
+        },
+        "paid_from": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The bank from which this was paid."
+        },
+        "credit_card_account_id": {
+          "type": "integer",
+          "description": "The identifier of the credit card account to pay from. Required for CreditCard payment details.",
+          "format": "int32"
+        },
+        "credit_card_id": {
+          "type": "integer",
+          "description": "The identifier of the credit card to pay from. Required for CreditCard payment details.",
+          "format": "int32"
+        },
+        "hold_payment": {
+          "type": "boolean",
+          "description": "If or not to hold payment on this invoice."
+        },
+        "create_separate_payment": {
+          "type": "boolean",
+          "description": "If or not to create a separate payment for this invoice."
+        }
+      },
+      "additionalProperties": false
+    },
+    "CreateRebateDistribution": {
+      "required": [
+        "distribution_splits"
+      ],
+      "type": "object",
+      "properties": {
+        "tax_entity_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The tax entity id."
+        },
+        "distribution_id": {
+          "type": "integer",
+          "description": "The distribution identifier.",
+          "format": "int32"
+        },
+        "distribution_splits": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/DistributionSplit"
+          },
+          "description": "The distribution split."
+        },
+        "amount": {
+          "type": "number",
+          "description": "The distribution amount.",
+          "format": "decimal"
+        },
+        "description": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The description for this distribution."
+        },
+        "account_number": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The account number for this distribution."
+        },
+        "type_code": {
+          "$ref": "#/$defs/DistributionTypeCode"
+        },
+        "custom_fields": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "$ref": "#/$defs/CreateCustomField"
+          },
+          "description": "The custom fields of the distribution."
+        }
+      },
+      "additionalProperties": false,
+      "description": "Contract for creating rebate distribution (Canada and Australia only)."
+    },
+    "DistributionSplit": {
+      "required": [
+        "transaction_code_values"
+      ],
+      "type": "object",
+      "properties": {
+        "distribution_split_id": {
+          "type": "integer",
+          "description": "The distribution split identifier.",
+          "format": "int32"
+        },
+        "ui_project_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The user-visible identifier of the project."
+        },
+        "transaction_code_values": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/TransactionCodeValue"
+          },
+          "description": "The distribution transaction code values. The values should be in the same order as the codes defined in the database."
+        },
+        "amount": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "The distribution journal entry amount. Only one of Amount or Percent can be specified.",
+          "format": "decimal"
+        },
+        "percent": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "The distribution journal entry amount percentage. Only one of Amount or Percent can be specified.",
+          "format": "decimal"
+        },
+        "account_class": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The account class for this distribution split."
+        }
+      },
+      "additionalProperties": false,
+      "description": "Journal Entry Distribution."
+    },
+    "DistributionTypeCode": {
+      "title": "DistributionTypeCode",
+      "enum": [
+        "Debit",
+        "Credit"
+      ],
+      "type": "string",
+      "description": "The type code for the distribution, debit or credit"
+    },
+    "InvoiceBoxNumber": {
+      "type": "object",
+      "properties": {
+        "number": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The number for the box number."
+        },
+        "state": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The reporting state for the box number."
+        },
+        "amount": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "The amount for the box number.",
+          "format": "decimal"
+        }
+      },
+      "additionalProperties": false,
+      "description": "The contract for invoice box number."
+    },
+    "InvoicePostStatus": {
+      "title": "InvoicePostStatus",
+      "enum": [
+        "DoNotPost",
+        "NotYetPosted",
+        "Posted"
+      ],
+      "type": "string"
+    },
+    "PaymentMethod": {
+      "title": "PaymentMethod",
+      "enum": [
+        "Check",
+        "EFT",
+        "BankDraft",
+        "CreditCard"
+      ],
+      "type": "string"
+    },
+    "RemitToAddressId": {
+      "required": [
+        "address_id"
+      ],
+      "type": "object",
+      "properties": {
+        "address_id": {
+          "type": "integer",
+          "description": "The address identifier.",
+          "format": "int32"
+        }
+      },
+      "additionalProperties": false,
+      "description": "The remit to address"
+    },
+    "TransactionCodeValue": {
+      "required": [
+        "id",
+        "value"
+      ],
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The transaction code name."
+        },
+        "value": {
+          "type": "string",
+          "description": "The transaction code value."
+        },
+        "id": {
+          "type": "integer",
+          "description": "The transaction code value id.",
+          "format": "int32"
+        },
+        "inactive": {
+          "type": "boolean",
+          "description": "Indicate if record is inactive or not."
+        }
+      },
+      "additionalProperties": false,
+      "description": "Transaction code value"
+    }
+  }
+}

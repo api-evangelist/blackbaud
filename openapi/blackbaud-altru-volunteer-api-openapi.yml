@@ -1,0 +1,3390 @@
+openapi: 3.0.1
+info:
+  title: 'Blackbaud SKY API: Altru Volunteer'
+  description: Altru Volunteer SKY API
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/alt-volmg
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations,
+      examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/alt-volmg
+paths:
+  /jobs:
+    post:
+      operationId: CreateJob
+      summary: Create a job
+      description: Adds a new job.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewJob'
+            example:
+              id: 97a63f7a-d29a-45b8-a75f-9adebf00f849
+              name: Crowd Control
+              description: Walkers will need help with directions and we need to ensure we keep them on the walk course.
+              volunteer_type: 05e7c5e1-c45f-4fa8-a6d1-5232b5933d61
+              site_id: 7a67eb19-fedc-47d9-8ff9-b47d0ee3f5fd
+              site_required: false
+              base_currency_id: 6abe6c7e-fedc-473d-abe8-505807c94e0e
+              estimated_value: 0
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully creates the resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to create the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  /jobs/search:
+    get:
+      operationId: SearchJobs
+      summary: Search for jobs
+      description: This search is for finding jobs.
+      parameters:
+      - name: name
+        in: query
+        required: false
+        schema:
+          type: string
+        description: job name
+      - name: description
+        in: query
+        required: false
+        schema:
+          type: string
+        description: description
+      - name: include_inactive
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: include inactive
+      - name: location
+        in: query
+        required: false
+        schema:
+          type: string
+        description: location This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/VOLUNTEERLOCATIONCODE/entries
+      - name: department
+        in: query
+        required: false
+        schema:
+          type: string
+        description: department This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/DEPARTMENTCODE/entries
+      - name: event_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: event
+      - name: base_currency_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: base currency
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Limits the number of records to return.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of result entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobSearchCollection'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to view the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+  /jobs/{job_id}:
+    delete:
+      operationId: DeleteJob
+      summary: Delete a job
+      description: Delete a job.
+      parameters:
+      - name: job_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The job id
+      responses:
+        '200':
+          description: Returned when the operation successfully deletes the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to delete the resource.
+    patch:
+      operationId: EditJob
+      summary: Edit a job
+      description: Edits an existing job.
+      parameters:
+      - name: job_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The job id.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditJob'
+            example:
+              name: Test Job
+              description: descrption
+              volunteer_type: df2595c9-892a-4343-a65d-d6bc7ee0e1b5
+              site_id: ''
+              site_required: false
+              base_currency_id: 6abe6c7e-fedc-473d-abe8-505807c94e0e
+              estimated_value: 0
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully edits the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to edit the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+    get:
+      operationId: GetJob
+      summary: Get a job
+      description: Edits an existing job.
+      parameters:
+      - name: job_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The job id.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the specified resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Job'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to get the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  /jobs/{job_id}/list:
+    get:
+      operationId: ListJobs
+      summary: List jobs
+      description: This operation returns all occurrences for a job.
+      parameters:
+      - name: job_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The job id.
+      - name: active_only
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: include inactive
+      - name: job_occurrence_type
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - One-time
+          - Recurring
+          - Ongoing
+        description: type
+      - name: location
+        in: query
+        required: false
+        schema:
+          type: string
+        description: location This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/VOLUNTEERLOCATIONCODE/entries
+      - name: department
+        in: query
+        required: false
+        schema:
+          type: string
+        description: department This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/DEPARTMENTCODE/entries
+      - name: currency
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - Base
+          - Organization
+        description: currency
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Limits the number of records to return.
+      - name: session_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: A unique key provided by user for paging results. The same key will be returned in a successful response.
+      - name: infinity_session
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Values for cookies related to the Infinity load balancer session.
+      - name: more_rows_range_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Key for accessing cached results on subsequent calls to this data list.
+      - name: start_row_index
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Number of rows to skip,get result after these rows.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of result entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobListCollection'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to view the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+  /occurrences:
+    post:
+      operationId: CreateJobOccurrence
+      summary: Create a job occurrence
+      description: Adds an occurrence of a job.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewJobOccurrence'
+            example:
+              job_id: 8ced83ec-a61b-4df1-aa26-4ddf76b5defb
+              description: Health Awareness
+              department_code_id: 8ced83ec-a61b-4df1-aa26-4ddf76b5defb
+              location_code_id: a4975cdb-3761-4a3c-b78f-968caa5a6321
+              type_code: One Time
+              start_date: '2016-02-18T12:00:00Z'
+              end_date: '2017-06-12T12:00:00Z'
+              start_month_day:
+                month: 11
+                day: 5
+              end_month_day:
+                month: 11
+                day: 6
+              one_start_time:
+                hour: 8
+                minute: 20
+              one_end_time:
+                hour: 9
+                minute: 16
+              rec_start_time:
+                hour: 8
+                minute: 10
+              rec_end_time:
+                hour: 10
+                minute: 18
+              day_of_week: Monday
+              event_id: bbf8a260-eed7-4cda-ac02-ec1dae73ca79
+              volunteers_needed: 5
+              comments: ''
+              site_id: a01bd875-b0a6-4455-8b69-a8ceae176e3d
+              site_required: false
+              base_currency_id: 03d475fd-2527-477f-bfa6-5099ad36345f
+              estimated_value: 0
+              recurrence_start_date: '2022-12-15T12:00:00Z'
+              recurrence_end_date: '2026-12-25T12:00:00Z'
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully creates the resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to create the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  /occurrences/search:
+    get:
+      operationId: SearchJobOccurrences
+      summary: Search for job occurrences
+      description: This search is for finding job occurrences.
+      parameters:
+      - name: description
+        in: query
+        required: false
+        schema:
+          type: string
+        description: occurrence name
+      - name: job_name
+        in: query
+        required: false
+        schema:
+          type: string
+        description: job name
+      - name: include_inactive
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: include inactive
+      - name: location
+        in: query
+        required: false
+        schema:
+          type: string
+        description: location This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/VOLUNTEERLOCATIONCODE/entries
+      - name: department
+        in: query
+        required: false
+        schema:
+          type: string
+        description: department This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/DEPARTMENTCODE/entries
+      - name: event_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: event
+      - name: exclude_volunteer_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: exclude volunteer id
+      - name: exclude_job_assignment_date
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Format - date (as full-date in RFC3339). exclude job assignment date
+      - name: site_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: site
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Limits the number of records to return.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of result entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobOccurrenceSearchCollection'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to view the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+  /occurrences/{job_occurrence_id}:
+    delete:
+      operationId: DeleteJobOccurrence
+      summary: Delete a job occurrence
+      description: Delete an occurrence of a job.
+      parameters:
+      - name: job_occurrence_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The job occurrence id
+      responses:
+        '200':
+          description: Returned when the operation successfully deletes the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to delete the resource.
+    patch:
+      operationId: EditJobOccurrence
+      summary: Edit a job occurrence
+      description: Edits an occurrence of a job.
+      parameters:
+      - name: job_occurrence_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The job occurrence id.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditJobOccurrence'
+            example:
+              description: Health Awareness
+              type: One Time
+              start_date: '2016-02-18T12:00:00Z'
+              end_date: '2017-06-12T12:00:00Z'
+              start_month_day:
+                month: 11
+                day: 5
+              end_month_day:
+                month: 11
+                day: 6
+              one_start_time:
+                hour: 8
+                minute: 20
+              one_end_time:
+                hour: 9
+                minute: 16
+              rec_start_time:
+                hour: 8
+                minute: 10
+              rec_end_time:
+                hour: 10
+                minute: 18
+              day_of_week: Monday
+              event_id: bbf8a260-eed7-4cda-ac02-ec1dae73ca79
+              volunteers_needed: 5
+              comments: ''
+              site_id: a01bd875-b0a6-4455-8b69-a8ceae176e3d
+              site_required: false
+              base_currency_id: 03d475fd-2527-477f-bfa6-5099ad36345f
+              estimated_value: 0
+              recurrence_start_date: '2022-12-15T12:00:00Z'
+              recurrence_end_date: '2026-12-25T12:00:00Z'
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully edits the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to edit the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+    get:
+      operationId: GetJobOccurrence
+      summary: Get a job occurrence
+      description: Edits an occurrence of a job.
+      parameters:
+      - name: job_occurrence_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The job occurrence id.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the specified resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobOccurrence'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to get the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  /occurrences/{job_occurrence_id}/view:
+    get:
+      operationId: ViewJobOccurrence
+      summary: View a job occurrence
+      description: Shows basic inoperationation about a job occurrence
+      parameters:
+      - name: job_occurrence_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The job occurrence id.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the specified resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobOccurrenceView'
+  /timesheets:
+    post:
+      operationId: CreateTimesheet
+      summary: Create a timesheet
+      description: Add a timesheet.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewTimesheet'
+            example:
+              volunteer_id: d7653267-54ce-461f-ae97-bbb305c9af57
+              job_occurrence_id: 97a63f7a-d29a-45b8-a75f-9adebf00f849
+              hours_worked: 8
+              start_date: '2006-07-29T10:00:00Z'
+              end_date: '2006-07-29T06:00:00Z'
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully creates the resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to create the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  /timesheets/{time_sheet_id}:
+    delete:
+      operationId: DeleteTimesheet
+      summary: Delete a timesheet
+      description: Deletes a timesheet from the system.
+      parameters:
+      - name: time_sheet_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The time sheet id
+      responses:
+        '200':
+          description: Returned when the operation successfully deletes the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to delete the resource.
+    patch:
+      operationId: EditTimesheet
+      summary: Edit a timesheet
+      description: Edit a timesheet.
+      parameters:
+      - name: time_sheet_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The time sheet id.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditTimesheet'
+            example:
+              job_occurrence_id: 97a63f7a-d29a-45b8-a75f-9adebf00f849
+              hours_worked: 8
+              start_date: '2006-07-29T10:00:00Z'
+              end_date: '2006-07-29T06:00:00Z'
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully edits the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to edit the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+    get:
+      operationId: GetTimesheet
+      summary: Get a timesheet
+      description: Edit a timesheet.
+      parameters:
+      - name: time_sheet_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The time sheet id.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the specified resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Timesheet'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to get the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  /timesheets/{volunteer_id}/list:
+    get:
+      operationId: ListTimesheets
+      summary: List timesheets
+      description: Lists the timesheets for a volunteer.
+      parameters:
+      - name: volunteer_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The volunteer id.
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Limits the number of records to return.
+      - name: session_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: A unique key provided by user for paging results. The same key will be returned in a successful response.
+      - name: infinity_session
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Values for cookies related to the Infinity load balancer session.
+      - name: more_rows_range_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Key for accessing cached results on subsequent calls to this data list.
+      - name: start_row_index
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Number of rows to skip,get result after these rows.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of result entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TimesheetListCollection'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to view the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+  /volunteerassignments:
+    post:
+      operationId: CreateAssignment
+      summary: Create an assignment
+      description: Assign job occurrences to a volunteer on a specific day.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewAssignment'
+            example:
+              volunteer_id: ''
+              name: ''
+              date: ''
+              assignments:
+              - id: ''
+                job_occurrence_id: ''
+                start_time: ''
+                end_time: ''
+                match: ''
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully creates the resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to create the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  /volunteerassignments/search:
+    get:
+      operationId: SearchAssignments
+      summary: Search for assignments
+      description: This search is for finding constituents who are volunteers but not assigned to a job on a date.
+      parameters:
+      - name: constituent_type
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: constituent type
+      - name: keyname
+        in: query
+        required: false
+        schema:
+          type: string
+        description: last/org name
+      - name: firstname
+        in: query
+        required: false
+        schema:
+          type: string
+        description: first name
+      - name: lookup_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: lookup id
+      - name: addressblock
+        in: query
+        required: false
+        schema:
+          type: string
+        description: address
+      - name: city
+        in: query
+        required: false
+        schema:
+          type: string
+        description: city
+      - name: state
+        in: query
+        required: false
+        schema:
+          type: string
+        description: state SimpleDataListID=7fa91401-596c-4f7c-936d-6e41683121d7.
+      - name: post_code
+        in: query
+        required: false
+        schema:
+          type: string
+        description: zip/postal code
+      - name: country
+        in: query
+        required: false
+        schema:
+          type: string
+        description: country SimpleDataListID=c9649672-353d-42e8-8c25-4d34bbabfbba.
+      - name: includeinactive
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: include inactive
+      - name: includedeceased
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: include deceased
+      - name: onlyprimaryaddress
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: only search primary addresses
+      - name: exactmatchonly
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: match all criteria exactly
+      - name: onlyprospects
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: onlyprospects
+      - name: onlyfundraisers
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: onlyfundraisers
+      - name: onlystaff
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: onlystaff
+      - name: onlyvolunteers
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: onlyvolunteers
+      - name: excludejoboccurrenceid
+        in: query
+        required: false
+        schema:
+          type: string
+        description: excludejoboccurrenceid
+      - name: excludejobassignmentdate
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Format - date (as full-date in RFC3339). excludejobassignmentdate
+      - name: ssn
+        in: query
+        required: false
+        schema:
+          type: string
+        description: ssn
+      - name: checknickname
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: check nickname
+      - name: checkaliases
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: check aliases
+      - name: checkmergedconstituents
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: check merged constituents
+      - name: minimumdate
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Format - date (as full-date in RFC3339). minimum date
+      - name: includeindividuals
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: individuals
+      - name: includeorganizations
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: organizations
+      - name: includegroups
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: groups/households
+      - name: checkalternatelookupids
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: check alternate lookup ids
+      - name: fuzzysearchonname
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: include fuzzy search on name
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Limits the number of records to return.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of result entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssignmentSearchCollection'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to view the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+  /volunteerassignments/{volunteer_assignment_id}:
+    delete:
+      operationId: DeleteAssignment
+      summary: Delete an assignment
+      description: Remove a volunteer from a job.
+      parameters:
+      - name: volunteer_assignment_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The volunteer assignment id
+      responses:
+        '200':
+          description: Returned when the operation successfully deletes the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to delete the resource.
+  /volunteerassignments/{volunteer_id}/list:
+    get:
+      operationId: ListAssignments
+      summary: List assignments
+      description: This operation returns all assignments for a volunteer on a specified day.
+      parameters:
+      - name: volunteer_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The volunteer id.
+      - name: day
+        in: query
+        required: true
+        schema:
+          type: string
+        description: Format - date (as full-date in RFC3339). day
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Limits the number of records to return.
+      - name: session_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: A unique key provided by user for paging results. The same key will be returned in a successful response.
+      - name: infinity_session
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Values for cookies related to the Infinity load balancer session.
+      - name: more_rows_range_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Key for accessing cached results on subsequent calls to this data list.
+      - name: start_row_index
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Number of rows to skip,get result after these rows.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of result entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssignmentListCollection'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to view the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+  /volunteers:
+    post:
+      operationId: CreateVolunteer
+      summary: Create a volunteer
+      description: Add a volunteer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewVolunteer'
+            example:
+              constituent_id: F39270BA-90EB-4A0E-B7BD-31998E56E569
+              emergency_contact_name: Robert Adamson
+              emergency_contact_phone: 205-568-4200
+              sponsor_id: ''
+              default_country_id: ''
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully creates the resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to create the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  /volunteers/search:
+    get:
+      operationId: SearchVolunteers
+      summary: Search for volunteers
+      description: This search is for finding constituents who are members of the volunteer.
+      parameters:
+      - name: constituent_type
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: constituent type
+      - name: key_name
+        in: query
+        required: false
+        schema:
+          type: string
+        description: last/org name
+      - name: first_name
+        in: query
+        required: false
+        schema:
+          type: string
+        description: first name
+      - name: lookup_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: lookup id
+      - name: address_block
+        in: query
+        required: false
+        schema:
+          type: string
+        description: address
+      - name: city
+        in: query
+        required: false
+        schema:
+          type: string
+        description: city
+      - name: state
+        in: query
+        required: false
+        schema:
+          type: string
+        description: state SimpleDataListID=7fa91401-596c-4f7c-936d-6e41683121d7.
+      - name: post_code
+        in: query
+        required: false
+        schema:
+          type: string
+        description: zip/postal code
+      - name: country
+        in: query
+        required: false
+        schema:
+          type: string
+        description: country SimpleDataListID=c9649672-353d-42e8-8c25-4d34bbabfbba.
+      - name: include_inactive
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: include inactive
+      - name: include_deceased
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: include deceased
+      - name: only_primary_address
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: only search primary addresses
+      - name: exact_match_only
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: match all criteria exactly
+      - name: only_prospects
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: only prospects
+      - name: only_fundraisers
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: only fundraisers
+      - name: only_staff
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: only staff
+      - name: only_volunteers
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: only volunteers
+      - name: ssn
+        in: query
+        required: false
+        schema:
+          type: string
+        description: ssn
+      - name: check_nickname
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: check nickname
+      - name: check_aliases
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: check aliases
+      - name: full_name
+        in: query
+        required: false
+        schema:
+          type: string
+        description: full name
+      - name: check_merged_constituents
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: check merged constituents
+      - name: minimum_date
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Format - date (as full-date in RFC3339). minimum date
+      - name: include_individuals
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: individuals
+      - name: include_organizations
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: organizations
+      - name: include_groups
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: groups/households
+      - name: check_alternate_lookup_ids
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: check alternate lookup ids
+      - name: fuzzy_search_on_name
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: include fuzzy search on name
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Limits the number of records to return.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of result entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VolunteerSearchCollection'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to view the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+  /volunteers/{volunteer_date_range_id}:
+    delete:
+      operationId: DeleteVolunteer
+      summary: Delete a volunteer
+      description: This record operation is used to handle the rules of deleting a volunteer constituency.
+      parameters:
+      - name: volunteer_date_range_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The volunteer date range id
+      responses:
+        '200':
+          description: Returned when the operation successfully deletes the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to delete the resource.
+  /volunteers/{volunteer_id}:
+    patch:
+      operationId: EditVolunteer
+      summary: Edit a volunteer
+      description: Edit a volunteer
+      parameters:
+      - name: volunteer_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The volunteer id.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditVolunteer'
+            example:
+              emergency_contact_name: Robert Adamson
+              emergency_contact_phone: 205-568-4100
+              sponsor_id: ''
+              default_country_id: ''
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully edits the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to edit the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+    get:
+      operationId: GetVolunteer
+      summary: Get a volunteer
+      description: Edit a volunteer
+      parameters:
+      - name: volunteer_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The volunteer id.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the specified resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Volunteer'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to get the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  /volunteers/{volunteer_id}/view:
+    get:
+      operationId: ViewVolunteer
+      summary: View a volunteer
+      description: Shows general inoperationation about a volunteer.
+      parameters:
+      - name: volunteer_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The volunteer id.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the specified resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VolunteerView'
+  /volunteerschedules:
+    post:
+      operationId: CreateVolunteerSchedule
+      summary: Create a volunteer schedule
+      description: Used for assigning volunteers to a given job occurrence.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewVolunteerSchedule'
+            example:
+              job_occurrence_id: 78bde37e-df28-4841-ac78-1bcd6e3dc18f
+              single_day_edit: false
+              job_name: CPR Class Instructor
+              occurrence_name: CPR Class Instructor
+              start_date: ''
+              end_date: ''
+              start_time: ''
+              end_time: ''
+              volunteers:
+              - volunteer_id: fde70688-8012-4dc9-a642-ceb311a1261b
+                volunteer_assignment_id: 7322f6c1-ccba-45e6-87cf-d3fe6fd6408b
+                assign: false
+                volunteer_name: ''
+                match: ''
+              needed: 0
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully creates the resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to create the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  /volunteerschedules/{job_occurrence_id}/list:
+    get:
+      operationId: ListVolunteerSchedules
+      summary: List volunteer schedules
+      description: This operation returns all dates with openings for an occurrence including assignments, used by the job
+        occurrence schedule calendar.
+      parameters:
+      - name: job_occurrence_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The job occurrence id.
+      - name: start_date
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Format - date (as full-date in RFC3339). start date
+      - name: end_date
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Format - date (as full-date in RFC3339). end date
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Limits the number of records to return.
+      - name: session_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: A unique key provided by user for paging results. The same key will be returned in a successful response.
+      - name: infinity_session
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Values for cookies related to the Infinity load balancer session.
+      - name: more_rows_range_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Key for accessing cached results on subsequent calls to this data list.
+      - name: start_row_index
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Number of rows to skip,get result after these rows.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of result entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VolunteerScheduleListCollection'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to view the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+components:
+  schemas:
+    AssignmentListSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID.
+        description:
+          type: string
+          description: The description.
+        start_time:
+          $ref: '#/components/schemas/HourMinute'
+        end_time:
+          $ref: '#/components/schemas/HourMinute'
+      additionalProperties: false
+      description: ListAssignments
+      x-display-name: Volunteer Assignment Day List
+      x-display-id: Volunteer Assignment Day List
+    HourMinute:
+      type: object
+      properties:
+        hour:
+          type: integer
+          description: The hour.
+          format: int32
+        minute:
+          type: integer
+          description: The minute.
+          format: int32
+      description: HourMinute
+      x-display-name: Hour Minute
+      x-display-id: Hour Minute
+    AssignmentListCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items available for retrieval into the collection after applying any request parameters.
+          format: int32
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/AssignmentListSummary'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+        infinity_session:
+          type: string
+          description: Values for cookies related to the Infinity load balancer session.
+          format: string
+        session_key:
+          type: string
+          description: Session key for paging provided by user in request query parameter.
+          format: string
+        total_available_rows:
+          type: integer
+          description: The number of total rows available.
+          format: int32
+        more_rows_range_key:
+          type: string
+          description: Key for accessing cached results on subsequent calls to this data list.
+          format: string
+        data_no_longer_available:
+          type: boolean
+          description: Indicates data is no longer available in the context of this session.
+          format: boolean
+      additionalProperties: false
+      description: A collection of items. Data lists can contain paginated results.
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when
+            dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]).
+            When this member is not present, its value is assumed to be "about:blank".
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence
+            of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231],
+            Section 3.4).
+        status:
+          type: integer
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the
+            problem.
+          format: int32
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type: string
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further
+            information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: false
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-display-name: Problem details
+      x-display-id: ProblemDetails
+    AssignmentSearchSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID.
+        name:
+          type: string
+          description: The name.
+        address:
+          type: string
+          description: The address.
+        city:
+          type: string
+          description: The city.
+        state:
+          type: string
+          description: The state.
+        post_code:
+          type: string
+          description: The zip/postal code.
+        lookup_id:
+          type: string
+          description: The lookup ID.
+        constituent_type:
+          type: string
+          description: The constituent type.
+        sort_constituent_name:
+          type: string
+          description: The name.
+      additionalProperties: false
+      description: SearchAssignments
+      x-display-name: Volunteer Exclude Job Search
+      x-display-id: Volunteer Exclude Job Search
+    AssignmentSearchCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items available for retrieval into the collection after applying any request parameters.
+          format: int32
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/AssignmentSearchSummary'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+      additionalProperties: false
+      description: A collection of items. Data lists can contain paginated results.
+    Delete:
+      type: object
+      additionalProperties: false
+      description: DeleteVolunteer
+      x-display-name: Volunteer Constituency Delete
+      x-display-id: Volunteer Constituency Delete
+    PostResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The newly created ID.
+      additionalProperties: false
+      description: Defines the shape of a post response object.
+    EditJob:
+      type: object
+      properties:
+        name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The name.
+        description:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The description.
+        volunteer_type:
+          type: string
+          description: The volunteer type. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/36b8a634-cee9-4b4e-9510-d318b0954a24.
+        site_id:
+          type: string
+          description: The site.
+        site_required:
+          type: boolean
+          description: Indicates whether site required. Read-only in the SOAP API.
+        base_currency_id:
+          type: string
+          description: The base currency. Read-only in the SOAP API.
+        estimated_value:
+          type: number
+          description: The estimated value.
+          format: double
+      additionalProperties: false
+      description: EditJob
+      example:
+        name: Test Job
+        description: descrption
+        volunteer_type: df2595c9-892a-4343-a65d-d6bc7ee0e1b5
+        site_id: ''
+        site_required: false
+        base_currency_id: 6abe6c7e-fedc-473d-abe8-505807c94e0e
+        estimated_value: 0
+      x-display-name: Job Edit Form 2
+      x-display-id: Job Edit Form 2
+    EditJobOccurrence:
+      type: object
+      properties:
+        description:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: The occurrence name.
+        department:
+          type: string
+          description: The department. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/departmentcode/entries
+        location:
+          type: string
+          description: The location. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/volunteerlocationcode/entries
+        type:
+          type: string
+          description: The type. Available values are <i>one time</i>, <i>recurring</i>, <i>recurring over date range</i>,
+            <i>ongoing</i>
+        start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        end_date:
+          type: string
+          description: 'The end date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        start_month_day:
+          $ref: '#/components/schemas/MonthDay'
+        end_month_day:
+          $ref: '#/components/schemas/MonthDay'
+        one_start_time:
+          $ref: '#/components/schemas/HourMinute'
+        one_end_time:
+          $ref: '#/components/schemas/HourMinute'
+        rec_start_time:
+          $ref: '#/components/schemas/HourMinute'
+        rec_end_time:
+          $ref: '#/components/schemas/HourMinute'
+        day_of_week:
+          type: string
+          description: The day of week. Available values are <i>every day</i>, <i>sunday</i>, <i>monday</i>, <i>tuesday</i>,
+            <i>wednesday</i>, <i>thursday</i>, <i>friday</i>, <i>saturday</i>, <i>weekends</i>, <i>weekdays</i>
+        event_id:
+          type: string
+          description: The event.
+        volunteers_needed:
+          type: integer
+          description: The volunteers needed.
+          format: int32
+        comments:
+          type: string
+          description: The comment.
+        site_id:
+          type: string
+          description: The site.
+        site_required:
+          type: boolean
+          description: Indicates whether site required. Read-only in the SOAP API.
+        base_currency_id:
+          type: string
+          description: The base currency. Read-only in the SOAP API.
+        estimated_value:
+          type: number
+          description: The estimated value.
+          format: double
+        recurrence_start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        recurrence_end_date:
+          type: string
+          description: 'The end date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+      additionalProperties: false
+      description: EditJobOccurrence
+      example:
+        description: Health Awareness
+        type: One Time
+        start_date: '2016-02-18T12:00:00Z'
+        end_date: '2017-06-12T12:00:00Z'
+        start_month_day:
+          month: 11
+          day: 5
+        end_month_day:
+          month: 11
+          day: 6
+        one_start_time:
+          hour: 8
+          minute: 20
+        one_end_time:
+          hour: 9
+          minute: 16
+        rec_start_time:
+          hour: 8
+          minute: 10
+        rec_end_time:
+          hour: 10
+          minute: 18
+        day_of_week: Monday
+        event_id: bbf8a260-eed7-4cda-ac02-ec1dae73ca79
+        volunteers_needed: 5
+        comments: ''
+        site_id: a01bd875-b0a6-4455-8b69-a8ceae176e3d
+        site_required: false
+        base_currency_id: 03d475fd-2527-477f-bfa6-5099ad36345f
+        estimated_value: 0
+        recurrence_start_date: '2022-12-15T12:00:00Z'
+        recurrence_end_date: '2026-12-25T12:00:00Z'
+      x-display-name: Job Occurrence Edit Form 1.1
+      x-display-id: Job Occurrence Edit Form 1.1
+    MonthDay:
+      type: object
+      properties:
+        month:
+          type: integer
+          description: The month.
+          format: int32
+        day:
+          type: integer
+          description: The day.
+          format: int32
+      description: MonthDay
+      example:
+        month: 4
+        day: 13
+      x-display-name: Month Day
+      x-display-id: Month Day
+    EditTimesheet:
+      type: object
+      properties:
+        job_occurrence_id:
+          type: string
+          description: The job occurrence.
+        hours_worked:
+          type: number
+          description: The hours worked.
+          format: double
+        start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        end_date:
+          type: string
+          description: 'The end date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+      additionalProperties: false
+      description: EditTimesheet
+      example:
+        job_occurrence_id: 97a63f7a-d29a-45b8-a75f-9adebf00f849
+        hours_worked: 8
+        start_date: '2006-07-29T10:00:00Z'
+        end_date: '2006-07-29T06:00:00Z'
+      x-display-name: Timesheet Edit Form
+      x-display-id: Timesheet Edit Form
+    EditVolunteer:
+      type: object
+      properties:
+        emergency_contact_name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The name.
+        emergency_contact_phone:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The phone.
+        sponsor_id:
+          type: string
+          description: The sponsor.
+        countryid:
+          type: string
+          description: The country ID. Read-only in the SOAP API.
+      additionalProperties: false
+      description: EditVolunteer
+      example:
+        emergency_contact_name: Robert Adamson
+        emergency_contact_phone: 205-568-4100
+        sponsor_id: ''
+        default_country_id: ''
+      x-display-name: Volunteer Edit Form
+      x-display-id: Volunteer Edit Form
+    Job:
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The name.
+        description:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The description.
+        volunteer_type:
+          type: string
+          description: The volunteer type. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/36b8a634-cee9-4b4e-9510-d318b0954a24.
+        site_id:
+          type: string
+          description: The site.
+        site_required:
+          type: boolean
+          description: Indicates whether site required. Read-only in the SOAP API.
+        base_currency_id:
+          type: string
+          description: The base currency. Read-only in the SOAP API.
+        estimated_value:
+          type: number
+          description: The estimated value.
+          format: double
+      additionalProperties: false
+      description: GetJob
+      x-display-name: Job Edit Form 2
+      x-display-id: Job Edit Form 2
+    JobListSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID.
+        description:
+          type: string
+          description: The occurrence name.
+        active:
+          type: boolean
+          description: Indicates whether active.
+        kluge:
+          type: string
+          description: The kluge.
+        volunteers_needed:
+          type: integer
+          description: The needed.
+          format: int32
+        start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        end_date:
+          type: string
+          description: 'The end date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        start_month_day:
+          $ref: '#/components/schemas/MonthDay'
+        end_month_day:
+          $ref: '#/components/schemas/MonthDay'
+        start_time:
+          $ref: '#/components/schemas/HourMinute'
+        end_time:
+          $ref: '#/components/schemas/HourMinute'
+        day_of_week:
+          type: string
+          description: The day of week.
+        type:
+          type: string
+          description: The type.
+        estimated_value:
+          type: number
+          description: The estimated value.
+          format: double
+        base_currency_id:
+          type: string
+          description: The base currency.
+        event_name:
+          type: string
+          description: The event.
+      additionalProperties: false
+      description: ListJobs
+      x-display-name: Job Occurrence List
+      x-display-id: Job Occurrence List
+    JobListCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items available for retrieval into the collection after applying any request parameters.
+          format: int32
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/JobListSummary'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+        infinity_session:
+          type: string
+          description: Values for cookies related to the Infinity load balancer session.
+          format: string
+        session_key:
+          type: string
+          description: Session key for paging provided by user in request query parameter.
+          format: string
+        total_available_rows:
+          type: integer
+          description: The number of total rows available.
+          format: int32
+        more_rows_range_key:
+          type: string
+          description: Key for accessing cached results on subsequent calls to this data list.
+          format: string
+        data_no_longer_available:
+          type: boolean
+          description: Indicates data is no longer available in the context of this session.
+          format: boolean
+      additionalProperties: false
+      description: A collection of items. Data lists can contain paginated results.
+    JobOccurrence:
+      required:
+      - description
+      - day_of_week
+      type: object
+      properties:
+        description:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: The occurrence name.
+        department:
+          type: string
+          description: The department. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/departmentcode/entries
+        location:
+          type: string
+          description: The location. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/volunteerlocationcode/entries
+        type:
+          type: string
+          description: The type. Available values are <i>one time</i>, <i>recurring</i>, <i>recurring over date range</i>,
+            <i>ongoing</i>
+        start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        end_date:
+          type: string
+          description: 'The end date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        start_month_day:
+          $ref: '#/components/schemas/MonthDay'
+        end_month_day:
+          $ref: '#/components/schemas/MonthDay'
+        one_start_time:
+          $ref: '#/components/schemas/HourMinute'
+        one_end_time:
+          $ref: '#/components/schemas/HourMinute'
+        rec_start_time:
+          $ref: '#/components/schemas/HourMinute'
+        rec_end_time:
+          $ref: '#/components/schemas/HourMinute'
+        day_of_week:
+          type: string
+          description: The day of week. Available values are <i>every day</i>, <i>sunday</i>, <i>monday</i>, <i>tuesday</i>,
+            <i>wednesday</i>, <i>thursday</i>, <i>friday</i>, <i>saturday</i>, <i>weekends</i>, <i>weekdays</i>
+        event_id:
+          type: string
+          description: The event.
+        volunteers_needed:
+          type: integer
+          description: The volunteers needed.
+          format: int32
+        comments:
+          type: string
+          description: The comment.
+        site_id:
+          type: string
+          description: The site.
+        site_required:
+          type: boolean
+          description: Indicates whether site required. Read-only in the SOAP API.
+        base_currency_id:
+          type: string
+          description: The base currency. Read-only in the SOAP API.
+        estimated_value:
+          type: number
+          description: The estimated value.
+          format: double
+        recurrence_start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        recurrence_end_date:
+          type: string
+          description: 'The end date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+      additionalProperties: false
+      description: GetJobOccurrence
+      x-display-name: Job Occurrence Edit Form 1.1
+      x-display-id: Job Occurrence Edit Form 1.1
+    JobOccurrenceSearchSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID.
+        job_name:
+          type: string
+          description: The job name.
+        description:
+          type: string
+          description: The occurrence name.
+        location:
+          type: string
+          description: The location.
+        department:
+          type: string
+          description: The department.
+        event:
+          type: string
+          description: The event.
+        site:
+          type: string
+          description: The site.
+        start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        start_time:
+          $ref: '#/components/schemas/HourMinute'
+      additionalProperties: false
+      description: SearchJobOccurrences
+      x-display-name: Job Occurrence Search
+      x-display-id: Job Occurrence Search
+    JobOccurrenceSearchCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items available for retrieval into the collection after applying any request parameters.
+          format: int32
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/JobOccurrenceSearchSummary'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+      additionalProperties: false
+      description: A collection of items. Data lists can contain paginated results.
+    JobOccurrenceView:
+      type: object
+      properties:
+        start_date:
+          type: string
+          description: 'The dates. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        enddate:
+          type: string
+          description: 'The enddate. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        start_month_day:
+          $ref: '#/components/schemas/MonthDay'
+        end_month_day:
+          $ref: '#/components/schemas/MonthDay'
+        start_time:
+          $ref: '#/components/schemas/HourMinute'
+        end_time:
+          $ref: '#/components/schemas/HourMinute'
+        type_code:
+          type: integer
+          description: The typecode.
+          format: int32
+        type:
+          maxLength: 25
+          minLength: 0
+          type: string
+          description: The type.
+        day_of_week:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: The day of week.
+        volunteers_needed:
+          type: integer
+          description: The needed.
+          format: int32
+        comments:
+          type: string
+          description: The comments.
+        location:
+          maxLength: 250
+          minLength: 0
+          type: string
+          description: The location.
+        department:
+          maxLength: 250
+          minLength: 0
+          type: string
+          description: The department.
+        event:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: The event.
+        site:
+          maxLength: 1024
+          minLength: 0
+          type: string
+          description: The site.
+        schedule_summary:
+          maxLength: 1024
+          minLength: 0
+          type: string
+          description: The schedule.
+        schedule_summary_collection:
+          type: array
+          items:
+            $ref: '#/components/schemas/JobOccurrenceScheduleSummaryCollection'
+          description: Schedule summary collection.
+        more_than_five:
+          type: boolean
+          description: Indicates whether more than five.
+      additionalProperties: false
+      description: ViewJobOccurrence
+      x-display-name: Job Occurrence View Form
+      x-display-id: Job Occurrence View Form
+    JobOccurrenceScheduleSummaryCollection:
+      type: object
+      properties:
+        assignment_date:
+          type: string
+          description: date
+          format: date
+        openings:
+          type: integer
+          description: needed
+      description: JobOccurrenceScheduleSummaryCollection
+      x-display-name: schedule_summary_collection
+      x-display-id: schedule_summary_collection
+    JobSearchSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID.
+        name:
+          type: string
+          description: The name.
+        description:
+          type: string
+          description: The description.
+        estimated_value:
+          type: number
+          description: The estimated value.
+          format: double
+        base_currency_id:
+          type: string
+          description: The base currency.
+      additionalProperties: false
+      description: SearchJobs
+      x-display-name: Job Search
+      x-display-id: Job Search
+    JobSearchCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items available for retrieval into the collection after applying any request parameters.
+          format: int32
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/JobSearchSummary'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+      additionalProperties: false
+      description: A collection of items. Data lists can contain paginated results.
+    NewAssignment:
+      required:
+      - volunteer_id
+      - date
+      type: object
+      properties:
+        volunteer_id:
+          type: string
+          description: The volunteer ID.
+        name:
+          maxLength: 700
+          minLength: 0
+          type: string
+          description: The volunteer. Read-only in the SOAP API.
+        date:
+          type: string
+          description: 'The date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        assignments:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewAssignmentAssignments'
+          description: Assignments.
+      additionalProperties: false
+      description: CreateAssignment
+      example:
+        volunteer_id: ''
+        name: ''
+        date: ''
+        assignments:
+        - id: ''
+          job_occurrence_id: ''
+          start_time: ''
+          end_time: ''
+          match: ''
+      x-display-name: VolunteerAssignmentsDayView Add Data Form
+      x-display-id: VolunteerAssignmentsDayView Add Data Form
+    NewAssignmentAssignments:
+      required:
+      - job_occurrence_id
+      type: object
+      properties:
+        id:
+          type: string
+          description: id
+        job_occurrence_id:
+          type: string
+          description: job occurrence
+        start_time:
+          $ref: '#/components/schemas/HourMinute'
+        end_time:
+          $ref: '#/components/schemas/HourMinute'
+        match:
+          type: string
+          description: match
+      description: NewAssignmentAssignments
+      x-display-name: assignments
+      x-display-id: assignments
+    NewJob:
+      required:
+      - name
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID.
+        name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The name.
+        description:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The description.
+        volunteer_type:
+          type: string
+          description: The volunteer type. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/36b8a634-cee9-4b4e-9510-d318b0954a24.
+        site_id:
+          type: string
+          description: The site.
+        site_required:
+          type: boolean
+          description: Indicates whether site required. Read-only in the SOAP API.
+        base_currency_id:
+          type: string
+          description: The base currency. Read-only in the SOAP API.
+        estimated_value:
+          type: number
+          description: The estimated value.
+          format: double
+      additionalProperties: false
+      description: CreateJob
+      example:
+        id: 97a63f7a-d29a-45b8-a75f-9adebf00f849
+        name: Crowd Control
+        description: Walkers will need help with directions and we need to ensure we keep them on the walk course.
+        volunteer_type: 05e7c5e1-c45f-4fa8-a6d1-5232b5933d61
+        site_id: 7a67eb19-fedc-47d9-8ff9-b47d0ee3f5fd
+        site_required: false
+        base_currency_id: 6abe6c7e-fedc-473d-abe8-505807c94e0e
+        estimated_value: 0
+      x-display-name: Job Add Form 2
+      x-display-id: Job Add Form 2
+    NewJobOccurrence:
+      required:
+      - job_id
+      - description
+      - type
+      - day_of_week
+      type: object
+      properties:
+        job_id:
+          type: string
+          description: The job ID.
+        description:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: The occurrence name.
+        department:
+          type: string
+          description: The department. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/departmentcode/entries
+        location:
+          type: string
+          description: The location. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/volunteerlocationcode/entries
+        type:
+          type: string
+          description: The type. Available values are <i>one time</i>, <i>recurring</i>, <i>recurring over date range</i>,
+            <i>ongoing</i>
+        start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        end_date:
+          type: string
+          description: 'The end date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        start_month_day:
+          $ref: '#/components/schemas/MonthDay'
+        end_month_day:
+          $ref: '#/components/schemas/MonthDay'
+        one_start_time:
+          $ref: '#/components/schemas/HourMinute'
+        one_end_time:
+          $ref: '#/components/schemas/HourMinute'
+        rec_start_time:
+          $ref: '#/components/schemas/HourMinute'
+        rec_end_time:
+          $ref: '#/components/schemas/HourMinute'
+        day_of_week:
+          type: string
+          description: The day of week. Available values are <i>every day</i>, <i>sunday</i>, <i>monday</i>, <i>tuesday</i>,
+            <i>wednesday</i>, <i>thursday</i>, <i>friday</i>, <i>saturday</i>, <i>weekends</i>, <i>weekdays</i>
+        event_id:
+          type: string
+          description: The event.
+        volunteers_needed:
+          type: integer
+          description: The volunteers needed.
+          format: int32
+        comments:
+          type: string
+          description: The comment.
+        site_id:
+          type: string
+          description: The site.
+        site_required:
+          type: boolean
+          description: Indicates whether site required. Read-only in the SOAP API.
+        base_currency_id:
+          type: string
+          description: The base currency. Read-only in the SOAP API.
+        estimated_value:
+          type: number
+          description: The estimated value.
+          format: double
+        recurrence_start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        recurrence_end_date:
+          type: string
+          description: 'The end date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+      additionalProperties: false
+      description: CreateJobOccurrence
+      example:
+        job_id: 8ced83ec-a61b-4df1-aa26-4ddf76b5defb
+        description: Health Awareness
+        department_code_id: 8ced83ec-a61b-4df1-aa26-4ddf76b5defb
+        location_code_id: a4975cdb-3761-4a3c-b78f-968caa5a6321
+        type_code: One Time
+        start_date: '2016-02-18T12:00:00Z'
+        end_date: '2017-06-12T12:00:00Z'
+        start_month_day:
+          month: 11
+          day: 5
+        end_month_day:
+          month: 11
+          day: 6
+        one_start_time:
+          hour: 8
+          minute: 20
+        one_end_time:
+          hour: 9
+          minute: 16
+        rec_start_time:
+          hour: 8
+          minute: 10
+        rec_end_time:
+          hour: 10
+          minute: 18
+        day_of_week: Monday
+        event_id: bbf8a260-eed7-4cda-ac02-ec1dae73ca79
+        volunteers_needed: 5
+        comments: ''
+        site_id: a01bd875-b0a6-4455-8b69-a8ceae176e3d
+        site_required: false
+        base_currency_id: 03d475fd-2527-477f-bfa6-5099ad36345f
+        estimated_value: 0
+        recurrence_start_date: '2022-12-15T12:00:00Z'
+        recurrence_end_date: '2026-12-25T12:00:00Z'
+      x-display-name: Job Occurrence Add Form 1.1
+      x-display-id: Job Occurrence Add Form 1.1
+    NewTimesheet:
+      required:
+      - volunteer_id
+      - job_occurrence_id
+      - hours_worked
+      - start_date
+      type: object
+      properties:
+        volunteer_id:
+          type: string
+          description: The volunteer ID.
+        job_occurrence_id:
+          type: string
+          description: The job occurrence.
+        hours_worked:
+          type: number
+          description: The hours worked.
+          format: double
+        start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        end_date:
+          type: string
+          description: 'The end date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+      additionalProperties: false
+      description: CreateTimesheet
+      example:
+        volunteer_id: d7653267-54ce-461f-ae97-bbb305c9af57
+        job_occurrence_id: 97a63f7a-d29a-45b8-a75f-9adebf00f849
+        hours_worked: 8
+        start_date: '2006-07-29T10:00:00Z'
+        end_date: '2006-07-29T06:00:00Z'
+      x-display-name: Timesheet Add Form
+      x-display-id: Timesheet Add Form
+    NewVolunteer:
+      required:
+      - constituent_id
+      type: object
+      properties:
+        constituent_id:
+          type: string
+          description: The record.
+        emergency_contact_name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The name.
+        emergency_contact_phone:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The phone.
+        sponsor_id:
+          type: string
+          description: The sponsor.
+        default_country_id:
+          type: string
+          description: The default country ID. Read-only in the SOAP API.
+      additionalProperties: false
+      description: CreateVolunteer
+      example:
+        constituent_id: F39270BA-90EB-4A0E-B7BD-31998E56E569
+        emergency_contact_name: Robert Adamson
+        emergency_contact_phone: 205-568-4200
+        sponsor_id: ''
+        default_country_id: ''
+      x-display-name: Volunteer Add Form
+      x-display-id: Volunteer Add Form
+    NewVolunteerSchedule:
+      required:
+      - job_occurrence_id
+      - start_date
+      - end_date
+      type: object
+      properties:
+        job_occurrence_id:
+          type: string
+          description: The job occurrence ID.
+        single_day_edit:
+          type: boolean
+          description: Indicates whether single day edit.
+        job_name:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: The job. Read-only in the SOAP API.
+        occurrence_name:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: The occurrence. Read-only in the SOAP API.
+        start_date:
+          type: string
+          description: 'The dates. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        end_date:
+          type: string
+          description: 'The end date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        starttime:
+          $ref: '#/components/schemas/HourMinute'
+        endtime:
+          $ref: '#/components/schemas/HourMinute'
+        volunteers:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewVolunteerScheduleVolunteers'
+          description: Volunteers.
+        needed:
+          type: integer
+          description: The needed. Read-only in the SOAP API.
+          format: int32
+      additionalProperties: false
+      description: CreateVolunteerSchedule
+      example:
+        job_occurrence_id: 78bde37e-df28-4841-ac78-1bcd6e3dc18f
+        single_day_edit: false
+        job_name: CPR Class Instructor
+        occurrence_name: CPR Class Instructor
+        start_date: ''
+        end_date: ''
+        start_time: ''
+        end_time: ''
+        volunteers:
+        - volunteer_id: fde70688-8012-4dc9-a642-ceb311a1261b
+          volunteer_assignment_id: 7322f6c1-ccba-45e6-87cf-d3fe6fd6408b
+          assign: false
+          volunteer_name: ''
+          match: ''
+        needed: 0
+      x-display-name: Assign Volunteers Add Data Form
+      x-display-id: Assign Volunteers Add Data Form
+    NewVolunteerScheduleVolunteers:
+      type: object
+      properties:
+        volunteer_id:
+          type: string
+          description: volunteerid
+        volunteer_assignment_id:
+          type: string
+          description: volunteerassignmentid
+        assign:
+          type: boolean
+          description: assign
+        volunteer_name:
+          type: string
+          description: volunteer name
+        match:
+          type: string
+          description: percent match
+      description: NewVolunteerScheduleVolunteers
+      x-display-name: volunteers
+      x-display-id: volunteers
+    Timesheet:
+      required:
+      - job_occurrence_id
+      - hours_worked
+      - start_date
+      type: object
+      properties:
+        job_occurrence_id:
+          type: string
+          description: The job occurrence.
+        hours_worked:
+          type: number
+          description: The hours worked.
+          format: double
+        start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        end_date:
+          type: string
+          description: 'The end date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+      additionalProperties: false
+      description: GetTimesheet
+      x-display-name: Timesheet Edit Form
+      x-display-id: Timesheet Edit Form
+    TimesheetListSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID.
+        job_name:
+          type: string
+          description: The job.
+        job_occurrence:
+          type: string
+          description: The job occurrence.
+        hours_worked:
+          type: number
+          description: The hours worked.
+          format: double
+        start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        end_date:
+          type: string
+          description: 'The end date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+      additionalProperties: false
+      description: ListTimesheets
+      x-display-name: Timesheet List
+      x-display-id: Timesheet List
+    TimesheetListCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items available for retrieval into the collection after applying any request parameters.
+          format: int32
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/TimesheetListSummary'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+        infinity_session:
+          type: string
+          description: Values for cookies related to the Infinity load balancer session.
+          format: string
+        session_key:
+          type: string
+          description: Session key for paging provided by user in request query parameter.
+          format: string
+        total_available_rows:
+          type: integer
+          description: The number of total rows available.
+          format: int32
+        more_rows_range_key:
+          type: string
+          description: Key for accessing cached results on subsequent calls to this data list.
+          format: string
+        data_no_longer_available:
+          type: boolean
+          description: Indicates data is no longer available in the context of this session.
+          format: boolean
+      additionalProperties: false
+      description: A collection of items. Data lists can contain paginated results.
+    Volunteer:
+      type: object
+      properties:
+        emergency_contact_name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The name.
+        emergency_contact_phone:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The phone.
+        sponsor_id:
+          type: string
+          description: The sponsor.
+        country_id:
+          type: string
+          description: The country ID. Read-only in the SOAP API.
+      additionalProperties: false
+      description: GetVolunteer
+      x-display-name: Volunteer Edit Form
+      x-display-id: Volunteer Edit Form
+    VolunteerScheduleListSummary:
+      type: object
+      properties:
+        job_id:
+          type: string
+          description: The jobid.
+        start_date:
+          type: string
+          description: 'The startdate. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        name:
+          type: string
+          description: The name.
+        start_time:
+          $ref: '#/components/schemas/HourMinute'
+        end_time:
+          $ref: '#/components/schemas/HourMinute'
+        description:
+          type: string
+          description: The description.
+      additionalProperties: false
+      description: ListVolunteerSchedules
+      x-display-name: Job Occurrence Schedule Openings Calendar Datalist
+      x-display-id: Job Occurrence Schedule Openings Calendar Datalist
+    VolunteerScheduleListCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items available for retrieval into the collection after applying any request parameters.
+          format: int32
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/VolunteerScheduleListSummary'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+        infinity_session:
+          type: string
+          description: Values for cookies related to the Infinity load balancer session.
+          format: string
+        session_key:
+          type: string
+          description: Session key for paging provided by user in request query parameter.
+          format: string
+        total_available_rows:
+          type: integer
+          description: The number of total rows available.
+          format: int32
+        more_rows_range_key:
+          type: string
+          description: Key for accessing cached results on subsequent calls to this data list.
+          format: string
+        data_no_longer_available:
+          type: boolean
+          description: Indicates data is no longer available in the context of this session.
+          format: boolean
+      additionalProperties: false
+      description: A collection of items. Data lists can contain paginated results.
+    VolunteerSearchSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID.
+        name:
+          type: string
+          description: The name.
+        address:
+          type: string
+          description: The address.
+        city:
+          type: string
+          description: The city.
+        state:
+          type: string
+          description: The state.
+        post_code:
+          type: string
+          description: The zip/postal code.
+        lookup_id:
+          type: string
+          description: The lookup ID.
+        constituent_type:
+          type: string
+          description: The constituent type.
+        sort_constituent_name:
+          type: string
+          description: The name.
+      additionalProperties: false
+      description: SearchVolunteers
+      x-display-name: Volunteer Search
+      x-display-id: Volunteer Search
+    VolunteerSearchCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items available for retrieval into the collection after applying any request parameters.
+          format: int32
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/VolunteerSearchSummary'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+      additionalProperties: false
+      description: A collection of items. Data lists can contain paginated results.
+    VolunteerView:
+      type: object
+      properties:
+        sponsor_name:
+          maxLength: 400
+          minLength: 0
+          type: string
+          description: The sponsor.
+        emergency_contact_name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The emergency contact name.
+        emergency_contact_phone:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The emergency contact phone.
+      additionalProperties: false
+      description: ViewVolunteer
+      x-display-name: Volunteer General View Form
+      x-display-id: Volunteer General View Form
+    Volunteers-volunteer_date_range_id-DeleteRequest:
+      type: string
+      x-apim-inline: true
+    Volunteers-volunteer_id-GetRequest:
+      type: string
+      x-apim-inline: true
+    Volunteers-volunteer_id-PatchRequest:
+      type: string
+      x-apim-inline: true
+    Volunteers-volunteer_id-ViewGetRequest:
+      type: string
+      x-apim-inline: true
+    Jobs-job_id-DeleteRequest:
+      type: string
+      x-apim-inline: true
+    Jobs-job_id-GetRequest:
+      type: string
+      x-apim-inline: true
+    Jobs-job_id-PatchRequest:
+      type: string
+      x-apim-inline: true
+    Occurrences-job_occurrence_id-DeleteRequest:
+      type: string
+      x-apim-inline: true
+    Occurrences-job_occurrence_id-GetRequest:
+      type: string
+      x-apim-inline: true
+    Occurrences-job_occurrence_id-PatchRequest:
+      type: string
+      x-apim-inline: true
+    Timesheets-time_sheet_id-DeleteRequest:
+      type: string
+      x-apim-inline: true
+    Timesheets-time_sheet_id-GetRequest:
+      type: string
+      x-apim-inline: true
+    Timesheets-time_sheet_id-PatchRequest:
+      type: string
+      x-apim-inline: true
+    Occurrences-job_occurrence_id-ViewGetRequest:
+      type: string
+      x-apim-inline: true
+    Volunteerassignments-volunteer_assignment_id-DeleteRequest:
+      type: string
+      x-apim-inline: true
+    Volunteerassignments-volunteer_id-ListGetRequest:
+      type: string
+      x-apim-inline: true
+    Volunteerassignments-volunteer_id-ListGetRequest-1:
+      type: string
+      format: date
+      x-apim-inline: true
+    Volunteerassignments-volunteer_id-ListGetRequest-2:
+      type: integer
+      x-apim-inline: true
+    Volunteerassignments-volunteer_id-ListGetRequest-3:
+      type: string
+      x-apim-inline: true
+    Volunteerassignments-volunteer_id-ListGetRequest-4:
+      type: string
+      x-apim-inline: true
+    Volunteerassignments-volunteer_id-ListGetRequest-5:
+      type: string
+      x-apim-inline: true
+    Volunteerassignments-volunteer_id-ListGetRequest-6:
+      type: integer
+      x-apim-inline: true
+    Jobs-job_id-ListGetRequest:
+      type: string
+      x-apim-inline: true
+    Jobs-job_id-ListGetRequest-1:
+      type: boolean
+      x-apim-inline: true
+    Jobs-job_id-ListGetRequest-2:
+      enum:
+      - One-time
+      - Recurring
+      - Ongoing
+      type: string
+      x-apim-inline: true
+    Jobs-job_id-ListGetRequest-3:
+      type: string
+      x-apim-inline: true
+    Jobs-job_id-ListGetRequest-4:
+      type: string
+      x-apim-inline: true
+    Jobs-job_id-ListGetRequest-5:
+      enum:
+      - Base
+      - Organization
+      type: string
+      x-apim-inline: true
+    Jobs-job_id-ListGetRequest-6:
+      type: integer
+      x-apim-inline: true
+    Jobs-job_id-ListGetRequest-7:
+      type: string
+      x-apim-inline: true
+    Jobs-job_id-ListGetRequest-8:
+      type: string
+      x-apim-inline: true
+    Jobs-job_id-ListGetRequest-9:
+      type: string
+      x-apim-inline: true
+    Jobs-job_id-ListGetRequest-10:
+      type: integer
+      x-apim-inline: true
+    Timesheets-volunteer_id-ListGetRequest:
+      type: string
+      x-apim-inline: true
+    Timesheets-volunteer_id-ListGetRequest-1:
+      type: integer
+      x-apim-inline: true
+    Timesheets-volunteer_id-ListGetRequest-2:
+      type: string
+      x-apim-inline: true
+    Timesheets-volunteer_id-ListGetRequest-3:
+      type: string
+      x-apim-inline: true
+    Timesheets-volunteer_id-ListGetRequest-4:
+      type: string
+      x-apim-inline: true
+    Timesheets-volunteer_id-ListGetRequest-5:
+      type: integer
+      x-apim-inline: true
+    Volunteerschedules-job_occurrence_id-ListGetRequest:
+      type: string
+      x-apim-inline: true
+    Volunteerschedules-job_occurrence_id-ListGetRequest-1:
+      type: string
+      format: date
+      x-apim-inline: true
+    Volunteerschedules-job_occurrence_id-ListGetRequest-2:
+      type: string
+      format: date
+      x-apim-inline: true
+    Volunteerschedules-job_occurrence_id-ListGetRequest-3:
+      type: integer
+      x-apim-inline: true
+    Volunteerschedules-job_occurrence_id-ListGetRequest-4:
+      type: string
+      x-apim-inline: true
+    Volunteerschedules-job_occurrence_id-ListGetRequest-5:
+      type: string
+      x-apim-inline: true
+    Volunteerschedules-job_occurrence_id-ListGetRequest-6:
+      type: string
+      x-apim-inline: true
+    Volunteerschedules-job_occurrence_id-ListGetRequest-7:
+      type: integer
+      x-apim-inline: true
+    VolunteerassignmentsSearchGetRequest:
+      type: integer
+      x-apim-inline: true
+    VolunteerassignmentsSearchGetRequest-1:
+      type: string
+      x-apim-inline: true
+    VolunteerassignmentsSearchGetRequest-2:
+      type: string
+      x-apim-inline: true
+    VolunteerassignmentsSearchGetRequest-3:
+      type: string
+      x-apim-inline: true
+    VolunteerassignmentsSearchGetRequest-4:
+      type: string
+      x-apim-inline: true
+    VolunteerassignmentsSearchGetRequest-5:
+      type: string
+      x-apim-inline: true
+    VolunteerassignmentsSearchGetRequest-6:
+      type: string
+      x-apim-inline: true
+    VolunteerassignmentsSearchGetRequest-7:
+      type: string
+      x-apim-inline: true
+    VolunteerassignmentsSearchGetRequest-8:
+      type: string
+      x-apim-inline: true
+    VolunteerassignmentsSearchGetRequest-9:
+      type: boolean
+      x-apim-inline: true
+    VolunteerassignmentsSearchGetRequest-10:
+      type: boolean
+      x-apim-inline: true
+    VolunteerassignmentsSearchGetRequest-11:
+      type: boolean
+      x-apim-inline: true
+    VolunteerassignmentsSearchGetRequest-12:
+      type: boolean
+      x-apim-inline: true
+    VolunteerassignmentsSearchGetRequest-13:
+      type: boolean
+      x-apim-inline: true
+    VolunteerassignmentsSearchGetRequest-14:
+      type: boolean
+      x-apim-inline: true
+    VolunteerassignmentsSearchGetRequest-15:
+      type: boolean
+      x-apim-inline: true
+    VolunteerassignmentsSearchGetRequest-16:
+      type: boolean
+      x-apim-inline: true
+    VolunteerassignmentsSearchGetRequest-17:
+      type: string
+      x-apim-inline: true
+    VolunteerassignmentsSearchGetRequest-18:
+      type: string
+      format: date
+      x-apim-inline: true
+    VolunteerassignmentsSearchGetRequest-19:
+      type: string
+      x-apim-inline: true
+    VolunteerassignmentsSearchGetRequest-20:
+      type: boolean
+      x-apim-inline: true
+    VolunteerassignmentsSearchGetRequest-21:
+      type: boolean
+      x-apim-inline: true
+    VolunteerassignmentsSearchGetRequest-22:
+      type: boolean
+      x-apim-inline: true
+    VolunteerassignmentsSearchGetRequest-23:
+      type: string
+      format: date
+      x-apim-inline: true
+    VolunteerassignmentsSearchGetRequest-24:
+      type: boolean
+      x-apim-inline: true
+    VolunteerassignmentsSearchGetRequest-25:
+      type: boolean
+      x-apim-inline: true
+    VolunteerassignmentsSearchGetRequest-26:
+      type: boolean
+      x-apim-inline: true
+    VolunteerassignmentsSearchGetRequest-27:
+      type: boolean
+      x-apim-inline: true
+    VolunteerassignmentsSearchGetRequest-28:
+      type: boolean
+      x-apim-inline: true
+    VolunteerassignmentsSearchGetRequest-29:
+      type: integer
+      x-apim-inline: true
+    OccurrencesSearchGetRequest:
+      type: string
+      x-apim-inline: true
+    OccurrencesSearchGetRequest-1:
+      type: string
+      x-apim-inline: true
+    OccurrencesSearchGetRequest-2:
+      type: boolean
+      x-apim-inline: true
+    OccurrencesSearchGetRequest-3:
+      type: string
+      x-apim-inline: true
+    OccurrencesSearchGetRequest-4:
+      type: string
+      x-apim-inline: true
+    OccurrencesSearchGetRequest-5:
+      type: string
+      x-apim-inline: true
+    OccurrencesSearchGetRequest-6:
+      type: string
+      x-apim-inline: true
+    OccurrencesSearchGetRequest-7:
+      type: string
+      format: date
+      x-apim-inline: true
+    OccurrencesSearchGetRequest-8:
+      type: string
+      x-apim-inline: true
+    OccurrencesSearchGetRequest-9:
+      type: integer
+      x-apim-inline: true
+    JobsSearchGetRequest:
+      type: string
+      x-apim-inline: true
+    JobsSearchGetRequest-1:
+      type: string
+      x-apim-inline: true
+    JobsSearchGetRequest-2:
+      type: boolean
+      x-apim-inline: true
+    JobsSearchGetRequest-3:
+      type: string
+      x-apim-inline: true
+    JobsSearchGetRequest-4:
+      type: string
+      x-apim-inline: true
+    JobsSearchGetRequest-5:
+      type: string
+      x-apim-inline: true
+    JobsSearchGetRequest-6:
+      type: string
+      x-apim-inline: true
+    JobsSearchGetRequest-7:
+      type: integer
+      x-apim-inline: true
+    VolunteersSearchGetRequest:
+      type: integer
+      x-apim-inline: true
+    VolunteersSearchGetRequest-1:
+      type: string
+      x-apim-inline: true
+    VolunteersSearchGetRequest-2:
+      type: string
+      x-apim-inline: true
+    VolunteersSearchGetRequest-3:
+      type: string
+      x-apim-inline: true
+    VolunteersSearchGetRequest-4:
+      type: string
+      x-apim-inline: true
+    VolunteersSearchGetRequest-5:
+      type: string
+      x-apim-inline: true
+    VolunteersSearchGetRequest-6:
+      type: string
+      x-apim-inline: true
+    VolunteersSearchGetRequest-7:
+      type: string
+      x-apim-inline: true
+    VolunteersSearchGetRequest-8:
+      type: string
+      x-apim-inline: true
+    VolunteersSearchGetRequest-9:
+      type: boolean
+      x-apim-inline: true
+    VolunteersSearchGetRequest-10:
+      type: boolean
+      x-apim-inline: true
+    VolunteersSearchGetRequest-11:
+      type: boolean
+      x-apim-inline: true
+    VolunteersSearchGetRequest-12:
+      type: boolean
+      x-apim-inline: true
+    VolunteersSearchGetRequest-13:
+      type: boolean
+      x-apim-inline: true
+    VolunteersSearchGetRequest-14:
+      type: boolean
+      x-apim-inline: true
+    VolunteersSearchGetRequest-15:
+      type: boolean
+      x-apim-inline: true
+    VolunteersSearchGetRequest-16:
+      type: boolean
+      x-apim-inline: true
+    VolunteersSearchGetRequest-17:
+      type: string
+      x-apim-inline: true
+    VolunteersSearchGetRequest-18:
+      type: boolean
+      x-apim-inline: true
+    VolunteersSearchGetRequest-19:
+      type: boolean
+      x-apim-inline: true
+    VolunteersSearchGetRequest-20:
+      type: string
+      x-apim-inline: true
+    VolunteersSearchGetRequest-21:
+      type: boolean
+      x-apim-inline: true
+    VolunteersSearchGetRequest-22:
+      type: string
+      format: date
+      x-apim-inline: true
+    VolunteersSearchGetRequest-23:
+      type: boolean
+      x-apim-inline: true
+    VolunteersSearchGetRequest-24:
+      type: boolean
+      x-apim-inline: true
+    VolunteersSearchGetRequest-25:
+      type: boolean
+      x-apim-inline: true
+    VolunteersSearchGetRequest-26:
+      type: boolean
+      x-apim-inline: true
+    VolunteersSearchGetRequest-27:
+      type: boolean
+      x-apim-inline: true
+    VolunteersSearchGetRequest-28:
+      type: integer
+      x-apim-inline: true
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []

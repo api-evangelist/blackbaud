@@ -1,0 +1,2151 @@
+openapi: 3.0.1
+info:
+  title: 'Blackbaud SKY API: Consent'
+  description: This API manages consent information.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/cns-cnsnt
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations,
+      examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/consent
+paths:
+  /configuration/channels:
+    post:
+      operationId: AddChannelCategory
+      summary: Add channel category.
+      description: Add consent configuration for a channel and category.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConsentChannelCategoryWrite'
+            example:
+              channel: Mail
+              category: Targeted Ads
+              solicit_code_assignments:
+              - response: OptIn
+                add_remove: Remove
+                solicit_code: Do not mail targeted ads
+              - response: OptOut
+                add_remove: Add
+                solicit_code: Do not mail targeted ads
+        description: The request representing the channel category mapping to be added.
+      responses:
+        '200':
+          description: Returned when the operation succeeds.
+        '400':
+          description: Returned when the channel category already exists or the request includes an invalid property.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/AddChannelCategory400ResponseTypes'
+              example:
+                type: urn:blackbaud:model-validation-error
+                title: One or more validation errors occurred.
+                status: 400
+                detail: The date field is required.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '404':
+          description: Returned when the specified category or one of the provided solicit codes are not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: urn:blackbaud:model-validation-error
+                title: One or more validation errors occurred.
+                status: 400
+                detail: The date field is required.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+    get:
+      operationId: GetConsentChannelConfiguration
+      summary: Get consent channel configuration.
+      description: Gets the collection of consent channel configuration.
+      parameters:
+      - name: channels
+        in: query
+        required: false
+        schema:
+          type: array
+        description: Optional collection of channels with which to filter the results.<br/><br/>Available values:<ul><li>Email</li><li>Mail</li><li>SMS</li><li>Phone</li><li>AutoPhone</li><li>Social</li><li>DataProcessing</li><li>Other</li></ul>
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body includes the collection of consent channel
+            category configurations.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsentChannelConfigurationReadCollection'
+              example:
+                channel_configurations:
+                - channel: Email
+                  categories:
+                  - category: Newsletters
+                    inactive: false
+                    solicit_code_assignments:
+                    - solicit_code: Send newsletters
+                      response: OptIn
+                      add_remove: Add
+                    - solicit_code: Do not send newsletters
+                      response: OptIn
+                      add_remove: Remove
+                    - solicit_code: Send newsletters
+                      response: OptOut
+                      add_remove: Remove
+                    - solicit_code: Do not send newsletters
+                      response: OptOut
+                      add_remove: Add
+                - channel: DataProcessing
+                  categories:
+                  - category: Profiling
+                    inactive: false
+                    solicit_code_assignments:
+                    - solicit_code: Profiling allowed
+                      response: OptIn
+                      add_remove: Add
+                    - solicit_code: Do not profile
+                      response: OptIn
+                      add_remove: Remove
+                    - solicit_code: Do not profile
+                      response: OptOut
+                      add_remove: Add
+                    - solicit_code: Profiling allowed
+                      response: OptOut
+                      add_remove: Remove
+                count: 2
+                offset: 0
+                limit: 500
+  /configuration/channels/{channel}:
+    patch:
+      operationId: EditConsentChannel
+      summary: Edit consent channel.
+      description: Edit a consent channel.
+      parameters:
+      - name: channel
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The channel.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConsentChannelWrite'
+            example:
+              active: false
+        description: The changes to be applied to the consent defaults.
+      responses:
+        '200':
+          description: Returned when the operation succeeds.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsentDefaults'
+              example:
+                consent_statement: I agree to receive email.
+                privacy_policy: Privacy Policy v1.2.3
+        '400':
+          description: Returned when attempting to update an invalid or mandatory channel (Email, Mail, Phone).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/EditConsentChannel400ResponseTypes'
+              example:
+                type: urn:blackbaud:model-validation-error
+                title: One or more validation errors occurred.
+                status: 400
+                detail: The date field is required.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+  /configuration/channels/{channel}/categories/{category}:
+    delete:
+      operationId: DeleteChannelCategoryConfiguration
+      summary: Delete channel category configuration.
+      description: Delete a channel category configuration.
+      parameters:
+      - name: channel
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The channel.
+      - name: category
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The category.
+      responses:
+        '200':
+          description: Returned when the operation succeeds.
+        '404':
+          description: Returned when the specified category or channel category configuration is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: urn:blackbaud:model-validation-error
+                title: One or more validation errors occurred.
+                status: 400
+                detail: The date field is required.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '403':
+          description: Returned when the user does not have permission to delete the channel category configuration.
+  /configuration/channels/{channel}/solicitcodeassignments:
+    patch:
+      operationId: EditChannelSolicitCodeAssignments
+      summary: Edit channel solicit code assignments.
+      description: Edit channel solicit code assignments for the given channel and optional category.
+      parameters:
+      - name: channel
+        in: path
+        required: true
+        schema:
+          type: string
+          enum:
+          - Email
+          - Mail
+          - SMS
+          - Phone
+          - AutoPhone
+          - Social
+          - DataProcessing
+          - Other
+        description: The channel.<p>Members:</p><ul><li><i>Email</i> - Email</li><li><i>Mail</i> - Mail</li><li><i>SMS</i>
+          - SMS</li><li><i>Phone</i> - Phone</li><li><i>AutoPhone</i> - AutoPhone</li><li><i>Social</i> - Social media</li><li><i>DataProcessing</i>
+          - Data processing</li><li><i>Other</i> - Other</li></ul>
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditSolicitCodeAssignmentsRequest'
+            example:
+              category: Targeted Ads
+              solicit_code_assignments:
+              - response: OptIn
+                add_remove: Remove
+                solicit_code: Do not mail targeted ads
+              - response: OptOut
+                add_remove: Add
+                solicit_code: Do not mail targeted ads
+        description: The update solicit code assignments request.
+      responses:
+        '200':
+          description: Returned when the operation succeeds.
+        '400':
+          description: Returned when the channel category already exists or the request includes an invalid property.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/UpdateSolicitCodeAssignments400ResponseTypes'
+              example:
+                type: urn:blackbaud:model-validation-error
+                title: One or more validation errors occurred.
+                status: 400
+                detail: The date field is required.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '404':
+          description: Returned when the specified channel category configuration is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: urn:blackbaud:model-validation-error
+                title: One or more validation errors occurred.
+                status: 400
+                detail: The date field is required.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '403':
+          description: Returned when the user does not have permission to update the solicit code assignments.
+  /configuration/defaults:
+    patch:
+      operationId: EditConsentDefaults
+      summary: Edit consent defaults.
+      description: Edit the default consent statement and/or privacy policy.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConsentDefaults'
+            example:
+              consent_statement: I agree to receive email.
+              privacy_policy: Privacy Policy v1.2.3
+        description: The changes to be applied to the consent defaults.
+      responses:
+        '200':
+          description: Returned when the operation succeeds.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsentDefaults'
+              example:
+                consent_statement: I agree to receive email.
+                privacy_policy: Privacy Policy v1.2.3
+    get:
+      operationId: GetConsentDefaults
+      summary: Get consent defaults.
+      description: Gets the default consent statement and privacy policy.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body includes the default consent statement and
+            privacy policy.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsentDefaults'
+              example:
+                consent_statement: I agree to receive email.
+                privacy_policy: Privacy Policy v1.2.3
+  /constituents/consentlist:
+    post:
+      operationId: GetConstituentConsentListV2
+      summary: Get constituent consent list (V2).
+      description: Get a list of constituent consents using POST to work around query string length limitations.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConsentListOptions'
+            example:
+              channels:
+              - Email
+              - SMS
+              - Phone
+              constituent_ids:
+              - '42'
+              - '280'
+              - '777'
+              category_filter_type: NoFilter
+              from_date: '2023-01-01T12:00:00Z'
+              to_date: '2023-12-31T11:59:59Z'
+              limit: 500
+              offset: 0
+        description: The list options.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the collection of constituent consents.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConstituentConsentReadCollection'
+              example:
+                constituent_consents:
+                - constituent_id: '42'
+                  id: '7'
+                  channel: Email
+                  date: '2024-06-03T12:00:00Z'
+                  response: OptIn
+                  source: Website
+                  privacy_notice: Privacy Policy v1.2.3
+                  consent_statement: I agree to receive email.
+                  date_added: '2024-06-03T02:15:00Z'
+                - constituent_id: '57'
+                  id: '42'
+                  channel: Email
+                  date: '2024-06-03T12:00:00Z'
+                  response: OptOut
+                  category: Targeted Ads
+                  category_id: '7'
+                  source: Website
+                  privacy_notice: Privacy Policy v1.2.3
+                  consent_statement: I agree to receive targeted ad emails.
+                  date_added: '2024-06-03T02:15:00Z'
+                - constituent_id: '57'
+                  id: '53'
+                  channel: Phone
+                  date: '2023-09-15T12:00:00Z'
+                  response: OptOut
+                  source: Website
+                  privacy_notice: Privacy Policy v1.2.3
+                  consent_statement: I agree to phone calls.
+                  date_added: '2023-09-16T10:45:00Z'
+                count: 12
+                offset: 0
+                limit: 500
+                continuation_token: eyAibGltaXQiOiAzLCBvZmZzZXQ6IDYgfQ==
+        '400':
+          description: Returned when the request is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/GetConsentList400ResponseTypes'
+              example:
+                type: urn:blackbaud:model-validation-error
+                title: One or more validation errors occurred.
+                status: 400
+                detail: Field is required
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '403':
+          description: Returned when the user does not have permission to view the constituents.
+  /constituents/consents:
+    post:
+      operationId: CreateConsentsMultipleConstituents
+      summary: Create consents for one or more constituents.
+      description: Create one or more consents for one or more constituents.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateConstituentConsentsRequest'
+            example:
+              channel: Email
+              category: Targeted Ads
+              source: Registration Forms
+              privacy_policy: Privacy Policy v1.2.3
+              consent_statement: I agree to my data being used for targeted ads.
+              constituent_requests:
+              - constituent_id: '280'
+                consent_date: '2024-06-03T12:00:00Z'
+                consent_response: OptIn
+              - constituent_id: '185'
+                consent_date: '2024-06-12T12:00:00Z'
+                consent_response: OptOut
+              - constituent_id: '185'
+                consent_date: '2024-06-12T12:00:00Z'
+                consent_response: OptOut
+        description: The create constituent consents request.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body is a collection of the resulting consent identifiers.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdentifierCollection'
+              example:
+                identifiers:
+                - '42'
+                - '44'
+                - '45'
+                count: 3
+                offset: 0
+                limit: 500
+        '400':
+          description: Returned when the request is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/CreateConsentsMultipleConstituents400ResponseTypes'
+              example:
+                type: urn:blackbaud:model-validation-error
+                title: One or more validation errors occurred.
+                status: 400
+                detail: Field is required
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '404':
+          description: Returned when one or more of the specified constituents are not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: urn:blackbaud:model-validation-error
+                title: One or more validation errors occurred.
+                status: 400
+                detail: The date field is required.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '403':
+          description: Returned when the user does not have permission to create consents for one or more of the targeted
+            constituents.
+    get:
+      operationId: GetConstituentConsentList
+      summary: Get constituent consent list.
+      description: Get a list of constituent consents.
+      parameters:
+      - name: channels
+        in: query
+        required: false
+        schema:
+          type: array
+        description: Limit results to the given list of channels. All channels are included by default.<br/><br/>Available
+          values:<ul><li>Email</li><li>Mail</li><li>SMS</li><li>Phone</li><li>AutoPhone</li><li>Social</li><li>DataProcessing</li><li>Other</li></ul>
+      - name: constituent_ids
+        in: query
+        required: false
+        schema:
+          type: array
+        description: Limit results to the given list of constituent identifiers.
+      - name: category_filter_type
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - NoFilter
+          - AnyCategory
+          - NoCategory
+          - SpecificCategory
+        description: Category filter type<p>Members:</p><ul><li><i>NoFilter</i> - Include all consents regardless of assigned
+          category.</li><li><i>AnyCategory</i> - Include all consents assigned to any category.</li><li><i>NoCategory</i>
+          - Include only consents without an assigned category.</li><li><i>SpecificCategory</i> - Include only consents assigned
+          a specific category.</li></ul>
+      - name: category
+        in: query
+        required: false
+        schema:
+          type: string
+        description: The category name or identifier with which to filter by when CategoryFilterType is SpecificCategory.
+      - name: response
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - OptIn
+          - OptOut
+          - NoResponse
+        description: Consent response<p>Members:</p><ul><li><i>OptIn</i> - Opt-in</li><li><i>OptOut</i> - Opt-out</li><li><i>NoResponse</i>
+          - No response</li></ul>
+      - name: source
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Source description or identifier
+      - name: from_date
+        in: query
+        required: false
+        schema:
+          type: string
+        description: From date filter
+      - name: to_date
+        in: query
+        required: false
+        schema:
+          type: string
+        description: To date filters
+      - name: continuation_token
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Continuation token for paging
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: '500'
+        description: Represents the number of records to return. (The default is 500)
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Represents the number of records to skip.(For use with pagination)
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the collection of constituent consents.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConstituentConsentReadCollection'
+              example:
+                constituent_consents:
+                - constituent_id: '42'
+                  id: '7'
+                  channel: Email
+                  date: '2024-06-03T12:00:00Z'
+                  response: OptIn
+                  source: Website
+                  privacy_notice: Privacy Policy v1.2.3
+                  consent_statement: I agree to receive email.
+                  date_added: '2024-06-03T02:15:00Z'
+                - constituent_id: '57'
+                  id: '42'
+                  channel: Email
+                  date: '2024-06-03T12:00:00Z'
+                  response: OptOut
+                  category: Targeted Ads
+                  category_id: '7'
+                  source: Website
+                  privacy_notice: Privacy Policy v1.2.3
+                  consent_statement: I agree to receive targeted ad emails.
+                  date_added: '2024-06-03T02:15:00Z'
+                - constituent_id: '57'
+                  id: '53'
+                  channel: Phone
+                  date: '2023-09-15T12:00:00Z'
+                  response: OptOut
+                  source: Website
+                  privacy_notice: Privacy Policy v1.2.3
+                  consent_statement: I agree to phone calls.
+                  date_added: '2023-09-16T10:45:00Z'
+                count: 12
+                offset: 0
+                limit: 500
+                continuation_token: eyAibGltaXQiOiAzLCBvZmZzZXQ6IDYgfQ==
+        '400':
+          description: Returned when the request is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/GetConsentList400ResponseTypes'
+              example:
+                type: urn:blackbaud:model-validation-error
+                title: One or more validation errors occurred.
+                status: 400
+                detail: Field is required
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '403':
+          description: Returned when the user does not have permission to view the constituents.
+  /constituents/consents/{consent_id}:
+    delete:
+      operationId: DeleteConstituentConsent
+      summary: Delete constituent consent.
+      description: Delete a constituent consent.
+      parameters:
+      - name: consent_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The immutable system record identifier for the consent.
+      responses:
+        '200':
+          description: Returned when the operation succeeds.
+        '404':
+          description: Returned when the specified consent is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: urn:blackbaud:model-validation-error
+                title: One or more validation errors occurred.
+                status: 400
+                detail: The date field is required.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '403':
+          description: Returned when the user does not have permission to delete consent.
+    patch:
+      operationId: EditConstituentConsent
+      summary: Edit constituent consent.
+      description: Edit a constituent consent.
+      parameters:
+      - name: consent_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The immutable system record identifier for the consent.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateConsentRequest'
+            example:
+              consent_statement: I agree to receive emails.
+              privacy_notice: Privacy Policy v1.2.3
+              source: Website
+        description: The changes to be applied to the consent record.
+      responses:
+        '200':
+          description: Returned when the operation succeeds.
+        '404':
+          description: Returned when the specified consent is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: urn:blackbaud:model-validation-error
+                title: One or more validation errors occurred.
+                status: 400
+                detail: The date field is required.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '403':
+          description: Returned when the user does not have permission to update constituent's consent.
+  /constituents/{constituent_id}/consents:
+    post:
+      operationId: CreateConsentsSingleConstituent
+      summary: Create consents for a single constituent.
+      description: Create one or more consents for a single constituent.
+      parameters:
+      - name: constituent_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The immutable system record identifier for the constituent.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Constituents-constituent_id-ConsentsPostRequest-1'
+            example:
+            - channel: Email
+              consent_date: '2024-03-09T12:00:00Z'
+              consent_response: OptIn
+              source: Website
+              privacy_policy: Privacy Policy v1.2.3
+              consent_statement: I agree to receive email.
+            - channel: Email
+              consent_date: '2024-03-09T12:00:00Z'
+              consent_response: OptIn
+              category: Newsletters
+              source: Website
+              privacy_policy: Privacy Policy v1.2.3
+              consent_statement: I agree to receive email.
+            - channel: Phone
+              consent_date: '2023-09-15T12:00:00Z'
+              consent_response: OptOut
+              source: Website
+              privacy_policy: Privacy Policy v1.2.3
+              consent_statement: I agree to receive phone calls.
+        description: The add constituent consents requests.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body is a collection of the resulting consent identifiers.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdentifierCollection'
+              example:
+                identifiers:
+                - '42'
+                - '44'
+                - '45'
+                count: 3
+                offset: 0
+                limit: 500
+        '400':
+          description: Returned when the request is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/CreateConsentsSingleConstituent400ResponseTypes'
+              example:
+                type: urn:blackbaud:model-validation-error
+                title: One or more validation errors occurred.
+                status: 400
+                detail: Field is required
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '404':
+          description: Returned when the specified constituent is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: urn:blackbaud:model-validation-error
+                title: One or more validation errors occurred.
+                status: 400
+                detail: The date field is required.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '403':
+          description: Returned when the user does not have permission to create consents for the specified constituent.
+    get:
+      operationId: GetConstituentConsents
+      summary: Get constituent consents.
+      description: Get the collection of consents for the specified constituent.
+      parameters:
+      - name: constituent_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The immutable system record identifier for the constituent.
+      - name: include_history
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: Optional flag indicating that consent history should be included
+      - name: channels
+        in: query
+        required: false
+        schema:
+          type: array
+        description: Limit results to the given list of channels. All channels are included by default.<br/><br/>Available
+          values:<ul><li>Email</li><li>Mail</li><li>SMS</li><li>Phone</li><li>AutoPhone</li><li>Social</li><li>DataProcessing</li><li>Other</li></ul>
+      - name: from_date
+        in: query
+        required: false
+        schema:
+          type: string
+        description: From date filter
+      - name: to_date
+        in: query
+        required: false
+        schema:
+          type: string
+        description: To date filters
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: '500'
+        description: Represents the number of records to return. (The default is 500)
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Represents the number of records to skip.(For use with pagination)
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the collection of constituent consents.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsentReadsCollection'
+              example:
+                consents:
+                - id: '7'
+                  channel: Email
+                  date: '2024-06-03T12:00:00Z'
+                  response: OptIn
+                  source: Website
+                  privacy_notice: Privacy Policy v1.2.3
+                  consent_statement: I agree to receive email.
+                  date_added: '2024-06-03T02:15:00Z'
+                - id: '42'
+                  channel: Email
+                  date: '2024-06-03T12:00:00Z'
+                  response: OptOut
+                  category: Targeted Ads
+                  category_id: '7'
+                  source: Website
+                  privacy_notice: Privacy Policy v1.2.3
+                  consent_statement: I agree to receive targeted ad emails.
+                  date_added: '2024-06-03T02:15:00Z'
+                - id: '53'
+                  channel: Phone
+                  date: '2023-09-15T12:00:00Z'
+                  response: OptOut
+                  source: Website
+                  privacy_notice: Privacy Policy v1.2.3
+                  consent_statement: I agree to phone calls.
+                  date_added: '2023-09-16T10:45:00Z'
+                count: 3
+                offset: 0
+                limit: 500
+        '400':
+          description: Returned when the request is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/GetConstituentConsents400ResponseTypes'
+              example:
+                type: urn:blackbaud:model-validation-error
+                title: One or more validation errors occurred.
+                status: 400
+                detail: Field is required
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '404':
+          description: Returned when the specified constituent is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: urn:blackbaud:model-validation-error
+                title: One or more validation errors occurred.
+                status: 400
+                detail: The date field is required.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '403':
+          description: Returned when the user does not have permission to view the constituent's consents.
+components:
+  schemas:
+    AddChannelCategory400ResponseTypes:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when
+            dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]).
+            When this member is not present, its value is assumed to be "about:blank".<br/><br/>Available values:<table><tr><th>type</th><th>detail</th></tr><tr><td>urn:blackbaud:model-validation-error</td><td>A
+            model validation rule was violated, such as a missing required field.</td></tr><tr><td>urn:blackbaud:invalid-channel</td><td>The
+            channel is invalid.</td></tr><tr><td>urn:blackbaud:invalid-consent-response</td><td>One or more solicit code assignments
+            include an invalid consent response.</td></tr><tr><td>urn:blackbaud:inactive-category</td><td>The category is
+            inactive.</td></tr><tr><td>urn:blackbaud:invalid-category</td><td>The consent category is invalid.</td></tr><tr><td>urn:blackbaud:inactive-solicit-code</td><td>One
+            or more solicit code assignments include an inactive solicit code.</td></tr><tr><td>urn:blackbaud:invalid-solicit-code</td><td>One
+            or more solicit code assignments include an invalid solicit code.</td></tr><tr><td>urn:blackbaud:consent-channel-category-already-exists</td><td>The
+            consent channel category already exists.</td></tr><tr><td>urn:blackbaud:invalid-add-remove</td><td>One or more
+            solicit code assignments include an invalid add/remove.</td></tr></table>
+          nullable: true
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence
+            of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231],
+            Section 3.4).
+          nullable: true
+        status:
+          type: integer
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the
+            problem.
+          format: int32
+          nullable: true
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+          nullable: true
+        instance:
+          type: string
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further
+            information if dereferenced.
+          nullable: true
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+          nullable: true
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+          nullable: true
+      additionalProperties: {}
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-bb-error-types:
+      - urn:blackbaud:model-validation-error
+      - urn:blackbaud:invalid-channel
+      - urn:blackbaud:invalid-consent-response
+      - urn:blackbaud:inactive-category
+      - urn:blackbaud:invalid-category
+      - urn:blackbaud:inactive-solicit-code
+      - urn:blackbaud:invalid-solicit-code
+      - urn:blackbaud:consent-channel-category-already-exists
+      - urn:blackbaud:invalid-add-remove
+    ConsentChannelCategoryRead:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The consent channel category identifier
+          nullable: true
+        category_id:
+          type: string
+          description: The category identifier
+          nullable: true
+        category:
+          type: string
+          description: The category name for the mapped category.
+          nullable: true
+        inactive:
+          type: boolean
+          description: Flag indicating whether or not the consent channel category is currently inactive
+          nullable: true
+        solicit_code_assignments:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConsentSolicitCodeAssignmentRead'
+          description: The list of solicit code assignment.
+          nullable: true
+      additionalProperties: false
+      description: Represents the consent channel category.
+    ConsentChannelCategoryWrite:
+      required:
+      - category
+      - channel
+      type: object
+      properties:
+        channel:
+          enum:
+          - Email
+          - Mail
+          - SMS
+          - Phone
+          - AutoPhone
+          - Social
+          - DataProcessing
+          - Other
+          type: string
+          description: The channel<p>Members:</p><ul><li><i>Email</i> - Email</li><li><i>Mail</i> - Mail</li><li><i>SMS</i>
+            - SMS</li><li><i>Phone</i> - Phone</li><li><i>AutoPhone</i> - AutoPhone</li><li><i>Social</i> - Social media</li><li><i>DataProcessing</i>
+            - Data processing</li><li><i>Other</i> - Other</li></ul>
+        category:
+          type: string
+          description: The category name or system identifier
+        solicit_code_assignments:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConsentSolicitCodeAssignmentWrite'
+          description: Collection of consent solicit code assignments to be configured for the channel category.
+          nullable: true
+      additionalProperties: false
+      description: Represents a request to configure a consent channel category.
+    ConsentChannelConfigurationRead:
+      type: object
+      properties:
+        channel:
+          type: string
+          description: The channel of consent setting.
+          nullable: true
+        inactive:
+          type: boolean
+          description: Flag indicating whether or not the consent channel is inactive.
+          nullable: true
+        categories:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConsentChannelCategoryRead'
+          description: The list of channel category.
+          nullable: true
+      additionalProperties: false
+      description: Represents the configured mappings between a consent channel and categories
+    ConsentChannelConfigurationReadCollection:
+      required:
+      - limit
+      - offset
+      type: object
+      properties:
+        channel_configurations:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConsentChannelConfigurationRead'
+          description: The list of consent channel configurations.
+          nullable: true
+        count:
+          type: integer
+          description: The total number of items in the collection.
+          format: int32
+        offset:
+          maximum: 2147483647
+          minimum: 0
+          type: integer
+          description: The offset value used for pagination or positioning within a collection.
+          format: int32
+          default: 0
+        limit:
+          maximum: 10000
+          minimum: 1
+          type: integer
+          description: The limit representing the maximum number of items to retrieve or display.
+          format: int32
+          default: 500
+        continuation_token:
+          type: string
+          description: The continuation token used for pagination to retrieve the next set of results.
+          nullable: true
+      additionalProperties: false
+      description: The consent channel configurations.
+    ConsentChannelWrite:
+      required:
+      - active
+      type: object
+      properties:
+        active:
+          type: boolean
+          description: Flag indicating whether or not the consent channel is active.
+      additionalProperties: false
+      description: Defines a model to represent a consent channel write operation.
+    ConsentDefaults:
+      type: object
+      properties:
+        consent_statement:
+          type: string
+          description: Consent statement for consent configuration.
+          nullable: true
+        privacy_policy:
+          type: string
+          description: Privacy policy for consent configuration.
+          nullable: true
+      additionalProperties: false
+      description: Defines model to represent consent defaults.
+    ConsentListOptions:
+      type: object
+      properties:
+        channels:
+          type: array
+          items:
+            enum:
+            - Email
+            - Mail
+            - SMS
+            - Phone
+            - AutoPhone
+            - Social
+            - DataProcessing
+            - Other
+            type: string
+            description: Consent channels<p>Members:</p><ul><li><i>Email</i> - Email</li><li><i>Mail</i> - Mail</li><li><i>SMS</i>
+              - SMS</li><li><i>Phone</i> - Phone</li><li><i>AutoPhone</i> - AutoPhone</li><li><i>Social</i> - Social media</li><li><i>DataProcessing</i>
+              - Data processing</li><li><i>Other</i> - Other</li></ul>
+          description: Limit results to the given list of channels. All channels are included by default.
+          nullable: true
+        constituent_ids:
+          type: array
+          items:
+            type: string
+          description: Limit results to the given list of constituent identifiers.
+          nullable: true
+        category_filter_type:
+          enum:
+          - NoFilter
+          - AnyCategory
+          - NoCategory
+          - SpecificCategory
+          type: string
+          description: Category filter type<p>Members:</p><ul><li><i>NoFilter</i> - Include all consents regardless of assigned
+            category.</li><li><i>AnyCategory</i> - Include all consents assigned to any category.</li><li><i>NoCategory</i>
+            - Include only consents without an assigned category.</li><li><i>SpecificCategory</i> - Include only consents
+            assigned a specific category.</li></ul>
+        category:
+          type: string
+          description: The category name or identifier with which to filter by when CategoryFilterType is SpecificCategory.
+          nullable: true
+        response:
+          enum:
+          - OptIn
+          - OptOut
+          - NoResponse
+          type: string
+          description: Consent response<p>Members:</p><ul><li><i>OptIn</i> - Opt-in</li><li><i>OptOut</i> - Opt-out</li><li><i>NoResponse</i>
+            - No response</li></ul>
+          nullable: true
+        source:
+          type: string
+          description: Source description or identifier
+          nullable: true
+        from_date:
+          type: string
+          description: From date filter
+          format: date-time
+          nullable: true
+        to_date:
+          type: string
+          description: To date filters
+          format: date-time
+          nullable: true
+        continuation_token:
+          type: string
+          description: Continuation token for paging
+          nullable: true
+        limit:
+          maximum: 10000
+          minimum: 1
+          type: integer
+          description: Represents the number of records to return. (The default is 500)
+          format: int32
+          default: 500
+        offset:
+          maximum: 2147483647
+          minimum: 0
+          type: integer
+          description: Represents the number of records to skip.(For use with pagination)
+          format: int32
+      additionalProperties: false
+      description: Optional Get constituent consents filters.
+    ConsentRead:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The immutable system record ID of the consent record.
+          nullable: true
+        channel:
+          enum:
+          - Email
+          - Mail
+          - SMS
+          - Phone
+          - AutoPhone
+          - Social
+          - DataProcessing
+          - Other
+          type: string
+          description: The channel that the consent response applies to.<p>Members:</p><ul><li><i>Email</i> - Email</li><li><i>Mail</i>
+            - Mail</li><li><i>SMS</i> - SMS</li><li><i>Phone</i> - Phone</li><li><i>AutoPhone</i> - AutoPhone</li><li><i>Social</i>
+            - Social media</li><li><i>DataProcessing</i> - Data processing</li><li><i>Other</i> - Other</li></ul>
+        inactive:
+          type: boolean
+          description: Flag indicating whether or not the consent channel is inactive.
+          nullable: true
+        date:
+          type: string
+          description: The date the consent response was received.
+          format: date-time
+        response:
+          enum:
+          - OptIn
+          - OptOut
+          - NoResponse
+          type: string
+          description: How the constituent responded to consent for the specified channel/category.<p>Members:</p><ul><li><i>OptIn</i>
+            - Opt-in</li><li><i>OptOut</i> - Opt-out</li><li><i>NoResponse</i> - No response</li></ul>
+        category:
+          type: string
+          description: The category that the consent response applies to.
+          nullable: true
+        category_id:
+          type: string
+          description: The category identifier.
+          nullable: true
+        source:
+          type: string
+          description: The source of the consent response from the constituent.
+          nullable: true
+        privacy_notice:
+          type: string
+          description: The privacy notice provided to the constituent.
+          nullable: true
+        consent_statement:
+          type: string
+          description: The statement the constituent responded to when providing consent.
+          nullable: true
+        date_added:
+          type: string
+          description: The UTC DateTime the consent response was added to the system.
+          format: date-time
+      additionalProperties: false
+      description: Consent model
+    ConsentReadsCollection:
+      required:
+      - limit
+      - offset
+      type: object
+      properties:
+        consents:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConsentRead'
+          description: The list of consents.
+          nullable: true
+        count:
+          type: integer
+          description: The total number of items in the collection.
+          format: int32
+        offset:
+          maximum: 2147483647
+          minimum: 0
+          type: integer
+          description: The offset value used for pagination or positioning within a collection.
+          format: int32
+          default: 0
+        limit:
+          maximum: 10000
+          minimum: 1
+          type: integer
+          description: The limit representing the maximum number of items to retrieve or display.
+          format: int32
+          default: 500
+        continuation_token:
+          type: string
+          description: The continuation token used for pagination to retrieve the next set of results.
+          nullable: true
+      additionalProperties: false
+      description: Consent reads collection
+    ConsentSolicitCodeAssignmentRead:
+      type: object
+      properties:
+        solicit_code:
+          type: string
+          description: The solicit code name for the solicit code assignment.
+          nullable: true
+        response:
+          enum:
+          - OptIn
+          - OptOut
+          type: string
+          description: The response of solicit opt in or opt out.<p>Members:</p><ul><li><i>OptIn</i></li><li><i>OptOut</i></li></ul>
+        add_remove:
+          enum:
+          - Add
+          - Remove
+          type: string
+          description: The add remove solicit response.<p>Members:</p><ul><li><i>Add</i></li><li><i>Remove</i></li></ul>
+      additionalProperties: false
+      description: Represents the consent solicit code assignment.
+    ConsentSolicitCodeAssignmentWrite:
+      required:
+      - add_remove
+      - response
+      - solicit_code
+      type: object
+      properties:
+        response:
+          enum:
+          - OptIn
+          - OptOut
+          - NoResponse
+          type: string
+          description: The consent response that will trigger this solicit code assignment<p>Members:</p><ul><li><i>OptIn</i>
+            - Opt-in</li><li><i>OptOut</i> - Opt-out</li><li><i>NoResponse</i> - No response</li></ul>
+        add_remove:
+          enum:
+          - Add
+          - Remove
+          type: string
+          description: Add/Remove the solicit code when the given consent response is received.<p>Members:</p><ul><li><i>Add</i>
+            - Add.</li><li><i>Remove</i> - Remove.</li></ul>
+        solicit_code:
+          type: string
+          description: The solicit code name
+        sequence:
+          type: integer
+          description: Optional sequence number for the solicit code assignment.
+          format: int32
+          nullable: true
+      additionalProperties: false
+      description: Represents a request to write a consent solicit code assignment.
+    ConstituentConsentRead:
+      type: object
+      properties:
+        constituent_id:
+          type: string
+          description: The system record identifier of the constituent to whom this consent record applies.
+          nullable: true
+        id:
+          type: string
+          description: The immutable system record ID of the consent record.
+          nullable: true
+        channel:
+          enum:
+          - Email
+          - Mail
+          - SMS
+          - Phone
+          - AutoPhone
+          - Social
+          - DataProcessing
+          - Other
+          type: string
+          description: The channel that the consent response applies to.<p>Members:</p><ul><li><i>Email</i> - Email</li><li><i>Mail</i>
+            - Mail</li><li><i>SMS</i> - SMS</li><li><i>Phone</i> - Phone</li><li><i>AutoPhone</i> - AutoPhone</li><li><i>Social</i>
+            - Social media</li><li><i>DataProcessing</i> - Data processing</li><li><i>Other</i> - Other</li></ul>
+        inactive:
+          type: boolean
+          description: Flag indicating whether or not the consent channel is inactive.
+          nullable: true
+        date:
+          type: string
+          description: The date the consent response was received.
+          format: date-time
+        response:
+          enum:
+          - OptIn
+          - OptOut
+          - NoResponse
+          type: string
+          description: How the constituent responded to consent for the specified channel/category.<p>Members:</p><ul><li><i>OptIn</i>
+            - Opt-in</li><li><i>OptOut</i> - Opt-out</li><li><i>NoResponse</i> - No response</li></ul>
+        category:
+          type: string
+          description: The category that the consent response applies to.
+          nullable: true
+        category_id:
+          type: string
+          description: The category identifier.
+          nullable: true
+        source:
+          type: string
+          description: The source of the consent response from the constituent.
+          nullable: true
+        privacy_notice:
+          type: string
+          description: The privacy notice provided to the constituent.
+          nullable: true
+        consent_statement:
+          type: string
+          description: The statement the constituent responded to when providing consent.
+          nullable: true
+        date_added:
+          type: string
+          description: The UTC DateTime the consent response was added to the system.
+          format: date-time
+      additionalProperties: false
+      description: Represents a consent record associated with a specific constituent.
+    ConstituentConsentReadCollection:
+      required:
+      - limit
+      - offset
+      type: object
+      properties:
+        constituent_consents:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConstituentConsentRead'
+          description: The list of constituent consents.
+          nullable: true
+        count:
+          type: integer
+          description: The total number of items in the collection.
+          format: int32
+        offset:
+          maximum: 2147483647
+          minimum: 0
+          type: integer
+          description: The offset value used for pagination or positioning within a collection.
+          format: int32
+          default: 0
+        limit:
+          maximum: 10000
+          minimum: 1
+          type: integer
+          description: The limit representing the maximum number of items to retrieve or display.
+          format: int32
+          default: 500
+        continuation_token:
+          type: string
+          description: The continuation token used for pagination to retrieve the next set of results.
+          nullable: true
+      additionalProperties: false
+      description: Represents a collection of paginated constituent consents
+    CreateConsentRequest:
+      required:
+      - channel
+      - consent_date
+      - consent_response
+      type: object
+      properties:
+        channel:
+          enum:
+          - Email
+          - Mail
+          - SMS
+          - Phone
+          - AutoPhone
+          - Social
+          - DataProcessing
+          - Other
+          type: string
+          description: The name of the channel.<p>Members:</p><ul><li><i>Email</i> - Email</li><li><i>Mail</i> - Mail</li><li><i>SMS</i>
+            - SMS</li><li><i>Phone</i> - Phone</li><li><i>AutoPhone</i> - AutoPhone</li><li><i>Social</i> - Social media</li><li><i>DataProcessing</i>
+            - Data processing</li><li><i>Other</i> - Other</li></ul>
+        consent_date:
+          type: string
+          description: Date on which the consent response was provided.
+          format: date-time
+        consent_response:
+          enum:
+          - OptIn
+          - OptOut
+          - NoResponse
+          type: string
+          description: The consent response provided by the constituent.<p>Members:</p><ul><li><i>OptIn</i> - Opt-in</li><li><i>OptOut</i>
+            - Opt-out</li><li><i>NoResponse</i> - No response</li></ul>
+        category:
+          maxLength: 128
+          type: string
+          description: The name of the category.
+          nullable: true
+        source:
+          maxLength: 128
+          type: string
+          description: The name of the source.
+          nullable: true
+        privacy_policy:
+          maxLength: 7999
+          type: string
+          description: Privacy policy for consent.
+          nullable: true
+        consent_statement:
+          maxLength: 7999
+          type: string
+          description: Consent statement for consent.
+          nullable: true
+      additionalProperties: false
+      description: Model used by SkyApi to create consent records for a single constituent
+    CreateConsentsMultipleConstituents400ResponseTypes:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when
+            dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]).
+            When this member is not present, its value is assumed to be "about:blank".<br/><br/>Available values:<table><tr><th>type</th><th>detail</th></tr><tr><td>urn:blackbaud:model-validation-error</td><td>A
+            model validation rule was violated, such as a missing required field.</td></tr><tr><td>urn:blackbaud:invalid-id</td><td>The
+            constituent identifier is invalid.</td></tr><tr><td>urn:blackbaud:invalid-channel</td><td>The channel is invalid.</td></tr><tr><td>urn:blackbaud:invalid-number-of-requests</td><td>A
+            single bulk request must include between 1 and 500 requests.</td></tr><tr><td>urn:blackbaud:invalid-consent-response</td><td>One
+            or more consent responses are invalid.</td></tr><tr><td>urn:blackbaud:inactive-category</td><td>The category is
+            inactive.</td></tr><tr><td>urn:blackbaud:invalid-category</td><td>The consent category is invalid.</td></tr><tr><td>urn:blackbaud:inactive-source</td><td>The
+            consent source is inactive.</td></tr><tr><td>urn:blackbaud:invalid-source</td><td>The consent source is invalid.</td></tr></table>
+          nullable: true
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence
+            of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231],
+            Section 3.4).
+          nullable: true
+        status:
+          type: integer
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the
+            problem.
+          format: int32
+          nullable: true
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+          nullable: true
+        instance:
+          type: string
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further
+            information if dereferenced.
+          nullable: true
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+          nullable: true
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+          nullable: true
+      additionalProperties: {}
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-bb-error-types:
+      - urn:blackbaud:model-validation-error
+      - urn:blackbaud:invalid-id
+      - urn:blackbaud:invalid-channel
+      - urn:blackbaud:invalid-number-of-requests
+      - urn:blackbaud:invalid-consent-response
+      - urn:blackbaud:inactive-category
+      - urn:blackbaud:invalid-category
+      - urn:blackbaud:inactive-source
+      - urn:blackbaud:invalid-source
+    CreateConsentsSingleConstituent400ResponseTypes:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when
+            dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]).
+            When this member is not present, its value is assumed to be "about:blank".<br/><br/>Available values:<table><tr><th>type</th><th>detail</th></tr><tr><td>urn:blackbaud:model-validation-error</td><td>A
+            model validation rule was violated, such as a missing required field.</td></tr><tr><td>urn:blackbaud:invalid-channel</td><td>One
+            or more channels are invalid.</td></tr><tr><td>urn:blackbaud:invalid-number-of-requests</td><td>A single bulk
+            request must include between 1 and 500 requests.</td></tr><tr><td>urn:blackbaud:invalid-id</td><td>The constituent
+            identifier is invalid.</td></tr><tr><td>urn:blackbaud:invalid-consent-response</td><td>One or more consent responses
+            are invalid.</td></tr><tr><td>urn:blackbaud:inactive-category</td><td>One or more consent categories are inactive.</td></tr><tr><td>urn:blackbaud:invalid-category</td><td>One
+            or more consent categories are invalid.</td></tr><tr><td>urn:blackbaud:inactive-source</td><td>One or more requests
+            include an inactive source.</td></tr><tr><td>urn:blackbaud:invalid-source</td><td>One or more consent sources
+            are invalid.</td></tr></table>
+          nullable: true
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence
+            of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231],
+            Section 3.4).
+          nullable: true
+        status:
+          type: integer
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the
+            problem.
+          format: int32
+          nullable: true
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+          nullable: true
+        instance:
+          type: string
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further
+            information if dereferenced.
+          nullable: true
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+          nullable: true
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+          nullable: true
+      additionalProperties: {}
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-bb-error-types:
+      - urn:blackbaud:model-validation-error
+      - urn:blackbaud:invalid-channel
+      - urn:blackbaud:invalid-number-of-requests
+      - urn:blackbaud:invalid-id
+      - urn:blackbaud:invalid-consent-response
+      - urn:blackbaud:inactive-category
+      - urn:blackbaud:invalid-category
+      - urn:blackbaud:inactive-source
+      - urn:blackbaud:invalid-source
+    CreateConstituentConsentRequest:
+      required:
+      - consent_date
+      - consent_response
+      - constituent_id
+      type: object
+      properties:
+        constituent_id:
+          type: string
+          description: The constituent identifier
+        consent_date:
+          type: string
+          description: Date on which the consent response was provided.
+          format: date-time
+        consent_response:
+          enum:
+          - OptIn
+          - OptOut
+          - NoResponse
+          type: string
+          description: The consent response provided by the constituent.<p>Members:</p><ul><li><i>OptIn</i> - Opt-in</li><li><i>OptOut</i>
+            - Opt-out</li><li><i>NoResponse</i> - No response</li></ul>
+      additionalProperties: false
+      description: Model used by SkyApi to create a consent record for a given constituent
+    CreateConstituentConsentsRequest:
+      required:
+      - channel
+      type: object
+      properties:
+        channel:
+          enum:
+          - Email
+          - Mail
+          - SMS
+          - Phone
+          - AutoPhone
+          - Social
+          - DataProcessing
+          - Other
+          type: string
+          description: The name of the channel.<p>Members:</p><ul><li><i>Email</i> - Email</li><li><i>Mail</i> - Mail</li><li><i>SMS</i>
+            - SMS</li><li><i>Phone</i> - Phone</li><li><i>AutoPhone</i> - AutoPhone</li><li><i>Social</i> - Social media</li><li><i>DataProcessing</i>
+            - Data processing</li><li><i>Other</i> - Other</li></ul>
+        category:
+          maxLength: 128
+          type: string
+          description: The name of the category.
+          nullable: true
+        source:
+          maxLength: 128
+          type: string
+          description: The name of the source.
+          nullable: true
+        privacy_policy:
+          maxLength: 7999
+          type: string
+          description: Privacy policy for consent.
+          nullable: true
+        consent_statement:
+          maxLength: 7999
+          type: string
+          description: Consent statement for consent.
+          nullable: true
+        constituent_requests:
+          type: array
+          items:
+            $ref: '#/components/schemas/CreateConstituentConsentRequest'
+          description: Collection of create constituent consent requests
+          nullable: true
+      additionalProperties: false
+      description: Model used by SkyApi to create consent records for multiple constituents
+    EditConsentChannel400ResponseTypes:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when
+            dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]).
+            When this member is not present, its value is assumed to be "about:blank".<br/><br/>Available values:<table><tr><th>type</th><th>detail</th></tr><tr><td>urn:blackbaud:model-validation-error</td><td>A
+            model validation rule was violated, such as a missing required field.</td></tr><tr><td>urn:blackbaud:invalid-channel</td><td>The
+            channel is invalid.</td></tr><tr><td>urn:blackbaud:mandatory-consent-channel</td><td>The given channel may not
+            be edited.</td></tr></table>
+          nullable: true
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence
+            of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231],
+            Section 3.4).
+          nullable: true
+        status:
+          type: integer
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the
+            problem.
+          format: int32
+          nullable: true
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+          nullable: true
+        instance:
+          type: string
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further
+            information if dereferenced.
+          nullable: true
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+          nullable: true
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+          nullable: true
+      additionalProperties: {}
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-bb-error-types:
+      - urn:blackbaud:model-validation-error
+      - urn:blackbaud:invalid-channel
+      - urn:blackbaud:mandatory-consent-channel
+    EditSolicitCodeAssignmentsRequest:
+      type: object
+      properties:
+        category:
+          type: string
+          description: The optional category identifier or description.
+          nullable: true
+        solicit_code_assignments:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConsentSolicitCodeAssignmentWrite'
+          description: The collection of solicit code assignments to be updated for the specified category.
+          nullable: true
+      additionalProperties: false
+      description: Represents a request to edit solicit code assignments for a specific category.
+    GetConsentList400ResponseTypes:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when
+            dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]).
+            When this member is not present, its value is assumed to be "about:blank".<br/><br/>Available values:<table><tr><th>type</th><th>detail</th></tr><tr><td>urn:blackbaud:model-validation-error</td><td>A
+            model validation rule was violated, such as a missing required field.</td></tr><tr><td>urn:blackbaud:invalid-channels</td><td>One
+            or more channels are invalid.</td></tr><tr><td>urn:blackbaud:invalid-id</td><td>One or more constituent identifiers
+            are invalid.</td></tr><tr><td>urn:blackbaud:invalid-date-range</td><td>Invalid date range specified.</td></tr><tr><td>urn:blackbaud:invalid-response</td><td>Invalid
+            consent response.</td></tr><tr><td>urn:blackbaud:invalid-source</td><td>Invalid consent source.</td></tr></table>
+          nullable: true
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence
+            of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231],
+            Section 3.4).
+          nullable: true
+        status:
+          type: integer
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the
+            problem.
+          format: int32
+          nullable: true
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+          nullable: true
+        instance:
+          type: string
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further
+            information if dereferenced.
+          nullable: true
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+          nullable: true
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+          nullable: true
+      additionalProperties: {}
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-bb-error-types:
+      - urn:blackbaud:model-validation-error
+      - urn:blackbaud:invalid-channels
+      - urn:blackbaud:invalid-id
+      - urn:blackbaud:invalid-date-range
+      - urn:blackbaud:invalid-response
+      - urn:blackbaud:invalid-source
+    GetConstituentConsents400ResponseTypes:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when
+            dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]).
+            When this member is not present, its value is assumed to be "about:blank".<br/><br/>Available values:<table><tr><th>type</th><th>detail</th></tr><tr><td>urn:blackbaud:model-validation-error</td><td>A
+            model validation rule was violated, such as a missing required field.</td></tr><tr><td>urn:blackbaud:invalid-channel</td><td>One
+            or more channels are invalid.</td></tr><tr><td>urn:blackbaud:invalid-number-of-requests</td><td>A single bulk
+            request must include between 1 and 500 requests.</td></tr><tr><td>urn:blackbaud:invalid-id</td><td>The constituent
+            identifier is invalid.</td></tr><tr><td>urn:blackbaud:invalid-consent-response</td><td>One or more consent responses
+            are invalid.</td></tr><tr><td>urn:blackbaud:inactive-category</td><td>One or more consent categories are inactive.</td></tr><tr><td>urn:blackbaud:invalid-category</td><td>One
+            or more consent categories are invalid.</td></tr><tr><td>urn:blackbaud:inactive-source</td><td>One or more requests
+            include an inactive source.</td></tr><tr><td>urn:blackbaud:invalid-source</td><td>One or more consent sources
+            are invalid.</td></tr></table>
+          nullable: true
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence
+            of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231],
+            Section 3.4).
+          nullable: true
+        status:
+          type: integer
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the
+            problem.
+          format: int32
+          nullable: true
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+          nullable: true
+        instance:
+          type: string
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further
+            information if dereferenced.
+          nullable: true
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+          nullable: true
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+          nullable: true
+      additionalProperties: {}
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-bb-error-types:
+      - urn:blackbaud:model-validation-error
+      - urn:blackbaud:invalid-channel
+      - urn:blackbaud:invalid-number-of-requests
+      - urn:blackbaud:invalid-id
+      - urn:blackbaud:invalid-consent-response
+      - urn:blackbaud:inactive-category
+      - urn:blackbaud:invalid-category
+      - urn:blackbaud:inactive-source
+      - urn:blackbaud:invalid-source
+    IdentifierCollection:
+      required:
+      - limit
+      - offset
+      type: object
+      properties:
+        identifiers:
+          type: array
+          items:
+            type: string
+          description: The list of consent identifiers.
+          nullable: true
+        count:
+          type: integer
+          description: The total number of items in the collection.
+          format: int32
+        offset:
+          maximum: 2147483647
+          minimum: 0
+          type: integer
+          description: The offset value used for pagination or positioning within a collection.
+          format: int32
+          default: 0
+        limit:
+          maximum: 10000
+          minimum: 1
+          type: integer
+          description: The limit representing the maximum number of items to retrieve or display.
+          format: int32
+          default: 500
+        continuation_token:
+          type: string
+          description: The continuation token used for pagination to retrieve the next set of results.
+          nullable: true
+      additionalProperties: false
+      description: Collection of identifiers resulting from a bulk add request
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when
+            dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]).
+            When this member is not present, its value is assumed to be "about:blank".
+          nullable: true
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence
+            of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231],
+            Section 3.4).
+          nullable: true
+        status:
+          type: integer
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the
+            problem.
+          format: int32
+          nullable: true
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+          nullable: true
+        instance:
+          type: string
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further
+            information if dereferenced.
+          nullable: true
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+          nullable: true
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+          nullable: true
+      additionalProperties: {}
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+    UpdateConsentRequest:
+      type: object
+      properties:
+        consent_statement:
+          maxLength: 7999
+          type: string
+          description: The consent statement.
+          nullable: true
+        privacy_notice:
+          maxLength: 7999
+          type: string
+          description: The privacy policy.
+          nullable: true
+        source:
+          maxLength: 128
+          type: string
+          description: The source of the consent.
+          nullable: true
+      additionalProperties: false
+      description: Defines model to represent update consent request.
+    UpdateSolicitCodeAssignments400ResponseTypes:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when
+            dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]).
+            When this member is not present, its value is assumed to be "about:blank".<br/><br/>Available values:<table><tr><th>type</th><th>detail</th></tr><tr><td>urn:blackbaud:model-validation-error</td><td>A
+            model validation rule was violated, such as a missing required field.</td></tr><tr><td>urn:blackbaud:inactive-channel</td><td>The
+            channel is inactive.</td></tr><tr><td>urn:blackbaud:invalid-channel</td><td>The channel is invalid.</td></tr><tr><td>urn:blackbaud:invalid-number-of-requests</td><td>A
+            single bulk request must include between 1 and 500 requests.</td></tr><tr><td>urn:blackbaud:invalid-consent-response</td><td>One
+            or more solicit code assignments include an invalid consent response.</td></tr><tr><td>urn:blackbaud:invalid-add-remove</td><td>One
+            or more solicit code assignments include an invalid add/remove.</td></tr><tr><td>urn:blackbaud:inactive-category</td><td>The
+            category is inactive.</td></tr><tr><td>urn:blackbaud:invalid-category</td><td>The consent category is invalid.</td></tr><tr><td>urn:blackbaud:inactive-solicit-code</td><td>One
+            or more solicit code assignments include an inactive solicit code.</td></tr><tr><td>urn:blackbaud:invalid-solicit-code</td><td>One
+            or more solicit code assignments include an invalid solicit code.</td></tr></table>
+          nullable: true
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence
+            of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231],
+            Section 3.4).
+          nullable: true
+        status:
+          type: integer
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the
+            problem.
+          format: int32
+          nullable: true
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+          nullable: true
+        instance:
+          type: string
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further
+            information if dereferenced.
+          nullable: true
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+          nullable: true
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+          nullable: true
+      additionalProperties: {}
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-bb-error-types:
+      - urn:blackbaud:model-validation-error
+      - urn:blackbaud:inactive-channel
+      - urn:blackbaud:invalid-channel
+      - urn:blackbaud:invalid-number-of-requests
+      - urn:blackbaud:invalid-consent-response
+      - urn:blackbaud:invalid-add-remove
+      - urn:blackbaud:inactive-category
+      - urn:blackbaud:invalid-category
+      - urn:blackbaud:inactive-solicit-code
+      - urn:blackbaud:invalid-solicit-code
+    ConfigurationChannelsGetRequest:
+      type: array
+      items:
+        enum:
+        - Email
+        - Mail
+        - SMS
+        - Phone
+        - AutoPhone
+        - Social
+        - DataProcessing
+        - Other
+        type: string
+        description: Consent channels<p>Members:</p><ul><li><i>Email</i> - Email</li><li><i>Mail</i> - Mail</li><li><i>SMS</i>
+          - SMS</li><li><i>Phone</i> - Phone</li><li><i>AutoPhone</i> - AutoPhone</li><li><i>Social</i> - Social media</li><li><i>DataProcessing</i>
+          - Data processing</li><li><i>Other</i> - Other</li></ul>
+      x-apim-inline: true
+    ConfigurationChannels-channel-PatchRequest:
+      type: string
+      x-apim-inline: true
+    ConfigurationChannels-channel-SolicitcodeassignmentsPatchRequest:
+      enum:
+      - Email
+      - Mail
+      - SMS
+      - Phone
+      - AutoPhone
+      - Social
+      - DataProcessing
+      - Other
+      type: string
+      description: Consent channels<p>Members:</p><ul><li><i>Email</i> - Email</li><li><i>Mail</i> - Mail</li><li><i>SMS</i>
+        - SMS</li><li><i>Phone</i> - Phone</li><li><i>AutoPhone</i> - AutoPhone</li><li><i>Social</i> - Social media</li><li><i>DataProcessing</i>
+        - Data processing</li><li><i>Other</i> - Other</li></ul>
+      x-apim-inline: true
+    ConfigurationChannels-channel-Categories-category-DeleteRequest:
+      type: string
+      x-apim-inline: true
+    ConfigurationChannels-channel-Categories-category-DeleteRequest-1:
+      type: string
+      x-apim-inline: true
+    Constituents-constituent_id-ConsentsGetRequest:
+      type: string
+      x-apim-inline: true
+    Constituents-constituent_id-ConsentsGetRequest-1:
+      type: boolean
+      x-apim-inline: true
+    Constituents-constituent_id-ConsentsGetRequest-2:
+      type: array
+      items:
+        enum:
+        - Email
+        - Mail
+        - SMS
+        - Phone
+        - AutoPhone
+        - Social
+        - DataProcessing
+        - Other
+        type: string
+        description: Consent channels<p>Members:</p><ul><li><i>Email</i> - Email</li><li><i>Mail</i> - Mail</li><li><i>SMS</i>
+          - SMS</li><li><i>Phone</i> - Phone</li><li><i>AutoPhone</i> - AutoPhone</li><li><i>Social</i> - Social media</li><li><i>DataProcessing</i>
+          - Data processing</li><li><i>Other</i> - Other</li></ul>
+      x-apim-inline: true
+    Constituents-constituent_id-ConsentsGetRequest-3:
+      type: string
+      format: date-time
+      x-apim-inline: true
+    Constituents-constituent_id-ConsentsGetRequest-4:
+      type: string
+      format: date-time
+      x-apim-inline: true
+    Constituents-constituent_id-ConsentsGetRequest-5:
+      maximum: 10000
+      minimum: 1
+      type: integer
+      format: int32
+      default: 500
+      x-apim-inline: true
+    Constituents-constituent_id-ConsentsGetRequest-6:
+      maximum: 2147483647
+      minimum: 0
+      type: integer
+      format: int32
+      x-apim-inline: true
+    Constituents-constituent_id-ConsentsPostRequest:
+      type: string
+      x-apim-inline: true
+    Constituents-constituent_id-ConsentsPostRequest-1:
+      type: array
+      items:
+        $ref: '#/components/schemas/CreateConsentRequest'
+      x-apim-inline: true
+    ConstituentsConsentsGetRequest:
+      type: array
+      items:
+        enum:
+        - Email
+        - Mail
+        - SMS
+        - Phone
+        - AutoPhone
+        - Social
+        - DataProcessing
+        - Other
+        type: string
+        description: Consent channels<p>Members:</p><ul><li><i>Email</i> - Email</li><li><i>Mail</i> - Mail</li><li><i>SMS</i>
+          - SMS</li><li><i>Phone</i> - Phone</li><li><i>AutoPhone</i> - AutoPhone</li><li><i>Social</i> - Social media</li><li><i>DataProcessing</i>
+          - Data processing</li><li><i>Other</i> - Other</li></ul>
+      x-apim-inline: true
+    ConstituentsConsentsGetRequest-1:
+      type: array
+      items:
+        type: string
+      x-apim-inline: true
+    ConstituentsConsentsGetRequest-2:
+      enum:
+      - NoFilter
+      - AnyCategory
+      - NoCategory
+      - SpecificCategory
+      type: string
+      x-apim-inline: true
+    ConstituentsConsentsGetRequest-3:
+      type: string
+      x-apim-inline: true
+    ConstituentsConsentsGetRequest-4:
+      enum:
+      - OptIn
+      - OptOut
+      - NoResponse
+      type: string
+      x-apim-inline: true
+    ConstituentsConsentsGetRequest-5:
+      type: string
+      x-apim-inline: true
+    ConstituentsConsentsGetRequest-6:
+      type: string
+      format: date-time
+      x-apim-inline: true
+    ConstituentsConsentsGetRequest-7:
+      type: string
+      format: date-time
+      x-apim-inline: true
+    ConstituentsConsentsGetRequest-8:
+      type: string
+      x-apim-inline: true
+    ConstituentsConsentsGetRequest-9:
+      maximum: 10000
+      minimum: 1
+      type: integer
+      format: int32
+      default: 500
+      x-apim-inline: true
+    ConstituentsConsentsGetRequest-10:
+      maximum: 2147483647
+      minimum: 0
+      type: integer
+      format: int32
+      x-apim-inline: true
+    ConstituentsConsents-consent_id-PatchRequest:
+      type: string
+      x-apim-inline: true
+    ConstituentsConsents-consent_id-DeleteRequest:
+      type: string
+      x-apim-inline: true
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []

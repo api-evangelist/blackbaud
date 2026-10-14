@@ -1,0 +1,277 @@
+openapi: 3.0.1
+info:
+  title: 'Blackbaud SKY API: Enrichment'
+  description: This API manages enrichment information and related entities, enabling users to enrich constituent data with
+    analytics and predictive insights. To learn about how to set up your developer account and work with the SKY API, see
+    the [Getting Started](https://developer.blackbaud.com/skyapi/docs/getting-started) guide.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/tap-enrch
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations,
+      examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/enrichment
+paths:
+  /v1/enrichment/identitythread/match:
+    post:
+      operationId: GetIdentityThreadMatch
+      summary: Identity Thread (Match) (PREVIEW)
+      description: 'Send up to 1000 records per request for identity thread matching.
+
+
+        This API manages enrichment information and related entities, enabling users to pinpoint and track unique records
+        across one or multiple databases to key individual or household accounts. To learn about how to set up your developer
+        account and work with the SKY API, see the [Getting Started](https://developer.blackbaud.com/skyapi/docs/getting-started)
+        guide.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EnrichmentRequest'
+            example:
+              requested_records:
+              - record_id: '10000001'
+                first_name: John
+                last_name: Doe
+                address: 123 Main St
+                city: Anytown
+                state: ZZ
+                zip_code: '55555'
+                email: john.doe@example.com
+              - record_id: '29041234'
+                first_name: Jane
+                last_name: Smith
+                email: jane.smith@example.com
+              - record_id: '19283746'
+                phone: 555-555-5555
+        description: The request containing records to match.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdentityThreadDataEnrichmentResponse'
+              example:
+                enriched_records:
+                - appended_data:
+                    individual_id: T138US02A1A1A1A1
+                    individual_key_status: Maintained
+                    household_id: T138US08B2B2B2B2
+                    household_key_status: Maintained
+                    match_confidence: 1
+                  record_id: '10000001'
+                  first_name: John
+                  last_name: Doe
+                  address: 123 Main St
+                  city: Anytown
+                  state: ZZ
+                  zip_code: '55555'
+                  email: example@example.com
+                - appended_data:
+                    individual_id: T138US02C3C3C3C3
+                    individual_key_status: Maintained
+                    household_id: T138US08D4D4D4D4
+                    household_key_status: Maintained
+                    match_confidence: 4
+                  record_id: '29041234'
+                  first_name: Jane
+                  last_name: Smith
+                  email: example2@example.com
+                annual_contract_usage:
+                  records_purchased: 25000000
+                  records_used: 10126
+                  records_remaining: 24989874
+components:
+  schemas:
+    AnnualContractUsage:
+      type: object
+      properties:
+        records_purchased:
+          type: integer
+          description: The total number of records purchased in the annual contract.
+          format: int32
+        records_used:
+          type: integer
+          description: The number of records used from the annual contract (including this request).
+          format: int32
+        records_remaining:
+          type: integer
+          description: The number of records remaining in the annual contract.
+          format: int32
+      additionalProperties: false
+      description: Represents annual contract usage information for enrichment requests.
+    EnrichmentRequest:
+      required:
+      - requested_records
+      type: object
+      properties:
+        requested_records:
+          maxItems: 1000
+          minItems: 1
+          type: array
+          items:
+            $ref: '#/components/schemas/EnrichmentRequestPerson'
+          description: List of records to be matched. Can provide up to 1000 records.
+      additionalProperties: false
+      description: Enrichment request containing records to be matched.
+    EnrichmentRequestPerson:
+      type: object
+      properties:
+        record_id:
+          type: string
+          description: The unique identifier for the person record. This field is not used for matching, but can be passed
+            through for reference.
+          nullable: true
+        first_name:
+          type: string
+          description: The person's first name.
+          nullable: true
+        middle_name:
+          type: string
+          description: The person's middle name.
+          nullable: true
+        last_name:
+          type: string
+          description: The person's last name.
+          nullable: true
+        suffix:
+          type: string
+          description: The person's suffix (e.g., Jr., Sr., III).
+          nullable: true
+        address:
+          type: string
+          description: The person's address.
+          nullable: true
+        city:
+          type: string
+          description: The person's city.
+          nullable: true
+        state:
+          type: string
+          description: The person's state.
+          nullable: true
+        zip_code:
+          type: string
+          description: The person's zip code.
+          nullable: true
+        email:
+          type: string
+          description: The person's email address.
+          nullable: true
+        phone:
+          type: string
+          description: The person's phone number.
+          nullable: true
+      additionalProperties: false
+      description: Person information to be used for matching.
+    IdentityThreadData:
+      type: object
+      properties:
+        individual_id:
+          type: string
+          description: The resolved unique individual ID for the person.
+          nullable: true
+        individual_key_status:
+          type: string
+          description: Status of the individual key (Maintained, Derived, or null).
+          nullable: true
+        household_id:
+          type: string
+          description: The resolved unique household ID for the person.
+          nullable: true
+        household_key_status:
+          type: string
+          description: Status of the individual key (Maintained, Derived, or null).
+          nullable: true
+        match_confidence:
+          type: integer
+          description: The confidence level of the match.
+          format: int32
+          nullable: true
+      additionalProperties: false
+      description: Data that can be appended for Identity Thread.
+    IdentityThreadDataEnrichmentResponse:
+      type: object
+      properties:
+        enriched_records:
+          type: array
+          items:
+            $ref: '#/components/schemas/IdentityThreadDataEnrichmentResponsePerson'
+          description: The enriched records returned in the response.
+          nullable: true
+        annual_contract_usage:
+          $ref: '#/components/schemas/AnnualContractUsage'
+      additionalProperties: false
+      description: Represents the response from an enrichment request containing enriched records.
+    IdentityThreadDataEnrichmentResponsePerson:
+      type: object
+      properties:
+        appended_data:
+          $ref: '#/components/schemas/IdentityThreadData'
+        record_id:
+          type: string
+          description: The unique identifier for the person record. This field is not used for matching, but can be passed
+            through for reference.
+          nullable: true
+        first_name:
+          type: string
+          description: The person's first name.
+          nullable: true
+        middle_name:
+          type: string
+          description: The person's middle name.
+          nullable: true
+        last_name:
+          type: string
+          description: The person's last name.
+          nullable: true
+        suffix:
+          type: string
+          description: The person's suffix (e.g., Jr., Sr., III).
+          nullable: true
+        address:
+          type: string
+          description: The person's address.
+          nullable: true
+        city:
+          type: string
+          description: The person's city.
+          nullable: true
+        state:
+          type: string
+          description: The person's state.
+          nullable: true
+        zip_code:
+          type: string
+          description: The person's zip code.
+          nullable: true
+        email:
+          type: string
+          description: The person's email address.
+          nullable: true
+        phone:
+          type: string
+          description: The person's phone number.
+          nullable: true
+      additionalProperties: false
+      description: Represents a person in the enrichment response with appended data.
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []

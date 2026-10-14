@@ -1,0 +1,119 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/blackbaud/main/json-schema/blackbaud-transaction-batch-import-summary-schema.json",
+  "title": "TransactionBatchImportSummary",
+  "description": "The summary of the batch import request",
+  "x-generated": "2026-10-14",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/blackbaud-billing-management-api-openapi.yml#/components/schemas/TransactionBatchImportSummary",
+  "type": "object",
+  "properties": {
+    "status": {
+      "$ref": "#/$defs/ImportBatchStatus"
+    },
+    "successfully_processed_record_count": {
+      "type": "integer",
+      "description": "The number of records that were successfully processed",
+      "format": "int32"
+    },
+    "mappings": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "$ref": "#/$defs/CreatedTransactionMapping"
+      },
+      "description": "The mappings between your transaction ID and the transaction created in Billing Management"
+    },
+    "processing_exceptions": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "$ref": "#/$defs/TransactionProcessingExceptions"
+      },
+      "description": "The error(s) that occurred that prevented transaction generation"
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "CreatedTransactionMapping": {
+      "type": "object",
+      "properties": {
+        "batch_transaction_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Your unique identifier for a transaction"
+        },
+        "transaction_id": {
+          "type": "integer",
+          "description": "The transaction's ID in Billing Management",
+          "format": "int32"
+        }
+      },
+      "additionalProperties": false,
+      "description": "The mapping between your transaction ID and the transaction created in Billing Management"
+    },
+    "ImportBatchStatus": {
+      "title": "ImportBatchStatus",
+      "enum": [
+        "Accepted",
+        "Processed",
+        "Error",
+        "ProcessedWithExceptions"
+      ],
+      "type": "string",
+      "description": "Status of a transaction batch import"
+    },
+    "ProcessingError": {
+      "type": "object",
+      "properties": {
+        "property_name": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The property associated with the error"
+        },
+        "error_message": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The reason the error occurred"
+        }
+      },
+      "additionalProperties": false,
+      "description": "Error that prevented a transaction from being generated"
+    },
+    "TransactionProcessingExceptions": {
+      "type": "object",
+      "properties": {
+        "batch_transaction_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Your unique identifier for a transaction. This will be empty if the error applies to the entire batch."
+        },
+        "errors": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "$ref": "#/$defs/ProcessingError"
+          },
+          "description": "Error(s) that prevented the transaction from being generated"
+        }
+      },
+      "additionalProperties": false,
+      "description": "The error(s) that occurred that prevented transaction generation"
+    }
+  }
+}

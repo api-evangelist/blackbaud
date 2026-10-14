@@ -1,0 +1,1176 @@
+openapi: 3.0.1
+info:
+  title: 'Blackbaud SKY API: Education Core'
+  description: This API is used to provide access to core school settings, such as school years and roles, as well as user
+    information and other common features, such as retrieving lists and content.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/afe-edcor
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations,
+      examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/afe-edcor
+paths:
+  /v1/attachments:
+    get:
+      operationId: V1AttachmentsGet
+      summary: Attachment (Upload) (PREVIEW)
+      description: "Provisions a temporary file location to upload attachments to Education Management. This is a two-step\
+        \ process. \nThis Get call’s response includes a unique URL and token combination you will use in a separate Post\
+        \ call to upload the file data. \nThat upload call will return a temporary filename that will be used with the appropriate\
+        \ Post or Patch endpoint - e.g. Test score (Create) in the Enrollment Management API and UserRecord in the User Create/Update\
+        \ API's. See <a href=\"https://developer.blackbaud.com/skyapi/docs/in-depth-topics/physical-attachments\" target=\"\
+        _blank\">Creating physical attachments</a> for more information.\n\nRequires at least one of the following roles in\
+        \ the Education Management system:\n<ul><li>Any user can provision a file</li></ul>\n\n***This endpoint is in PREVIEW\
+        \ and may be changed or removed at any time.***"
+      parameters:
+      - name: type
+        in: query
+        required: true
+        schema:
+          type: string
+        description: "The type of attachment. These file types correspond with the Post/Patch calls that allow an attachment\
+          \ in their request body.\\\n            Allowed types:\\\n            TestScore, UserRecord, LearningProfile"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NewAttachmentProvision'
+              example:
+                url: https://someutilityurl.org/attachments
+                token: somerandomtokenstring==
+  /v1/lists:
+    get:
+      operationId: V1ListsGet
+      summary: List type list (Get) (PREVIEW)
+      description: "Returns the list of saved lists, including basic, advanced, and SKY lists. \n\nRequires at least one of\
+        \ the following roles in the Education Management system:\n<ul><li>Any role</li></ul>\n\n***This endpoint is in PREVIEW\
+        \ and may be changed or removed at any time.***"
+      parameters:
+      - name: type
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Limits results to lists of the specified type. Available values: Advanced, Basic, Sky'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListReadCollection'
+              example:
+                count: 3
+                value:
+                - id: 1
+                  name: My Student List
+                  type: Advanced
+                  category: Student
+                  description: A list of all active students
+                  created_by: John Smith
+                  created: '2022-08-31T03:30:00Z'
+                  last_modified: '2022-09-15T10:00:00Z'
+                - id: 2
+                  name: Faculty Directory
+                  type: Sky
+                  category: Faculty
+                  description: All faculty members
+                  created_by: Jane Doe
+                  created: '2023-01-10T09:00:00Z'
+                  last_modified: '2023-02-20T02:30:00Z'
+                - id: 3
+                  name: Course Roster
+                  type: Sky
+                  category: Course
+                  description: All courses
+                  created_by: Jane Doe
+                  created: '2023-03-01T09:00:00Z'
+                  last_modified: '2023-03-15T02:30:00Z'
+  /v1/lists/jobs:
+    post:
+      operationId: V1ListsJobsPost
+      summary: List execution job (Create) (PREVIEW)
+      description: "Returns the Job ID of the created job. Accepts Basic, Advanced, and Sky list types. \n<list type=\"bullet\"\
+        ><item><description>`list_id` is required for Basic and Advanced lists, optional for Sky lists.</description></item><item><description>`category`\
+        \ is required for Sky lists when `list_id` is not specified.</description></item><item><description>When both `list_id`\
+        \ and `category` are supplied for a Sky list, `list_id` takes precedence.</description></item></list>\nRequires at\
+        \ least one of the following roles in the Education Management system:\n<ul><li>Only the user that created the job\
+        \ can can access a job's status</li></ul>\n\n***This endpoint is in PREVIEW and may be changed or removed at any time.***"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ListJobRequest'
+            example:
+              list_type: Sky
+              category: Faculty List
+              output_format: JSON
+              results_file_name: my_faculty_list
+        description: The request list job object
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1ListsJobsPost200ApplicationJsonResponse'
+              example: string
+    get:
+      operationId: V1ListsJobsGet
+      summary: List execution job list (Get) (PREVIEW)
+      description: "Returns the jobs executed by the user over the last 7 days. \n      \n Requires at least one of the following\
+        \ roles in the Education Management system:\n <ul><li>Any role – only jobs created by the user are returned</li></ul>\n\
+        \n***This endpoint is in PREVIEW and may be changed or removed at any time.***"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListExecutionJob'
+              example:
+              - job_id: 569f728a-7094-4b12-9645-67da29c91e57
+                status: Completed
+                name: Official Notes List
+                type: Basic
+                created_by: A4B47D81-CF6C-4F96-9F49-9A9849EA172A
+                date_created: '2025-10-15T12:00:00Z'
+                date_completed: '2025-10-16T12:00:00Z'
+                total_processing_time: 0:00:02:20
+                results_name: t-vhCf7Fe8bESAr8sjbUwmSg/list-results/569f728a-7094-4b12-9645-67da29c91e57.json
+                output_format: JSON
+              - job_id: 569f728a-7094-4b12-9645-67da29c91e57
+                status: Completed
+                name: Official Notes List
+                type: Basic
+                created_by: A4B47D81-CF6C-4F96-9F49-9A9849EA172A
+                date_created: '2025-10-15T12:00:00Z'
+                date_completed: '2025-10-16T12:00:00Z'
+                total_processing_time: 0:00:02:20
+                results_name: t-vhCf7Fe8bESAr8sjbUwmSg/list-results/569f728a-7094-4b12-9645-67da29c91e57.json
+                output_format: JSON
+              - job_id: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+                status: Completed
+                name: Faculty Directory
+                type: Sky
+                created_by: A4B47D81-CF6C-4F96-9F49-9A9849EA172A
+                date_created: '2025-11-01T12:00:00Z'
+                date_completed: '2025-11-01T12:01:00Z'
+                total_processing_time: 0:00:00:45
+                results_name: t-vhCf7Fe8bESAr8sjbUwmSg/list-results/a1b2c3d4-e5f6-7890-abcd-ef1234567890.json
+                output_format: JSON
+  /v1/lists/jobs/{jobId}:
+    get:
+      operationId: V1ListsJobsByJobIdGet
+      summary: List execution job (Get) (PREVIEW)
+      description: "Returns the status of a list job and the SAS URI location for accessing the results for completed jobs.\
+        \ Only the user that started the job can access its status and results. \n\n The SAS URI for the file location expires\
+        \ after 15 minutes.\n\n Requires at least one of the following roles in the Education Management system:\n <ul><li>Only\
+        \ the user that created the job can can access a job’s status</li></ul>\n\n***This endpoint is in PREVIEW and may\
+        \ be changed or removed at any time.***"
+      parameters:
+      - name: jobId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The ID of the list execution job
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListExecutionJobStatus'
+              example:
+                id: 02c8fb52-a126-48b0-bd44-526c87aba88b
+                status: Pending
+                sas_uri: https://example.com/123.json
+                row_count: 1
+                list_id: 123
+                list_type: Basic
+                output_format: JSON
+                error_message: pending
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: https://tools.ietf.org/html/rfc7231#section-6.5.3
+                title: Forbidden
+                status: 403
+                detail: You do not have permission to access this job.
+  /v1/organizations:
+    get:
+      operationId: V1OrganizationsGet
+      summary: Organization list (Get) (PREVIEW)
+      description: 'Returns a collection of organizations and schools.
+
+
+        Requires "All School" permission.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: type
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Limits results to organization of the specified type (Allowed values: School, Referring, Third party
+          payer). Optional.'
+      - name: include_inactive
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: Set to true to include inactive organizations. Defaults to false.
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: '1000'
+        description: Represents the number of records to return. The default is 1000. The maximum is 5000.
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Represents the number of records to skip. The default is 0. For use with pagination.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationReadCollection'
+              example:
+                count: 2
+                next_link: /v1/organizations?limit=2&offset=2
+                values:
+                - id: 1
+                  name: Nottower School
+                  active: true
+                  address:
+                    line1: 123 Red Brick Rd.
+                    line2: Building 200
+                    city: Pleasantville
+                    country: United States
+                    state: MA
+                    province_county: Duncan
+                    post_code: '11111'
+                  is_referring_org: false
+                  is_third_party_payer: false
+                  is_transfer_school: true
+                  transfer_school:
+                    include_on_inquiry_forms: true
+                    is_decline_choice: true
+                    type:
+                      id: 1
+                      description: 4-Year College
+                  primary_contact:
+                    name: Sally Struthers
+                    title: Registrar
+                    phone: 555-555-5555
+                    email: sally@example.com
+                    fax: 555-555-5555
+                  secondary_contact:
+                    name: John Smith
+                    title: Assistant Registrar
+                    phone: 555-555-5556
+                    email: john@example.com
+                    fax: 555-555-5556
+                - id: 2
+                  name: State University
+                  active: true
+                  address:
+                    line1: 456 Campus Drive
+                    city: College Town
+                    country: United States
+                    state: NY
+                    post_code: '22222'
+                  is_referring_org: false
+                  is_third_party_payer: false
+                  is_transfer_school: false
+                  primary_contact:
+                    name: Jane Doe
+                    title: Director of Admissions
+                    phone: 555-555-5557
+                    email: jane@university.edu
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationProblemDetails'
+              example:
+                errors: {}
+                type: urn:blackbaud:model-validation-error
+                title: One or more validation errors occurred.
+                status: 400
+                detail: The date field is required.
+                values:
+                  date: null
+  /v1/users/bbid/connect:
+    patch:
+      operationId: V1UsersBbidConnectPatch
+      summary: User BBID (Connect) (PREVIEW)
+      description: 'Connects a set of user records to BBID accounts and can send login invite emails.
+
+
+        Requires at least one of the following roles in the Education Management system:
+
+        <ul><li>Platform Manager</li><li>Admissions Manager</li></ul>
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/V1UsersBbidConnectPatchRequest'
+            example:
+            - id: 1
+              email: abc@example.com
+              send_invite: false
+            - id: 2
+              email: ''
+              send_invite: true
+        description: An array of BBID connection request objects
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1UsersBbidConnectPatch200ApplicationJsonResponse'
+              example:
+              - id: 1
+                email: abc@example.com
+                response: Success
+                status: '200'
+              - id: 2
+                email: ContactCardEmail@example.com
+                response: Success
+                status: '200'
+  /v1/users/bbid/disconnect:
+    patch:
+      operationId: V1UsersBbidDisconnectPatch
+      summary: User BBID (Disconnect) (PREVIEW)
+      description: 'Disconnects a set of BBID accounts
+
+
+        Requires at least one of the following roles in the Education Management system:
+
+        <ul><li>Platform Manager</li><li>Admissions Manager</li></ul>
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: user_ids
+        in: query
+        required: false
+        schema:
+          type: array
+        description: An array of user IDs to disconnect.
+      - name: bbid_emails
+        in: query
+        required: false
+        schema:
+          type: array
+        description: An array of BBID emails to disconnect.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1UsersBbidDisconnectPatch200ApplicationJsonResponse'
+              example:
+              - id: 1
+                email: abc@example.com
+                response: Success
+                status: '200'
+              - id: 2
+                email: ContactCardEmail@example.com
+                response: Success
+                status: '200'
+  /v1/users/search:
+    post:
+      operationId: V1UsersSearchPost
+      summary: User (Search) (PREVIEW)
+      description: 'Returns a list of users that meet specified criteria
+
+
+        Requires at least one of the following roles in the Education Management system:
+
+        <ul><li>Platform Manager</li><li>Admissions Manager</li></ul>
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserSearchRequest'
+            example:
+              first_name: Terry
+              last_name: Brown
+              birth_date:
+                day: 1
+                month: 1
+                year: 2001
+              email: joe@example.com
+              user_ids:
+              - 100451
+              - 100542
+              host_ids:
+              - XX100001
+              - XX100002
+              state_ids:
+              - SC100001
+              - SC100002
+              student_ids:
+              - HS100001
+              - HS100002
+              usernames:
+              - joe@example.com
+              - sue@example.com
+        description: User search request object with specified criteria
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1UsersSearchPost200ApplicationJsonResponse'
+              example:
+              - id: 1
+                email: joe@example.com
+                first_name: Terry
+                last_name: Brown
+                birth_date: '2001-01-01T12:00:00Z'
+                username: joe@example.com
+                host_id: XX100001
+                student_id: HS100001
+                state_id: SC100001
+components:
+  schemas:
+    ConnectionRequest:
+      required:
+      - id
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The user ID to connect
+          format: int32
+        email:
+          type: string
+          description: The email to use for the BBID. If blank, the contact email will be used, if present. If not, an error
+            is returned.
+          nullable: true
+        send_invite:
+          type: boolean
+          description: Set to true to send an login invite email when BBID is successfully connected. Defaults to false.
+      additionalProperties: false
+      description: An object with user ID and email information
+    ConnectionResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The user ID.
+          format: int32
+        email:
+          type: string
+          description: The BBID email.
+          nullable: true
+        response:
+          type: string
+          description: The response description.
+          nullable: true
+        status:
+          type: string
+          description: The status code of the response.
+          nullable: true
+      additionalProperties: false
+      description: ''
+    DateComponent:
+      type: object
+      properties:
+        day:
+          type: integer
+          description: The day portion of the date
+          format: int32
+          nullable: true
+        month:
+          type: integer
+          description: The month portion of the date
+          format: int32
+          nullable: true
+        year:
+          type: integer
+          description: The year portion of the date
+          format: int32
+          nullable: true
+      additionalProperties: false
+      description: An object for date information
+    ListExecutionJob:
+      type: object
+      properties:
+        job_id:
+          type: string
+          description: The ID of the list execution job
+          nullable: true
+        status:
+          type: string
+          description: "The status of the job. \n Members:\n Pending - The job has been queued but has not yet started running.\n\
+            Running - The job is running.\n Completed - The job successfully completed.     \nFailed - The job failed.\nCancelling\
+            \ - Job cancellation has been requested.The job may still complete successfully from this state.       \nCancelled\
+            \ - The job was cancelled.\nThrottled - The job has been throttled.The job will run when space is available."
+          nullable: true
+        name:
+          type: string
+          description: The name of the list
+          nullable: true
+        type:
+          type: string
+          description: 'The list type. Available values: Basic, Advanced, Sky'
+          nullable: true
+        created_by:
+          type: string
+          description: The name of the user that created the list
+          nullable: true
+        date_created:
+          type: string
+          description: The date the job was created
+          format: date-time
+          nullable: true
+        date_completed:
+          type: string
+          description: The date the job was completed
+          format: date-time
+          nullable: true
+        total_processing_time:
+          type: string
+          description: The total processing time of the job
+          nullable: true
+        results_name:
+          type: string
+          description: The name of the results
+          nullable: true
+        output_format:
+          type: string
+          description: Output format of the job results
+          nullable: true
+      additionalProperties: false
+      description: ListExecutionJob object model
+    ListExecutionJobStatus:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the list execution job
+          nullable: true
+        status:
+          type: string
+          description: "The status of the job \n Members:\n Pending - The job has been queued but has not yet started running.\n\
+            \ Running - The job is running.\n Completed - The job successfully completed.\n Disallowed -  User cannot access\
+            \ selected list.\n        Failed - The job failed.\n Cancelling - Job cancellation has been requested.The job\
+            \ may still complete successfully from this state.\n Cancelled - The job was cancelled. \n Expired - The file\
+            \ has expired\nThrottled - The job has been throttled.The job will run when space is available."
+          nullable: true
+        sas_uri:
+          type: string
+          description: SAS URI for accessing the list results. The URI functions as a secure credential to access the list
+            results, and thus should be considered a secret unique value. Sharing this URI with anyone is strongly discouraged,
+            and as a best-practice, avoid persisting the URI beyond processing the job result. The URI will expire after 15
+            minutes.
+          nullable: true
+        row_count:
+          type: integer
+          description: The number of rows returned for the list
+          format: int64
+          nullable: true
+        date_created:
+          type: string
+          description: Timestamp when the job was created
+          format: date-time
+          nullable: true
+        list_id:
+          type: integer
+          description: List ID associated with the job
+          format: int32
+          nullable: true
+        list_type:
+          type: string
+          description: Type of list being executed
+          nullable: true
+        output_format:
+          type: string
+          description: Output format of the job results
+          nullable: true
+        error_message:
+          type: string
+          description: Error message if the job failed
+          nullable: true
+        category:
+          type: integer
+          description: Sky list category identifier. Only present for Sky list type jobs.
+          format: int32
+          nullable: true
+      additionalProperties: false
+      description: Response model for list job operations
+    ListJobRequest:
+      required:
+      - list_type
+      type: object
+      properties:
+        list_id:
+          type: integer
+          description: List ID associated with the list job. Required for Basic and Advanced list types. Optional for Sky
+            list type (if omitted for Sky, the default list for the specified category is used).
+          format: int32
+          nullable: true
+        list_type:
+          minLength: 1
+          type: string
+          description: 'The type of list being executed. Accepted values: "Basic", "Advanced", "Sky".'
+        category:
+          type: string
+          description: The Sky list category name (e.g., 'Student List', 'Faculty List', 'Course List', 'Household List').
+            Required when list_type is 'Sky' and list_id is not specified, so the system knows which default list/category
+            to run the job for. Values come from the list of lists endpoint.
+          nullable: true
+        output_format:
+          $ref: '#/components/schemas/OutputFormat'
+        results_file_name:
+          type: string
+          description: 'Optional custom filename for the results file
+
+            Must be a valid filename with no path information'
+          nullable: true
+      additionalProperties: false
+      description: Request model for creating a list execution job.
+    ListRead:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The id of the list
+          format: int32
+        name:
+          type: string
+          description: The name of the list
+          nullable: true
+        type:
+          type: string
+          description: 'Whether list is an advanced list, basic list, or a SKY list. Available values: Advanced, Basic, Sky'
+          nullable: true
+          example: Advanced
+        category:
+          type: string
+          description: The category of the list. For advanced/basic lists, returns the list category. For SKY lists, returns
+            the type of SKY list (e.g., Student, User, Faculty, Candidate, Course, Class, Household, Contract, Course Request,
+            Day Attendance, Section Attendance, Fees, Transaction).
+          nullable: true
+        description:
+          type: string
+          description: The description of the list
+          nullable: true
+        created_by:
+          type: string
+          description: The name of the user that created the list
+          nullable: true
+        created:
+          type: string
+          description: The timestamp when the list was created
+          format: date-time
+          nullable: true
+          example: '2022-08-31T03:30:00Z'
+        last_modified_by:
+          type: string
+          description: The name of the user that last modified the list
+          nullable: true
+        last_modified:
+          type: string
+          description: The timestamp when the list was last modified
+          format: date-time
+          nullable: true
+          example: '2022-08-31T03:30:00Z'
+      additionalProperties: false
+      description: Represents a saved list accessible to the user
+    ListReadCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of lists returned
+          format: int32
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/ListRead'
+          description: The list of saved lists
+          nullable: true
+      additionalProperties: false
+      description: A collection of saved lists
+    NewAttachmentProvision:
+      type: object
+      properties:
+        environment_id:
+          type: string
+          description: Your environment ID
+          nullable: true
+        blackbaud_id:
+          type: string
+          description: The Blackbaud ID of the user that provisioned the attachment file location
+          nullable: true
+        url:
+          type: string
+          description: The URL to use to upload the data for the attachment.
+          nullable: true
+        token:
+          type: string
+          description: The temporary, unique token for the provisioned attachment.
+          nullable: true
+      additionalProperties: false
+      description: NewAttachmentProvision object model
+    OrganizationAddress:
+      type: object
+      properties:
+        line1:
+          type: string
+          description: The first address line of the organization
+          nullable: true
+        line2:
+          type: string
+          description: The second address line of the organization
+          nullable: true
+        city:
+          type: string
+          description: The city of the organization
+          nullable: true
+        country:
+          type: string
+          description: The country of the organization
+          nullable: true
+        state:
+          type: string
+          description: The state of the organization
+          nullable: true
+        province_county:
+          type: string
+          description: The province or county of the organization
+          nullable: true
+        post_code:
+          type: string
+          description: The postal code of the organization
+          nullable: true
+      additionalProperties: false
+      description: Address information for an organization
+    OrganizationContact:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the contact
+          nullable: true
+        title:
+          type: string
+          description: The title of the contact
+          nullable: true
+        phone:
+          type: string
+          description: The phone number of the contact
+          nullable: true
+        email:
+          type: string
+          description: The email address of the contact
+          nullable: true
+        fax:
+          type: string
+          description: The fax number of the contact
+          nullable: true
+      additionalProperties: false
+      description: Contact information for an organization
+    OrganizationRead:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the organization
+          format: int32
+          nullable: true
+        name:
+          type: string
+          description: The name of the organization
+          nullable: true
+        active:
+          type: boolean
+          description: Indicates if the organization is active
+          nullable: true
+        address:
+          $ref: '#/components/schemas/OrganizationAddress'
+        is_referring_org:
+          type: boolean
+          description: Indicates if the organization is a referring organization
+          nullable: true
+        is_third_party_payer:
+          type: boolean
+          description: Indicates if the organization is a third party payer organization
+          nullable: true
+        is_transfer_school:
+          type: boolean
+          description: Indicates if the organization is a transfer school.
+          nullable: true
+        transfer_school:
+          $ref: '#/components/schemas/OrganizationTransferSchool'
+        primary_contact:
+          $ref: '#/components/schemas/OrganizationContact'
+        secondary_contact:
+          $ref: '#/components/schemas/OrganizationContact'
+      additionalProperties: false
+      description: Organization read model containing organization information
+    OrganizationReadCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items in the collection
+          format: int32
+          readOnly: true
+        next_link:
+          type: string
+          description: For paginated responses, the URI for the next page of results
+          nullable: true
+        values:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrganizationRead'
+          description: The set of items included in the response. This may be a subset of the items in the collection
+          nullable: true
+      additionalProperties: false
+      description: A Collection
+    OrganizationTransferSchool:
+      type: object
+      properties:
+        include_on_inquiry_forms:
+          type: boolean
+          description: True if school is included on inquiry forms as a choice for candidate’s current school
+          nullable: true
+        is_decline_choice:
+          type: boolean
+          description: True if school is a choice for school attending when candidate declines an acceptance
+          nullable: true
+        type:
+          $ref: '#/components/schemas/TableValueBase'
+      additionalProperties: false
+      description: Transfer school information for an organization
+    OutputFormat:
+      title: OutputFormat
+      enum:
+      - JSON
+      - CSV
+      type: string
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when
+            dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]).
+            When this member is not present, its value is assumed to be "about:blank".
+          nullable: true
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence
+            of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231],
+            Section 3.4).
+          nullable: true
+        status:
+          type: integer
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the
+            problem.
+          format: int32
+          nullable: true
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+          nullable: true
+        instance:
+          type: string
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further
+            information if dereferenced.
+          nullable: true
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: {}
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+    TableValueBase:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the table value
+          format: int32
+          nullable: true
+        description:
+          type: string
+          description: The description of the table value
+          nullable: true
+      additionalProperties: false
+      description: A table value with ID and description
+    UserSearchRequest:
+      type: object
+      properties:
+        first_name:
+          type: string
+          description: The first_name criterion will search first name and preferred name fields.
+          nullable: true
+        last_name:
+          type: string
+          description: The last_name criterion will search last name, preferred last name and maiden name fields.
+          nullable: true
+        birth_date:
+          $ref: '#/components/schemas/DateComponent'
+        email:
+          type: string
+          description: The email criterion will search login email as well as the Email and CC email fields.
+          nullable: true
+        user_ids:
+          type: array
+          items:
+            type: integer
+            format: int32
+          description: An array of user IDs. If this is included, including other ID arrays will cause an error.
+          nullable: true
+        host_ids:
+          type: array
+          items:
+            type: string
+          description: An array of user host IDs. If this is included, including other ID arrays will cause an error.
+          nullable: true
+        state_ids:
+          type: array
+          items:
+            type: string
+          description: An array of state IDs. If this is included, including other ID arrays will cause an error.
+          nullable: true
+        student_ids:
+          type: array
+          items:
+            type: string
+          description: An array of user studentIDs. If this is included, including other ID arrays will cause an error.
+          nullable: true
+        usernames:
+          type: array
+          items:
+            type: string
+          description: An array of usernames (i.e. the Blackbaud ID email for users that log in). If this is included, including
+            other ID arrays will cause an error.
+          nullable: true
+      additionalProperties: false
+      description: User search request
+    UserSearchResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The user ID of the user
+          format: int32
+          nullable: true
+        email:
+          type: string
+          description: The email of the user
+          nullable: true
+        first_name:
+          type: string
+          description: The first name of the user
+          nullable: true
+        last_name:
+          type: string
+          description: The last name of the user
+          nullable: true
+        maiden_name:
+          type: string
+          description: The former or maiden name of the user
+          nullable: true
+        middle_name:
+          type: string
+          description: The middle name of the user
+          nullable: true
+        preferred_name:
+          type: string
+          description: The preferred first name of the user
+          nullable: true
+        preferred_last_name:
+          type: string
+          description: The preferred last name of the user
+          nullable: true
+        prefix:
+          type: string
+          description: The prefix of the user
+          nullable: true
+        suffix:
+          type: string
+          description: The suffix of the user
+          nullable: true
+        birth_date:
+          type: string
+          description: The birth date of a user
+          format: date-time
+          nullable: true
+        username:
+          type: string
+          description: The bbid username email of the user
+          nullable: true
+        host_id:
+          type: string
+          description: The host ID of a user
+          nullable: true
+        student_id:
+          type: string
+          description: The student ID of a user
+          nullable: true
+        state_id:
+          type: string
+          description: The state ID of a user
+          nullable: true
+      additionalProperties: false
+      description: User search response
+    ValidationProblemDetails:
+      type: object
+      properties:
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          description: The validation errors.
+          nullable: true
+        type:
+          type: string
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when
+            dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]).
+            When this member is not present, its value is assumed to be "about:blank".
+          nullable: true
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence
+            of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231],
+            Section 3.4).
+          nullable: true
+        status:
+          type: integer
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the
+            problem.
+          format: int32
+          nullable: true
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+          nullable: true
+        instance:
+          type: string
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further
+            information if dereferenced.
+          nullable: true
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: {}
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+    V1AttachmentsGetRequest:
+      type: string
+      x-apim-inline: true
+    V1ListsGetRequest:
+      type: string
+      x-apim-inline: true
+    V1ListsJobs-jobId-GetRequest:
+      type: string
+      x-apim-inline: true
+    V1ListsJobsPost200ApplicationJsonResponse:
+      type: string
+      x-apim-inline: true
+    V1OrganizationsGetRequest:
+      type: string
+      x-apim-inline: true
+    V1OrganizationsGetRequest-1:
+      type: boolean
+      x-apim-inline: true
+    V1OrganizationsGetRequest-2:
+      maximum: 5000
+      minimum: 0
+      type: integer
+      format: int32
+      default: 1000
+      x-apim-inline: true
+    V1OrganizationsGetRequest-3:
+      maximum: 2147483647
+      minimum: 0
+      type: integer
+      format: int32
+      x-apim-inline: true
+    V1UsersSearchPost200ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/UserSearchResponse'
+      x-apim-inline: true
+    V1UsersBbidConnectPatchRequest:
+      type: array
+      items:
+        $ref: '#/components/schemas/ConnectionRequest'
+      x-apim-inline: true
+    V1UsersBbidConnectPatch200ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ConnectionResponse'
+      x-apim-inline: true
+    V1UsersBbidDisconnectPatchRequest:
+      type: array
+      items:
+        type: integer
+        format: int32
+      x-apim-inline: true
+    V1UsersBbidDisconnectPatchRequest-1:
+      type: array
+      items:
+        type: string
+      x-apim-inline: true
+    V1UsersBbidDisconnectPatch200ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ConnectionResponse'
+      x-apim-inline: true
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []

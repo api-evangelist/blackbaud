@@ -1,0 +1,414 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/blackbaud/main/json-schema/blackbaud-ad-hoc-query-execution-request-schema.json",
+  "title": "AdHocQueryExecutionRequest",
+  "description": "Request to execute an ad-hoc query. Supply exactly one mode: adhoc_query_id to run a saved query, or query_view_id plus select_fields to run an inline (transient) query. Synchronous by default; set execute_async to run deferred and poll for the result.",
+  "x-generated": "2026-10-14",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/blackbaud-altru-analysis-api-openapi.yml#/components/schemas/AdHocQueryExecutionRequest",
+  "type": "object",
+  "properties": {
+    "adhoc_query_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "ID of a saved query to execute (saved mode). Mutually exclusive with query_view_id. When supplied, the field collections are loaded from the saved definition and any inline select_fields are ignored.",
+      "format": "uuid"
+    },
+    "query_view_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "ID of the query view to execute against (inline mode). Mutually exclusive with adhoc_query_id. Stable across environments, so safe to embed in caller code.",
+      "format": "uuid"
+    },
+    "select_fields": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "$ref": "#/$defs/AdHocQuerySelectField"
+      },
+      "description": "Output (Select) fields. Required (at least one) for inline execution; ignored in saved mode."
+    },
+    "filter_fields": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "$ref": "#/$defs/AdHocQueryFilterField"
+      },
+      "description": "Filter fields (WHERE-clause predicates). Inline mode only."
+    },
+    "sort_fields": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "$ref": "#/$defs/AdHocQuerySortField"
+      },
+      "description": "Sort fields (ORDER BY). Inline mode only."
+    },
+    "group_filter_fields": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "$ref": "#/$defs/AdHocQueryGroupFilterField"
+      },
+      "description": "Group-filter fields (HAVING-clause predicates over aggregates). Inline mode only."
+    },
+    "do_return_data": {
+      "type": [
+        "boolean",
+        "null"
+      ],
+      "description": "When false, only the generated SQL and field metadata are returned — no rows. Defaults to true. The generated SQL is surfaced on the response sql field."
+    },
+    "bypass_record_count": {
+      "type": [
+        "boolean",
+        "null"
+      ],
+      "description": "When true, the total record count is not computed for result sets larger than the page — faster, but row_count comes back null. Defaults to false."
+    },
+    "include_security_sql": {
+      "type": [
+        "boolean",
+        "null"
+      ],
+      "description": "When true, the individual record-access security SQL clauses are returned alongside the result (on the sql field). Defaults to false."
+    },
+    "suppress_duplicate_rows": {
+      "type": [
+        "boolean",
+        "null"
+      ],
+      "description": "Suppress duplicate full rows in the output. Only collapses identical rows — does not collapse a one-to-many row expansion."
+    },
+    "suppress_primary_key_field": {
+      "type": [
+        "boolean",
+        "null"
+      ],
+      "description": "When true, the synthetic QUERYRECID primary-key column is omitted from output. Defaults to false (the key is included)."
+    },
+    "max_records": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "description": "Cap on rows returned. A server-side ceiling is applied separately.",
+      "format": "int32"
+    },
+    "start": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "description": "Paging offset (zero-based). When set with limit, returns a slice.",
+      "format": "int32"
+    },
+    "limit": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "description": "Paging page size. Pairs with start.",
+      "format": "int32"
+    },
+    "context_record_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Context record ID for query views that require one (table-valued-function views)."
+    },
+    "search_text": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Free-text search applied across the query's output fields."
+    },
+    "execute_async": {
+      "type": [
+        "boolean",
+        "null"
+      ],
+      "description": "When true, run asynchronously (deferred): the response returns immediately with status `deferred`, a deferred_result_key, and an infinity_session instead of blocking for the result. Poll GetAdHocQueryExecution — and optionally cancel via DeleteAdHocQueryExecution — passing both values back. Defaults to false (synchronous: the result set is returned inline with status `ready`)."
+    }
+  },
+  "additionalProperties": false,
+  "x-display-name": "Ad-hoc query execution request",
+  "x-display-id": "AdHocQueryExecutionRequest",
+  "$defs": {
+    "AdHocQueryFilterField": {
+      "required": [
+        "column_name",
+        "filter_operator",
+        "object_name"
+      ],
+      "type": "object",
+      "properties": {
+        "object_name": {
+          "minLength": 1,
+          "type": "string",
+          "description": "View / table object name. Required."
+        },
+        "column_name": {
+          "minLength": 1,
+          "type": "string",
+          "description": "Column name on the object. Required."
+        },
+        "parent_path": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Join path to the object."
+        },
+        "display_path": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Human-readable join-path display."
+        },
+        "filter_operator": {
+          "minLength": 1,
+          "type": "string",
+          "description": "Filter operator (e.g. IsEqualTo, IsOneOf, IsBlank, BeginsWith). Required for the row to be applied."
+        },
+        "compare_type": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Boolean connector to the previous filter (None, And, Or). The first filter typically uses None."
+        },
+        "values": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "string"
+          },
+          "description": "Comparison values. Most operators need one; IsOneOf / IsBetween need more."
+        },
+        "data_type": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Data type of the values (String, Integer, Date, Money, Boolean, Guid, etc.). Optional for most operators."
+        },
+        "include_blanks": {
+          "type": [
+            "boolean",
+            "null"
+          ],
+          "description": "When true, blank values in the source pass the filter alongside the comparison."
+        },
+        "is_id_set_field": {
+          "type": [
+            "boolean",
+            "null"
+          ],
+          "description": "True when this filter references an ID set (selection) rather than a scalar."
+        },
+        "use_left_parenthesis": {
+          "type": [
+            "boolean",
+            "null"
+          ],
+          "description": "Open-parenthesis grouping for compound expressions."
+        },
+        "use_right_parenthesis": {
+          "type": [
+            "boolean",
+            "null"
+          ],
+          "description": "Close-parenthesis grouping for compound expressions."
+        },
+        "left_parenthesis_count": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "description": "Number of opening parens to emit when nested deeper than one level.",
+          "format": "int32"
+        },
+        "right_parenthesis_count": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "description": "Number of closing parens to emit when nested deeper than one level.",
+          "format": "int32"
+        }
+      },
+      "additionalProperties": false,
+      "description": "One element of filter_fields (a WHERE-clause predicate).",
+      "x-display-name": "Ad-hoc query filter field",
+      "x-display-id": "AdHocQueryFilterField"
+    },
+    "AdHocQueryGroupFilterField": {
+      "type": "object",
+      "properties": {
+        "object_name": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Object name the aggregate runs over."
+        },
+        "column_name": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Column on the object."
+        },
+        "parent_path": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Join path."
+        },
+        "aggregate_type": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Aggregate to apply (Count, Sum, etc.)."
+        },
+        "filter_operator": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "HAVING-side filter operator (e.g. IsGreaterThan)."
+        },
+        "values": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "string"
+          },
+          "description": "Comparison values."
+        }
+      },
+      "additionalProperties": false,
+      "description": "One element of group_filter_fields (a HAVING-clause predicate over an aggregate).",
+      "x-display-name": "Ad-hoc query group filter field",
+      "x-display-id": "AdHocQueryGroupFilterField"
+    },
+    "AdHocQuerySelectField": {
+      "required": [
+        "column_name",
+        "object_name"
+      ],
+      "type": "object",
+      "properties": {
+        "object_name": {
+          "minLength": 1,
+          "type": "string",
+          "description": "View / table object name. Required."
+        },
+        "column_name": {
+          "minLength": 1,
+          "type": "string",
+          "description": "Column name on the object. Required."
+        },
+        "parent_path": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Query-view join path leading to the object. Required for every select field; for root-table fields it equals object_name (defaulted when omitted). For joined fields, supply the full backslash-delimited path (e.g. V_QUERY_CONSTITUENT\\Interactions)."
+        },
+        "display_path": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Human-readable join-path display. Used in error messages and output column captions; usually mirrors parent_path."
+        },
+        "alias_name": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Alias to apply to the output column. Optional; one is generated when omitted."
+        },
+        "aggregate_type": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Aggregate to apply (None, Count, Sum, Min, Max, Average)."
+        },
+        "is_id_set_field": {
+          "type": [
+            "boolean",
+            "null"
+          ],
+          "description": "True when this field references an ID set (selection) rather than a scalar column."
+        },
+        "is_hidden": {
+          "type": [
+            "boolean",
+            "null"
+          ],
+          "description": "Suppresses the field from output while still allowing it to participate in filter/sort/group expressions."
+        }
+      },
+      "additionalProperties": false,
+      "description": "One element of select_fields. Field names map 1:1 to the underlying query definition.",
+      "x-display-name": "Ad-hoc query select field",
+      "x-display-id": "AdHocQuerySelectField"
+    },
+    "AdHocQuerySortField": {
+      "type": "object",
+      "properties": {
+        "alias_name": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Output-column alias to sort on. Either this or field_name must be supplied."
+        },
+        "field_name": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Raw field reference, typically in ObjectName.ColumnName form."
+        },
+        "sort_order": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Ascending or Descending. Defaults to Ascending when omitted."
+        }
+      },
+      "additionalProperties": false,
+      "description": "One element of sort_fields (an ORDER BY entry). Each sort field must reference a select field.",
+      "x-display-name": "Ad-hoc query sort field",
+      "x-display-id": "AdHocQuerySortField"
+    }
+  }
+}

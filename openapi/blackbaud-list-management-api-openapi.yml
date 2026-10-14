@@ -1,0 +1,583 @@
+openapi: 3.0.1
+info:
+  title: 'Blackbaud SKY API: List Management'
+  description: This API manages saved lists
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/lst-lstmg
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations,
+      examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/lst-lstmg
+paths:
+  /lists:
+    post:
+      operationId: CreateList
+      summary: Creates a new list (PREVIEW)
+      description: 'Saves a new list
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SaveListRequest'
+            example:
+              list_type: vendor
+              name: Active vendors
+              definition:
+                filter:
+                  filter_items:
+                  - field:
+                      value:
+                        value: active
+                        label: Active
+                      field_id: status
+                      operator: Equal
+                output:
+                  items:
+                  - field_id: vendor_display_name
+                  - field_id: status
+                sort:
+                  sort_fields:
+                  - field_id: vendor_display_name
+                    sort_order: asc
+              record_count: 175
+              description: Vendors with an active status
+        description: The list.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListModel'
+              example:
+                id: 71B4ADAB-235D-4FB9-97FB-22CB80737E1C
+                list_type: vendor
+                name: Active vendors
+                public_name: Active vendors
+                definition:
+                  filter:
+                    filter_items:
+                    - field:
+                        value:
+                          value: active
+                          label: Active
+                        field_id: status
+                        operator: Equal
+                  output:
+                    items:
+                    - field_id: vendor_display_name
+                    - field_id: status
+                  sort:
+                    sort_fields:
+                    - field_id: vendor_display_name
+                      sort_order: asc
+                created_by_user_id: 6B44131E-2935-4C0B-A7FB-5D4FA9729F50
+                created_date: '2022-04-12T12:00:00Z'
+                last_changed_by_user_id: 6B44131E-2935-4C0B-A7FB-5D4FA9729F50
+                last_changed_by_user_name: Michael Simpson
+                last_changed_date: '2022-04-12T12:00:00Z'
+                record_count: 175
+                description: Vendors with an active status
+                is_owner: true
+  /lists/{list_id}:
+    delete:
+      operationId: DeleteList
+      summary: Deletes an existing list (PREVIEW)
+      description: 'Deletes an existing, saved list
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: list_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The list identifier.
+      responses:
+        '200':
+          description: OK
+    patch:
+      operationId: EditList
+      summary: Edits an existing list (PREVIEW)
+      description: 'Edits an existing, saved list
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: list_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The list identifier.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditListRequest'
+            example:
+              name: Active vendors
+              definition:
+                filter:
+                  filter_items:
+                  - field:
+                      value:
+                        value: active
+                        label: Active
+                      field_id: status
+                      operator: Equal
+                output:
+                  items:
+                  - field_id: vendor_display_name
+                  - field_id: status
+                sort:
+                  sort_fields:
+                  - field_id: vendor_display_name
+                    sort_order: asc
+              record_count: 175
+              description: Vendors with an active status
+              if_match_last_changed_date: '1999-12-31T12:00:00Z'
+        description: The updated list definition.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListModel'
+              example:
+                id: 71B4ADAB-235D-4FB9-97FB-22CB80737E1C
+                list_type: vendor
+                name: Active vendors
+                public_name: Active vendors
+                definition:
+                  filter:
+                    filter_items:
+                    - field:
+                        value:
+                          value: active
+                          label: Active
+                        field_id: status
+                        operator: Equal
+                  output:
+                    items:
+                    - field_id: vendor_display_name
+                    - field_id: status
+                  sort:
+                    sort_fields:
+                    - field_id: vendor_display_name
+                      sort_order: asc
+                created_by_user_id: 6B44131E-2935-4C0B-A7FB-5D4FA9729F50
+                created_date: '2022-04-12T12:00:00Z'
+                last_changed_by_user_id: 6B44131E-2935-4C0B-A7FB-5D4FA9729F50
+                last_changed_by_user_name: Michael Simpson
+                last_changed_date: '2022-04-12T12:00:00Z'
+                record_count: 175
+                description: Vendors with an active status
+                is_owner: true
+    get:
+      operationId: GetList
+      summary: Gets a list (PREVIEW)
+      description: 'Returns a saved list
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: list_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The list identifier.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListModel'
+              example:
+                id: 71B4ADAB-235D-4FB9-97FB-22CB80737E1C
+                list_type: vendor
+                name: Active vendors
+                public_name: Active vendors
+                definition:
+                  filter:
+                    filter_items:
+                    - field:
+                        value:
+                          value: active
+                          label: Active
+                        field_id: status
+                        operator: Equal
+                  output:
+                    items:
+                    - field_id: vendor_display_name
+                    - field_id: status
+                  sort:
+                    sort_fields:
+                    - field_id: vendor_display_name
+                      sort_order: asc
+                created_by_user_id: 6B44131E-2935-4C0B-A7FB-5D4FA9729F50
+                created_date: '2022-04-12T12:00:00Z'
+                last_changed_by_user_id: 6B44131E-2935-4C0B-A7FB-5D4FA9729F50
+                last_changed_by_user_name: Michael Simpson
+                last_changed_date: '2022-04-12T12:00:00Z'
+                record_count: 175
+                description: Vendors with an active status
+                is_owner: true
+components:
+  schemas:
+    CollectionFilterField:
+      type: object
+      properties:
+        field_id:
+          type: string
+          description: The identifier of the field the filter applies to
+          nullable: true
+        filter_fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/FilterField'
+          description: The set of filters to be applied to items in the collection.  An indidivudal item must meet the entire
+            set of filter criteria.
+          nullable: true
+      additionalProperties: false
+      description: Represents filter information for a collection.  This is used for filtering to records that have a single
+        item in a collection that match a set of filters.
+    EditListRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          nullable: true
+        definition:
+          $ref: '#/components/schemas/ListDefinition'
+        permissions:
+          title: ListPermission
+          enum:
+          - OnlyOwnerCanAccess
+          - OthersCanView
+          - OthersCanViewAndEdit
+          type: string
+          nullable: true
+        record_count:
+          type: integer
+          format: int32
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        if_match_last_changed_date:
+          type: string
+          format: date-time
+          nullable: true
+      additionalProperties: false
+    Filter:
+      type: object
+      properties:
+        filter_items:
+          type: array
+          items:
+            $ref: '#/components/schemas/FilterItem'
+          description: The set of filter items in the filter
+          nullable: true
+        selected_filters:
+          type: array
+          items:
+            $ref: '#/components/schemas/SelectedFilter'
+          description: The set of selected filter items in the filter
+          nullable: true
+        time_zone_offset_in_minutes:
+          type: integer
+          description: Gets or sets the time zone offset to support dynamic date filtering
+          format: int32
+          nullable: true
+        first_day_of_week:
+          title: FirstDayOfWeekType
+          enum:
+          - Sunday
+          - Monday
+          type: string
+          description: Gets or sets the first day of week when using certain date filters.
+          nullable: true
+      additionalProperties: false
+      description: Filter information for a query or report execution
+    FilterField:
+      type: object
+      properties:
+        value:
+          $ref: '#/components/schemas/FilterFieldValue'
+        field_id:
+          type: string
+          description: The identifier of the field the filter applies to
+          nullable: true
+        operator:
+          title: FilterOperator
+          enum:
+          - None
+          - Equal
+          - NotEqual
+          - GreaterThan
+          - LessThan
+          - GreaterThanOrEqual
+          - LessThanOrEqual
+          - OneOf
+          - NotOneOf
+          - Blank
+          - NotBlank
+          - Between
+          - StartsWith
+          - DoesNotStartWith
+          - Contains
+          - DoesNotContain
+          - AllOf
+          type: string
+          description: The operator for the filter
+        is_aggregate:
+          type: boolean
+          description: Determines if the filter is an aggregate filter
+          nullable: true
+      additionalProperties: false
+      description: Represents filter information for a specific field
+    FilterFieldValue:
+      type: object
+      properties:
+        value:
+          description: The value for the filter
+          nullable: true
+        label:
+          type: string
+          description: An optional label associated with the Blackbaud.ListPlatform.Contracts.FilterFieldValue
+          nullable: true
+      additionalProperties: false
+      description: Represents the value for a filter field
+    FilterGrouping:
+      type: object
+      properties:
+        grouping_id:
+          type: string
+          description: The identifier of the grouping the filter applies to
+          nullable: true
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/FilterItem'
+          description: The set of filter items in the grouping
+          nullable: true
+        operator:
+          title: FilterGroupingOperator
+          enum:
+          - None
+          - AllOf
+          - OneOf
+          type: string
+          description: The operator for how the items in the group relate
+      additionalProperties: false
+      description: Represents a group of filter items and how they relate
+    FilterItem:
+      type: object
+      properties:
+        field:
+          $ref: '#/components/schemas/FilterField'
+        grouping:
+          $ref: '#/components/schemas/FilterGrouping'
+        collection_field:
+          $ref: '#/components/schemas/CollectionFilterField'
+      additionalProperties: false
+      description: "Represents an individual item in a group of filter items.  This item can contain filter information for\
+        \ a specific\r\nfield or contain another group of filter items.  It cannot contain both."
+    ListDefinition:
+      type: object
+      properties:
+        filter:
+          $ref: '#/components/schemas/Filter'
+        output:
+          $ref: '#/components/schemas/Output'
+        sort:
+          $ref: '#/components/schemas/Sort'
+      additionalProperties: false
+      description: Represents a list definition
+    ListModel:
+      type: object
+      properties:
+        id:
+          type: string
+          nullable: true
+        list_type:
+          type: string
+          nullable: true
+        name:
+          type: string
+          nullable: true
+        public_name:
+          type: string
+          nullable: true
+        definition:
+          $ref: '#/components/schemas/ListDefinition'
+        permissions:
+          title: ListPermission
+          enum:
+          - OnlyOwnerCanAccess
+          - OthersCanView
+          - OthersCanViewAndEdit
+          type: string
+          nullable: true
+        created_by_user_id:
+          type: string
+          nullable: true
+          x-bb-suppressions:
+          - parameter_property_name
+        created_by_user_name:
+          type: string
+          nullable: true
+        created_date:
+          type: string
+          format: date-time
+          nullable: true
+          x-bb-suppressions:
+          - parameter_property_name
+        last_changed_by_user_id:
+          type: string
+          nullable: true
+        last_changed_by_user_name:
+          type: string
+          nullable: true
+        last_changed_date:
+          type: string
+          format: date-time
+          nullable: true
+        record_count:
+          type: integer
+          format: int32
+          nullable: true
+        record_count_as_of_date:
+          type: string
+          format: date-time
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        is_owner:
+          type: boolean
+          x-bb-suppressions:
+          - parameter_property_name
+      additionalProperties: false
+    Output:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/OutputItem'
+          description: The items to include in the output
+          nullable: true
+      additionalProperties: false
+      description: Output information for a query execution
+    OutputItem:
+      type: object
+      properties:
+        field_id:
+          type: string
+          description: Filter information for a specific field
+          nullable: true
+      additionalProperties: false
+      description: Represents an individual item in the output of a query execution.
+    SaveListRequest:
+      required:
+      - definition
+      - list_type
+      - name
+      type: object
+      properties:
+        list_id:
+          type: string
+          nullable: true
+        list_type:
+          type: string
+        name:
+          type: string
+        definition:
+          $ref: '#/components/schemas/ListDefinition'
+        permissions:
+          title: ListPermission
+          enum:
+          - OnlyOwnerCanAccess
+          - OthersCanView
+          - OthersCanViewAndEdit
+          type: string
+          nullable: true
+        record_count:
+          type: integer
+          format: int32
+          nullable: true
+        description:
+          type: string
+          nullable: true
+      additionalProperties: false
+    SelectedFilter:
+      type: object
+      properties:
+        field_id:
+          type: string
+          description: The identifier of the field the filter applies to
+          nullable: true
+      additionalProperties: false
+      description: Represents a filter that is present but has not been applied
+    Sort:
+      type: object
+      properties:
+        sort_fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/SortField'
+          description: Gets or sets the sort fields for a list request
+          nullable: true
+      additionalProperties: false
+      description: "Describes how to sort a list request\r\n///"
+    SortField:
+      type: object
+      properties:
+        field_id:
+          type: string
+          description: The field ID to be sorted on
+          nullable: true
+        sort_order:
+          title: SortOrder
+          enum:
+          - asc
+          - desc
+          type: string
+          description: The sort order
+      additionalProperties: false
+      description: Defines a sort field
+    Lists-list_id-GetRequest:
+      type: string
+      x-apim-inline: true
+    Lists-list_id-PatchRequest:
+      type: string
+      x-apim-inline: true
+    Lists-list_id-DeleteRequest:
+      type: string
+      x-apim-inline: true
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
