@@ -1,0 +1,87 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Accounts Payable Products API'
+  description: This API is used to manage accounts payable, including vendors and invoices.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/57a342f1d7dcde1c28a749fe
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/accountspayable/v1
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Products
+paths:
+  /products:
+    get:
+      operationId: ListAccountsPayableProducts
+      summary: Accounts payable product (List)
+      description: Returns a list of products.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the list of products.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductApiCollection'
+              example:
+                count: 2
+                value:
+                - id: 2
+                  description: Copier Paper - Legal (12 Reams)
+                  code: CPLG
+                - id: 1
+                  description: Copier Paper - Letter (12 Reams)
+                  code: CPLT
+      tags:
+      - Products
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The identifier for this product.
+          format: int32
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the product.
+        code:
+          type:
+          - string
+          - 'null'
+          description: The code of the product.
+      additionalProperties: false
+      description: Contract for product.
+    ProductApiCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Product'
+      additionalProperties: false
+      description: Collection Response
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

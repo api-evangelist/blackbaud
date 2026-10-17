@@ -1,0 +1,100 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Accounts Payable Buyers API'
+  description: This API is used to manage accounts payable, including vendors and invoices.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/57a342f1d7dcde1c28a749fe
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/accountspayable/v1
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Buyers
+paths:
+  /buyers:
+    get:
+      operationId: ListBuyers
+      summary: Buyer (List)
+      description: Returns a list of buyers.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the list of buyers.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuyerApiCollection'
+              example:
+                count: 4
+                value:
+                - id: 285
+                  description: Jim Benton (Admin Dpt)
+                  value: Jim Benton (Admin Dpt)
+                  inactive: false
+                - id: 286
+                  description: Toby Boxer (Dev Dpt)
+                  value: Toby Boxer (Dev Dpt)
+                  inactive: false
+                - id: 287
+                  description: Artie Romain (Prog Dpt)
+                  value: Artie Romain (Prog Dpt)
+                  inactive: false
+                - id: 1853
+                  description: Mark Reamer (School Dept)
+                  value: Mark Reamer (School Dept)
+                  inactive: false
+      tags:
+      - Buyers
+components:
+  schemas:
+    Buyer:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The identifier for this buyer.
+          format: int32
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the buyer.
+        value:
+          type:
+          - string
+          - 'null'
+          description: The value of the buyer.
+        inactive:
+          type: boolean
+          description: Whether or not the buyer is active.
+      additionalProperties: false
+      description: Contract for buyer.
+    BuyerApiCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Buyer'
+      additionalProperties: false
+      description: Collection Response
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

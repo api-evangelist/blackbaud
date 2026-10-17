@@ -1,0 +1,92 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Gift Giftacknowledgements API'
+  description: This API manages gift information and related entities such as gift splits, gift fundraisers, and soft credits.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/58bdd5edd7dcde06046081d6
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/gift/v1
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Giftacknowledgements
+paths:
+  /giftacknowledgements/{acknowledgement_id}:
+    patch:
+      operationId: EditGiftAcknowledgement
+      summary: Gift acknowledgement (Edit)
+      description: Edits a gift acknowledgement.
+      parameters:
+      - name: acknowledgement_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The immutable system record ID of the gift acknowledgement to edit. It uses the parent gift's ID as its value.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AcknowledgementEdit'
+            example:
+              date: '2018-12-31T00:00:00Z'
+              letter: New Letter
+              status: Acknowledged
+        description: An object that represents the properties of the gift acknowledgement to edit.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GiftacknowledgementsAcknowledgement_idPatch200ApplicationJsonResponse'
+              example: {}
+        '400':
+          description: Returned when the specified acknowledgement ID in the URL or the specified request body is not in the appropriate format.
+        '403':
+          description: Returned when the user does not have permission to edit the gift acknowledgement.
+        '404':
+          description: Returned when the specified gift acknowledgement is not found.
+      tags:
+      - Giftacknowledgements
+components:
+  schemas:
+    AcknowledgementEdit:
+      description: Acknowledgement letters foster relationships with donors and show appreciation for their contributions. It is important to keep track of the acknowledgement status of gifts to ensure that each one gets a well-deserved thank you.
+      type: object
+      properties:
+        date:
+          format: date-time
+          description: 'The date associated with the acknowledgement. Uses <a href="https://tools.ietf.org/html/rfc3339">ISO-8601 format: </a><i>1969-11-21T10:29:43</i>.'
+          type: string
+          x-supports-datetime-offset: false
+        letter:
+          description: The letter associated with the acknowledgement.
+          type: string
+        status:
+          description: 'The status of the acknowledgement. Available values are: <i>ACKNOWLEDGED</i>, <i>NEEDSACKNOWLEDGEMENT</i>, and <i>DONOTACKNOWLEDGE.</i>
+
+            When <code>acknowledgement_status</code> is set to <i>DONOTACKNOWLEDGE</i>, <code>acknowledgement_letter</code> and <code>acknowledgement_date</code> should be null.
+
+            When it is set to <i>NEEDSACKNOWLEDGEMENT</i>, <code>acknowledgement_date</code> should be null.'
+          type: string
+      x-display-name: Edit Acknowledgement
+      x-display-id: EditAcknowledgement
+    GiftacknowledgementsAcknowledgement_idPatch200ApplicationJsonResponse:
+      type: object
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

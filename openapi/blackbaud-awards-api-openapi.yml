@@ -1,0 +1,274 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: GrantsConnect Awards API'
+  description: This API provides access to read and update data within GrantsConnect.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/grants-connect
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/grants-connect
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Awards
+paths:
+  /v1/awards/search:
+    post:
+      operationId: SearchAwards
+      summary: Search awards (PREVIEW)
+      description: 'Retrieves information about awards.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApplyAwardSearchFilters'
+            example:
+              id: 5001
+              award_type: Cash
+              application_id: 12345
+              limit: 50
+              page: 1
+              date_modified: '2025-01-01T12:00:00Z'
+              include_inactive: false
+        description: Specifies the set of awards that should be returned
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReturnPaginatedAwardRecords'
+              example:
+                records:
+                - award_id: 5001
+                  application_id: 1001
+                  total_amount: 10000
+                  description: Annual Community Grant
+                  award_date: '2025-01-01T12:00:00Z'
+                  currency_requested: USD
+                  currency_exchange_rate: 1
+                  total_amount_equivalent: 10000
+                  award_type: Cash
+                record_count: 100
+      tags:
+      - Awards
+  /v1/awards/{award_id}/inkinditems:
+    get:
+      operationId: GetAwardInKindItems
+      summary: Get in-kind items for an award (PREVIEW)
+      description: 'Retrieves information about the in-kind items included in an award for a specific application.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: award_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The identifier of the award.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetAwardInKindItems'
+              example:
+                award_in_kind_items:
+                - id: 1
+                  item_identification: Sample Item
+                  count: 10
+                  value: 100
+                  units: 50
+      tags:
+      - Awards
+components:
+  schemas:
+    ReturnPaginatedAwardRecords:
+      type: object
+      properties:
+        records:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ReturnAwardQueryResults'
+          description: The details returned for the current page.
+        record_count:
+          type:
+          - integer
+          - 'null'
+          description: The total number of records in the search result.
+          format: int32
+      additionalProperties: false
+      description: Returns a paginated view of awards.
+    ApplyAwardSearchFilters:
+      type: object
+      properties:
+        id:
+          maximum: 2147483647
+          minimum: 1
+          type:
+          - integer
+          - 'null'
+          description: If provided, results will filter on the identifier of the award.
+          format: int32
+        award_type:
+          $ref: '#/components/schemas/AwardType'
+        application_id:
+          maximum: 2147483647
+          minimum: 1
+          type:
+          - integer
+          - 'null'
+          description: If provided, results will filter on the identifier of the application.
+          format: int32
+        limit:
+          maximum: 500
+          minimum: 50
+          type: integer
+          description: Specifies the maximum number of records to return per page.
+          format: int32
+          default: 50
+        page:
+          maximum: 2147483647
+          minimum: 1
+          type: integer
+          description: Specifies the page number for pagination.
+          format: int32
+          default: 1
+        date_modified:
+          type:
+          - string
+          - 'null'
+          description: If provided, only records modified since the date and time specified will be returned. Time zone is UTC.
+          format: date-time
+        include_inactive:
+          type: boolean
+          description: Specifies if inactive records should be returned. Value is true or false.
+          default: false
+      additionalProperties: false
+      description: Filters to apply to the search. Specify conditions of the awards to return detailed information.
+    ReturnAwardQueryResults:
+      type: object
+      properties:
+        award_id:
+          type: integer
+          description: The identifier of the award.
+          format: int32
+        application_id:
+          type: integer
+          description: The identifier of the application.
+          format: int32
+        total_amount:
+          type: number
+          description: The total monetary value awarded to the applicant. Cash payments only.
+          format: double
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the award.
+        award_date:
+          type:
+          - string
+          - 'null'
+          description: The date and time the award is created.
+          format: date-time
+        currency_requested:
+          type:
+          - string
+          - 'null'
+          description: The currency requested by the applicant.
+        currency_exchange_rate:
+          type:
+          - integer
+          - 'null'
+          description: The identifier corresponding to a record in the CurrencyExchangeRate table, used for calculating payment amount in a different currency.
+          format: int32
+        total_amount_equivalent:
+          type:
+          - number
+          - 'null'
+          description: The total monetary value of the award in the requested currency.
+          format: double
+        disbursement_currency:
+          type:
+          - string
+          - 'null'
+          description: The currency the award is disbursed in.
+        client_default_currency_amount_equivalent:
+          type:
+          - number
+          - 'null'
+          description: The total monetary value of the award in the client's default currency.
+          format: double
+        award_type:
+          $ref: '#/components/schemas/AwardType'
+      additionalProperties: false
+      description: Detailed information about awards.
+    ReturnInKindItems:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The identifier of the in-kind item.
+          format: int32
+        item_identification:
+          type:
+          - string
+          - 'null'
+          description: The identification for the in-kind item. This may be a combination of text and numbers.
+        count:
+          type: integer
+          description: The number of in-kind items included in the award.
+          format: int32
+        value:
+          type: number
+          description: The monetary value of a single in-kind item.
+          format: double
+        units:
+          type:
+          - integer
+          - 'null'
+          description: The total number of units for this in-kind item that are available for awards and payments.
+          format: int32
+      additionalProperties: false
+      description: Detailed information about the in-kind items awarded, including item ID, count, monetary value, and units.
+    GetAwardInKindItems:
+      type: object
+      properties:
+        award_in_kind_items:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ReturnInKindItems'
+          description: The in-kind items awarded for the application.
+      additionalProperties: false
+      description: Returns information about the in-kind items awarded for an application.
+    AwardType:
+      enum:
+      - Cash
+      - InKind
+      type: string
+      description: The type of funding source used for the award.<p>Available values:</p><ul><li><i>Cash</i></li><li><i>InKind</i></li></ul>
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

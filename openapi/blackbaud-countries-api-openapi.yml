@@ -1,0 +1,122 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Constituent Countries API'
+  description: This API manages constituent information and related entities such as addresses, phones, emails, and notes.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/56b76470069a0509c8f1c5b3
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/constituent/v1
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Countries
+paths:
+  /countries:
+    get:
+      operationId: ListCountries
+      summary: Countries
+      description: Returns the list of available countries.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a <a href="https://developer.blackbaud.com/skyapi/api/entity-reference/constituent#Collection">collection</a> of <a href="https://developer.blackbaud.com/skyapi/api/entity-reference/constituent#Country">country</a> entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiCollectionOfCountryRead'
+              example:
+                count: 13
+                value:
+                - id: '543'
+                  abbreviation: AUS
+                  name: Australia
+                - id: '542'
+                  abbreviation: CAN
+                  name: Canada
+                - id: '1704'
+                  abbreviation: GER
+                  name: Germany
+                - id: '1709'
+                  abbreviation: ITA
+                  name: Italy
+                - id: '1174'
+                  abbreviation: JAP
+                  name: Japan
+                - id: '1717'
+                  abbreviation: LUX
+                  name: Luxembourg
+                - id: '1708'
+                  abbreviation: MEX
+                  name: Mexico
+                - id: '544'
+                  abbreviation: NZL
+                  name: New Zealand
+                - id: '1705'
+                  abbreviation: RUS
+                  name: Russia
+                - id: '1706'
+                  abbreviation: RSA
+                  name: South Africa
+                - id: '1707'
+                  abbreviation: CHE
+                  name: Switzerland
+                - id: '541'
+                  abbreviation: GBR
+                  name: United Kingdom
+                - id: '540'
+                  abbreviation: USA
+                  name: United States
+        '403':
+          description: Returned when the user does not have permission to view countries.
+      tags:
+      - Countries
+components:
+  schemas:
+    CountryRead:
+      description: The country entity returns information about countries that are available for use in your database.
+      type: object
+      properties:
+        id:
+          description: The immutable system record ID of the country.
+          type: string
+        abbreviation:
+          description: The user-defined abbreviation for the country.
+          type: string
+        name:
+          description: The country name.
+          type: string
+      x-display-name: Country
+      x-display-id: Country
+    ApiCollectionOfCountryRead:
+      description: Fetching data all at once quickly becomes unmanageable. The collection entity helps by returning paginated chunks of large data sets. This entity includes helpful metadata and properties to paginate and iterate through the data.
+      type: object
+      properties:
+        count:
+          format: int32
+          description: The number of items available for retrieval into the collection after applying any request parameters. The <b>limit</b> and <b>offset</b> parameters do not affect the <b>count</b>, but to facilitate paging, they may affect the number of items in the <b>value</b> result set.
+          type: integer
+        next_link:
+          description: For paginated responses, the URI for the next page of results.
+          type: string
+        value:
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+          type: array
+          items:
+            $ref: '#/components/schemas/CountryRead'
+      x-hidden: true
+      x-base-type: '#/definitions/ApiCollection'
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

@@ -1,0 +1,358 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: OneRoster Results API'
+  description: OneRoster v1.1 API. For details on the OneRoster Version 1.1 Specification, click here. The Authorization page provides steps to setup and test these endpoints.
+  version: v1p1
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/afe-rostr
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/afe-rostr/ims/oneroster
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Results
+paths:
+  /results:
+    get:
+      operationId: getAllResults
+      summary: Results all
+      description: Returns a collection of results.
+      responses:
+        '200':
+          description: OK - It was possible to read the collection.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResultsOutputModelSvc'
+              example:
+                results:
+                - scoreStatus: fully graded
+                  scoreDate: '2022-03-15T01:30:00Z'
+                  score: 88
+                  comment: Result comment
+                  lineItem:
+                    sourcedId: <external-lineitem-id>
+                    href: https://api.sky.blackbaud.com/afe-rostr/ims/oneroster/v1p1/lineitems/<external-lineitem-ID>
+                    type: lineItem
+                  student:
+                    sourcedId: usr-222-12345678
+                    href: https://api.sky.blackbaud.com/afe-rostr/ims/oneroster/v1p1/users/cls-222-12345678
+                    type: user
+                  sourcedId: <external-result-ID>
+                  status: active
+                  dateLastModified: '2022-03-15T01:30:00Z'
+                - scoreStatus: fully graded
+                  scoreDate: '2022-03-15T01:30:00Z'
+                  score: 88
+                  comment: Result comment
+                  lineItem:
+                    sourcedId: <external-lineitem-id>
+                    href: https://api.sky.blackbaud.com/afe-rostr/ims/oneroster/v1p1/lineitems/<external-lineitem-ID>
+                    type: lineItem
+                  student:
+                    sourcedId: usr-222-12345677
+                    href: https://api.sky.blackbaud.com/afe-rostr/ims/oneroster/v1p1/users/cls-222-12345677
+                    type: user
+                  sourcedId: <external-result-ID>
+                  status: active
+                  dateLastModified: '2022-03-15T01:30:00Z'
+      tags:
+      - Results
+  /results/{id}:
+    get:
+      operationId: getResult
+      summary: Result by id
+      description: Returns a specific result.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: sourcedId for the result
+      responses:
+        '200':
+          description: OK - It was possible to read the resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResultOutputModelSvc'
+              example:
+                result:
+                  scoreStatus: fully graded
+                  scoreDate: '2022-09-26T01:30:00Z'
+                  score: 88
+                  comment: Result comment
+                  lineItem:
+                    sourcedId: <external-lineitem-id>
+                    href: https://api.sky.blackbaud.com/afe-rostr/ims/oneroster/v1p1/lineitems/<external-lineitem-ID>
+                    type: lineItem
+                  student:
+                    sourcedId: usr-222-12345678
+                    href: https://api.sky.blackbaud.com/afe-rostr/ims/oneroster/v1p1/users/cls-222-12345678
+                    type: user
+                  sourcedId: <external-result-ID>
+                  status: active
+                  dateLastModified: '2022-09-26T01:30:00Z'
+      tags:
+      - Results
+    put:
+      operationId: putResult
+      summary: Result create/update
+      description: Returns the result object that was created or updated.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: sourcedId for the result
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResultInputModelSvc'
+            example:
+              result:
+                scoreStatus: fully graded
+                scoreDate: '2022-09-26T01:30:00Z'
+                score: 88
+                comment: Result comment
+                lineItem:
+                  sourcedId: <external-lineitem-id>
+                  href: https://api.sky.blackbaud.com/afe-rostr/ims/oneroster/v1p1/lineitems/<external-lineitem-ID>
+                  type: lineItem
+                student:
+                  sourcedId: usr-222-12345678
+                  href: https://api.sky.blackbaud.com/afe-rostr/ims/oneroster/v1p1/users/cls-222-12345678
+                  type: user
+                sourcedId: <external-result-ID>
+                status: active
+                dateLastModified: '2022-09-26T01:30:00Z'
+        description: input model for the result
+      responses:
+        '201':
+          description: OK - It was possible to read the resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResultOutputModelSvc'
+              example:
+                result:
+                  scoreStatus: fully graded
+                  scoreDate: '2022-09-26T01:30:00Z'
+                  score: 88
+                  comment: Result comment
+                  lineItem:
+                    sourcedId: <external-lineitem-id>
+                    href: https://api.sky.blackbaud.com/afe-rostr/ims/oneroster/v1p1/lineitems/<external-lineitem-ID>
+                    type: lineItem
+                  student:
+                    sourcedId: usr-222-12345678
+                    href: https://api.sky.blackbaud.com/afe-rostr/ims/oneroster/v1p1/users/cls-222-12345678
+                    type: user
+                  sourcedId: <external-result-ID>
+                  status: active
+                  dateLastModified: '2022-09-26T01:30:00Z'
+      tags:
+      - Results
+    delete:
+      operationId: deleteResult
+      summary: Result delete
+      description: Deletes the specified result sourcedId.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: sourcedId for the result
+      responses:
+        '200':
+          description: OK - Resource has been deleted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResultsOutputModelSvc'
+              example:
+                results:
+                - scoreStatus: string
+                  scoreDate: string
+                  score: 0
+                  comment: string
+                  lineItem:
+                    sourcedId: string
+                    href: string
+                    type: string
+                  student:
+                    sourcedId: string
+                    href: string
+                    type: string
+                  sourcedId: string
+                  status: string
+                  dateLastModified: string
+                  metadata: {}
+                status_info_set:
+                - imsx_codeMajor: string
+                  imsx_severity: string
+                  imsx_messageRefIdentifier: string
+                  imsx_operationRefIdentifier: string
+                  imsx_description: string
+                  imsx_codeMinor: string
+      tags:
+      - Results
+components:
+  schemas:
+    ResultModelSvc:
+      type: object
+      properties:
+        scoreStatus:
+          type:
+          - string
+          - 'null'
+          description: Score status
+        scoreDate:
+          type:
+          - string
+          - 'null'
+          description: Score date
+          format: date-time
+        score:
+          type:
+          - number
+          - 'null'
+          description: Score
+          format: double
+        comment:
+          type:
+          - string
+          - 'null'
+          description: Comment
+        lineItem:
+          $ref: '#/components/schemas/GuidRefModel'
+        student:
+          $ref: '#/components/schemas/GuidRefModel'
+        sourcedId:
+          type:
+          - string
+          - 'null'
+          description: Unique identifier for the instance
+        status:
+          type:
+          - string
+          - 'null'
+          description: Status for the instance
+        dateLastModified:
+          type:
+          - string
+          - 'null'
+          description: Date and time the instance was last modified
+          format: date-time
+        metadata:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: string
+          description: Extension properties for the instance
+      additionalProperties: false
+      description: Results model
+    StatusInfoModel:
+      type: object
+      properties:
+        imsx_codeMajor:
+          type:
+          - string
+          - 'null'
+        imsx_severity:
+          type:
+          - string
+          - 'null'
+        imsx_messageRefIdentifier:
+          type:
+          - string
+          - 'null'
+        imsx_operationRefIdentifier:
+          type:
+          - string
+          - 'null'
+        imsx_description:
+          type:
+          - string
+          - 'null'
+        imsx_codeMinor:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ResultOutputModelSvc:
+      type: object
+      properties:
+        result:
+          $ref: '#/components/schemas/ResultModelSvc'
+        status_info_set:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/StatusInfoModel'
+          description: List of status messages
+      additionalProperties: false
+      description: Result
+    ResultInputModelSvc:
+      type: object
+      properties:
+        result:
+          $ref: '#/components/schemas/ResultModelSvc'
+      additionalProperties: false
+      description: Results input model
+    GuidRefModel:
+      type: object
+      properties:
+        sourcedId:
+          type:
+          - string
+          - 'null'
+        href:
+          type:
+          - string
+          - 'null'
+        type:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ResultsOutputModelSvc:
+      type: object
+      properties:
+        results:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ResultModelSvc'
+          description: Results
+        status_info_set:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/StatusInfoModel'
+          description: List of status messages
+      additionalProperties: false
+      description: Result
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

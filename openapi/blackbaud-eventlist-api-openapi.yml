@@ -1,0 +1,436 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Event Eventlist API'
+  description: This API manages event information and related entities such as participant.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/event
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/event
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Eventlist
+paths:
+  /v1/eventlist:
+    get:
+      operationId: GetEventList
+      summary: Get event list
+      description: Returns a paginated list of events.
+      parameters:
+      - name: name
+        in: query
+        required: false
+        schema:
+          type: string
+        description: A filter for results that match the specified name.
+      - name: lookup_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: A filter for results that match the custom identifier for the event record.
+      - name: category
+        in: query
+        required: false
+        schema:
+          type: string
+        description: A filter for results that match the specified category.
+      - name: event_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: A filter for results that match the specified ID.
+      - name: start_date_from
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'A filter for results with an event start date between the specified start_date_from and start_date_to. Uses <a href="https://tools.ietf.org/html/rfc3339">ISO-8601 format</a>: <i>1969-11-21</i>.'
+      - name: start_date_to
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'A filter for results with an event start date between the specified start_date_from and start_date_to. Uses <a href="https://tools.ietf.org/html/rfc3339">ISO-8601 format</a>: <i>1969-11-21</i>.'
+      - name: date_added
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Represents a filter for results created on or after the specified date. Includes an offset from UTC in <a href="https://tools.ietf.org/html/rfc3339">ISO-8601 format</a>: <i>1969-11-21T10:29:43-04:00</i>.'
+      - name: last_modified
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Represents a filter for results modified on or after the specified date. Includes an offset from UTC in <a href="https://tools.ietf.org/html/rfc3339">ISO-8601 format</a>: <i>1969-11-21T10:29:43-04:00</i>.'
+      - name: fields
+        in: query
+        required: false
+        schema:
+          type: array
+        description: Represents a list of fields to include on the returned records.  For example, "fields=id,lookup_id,name,start_date". The id field will always be returned.  See the sample response output for the full list of available fields.
+      - name: sort
+        in: query
+        required: false
+        schema:
+          type: array
+        description: Represents a list of fields to sort the results by.
+      - name: include_inactive
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: A filter to include or exclude inactive events.
+      - name: group
+        in: query
+        required: false
+        schema:
+          type: string
+        description: A filter for results that match the specified group.
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Represents the number of records to return. The default is 500. The maximum is 10,000.
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Represents the number of records to skip.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection and count of filtered events.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventListEntryCollection'
+              example:
+                count: 12
+                value:
+                - id: '1'
+                  lookup_id: WALK
+                  name: Walk-A-Thon
+                  start_date: '2008-07-26'
+                  start_time: '2026-09-15'
+                  end_date: '2008-07-26'
+                  end_time: '2026-09-15'
+                  attending_count: 90
+                  invited_count: 100
+                  revenue: 100000
+                  goal: 150000
+                  percent_of_goal: 67
+                  date_added: '2017-09-15T01:00:00Z'
+                  date_modified: '2017-09-15T01:00:00Z'
+                  capacity: 120
+                  inactive: false
+                  attended_count: 85
+                  category:
+                    id: '314'
+                    name: Walk/Run Event
+                    inactive: false
+                  group:
+                    id: '1505'
+                    name: Walk-A-Thon for Relief
+                    is_inactive: false
+                  expenses: 1298
+                  net: 431
+                  location_name: Cobblestone House
+                  payments_balance: 100
+                - id: '2'
+                  lookup_id: Playground
+                  name: Playground Grand Opening Party
+                  start_date: '2017-12-28'
+                  start_time: '2026-09-15'
+                  end_date: '2017-12-28'
+                  end_time: '2026-09-15'
+                  attending_count: 450
+                  invited_count: 500
+                  revenue: 500000
+                  goal: 450000
+                  percent_of_goal: 111
+                  date_added: '2017-09-15T01:00:00Z'
+                  date_modified: '2017-09-15T01:00:00Z'
+                  capacity: 500
+                  inactive: false
+                  attended_count: 430
+                  category:
+                    id: '159'
+                    name: Social
+                    inactive: false
+                  group:
+                    id: '1505'
+                    name: Walk-A-Thon for Relief
+                    is_inactive: false
+                  expenses: 1412
+                  net: 9812
+                  location_name: Cobblestone House
+                  payments_balance: 200
+        '400':
+          description: Returned when the specified request parameters are not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1EventlistGet400ApplicationJsonResponse'
+              example:
+              - message: The request body is not in the appropriate format.
+                error_name: BadRequest
+                error_code: 400
+                raw_message: The request body is not in the appropriate format.
+        '403':
+          description: Returned when the user does not have rights to view the event records.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1EventlistGet403ApplicationJsonResponse'
+              example:
+              - message: The user does not have the necessary permissions for this task.
+                error_name: Forbidden
+                error_code: 403
+                raw_message: The user does not have the necessary permissions for this task.
+      tags:
+      - Eventlist
+components:
+  schemas:
+    EventCategory:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: The ID of the event category.
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the event category.
+        inactive:
+          type: boolean
+          description: Whether the category is inactive. True if inactive.
+      additionalProperties: false
+      description: Event category is the custom categorization for the event.
+    V1EventlistGet400ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    EventGroup:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: The ID of the event group.
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the event group.
+        is_inactive:
+          type: boolean
+          description: Whether the group is inactive. True if inactive.
+      additionalProperties: false
+      description: Event group is the custom grouping for the event.
+    ServiceError:
+      type: object
+      properties:
+        message:
+          type:
+          - string
+          - 'null'
+          description: The description of the error.
+        error_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the error.
+        error_code:
+          type: integer
+          description: The number associated with the error.
+          format: int32
+        raw_message:
+          type:
+          - string
+          - 'null'
+          description: The description of the error which can include argument placeholders.
+        error_args:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: The argument data for the placeholders.
+      additionalProperties: false
+      description: Explains the reason for an error.
+    EventListEntry:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: The unique identifier for the event.
+        lookup_id:
+          type:
+          - string
+          - 'null'
+          description: The custom identifier for the event.
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the event.
+        start_date:
+          type:
+          - string
+          - 'null'
+          description: 'The start date of the event. Uses <a href="https://tools.ietf.org/html/rfc3339">ISO-8601 format</a>: <i>1969-11-21</i>.'
+          format: date
+        start_time:
+          pattern: ^\d{2}:\d{2}$
+          type:
+          - string
+          - 'null'
+          description: 'The start time of the event. Uses HH:mm format: <i>07:30</i>.'
+        end_date:
+          type:
+          - string
+          - 'null'
+          description: 'The end date of the event. Uses <a href="https://tools.ietf.org/html/rfc3339">ISO-8601 format</a>: <i>1969-11-21</i>.'
+          format: date
+        end_time:
+          pattern: ^\d{2}:\d{2}$
+          type:
+          - string
+          - 'null'
+          description: 'The end time of the event. Uses HH:mm format: <i>07:30</i>.'
+        attending_count:
+          type:
+          - integer
+          - 'null'
+          description: The number of event participants who plan to attend.
+          format: int32
+        invited_count:
+          type:
+          - integer
+          - 'null'
+          description: The number of event invitees.
+          format: int32
+        revenue:
+          type:
+          - number
+          - 'null'
+          description: The realized revenue of the event.
+          format: double
+        goal:
+          type:
+          - number
+          - 'null'
+          description: The goal revenue of the event.
+          format: double
+        percent_of_goal:
+          type:
+          - integer
+          - 'null'
+          description: The realized revenue as a percentage of the goal revenue.
+          format: int32
+        date_added:
+          type:
+          - string
+          - 'null'
+          description: 'The date the event was created. Includes an offset from UTC in <a href="https://tools.ietf.org/html/rfc3339">ISO-8601 format</a>: <i>1969-11-21T10:29:43-04:00</i>.'
+          format: date-time
+        date_modified:
+          type:
+          - string
+          - 'null'
+          description: 'The date when the event was last modified. Includes an offset from UTC in <a href="https://tools.ietf.org/html/rfc3339">ISO-8601 format</a>: <i>1969-11-21T10:29:43-04:00</i>.'
+          format: date-time
+        capacity:
+          type:
+          - integer
+          - 'null'
+          description: The number of people that can attend the event.
+          format: int32
+        inactive:
+          type:
+          - boolean
+          - 'null'
+          description: If the event inactive or not.  True if inactive and false otherwise.
+        attended_count:
+          type:
+          - integer
+          - 'null'
+          description: The number of event attendees.
+          format: int32
+        category:
+          $ref: '#/components/schemas/EventCategory'
+        group:
+          $ref: '#/components/schemas/EventGroup'
+        expenses:
+          type:
+          - number
+          - 'null'
+          description: The expense total for this event.
+          format: double
+        net:
+          type:
+          - number
+          - 'null'
+          description: The net revenue of the event.
+          format: double
+        location_name:
+          type:
+          - string
+          - 'null'
+          description: The location name of the event.
+        payments_balance:
+          type:
+          - number
+          - 'null'
+          description: The balance of payments due from fees for this event.
+          format: double
+      additionalProperties: false
+      description: Defines an entry in a list of events.
+    V1EventlistGet403ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    EventListEntryCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The total number of items in the collection before limit/offset.
+          format: int32
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/EventListEntry'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+      additionalProperties: false
+      description: Defines a collection of event list entries.
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

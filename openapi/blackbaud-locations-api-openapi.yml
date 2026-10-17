@@ -1,0 +1,859 @@
+openapi: 3.2.0
+info:
+  title: Blackbaud Locations API
+  version: '1.0'
+  x-refined-note:
+  - x-apievangelist-provenance differs across the merged source definitions and was not carried
+  description: 'Operations tagged Locations across 2 of this provider''s published API definitions: blackbaud-altru-event-api-openapi.yml, blackbaud-crm-event-api-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.sky.blackbaud.com/alt-evtmg
+- url: https://api.sky.blackbaud.com/crm-evtmg
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Locations
+paths:
+  /locations:
+    post:
+      operationId: LocationAdd
+      summary: Location add
+      description: Operation for adding an event location record.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewEventLocation'
+            example:
+              name: Blackbaud, Inc
+              max_capacity: 50
+              address_block: 65 Fairchild Street
+              city: Charleston
+              post_code: '29492'
+              phone_number: '8004439441'
+              country: United States
+              state: SC
+              rooms:
+              - id: a62483d4-cb71-46ae-9f06-da0644d0629f
+                name: '401'
+                capacity: 2
+                in_use: false
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully creates the resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to create the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Locations
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-evtmg
+  /locations/list:
+    get:
+      operationId: LocationLists
+      summary: Location lists
+      description: Displays a list of event locations.
+      parameters:
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Limits the number of records to return.
+      - name: session_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: A unique key provided by user for paging results. The same key will be returned in a successful response.
+      - name: infinity_session
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Values for cookies related to the Infinity load balancer session.
+      - name: more_rows_range_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Key for accessing cached results on subsequent calls to this data list.
+      - name: start_row_index
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Number of rows to skip,get result after these rows.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of result entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventLocationListCollection'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to view the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+      tags:
+      - Locations
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-evtmg
+  /locations/search:
+    get:
+      operationId: LocationSearch
+      summary: Location search
+      description: Search screen for event location records.
+      parameters:
+      - name: name
+        in: query
+        required: false
+        schema:
+          type: string
+        description: name
+      - name: address_block
+        in: query
+        required: false
+        schema:
+          type: string
+        description: address
+      - name: city
+        in: query
+        required: false
+        schema:
+          type: string
+        description: city
+      - name: state
+        in: query
+        required: false
+        schema:
+          type: string
+        description: state SimpleDataListID=7fa91401-596c-4f7c-936d-6e41683121d7.
+      - name: post_code
+        in: query
+        required: false
+        schema:
+          type: string
+        description: zip/postal code
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Limits the number of records to return.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of result entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventLocationSearchCollection'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to view the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+      tags:
+      - Locations
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-evtmg
+  /locations/{event_location_id}:
+    patch:
+      operationId: EditEventLocation
+      summary: Edit an event location
+      description: Operation for editing an event location record.
+      parameters:
+      - name: event_location_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The event location id.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditEventLocation'
+            example:
+              name: Blackbaud, Inc
+              max_capicity: 50
+              address_block: 65 Fairchild Street
+              city: Charleston
+              post_code: '29492'
+              phone_number: '8004439441'
+              country: United States
+              state: South Carolina
+              rooms:
+              - id: a62483d4-cb71-46ae-9f06-da0644d0629f
+                name: '401'
+                capacity: 2
+                in_use: false
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully edits the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to edit the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Locations
+    get:
+      operationId: GetEventLocation
+      summary: Get an event location
+      description: Operation for editing an event location record.
+      parameters:
+      - name: event_location_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The event location id.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the specified resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventLocation'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to get the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Locations
+    delete:
+      operationId: LocationDelete
+      summary: Location delete
+      description: Deletes an event location from the system.
+      parameters:
+      - name: event_location_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The event location id
+      responses:
+        '200':
+          description: Returned when the operation successfully deletes the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to delete the resource.
+      tags:
+      - Locations
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-evtmg
+components:
+  schemas:
+    EventLocationListCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items available for retrieval into the collection after applying any request parameters.
+          format: int32
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventLocationListSummary'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+        infinity_session:
+          type: string
+          description: Values for cookies related to the Infinity load balancer session.
+          format: string
+        session_key:
+          type: string
+          description: Session key for paging provided by user in request query parameter.
+          format: string
+        total_available_rows:
+          type: integer
+          description: The number of total rows available.
+          format: int32
+        more_rows_range_key:
+          type: string
+          description: Key for accessing cached results on subsequent calls to this data list.
+          format: string
+        data_no_longer_available:
+          type: boolean
+          description: Indicates data is no longer available in the context of this session.
+          format: boolean
+      additionalProperties: false
+      description: A collection of items. Data lists can contain paginated results.
+    NewEventLocation:
+      required:
+      - name
+      - country
+      type: object
+      properties:
+        name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The name.
+        capacity:
+          type: integer
+          description: The capacity.
+          format: int32
+        address_block:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: The address.
+        city:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: The city.
+        post_code:
+          maxLength: 12
+          minLength: 0
+          type: string
+          description: The zip.
+        phone_number:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The phone number.
+        country:
+          type: string
+          description: The country. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/c9649672-353d-42e8-8c25-4d34bbabfbba.
+        state:
+          type: string
+          description: The state. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/7fa91401-596c-4f7c-936d-6e41683121d7?parameters=countryid,{countryid}.
+        rooms:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewEventLocationRooms'
+          description: Rooms.
+      additionalProperties: false
+      description: LocationAdd
+      example:
+        name: Blackbaud, Inc
+        max_capacity: 50
+        address_block: 65 Fairchild Street
+        city: Charleston
+        post_code: '29492'
+        phone_number: '8004439441'
+        country: United States
+        state: SC
+        rooms:
+        - id: a62483d4-cb71-46ae-9f06-da0644d0629f
+          name: '401'
+          capacity: 2
+          in_use: false
+      x-display-name: Event Location Add Form
+      x-display-id: Event Location Add Form
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type: integer
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type: string
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: false
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-display-name: Problem details
+      x-display-id: ProblemDetails
+    EventLocationSearchCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items available for retrieval into the collection after applying any request parameters.
+          format: int32
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventLocationSearchSummary'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+      additionalProperties: false
+      description: A collection of items. Data lists can contain paginated results.
+    EventLocationSearchSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID.
+        name:
+          type: string
+          description: The name.
+        phone:
+          type: string
+          description: The phone number.
+        address:
+          type: string
+          description: The address.
+        capacity:
+          type: integer
+          description: The capacity.
+          format: int32
+      additionalProperties: false
+      description: LocationSearch
+      x-display-name: Event Location Search
+      x-display-id: Event Location Search
+    EventLocationRooms:
+      type: object
+      properties:
+        id:
+          type: string
+          description: id
+        name:
+          type: string
+          description: room/unit name
+        capacity:
+          type: integer
+          description: capacity
+        in_use:
+          type: boolean
+          description: in use
+      description: EventLocationRooms
+      x-display-name: rooms
+      x-display-id: rooms
+    EditEventLocationRooms:
+      type: object
+      properties:
+        id:
+          type: string
+          description: id
+        name:
+          type: string
+          description: room/unit name
+        capacity:
+          type: integer
+          description: capacity
+        in_use:
+          type: boolean
+          description: in use
+      description: EditEventLocationRooms
+      x-display-name: rooms
+      x-display-id: rooms
+    EventLocation:
+      required:
+      - name
+      - country
+      type: object
+      properties:
+        name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The name.
+        capacity:
+          type: integer
+          description: The capacity.
+          format: int32
+        address_block:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: The address.
+        city:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: The city.
+        post_code:
+          maxLength: 12
+          minLength: 0
+          type: string
+          description: The zip.
+        phone_number:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The phone number.
+        country:
+          type: string
+          description: The country. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/c9649672-353d-42e8-8c25-4d34bbabfbba.
+        state:
+          type: string
+          description: The state. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/7fa91401-596c-4f7c-936d-6e41683121d7?parameters=countryid,{countryid}.
+        rooms:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventLocationRooms'
+          description: Rooms.
+      additionalProperties: false
+      description: GetEventLocation
+      x-display-name: Event Location Edit Form
+      x-display-id: Event Location Edit Form
+    EventLocationListSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID.
+        name:
+          type: string
+          description: The name.
+        phone_number:
+          type: string
+          description: The phone number.
+        capacity:
+          type: integer
+          description: The capacity.
+          format: int32
+        address:
+          type: string
+          description: The address.
+        city:
+          type: string
+          description: The city.
+        state:
+          type: string
+          description: The state.
+        post_code:
+          type: string
+          description: The zip/postal code.
+        number_of_rooms:
+          type: integer
+          description: The number of rooms/units.
+          format: int32
+      additionalProperties: false
+      description: LocationLists
+      x-display-name: Event Location List
+      x-display-id: Event Location List
+    PostResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The newly created ID.
+      additionalProperties: false
+      description: Defines the shape of a post response object.
+    EditEventLocation:
+      type: object
+      properties:
+        name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The name.
+        capacity:
+          type: integer
+          description: The capacity.
+          format: int32
+        address_block:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: The address.
+        city:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: The city.
+        post_code:
+          maxLength: 12
+          minLength: 0
+          type: string
+          description: The zip.
+        phone_number:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The phone number.
+        country:
+          type: string
+          description: The country. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/c9649672-353d-42e8-8c25-4d34bbabfbba.
+        state:
+          type: string
+          description: The state. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/7fa91401-596c-4f7c-936d-6e41683121d7?parameters=countryid,{countryid}.
+        rooms:
+          type: array
+          items:
+            $ref: '#/components/schemas/EditEventLocationRooms'
+          description: Rooms.
+      additionalProperties: false
+      description: EditEventLocation
+      example:
+        name: Blackbaud, Inc
+        max_capicity: 50
+        address_block: 65 Fairchild Street
+        city: Charleston
+        post_code: '29492'
+        phone_number: '8004439441'
+        country: United States
+        state: South Carolina
+        rooms:
+        - id: a62483d4-cb71-46ae-9f06-da0644d0629f
+          name: '401'
+          capacity: 2
+          in_use: false
+      x-display-name: Event Location Edit Form
+      x-display-id: Event Location Edit Form
+    NewEventLocationRooms:
+      type: object
+      properties:
+        id:
+          type: string
+          description: id
+        name:
+          type: string
+          description: room/unit name
+        capacity:
+          type: integer
+          description: capacity
+      description: NewEventLocationRooms
+      x-display-name: rooms
+      x-display-id: rooms
+    NewEventLocation_2:
+      required:
+      - name
+      - country
+      type: object
+      properties:
+        name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The name.
+        capacity:
+          type: integer
+          description: The capacity.
+          format: int32
+        address_block:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: The address.
+        city:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: The city.
+        post_code:
+          maxLength: 12
+          minLength: 0
+          type: string
+          description: The zip.
+        phone_number:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The phone number.
+        country:
+          type: string
+          description: The country. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/c9649672-353d-42e8-8c25-4d34bbabfbba.
+        state:
+          type: string
+          description: The state. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/7fa91401-596c-4f7c-936d-6e41683121d7?parameters=countryid,{countryid}.
+        rooms:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewEventLocationRooms'
+          description: Rooms.
+      additionalProperties: false
+      description: LocationAdd
+      example:
+        name: Blackbaud, Inc
+        max_capacity: 50
+        address_block: 65 Fairchild Street
+        city: Charleston
+        post_code: '29492'
+        phone_number: '8004439441'
+        country: United States
+        state: SC
+        rooms:
+        - id: a62483d4-cb71-46ae-9f06-da0644d0629f
+          name: '401'
+          capacity: 2
+          in_use: false
+      x-display-name: Event Location Add Form
+      x-display-id: Event Location Add Form
+    EventLocation_2:
+      required:
+      - name
+      - country
+      type: object
+      properties:
+        name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The name.
+        capacity:
+          type: integer
+          description: The capacity.
+          format: int32
+        address_block:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: The address.
+        city:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: The city.
+        post_code:
+          maxLength: 12
+          minLength: 0
+          type: string
+          description: The zip.
+        phone_number:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The phone number.
+        country:
+          type: string
+          description: The country. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/c9649672-353d-42e8-8c25-4d34bbabfbba.
+        state:
+          type: string
+          description: The state. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/7fa91401-596c-4f7c-936d-6e41683121d7?parameters=countryid,{countryid}.
+        rooms:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventLocationRooms'
+          description: Rooms.
+      additionalProperties: false
+      description: GetEventLocation
+      x-display-name: Event Location Edit Form
+      x-display-id: Event Location Edit Form
+    EditEventLocation_2:
+      type: object
+      properties:
+        name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The name.
+        capacity:
+          type: integer
+          description: The capacity.
+          format: int32
+        address_block:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: The address.
+        city:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: The city.
+        post_code:
+          maxLength: 12
+          minLength: 0
+          type: string
+          description: The zip.
+        phone_number:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The phone number.
+        country:
+          type: string
+          description: The country. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/c9649672-353d-42e8-8c25-4d34bbabfbba.
+        state:
+          type: string
+          description: The state. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/7fa91401-596c-4f7c-936d-6e41683121d7?parameters=countryid,{countryid}.
+        rooms:
+          type: array
+          items:
+            $ref: '#/components/schemas/EditEventLocationRooms'
+          description: Rooms.
+      additionalProperties: false
+      description: EditEventLocation
+      example:
+        name: Blackbaud, Inc
+        max_capicity: 50
+        address_block: 65 Fairchild Street
+        city: Charleston
+        post_code: '29492'
+        phone_number: '8004439441'
+        country: United States
+        state: South Carolina
+        rooms:
+        - id: a62483d4-cb71-46ae-9f06-da0644d0629f
+          name: '401'
+          capacity: 2
+          in_use: false
+      x-display-name: Event Location Edit Form
+      x-display-id: Event Location Edit Form
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+x-refined-from:
+- blackbaud-altru-event-api-openapi.yml
+- blackbaud-crm-event-api-openapi.yml

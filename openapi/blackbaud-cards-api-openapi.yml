@@ -1,0 +1,96 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Payments Cards API'
+  description: This API enables users to accept and manage payments via Blackbaud Merchant Services.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/payments
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/payments
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Cards
+paths:
+  /v1/cards/{card_token}:
+    get:
+      operationId: GetCard
+      summary: Card
+      description: Returns information about a stored credit card.
+      parameters:
+      - name: card_token
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The <a href="https://en.wikipedia.org/wiki/Universally_unique_identifier">unique identifier</a> of the stored credit card for which you would like to retrieve detailed information.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains stored credit card details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardRead'
+              example:
+                bank_identification_number: '411111'
+                brand: VISA
+                cardholder_name: Blackbaud
+                expiry_month: 10
+                expiry_year: 2020
+                last_four: '1111'
+        '400':
+          description: Returned when the request is not in the appropriate format. The response body contains error details.
+        '404':
+          description: Returned when the specified card token is not found. The response body contains error details.
+      tags:
+      - Cards
+components:
+  schemas:
+    CardRead:
+      type: object
+      properties:
+        bank_identification_number:
+          type:
+          - string
+          - 'null'
+          description: The first six of the account number for the stored credit card.
+        brand:
+          type:
+          - string
+          - 'null'
+          description: The brand name of the stored credit card.
+        cardholder_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the account holder for the stored credit card.
+        expiry_month:
+          type: integer
+          description: The expiration month for the stored credit card.
+          format: int32
+        expiry_year:
+          type: integer
+          description: The expiration year for the stored credit card.
+          format: int32
+        last_four:
+          type:
+          - string
+          - 'null'
+          description: The last four of the account number for the stored credit card.
+      additionalProperties: false
+      description: Represents a stored credit card.
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

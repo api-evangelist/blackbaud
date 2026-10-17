@@ -1,0 +1,209 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Academics Grading API'
+  description: This API is used to provide access to academics information, such as grades, attendance and scheduling.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/afe-edaca
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/afe-edaca
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Grading
+paths:
+  /v1/grading/gradetranslations:
+    get:
+      operationId: V1GradingGradetranslationsGet
+      summary: Grade translations list (Get)
+      description: 'Returns a collection of grade translations.
+
+
+        Requires the following role in the Education Management system:
+
+
+        Grading Manager'
+      parameters:
+      - name: offering_type
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'The offering type (group type) of the grading periods to return. Defaults to 1 (Academics).
+
+          Allowed values: 1 – Academics, 2 – Activities, 3 – Advisories, 4 – Dorms, 9 – Athletics'
+      - name: include_inactive
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: 'false'
+        description: Set to true to include grade translations marked inactive.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1GradingGradetranslationsGet200ApplicationJsonResponse'
+              example:
+              - id: 1
+                description: A-F Scale
+                offering_type:
+                  id: 1
+                  description: Academics
+                translate_output: Grade label
+                grades:
+                - id: 1
+                  grade_label: A
+                  abbreviation: A
+                  minimum: 10
+                  maximum: 90
+                  numeric_equivalent: 96
+                  include_in_gpa1: true
+                  gpa1_equivalent: 4
+                  include_in_gpa2: true
+                  gpa2_equivalent: 5
+                  type: Pass
+                status: Active
+      tags:
+      - Grading
+components:
+  schemas:
+    GradeTranslation:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the grade translation
+          format: int32
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the grade translation
+        offering_type:
+          $ref: '#/components/schemas/OfferingType'
+        translate_output:
+          type:
+          - string
+          - 'null'
+          description: The value to use when "Translate on output" is set for report cards and transcripts (new builder).
+        grades:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/GradeRead'
+          description: An object with grade and grade translation information
+        status:
+          type:
+          - string
+          - 'null'
+          description: The status of the grade translation
+      additionalProperties: false
+      description: Grade translation
+    V1GradingGradetranslationsGet200ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/GradeTranslation'
+      x-apim-inline: true
+    OfferingType:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: ''
+          format: int32
+        description:
+          type:
+          - string
+          - 'null'
+          description: ''
+      additionalProperties: false
+      description: ''
+    GradeRead:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the grade
+          format: int32
+        grade_label:
+          type:
+          - string
+          - 'null'
+          description: The grade label
+        abbreviation:
+          type:
+          - string
+          - 'null'
+          description: The grade abbreviation
+        minimum:
+          type:
+          - number
+          - 'null'
+          description: The minimum numeric value for the grade
+          format: double
+        maximum:
+          type:
+          - number
+          - 'null'
+          description: The maximum numeric value for the grade
+          format: double
+        numeric_equivalent:
+          type:
+          - number
+          - 'null'
+          description: The numeric equivalent when translating the grade
+          format: double
+        include_in_gpa1:
+          type:
+          - boolean
+          - 'null'
+          description: True if grade is included in GPA 1 calculations
+        gpa1_equivalent:
+          type:
+          - number
+          - 'null'
+          description: The GPA scale equivalent when translating the grade for GPA 1
+          format: double
+        include_in_gpa2:
+          type:
+          - boolean
+          - 'null'
+          description: True if grade is included in GPA 2 calculations
+        gpa2_equivalent:
+          type:
+          - number
+          - 'null'
+          description: The GPA scale equivalent when translating the grade for GPA 2
+          format: double
+        type:
+          type:
+          - string
+          - 'null'
+          description: The type of grade, either Pass, Fail or Audit
+      additionalProperties: false
+      description: ''
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

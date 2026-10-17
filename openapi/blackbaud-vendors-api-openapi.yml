@@ -1,0 +1,2949 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Accounts Payable Vendors API'
+  description: This API is used to manage accounts payable, including vendors and invoices.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/57a342f1d7dcde1c28a749fe
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/accountspayable/v1
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Vendors
+paths:
+  /vendors:
+    post:
+      operationId: CreateVendor
+      summary: Vendor (Create)
+      description: Returns the identifier of the created vendor.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateVendor'
+            example:
+              vendor_name: Aviato
+              vendor_type: Organization
+              customer_number: '8675309'
+              tax_id_number: '123456'
+              vendor_status: Active
+              issue_1099s: true
+              address:
+              - address_id: 7
+                description: Address description
+                country: United States
+                city: Charleston
+                county: Charleston
+                state: SC
+                postal: '29492'
+                address_line: 123 Fake street
+                is_primary: true
+                is_invoices: true
+                is_pos: true
+                is_1099: true
+                title: Mr
+                first_name: Mike
+                middle_name: R
+                last_name: Giannoni
+                suffix: Sr
+                position: CEO
+                address_contact_methods:
+                - contact_method_id: 0
+                  contact_type: Business
+                  contact_info: MikeyG@gmail.com
+              vendor_payment_default:
+                has_credit_limit: true
+                credit_limit: 200
+                payment_terms: Net 15
+                account_name: Operating
+                payment_method: Check
+                payment_option: OnePerInvoice
+              custom_fields:
+              - field_name: Solicit for Donations
+                value: 'Yes'
+                comments: donations comment
+                date: '2018-06-27T12:00:00Z'
+              ui_defined_id: '1100'
+              gst_tax_type_id: 1
+              psb_activity_code_id: 1
+              gst_branch: '123'
+        description: The vendor to add.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the ID of the created vendor.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Int32CreatedResult'
+              example:
+                record_id: 843
+        '400':
+          description: Returned when the request is not in the correct format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DomainErrorMessage'
+              example:
+                Error: Failed to save {record}
+                Details:
+                - The total percent distributed must equal 100%.
+        '403':
+          description: Returned when the user does not have permission to create a vendor.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                Error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Vendors
+    get:
+      operationId: ListVendors
+      summary: Vendor (List)
+      description: Returns the list of vendors.
+      parameters:
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: The number of records to skip, for use with pagination.
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: "The number of records to return. \nIf not specified, the default is 100.  \nThe maximum allowed value is 500."
+      - name: vendor_name
+        in: query
+        required: false
+        schema:
+          type: string
+        description: The name of the vendor.
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - Active
+          - Inactive
+          - OnHold
+        description: "Status of vendor. \nActive, pending, or on hold."
+      - name: ui_vendor_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: The user-visible identifier for the vendor.
+      - name: customer_number
+        in: query
+        required: false
+        schema:
+          type: string
+        description: The customer number for the vendor.
+      - name: last_modified
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Represents a filter for results modified on or after the specified date.
+      - name: date_added
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Represents a filter for results added on or after the specified date.
+      - name: added_by
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filter by added by.
+      - name: last_modified_by
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filter by modified by.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the list of vendors.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VendorSummaryApiCollection'
+              example:
+                count: 133
+                value:
+                - vendor_id: 1
+                  vendor_name: ADS Security Systems
+                  balance_due: 5143
+                  ui_defined_id: '0002'
+                  customer_number: 1321654ADT
+                  vendor_status: Active
+                  issue_1099s: false
+                  primary_address:
+                    address_id: 7
+                    description: Local Address
+                    country: United States
+                    city: Charleston
+                    state: SC
+                    postal: '29416'
+                    address_line: 4328 Elliot Circle
+                    is_primary: true
+                    is_invoices: false
+                    is_pos: false
+                    is_1099: false
+                    title: Mr
+                    first_name: Bill
+                    last_name: Jones
+                    position: District Manager
+                    address_contact_methods:
+                    - contact_method_id: 1
+                      contact_type: Business
+                      contact_info: 800-468-8996
+                    - contact_method_id: 44
+                      contact_type: Business
+                      contact_info: BJones@ADS-SS.com
+                    payee_name: ADS Security Systems
+                  payment_method: Check
+                  payment_defaults:
+                    has_credit_limit: false
+                    credit_limit: 1000
+                    payment_terms: Net 15
+                    account_name: Operating
+                    payment_method: Check
+                    payment_option: OneForAll
+                  date_added: '2002-01-10T10:43:21Z'
+                  date_modified: '2018-05-09T12:33:51Z'
+                  added_by: Supervisor
+                  modified_by: Spencer Chambers
+                - vendor_id: 2
+                  vendor_name: AlphaGraphics
+                  balance_due: 120000
+                  ui_defined_id: '0003'
+                  customer_number: ag8754
+                  vendor_status: Active
+                  issue_1099s: false
+                  primary_address:
+                    address_id: 8
+                    description: Corporate Address
+                    country: United States
+                    city: Charleston
+                    state: SC
+                    postal: '29401'
+                    address_line: 1376 Calhoun Street
+                    is_primary: true
+                    is_invoices: false
+                    is_pos: false
+                    is_1099: false
+                    title: Ms
+                    first_name: Sue
+                    last_name: White
+                    position: Graphic Artist
+                    address_contact_methods:
+                    - contact_method_id: 2
+                      contact_type: Business
+                      contact_info: 800-468-8996
+                    payee_name: AlphaGraphics
+                  payment_method: Check
+                  payment_defaults:
+                    has_credit_limit: false
+                    payment_terms: Net 15
+                    account_name: Operating
+                    payment_method: Check
+                    payment_option: OneForAll
+                  date_added: '2002-01-10T10:10:47Z'
+                  date_modified: '2018-01-02T08:00:57Z'
+                  added_by: Supervisor
+                  modified_by: KathrynWilks
+        '400':
+          description: Returned when the request is not in the correct format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DomainErrorMessage'
+              example:
+                Error: Invalid Request
+                Details:
+                - The value 'fake' is not valid for transaction_status.
+        '403':
+          description: Returned when the user does not have permission to view vendors.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                Error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Vendors
+  /vendors/attachments:
+    post:
+      operationId: CreateVendorAttachment
+      summary: Vendor attachment (Create)
+      description: 'Returns the id saved attachment.
+
+        Physical attachments require the request to be a multipart/form-data request and are limited to 25 MB or smaller.
+
+        Physical attachment request must provide "ParentId" and "MediaType" fields instead of "parent_id" and "media_type".'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAttachment'
+            example:
+              parent_id: 1
+              name: Attachment Name
+              url: https://www.google.com
+              type: Link
+              media_type: Other
+          multipart/form-data:
+            example:
+              parent_id: 1
+              name: Attachment Name
+              url: https://www.google.com
+              type: Link
+              media_type: Other
+        description: The attachment to create.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the file id of the saved attachment.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Int32CreatedResult'
+              example:
+                record_id: 843
+        '400':
+          description: Returned when the request is not in the correct format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DomainErrorMessage'
+              example:
+                Error: Failed to save {record}
+                Details:
+                - The total percent distributed must equal 100%.
+        '403':
+          description: Returned when the user does not have permission to add attachments.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                Error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+        '404':
+          description: Returned when the specified vendor could not be found, or the request size exceeds 25 MB.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                Error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Vendors
+  /vendors/customfields:
+    get:
+      operationId: ListVendorCustomFields
+      summary: Vendor custom field (List)
+      description: Returns a list of custom field options.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the list of custom fields.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomFieldOptionsPagedResponse'
+              example:
+                count: 3
+                results:
+                - custom_field_id: 1
+                  name: Solicit for Donations
+                  type: Boolean
+                  is_required: false
+                - custom_field_id: 45
+                  name: Demo Custom Field
+                  type: Table
+                  is_required: false
+                  table_values:
+                  - d1 - Demo 1
+                  - d2 - Demo 2
+                - custom_field_id: 2
+                  name: Member\Volunteer
+                  type: Boolean
+                  is_required: false
+      tags:
+      - Vendors
+  /vendors/{vendor_id}:
+    patch:
+      operationId: EditVendor
+      summary: Vendor (Edit)
+      description: Edits a specified vendor.
+      parameters:
+      - name: vendor_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The identifier of the vendor to edit.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditVendor'
+            example:
+              vendor_name: Aviato
+              vendor_type: Organization
+              customer_number: '8675309'
+              vendor_status: Active
+              issue_1099s: true
+              vendor_payment_default:
+                has_credit_limit: true
+                credit_limit: 200
+                payment_terms: Net 15
+                account_name: Operating
+                payment_method: Check
+                payment_option: OnePerInvoice
+              custom_fields:
+              - field_name: Solicit for Donations
+                value: 'Yes'
+                comments: donations comment
+                type: 0
+                is_required: false
+                date: '2018-06-27T12:00:00Z'
+        description: The changes for the vendor.
+      responses:
+        '200':
+          description: Returned when the operation successfully edits the vendor. The response body contains the vendor identifier.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Int32CreatedResult'
+              example:
+                record_id: 843
+        '400':
+          description: Returned when the specified vendor identifier in the request URL body or the specified request parameters are not in the appropriate format
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DomainErrorMessage'
+              example:
+                Error: Failed to save {record}
+                Details:
+                - The total percent distributed must equal 100%.
+        '403':
+          description: Returned when the user does not have permission to edit the vendor.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                Error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+        '404':
+          description: Returned when the specified vendor is not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                Error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Vendors
+    get:
+      operationId: GetVendor
+      summary: Vendor (Get)
+      description: Returns the vendor requested.
+      parameters:
+      - name: vendor_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The identifier of the vendor to get.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the specified vendor entity.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VendorDetail'
+              example:
+                vendor_id: 1
+                vendor_name: ADS Security Systems
+                vendor_type: Organization
+                balance_due: 5143
+                ui_defined_id: '0002'
+                tax_id_number: '12345'
+                psb_activity_code: '123'
+                psb_activity_code_id: 1
+                psb_activity_code_desc: Municipality
+                gst_tax_type: GST
+                gst_tax_type_desc: Goods and Services Tax
+                gst_branch: '123'
+                customer_number: 1321654ADT
+                vendor_status: Active
+                issue_1099s: false
+                addresses:
+                - address_id: 7
+                  description: Local Address
+                  country: United States
+                  city: Charleston
+                  county: ''
+                  state: SC
+                  postal: '29416'
+                  address_line: 4328 Elliot Circle
+                  is_primary: true
+                  is_invoices: false
+                  is_pos: false
+                  is_1099: false
+                  title: Mr
+                  first_name: Bill
+                  middle_name: ''
+                  last_name: Jones
+                  position: District Manager
+                  address_contact_methods:
+                  - contact_method_id: 1
+                    contact_type: Business
+                    contact_info: 800-468-8996
+                  - contact_method_id: 44
+                    contact_type: Business
+                    contact_info: BJones@ADS-SS.com
+                  payee_name: ADS Security Systems
+                - address_id: 70
+                  description: Headquarters
+                  country: United States
+                  city: Columbia
+                  county: ''
+                  state: SC
+                  postal: '29543'
+                  address_line: 45 South Main St.
+                  is_primary: false
+                  is_invoices: false
+                  is_pos: false
+                  is_1099: false
+                  first_name: ''
+                  middle_name: ''
+                  last_name: ''
+                  position: ''
+                  address_contact_methods: []
+                  payee_name: ''
+                - address_id: 1
+                  description: ' RCT000006 '
+                  country: ''
+                  city: ''
+                  county: ''
+                  state: ''
+                  postal: ''
+                  address_line: ''
+                  is_primary: false
+                  is_invoices: false
+                  is_pos: false
+                  is_1099: false
+                  first_name: ''
+                  middle_name: ''
+                  last_name: ''
+                  position: ''
+                  address_contact_methods: []
+                  payee_name: ''
+                vendor_payment_default:
+                  has_credit_limit: false
+                  credit_limit: 1000
+                  payment_terms: Net 15
+                  account_name: Operating
+                  payment_method: EFT
+                  payment_option: OneForAll
+                custom_fields:
+                - field_name: Solicit for Donations
+                  value: 'No'
+                  comments: ''
+                  type: Boolean
+                  is_required: false
+                  date: '2000-01-01T12:00:00Z'
+                date_added: '2002-01-10T10:43:31Z'
+                date_modified: '2018-05-09T12:33:51Z'
+                added_by: Supervisor
+                modified_by: Spencer Chambers
+        '403':
+          description: Returned when the user does not have permission to view the specified vendor.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                Error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+        '404':
+          description: Returned when no vendor is found with the specified ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                Error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Vendors
+  /vendors/{vendor_id}/1099info:
+    get:
+      operationId: Get1099InfoSingleVendor
+      summary: Vendor 1099 info
+      description: Returns the default box numbers for a specified vendor.
+      parameters:
+      - name: vendor_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The identifier of the vendor to get the form 1099 information.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the specified vendor entity's form 1099 information.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Vendor1099Information'
+              example:
+                default_box_numbers:
+                - number: 7-Nonemployee compensation
+                  state: SC
+                  percent: 50
+                - number: 16-State tax withheld
+                  state: NC
+                  percent: 12
+        '403':
+          description: Returned when the user does not have permission to view the specified vendor's form 1099 information.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                Error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+        '404':
+          description: Returned when no vendor is found with the specified ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                Error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Vendors
+  /vendors/{vendor_id}/addresses:
+    post:
+      operationId: CreateVendorAddress
+      summary: Address (Create)
+      description: Returns the identifier of the created vendor address.
+      parameters:
+      - name: vendor_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The vendor to which we add the address.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateVendorAddress'
+            example:
+              description: New Address
+              country: United States
+              city: Charleston
+              county: Charleston
+              state: SC
+              address_line: 123 Fake Street
+              postal: '29492'
+              is_primary: true
+              is_invoices: true
+              is_pos: true
+              issue_1099s: true
+              title: Mr
+              first_name: Mike
+              middle_name: R
+              last_name: G
+              suffix: Sr
+              position: CEO
+              address_contact_methods:
+              - contact_method_id: 0
+                contact_type: Business
+                contact_info: 843-867-5309
+        description: The vendor address to be added.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the ID of the created vendor address.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Int32CreatedResult'
+              example:
+                record_id: 843
+        '400':
+          description: Returned when the request is not in the correct format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DomainErrorMessage'
+              example:
+                Error: Failed to save {record}
+                Details:
+                - The total percent distributed must equal 100%.
+        '403':
+          description: Returned when the user does not have permission to create a vendor address.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                Error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+        '404':
+          description: Returned when no vendor is found with the specified ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                Error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Vendors
+    get:
+      operationId: ListVendorAddressesSingleVendor
+      summary: Address (List)
+      description: Returns a list of the addresses of the vendor requested.
+      parameters:
+      - name: vendor_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The identifier of the vendor to get.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the specified vendor entity's addresses.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VendorAddressPagedResponse'
+              example:
+                count: 3
+                results:
+                - address_id: 7
+                  description: Local Address
+                  country: United States
+                  city: Charleston
+                  county: ''
+                  state: SC
+                  postal: '29416'
+                  address_line: 4328 Elliot Circle
+                  is_primary: true
+                  is_invoices: false
+                  is_pos: false
+                  is_1099: false
+                  title: Mr
+                  first_name: Bill
+                  middle_name: ''
+                  last_name: Jones
+                  position: District Manager
+                  address_contact_methods:
+                  - contact_method_id: 1
+                    contact_type: Business
+                    contact_info: 800-468-8996
+                  - contact_method_id: 44
+                    contact_type: Business
+                    contact_info: BJones@ADS-SS.com
+                  payee_name: ADS Security Systems
+                - address_id: 70
+                  description: Headquarters
+                  country: United States
+                  city: Columbia
+                  county: ''
+                  state: SC
+                  postal: '29543'
+                  address_line: 45 South Main St.
+                  is_primary: false
+                  is_invoices: false
+                  is_pos: false
+                  is_1099: false
+                  first_name: ''
+                  middle_name: ''
+                  last_name: ''
+                  position: ''
+                  address_contact_methods: []
+                  payee_name: ''
+                - address_id: 0
+                  description: ' RCT000006 '
+                  country: ''
+                  city: ''
+                  county: ''
+                  state: ''
+                  postal: ''
+                  address_line: ''
+                  is_primary: false
+                  is_invoices: false
+                  is_pos: false
+                  is_1099: false
+                  first_name: ''
+                  middle_name: ''
+                  last_name: ''
+                  position: ''
+                  address_contact_methods: []
+                  payee_name: ''
+        '403':
+          description: Returned when the user does not have permission to view the specified vendor's addresses.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                Error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+        '404':
+          description: Returned when no vendor is found with the specified ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                Error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Vendors
+  /vendors/{vendor_id}/addresses/{address_id}:
+    delete:
+      operationId: DeleteVendorAddress
+      summary: Address (Delete)
+      description: Removes the address from the vendor.
+      parameters:
+      - name: vendor_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The vendor to which we delete the address.
+      - name: address_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The address to which we delete.
+      responses:
+        '200':
+          description: Returned when the operation is successful.
+        '400':
+          description: Returned when the specified vendor or address ID in the request URL body or the specified request parameters are not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DomainErrorMessage'
+              example:
+                Error: Failed to save {record}
+                Details:
+                - The total percent distributed must equal 100%.
+        '403':
+          description: Returned when the user does not have permission to remove vendor addresses.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                Error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+        '404':
+          description: Returned when no vendor or address is found with the specified IDs.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                Error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Vendors
+    patch:
+      operationId: EditVendorAddress
+      summary: Address (Edit)
+      description: Returns the identifier of the edited invoice.
+      parameters:
+      - name: vendor_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The identifier for the vendor on which the address to edit is.
+      - name: address_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The identifier for the address to edit.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditVendorAddress'
+            example:
+              description: Local Address
+              country: United States
+              city: Charleston
+              county: ''
+              state: SC
+              postal: '29416'
+              address_line: 4328 Elliot Circle
+              is_primary: true
+              is_invoices: false
+              is_pos: false
+              is_1099: false
+              title: Mr
+              first_name: Bill
+              middle_name: ''
+              last_name: Jones
+              suffix: Sr
+              position: District Manager
+              address_contact_methods:
+              - contact_method_id: 1
+                contact_type: Business
+                contact_info: 800-468-8996
+              - contact_method_id: 44
+                contact_type: Business
+                contact_info: BJones@ADS-SS.com
+        description: The changes for the vendor address.
+      responses:
+        '200':
+          description: Returned when the operation successfully edits the vendor address. The response body contains the address id.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Int32CreatedResult'
+              example:
+                record_id: 843
+        '400':
+          description: Returned when the specified vendor or address ID in the request URL body or the specified request parameters are not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DomainErrorMessage'
+              example:
+                Error: Failed to save {record}
+                Details:
+                - The total percent distributed must equal 100%.
+        '403':
+          description: Returned when the user does not have permission to edit the vendor address.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                Error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+        '404':
+          description: Returned when no vendor or address is found with the specified IDs.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                Error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Vendors
+  /vendors/{vendor_id}/addresses/{address_id}/contactmethods:
+    post:
+      operationId: CreateVendorAddressContactMethod
+      summary: Contact method (Create)
+      description: Returns the identifier of the new contact method.
+      parameters:
+      - name: vendor_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The vendor to which to add this contact method.
+      - name: address_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The address to which to add this contact method.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAddressContactMethod'
+            example:
+              vendor_id: 1
+              address_id: 7
+              contact_type: Business
+              contact_info: 843-867-5309
+        description: The contact method we are adding to this address.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the ID of the created vendor address contact method.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Int32CreatedResult'
+              example:
+                record_id: 843
+        '400':
+          description: Returned when the request is not in the correct format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DomainErrorMessage'
+              example:
+                Error: Failed to save {record}
+                Details:
+                - The total percent distributed must equal 100%.
+        '403':
+          description: Returned when the user does not have permission to create a vendor address contact methods.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                Error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+        '404':
+          description: Returned when no vendor or address is found with the specified IDs.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                Error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Vendors
+    get:
+      operationId: ListContactMethodsSingleVendorAddress
+      summary: Contact method (List)
+      description: Returns the contact methods of the vendor address requested.
+      parameters:
+      - name: vendor_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The identifier of the vendor to get.
+      - name: address_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The identifier of the address to get.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the specified vendor address entity's contact methods.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddressContactMethodPagedResponse'
+              example:
+                count: 2
+                results:
+                - contact_method_id: 1
+                  contact_type: Business
+                  contact_info: 800-468-8996
+                - contact_method_id: 44
+                  contact_type: Business
+                  contact_info: BJones@ADS-SS.com
+        '403':
+          description: Returned when the user does not have permission to view the specified vendor's addresses' contact methods.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                Error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+        '404':
+          description: Returned when no vendor or address is found with the specified IDs.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                Error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Vendors
+  /vendors/{vendor_id}/attachments:
+    get:
+      operationId: ListVendorAttachments
+      summary: Vendor attachment (List)
+      description: Returns the specified vendor's attachments.
+      parameters:
+      - name: vendor_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The identifier for the vendor to retrieve the attachments for.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the specificed vendors's attachments.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AttachmentSummaryApiCollection'
+              example:
+                count: 2
+                value:
+                - id: 25
+                  name: Some PDF File
+                  url: ''
+                  type: Physical
+                  media_type: Administration
+                  date_attached: '2017-08-31T08:26:06Z'
+                - id: 74
+                  name: Link to google
+                  url: www.google.com
+                  type: Link
+                  media_type: Administration
+                  date_attached: '2017-08-31T08:26:06Z'
+        '403':
+          description: Returned when the user does not have permission to view vendor attachments.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                Error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+        '400':
+          description: Returned when the request is not in the correct format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DomainErrorMessage'
+              example:
+                Error: Invalid Request
+                Details:
+                - The value 'fake' is not valid for transaction_status.
+        '404':
+          description: Returned when no vendor is found with the specified ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                Error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Vendors
+  /vendors/{vendor_id}/attachments/{attachment_id}:
+    delete:
+      operationId: DeleteVendorAttachment
+      summary: Vendor attachment (Delete)
+      description: Removes the vendor attachment.
+      parameters:
+      - name: vendor_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The identifier for the vendor the attachment is on.
+      - name: attachment_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The identifier of the vendor attachment to delete.
+      responses:
+        '200':
+          description: Returned when the operation is successful.
+        '400':
+          description: Returned when the request is not in the correct format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DomainErrorMessage'
+              example:
+                Error: Invalid Request
+                Details:
+                - The value 'fake' is not valid for transaction_status.
+        '404':
+          description: Returned when no attachment is found with the specified ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                Error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+        '403':
+          description: Returned when the user does not have permission to delete attachments.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                Error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Vendors
+  /vendors/{vendor_id}/contacts:
+    get:
+      operationId: ListVendorContacts
+      summary: Vendor contact (List)
+      description: Returns a list of vendor contacts for a specified vendor.
+      parameters:
+      - name: vendor_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The vendor to which retrieve the contacts.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the list of vendor contacts.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VendorContactApiCollection'
+              example:
+                count: 2
+                value:
+                - vendor_contact_id: 43
+                  address_description: Payment Address
+                  address_line: 1900 Sam Rittenberg Blvd
+                  contact_display_name: Mr. Doug Scott
+                - vendor_contact_id: 13686
+                  address_description: Shipping Address
+                  address_line: 123 Fairchild Drive
+                  contact_display_name: Mr. Benton Austin
+      tags:
+      - Vendors
+  /vendors/{vendor_id}/creditmemos:
+    get:
+      operationId: ListCreditMemosSingleVendor
+      summary: Vendor credit memos (List)
+      description: Returns a collection of credit memos for a specified vendor.
+      parameters:
+      - name: vendor_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The identifier of the vendor to get the credit memos.
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: "Represents the number of records to return. \nThe default is 100. \nThe maximum allowed value is 500."
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: "Represents the number of records to skip. \nFor use with pagination."
+      - name: post_status
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - DoNotPost
+          - NotYetPosted
+          - Posted
+        description: Filter by credit memo post status.
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - Applied
+          - Unapplied
+          - PartiallyApplied
+          - Deleted
+        description: Filter by credit memo status.
+      - name: from_date
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Represents a filter for results added on or after the specified date.
+      - name: to_date
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Represents a filter for results added on or after the specified date.
+      - name: from_post_date
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Represents a filter for results posted on or after the specified date.
+      - name: to_post_date
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Represents a filter for results posted on or after the specified date.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the specified vendor entity's credit memos.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreditMemoSummaryApiCollection'
+              example:
+                count: 2
+                value:
+                - credit_memo_id: 183
+                  vendor_id: 1031
+                  vendor_name: A+ Office Supplies
+                  date: '2017-08-31T12:00:00Z'
+                  description: my description
+                  status: Applied
+                  amount: 150
+                  balance: 0
+                  number: '545464'
+                  post_status: NotYetPosted
+                  post_date: '2017-08-31T12:00:00Z'
+                  invoice_applications:
+                  - invoice_number: '9712009'
+                    invoice_date: '2019-01-25T12:00:00Z'
+                    credit_memo_amount_applied: 50
+                    invoice_id: 4561
+                  - invoice_number: '9712008'
+                    invoice_date: '2019-01-19T12:00:00Z'
+                    credit_memo_amount_applied: 100
+                    invoice_id: 185973
+                  date_added: '2017-08-31T12:57:58Z'
+                  date_modified: '2019-03-20T03:01:52Z'
+                  added_by: BentonAu
+                  modified_by: Supervisor
+                - credit_memo_id: 184
+                  vendor_id: 1031
+                  vendor_name: A+ Office Supplies
+                  date: '2017-08-31T12:00:00Z'
+                  description: my description
+                  status: Applied
+                  amount: 150
+                  balance: 0
+                  number: '545464'
+                  post_status: NotYetPosted
+                  post_date: '2017-08-31T12:00:00Z'
+                  invoice_applications:
+                  - invoice_number: '9712006'
+                    invoice_date: '2019-01-25T12:00:00Z'
+                    credit_memo_amount_applied: 50
+                    invoice_id: 4563
+                  - invoice_number: '9712009'
+                    invoice_date: '2019-01-19T12:00:00Z'
+                    credit_memo_amount_applied: 100
+                    invoice_id: 4891
+                  date_added: '2017-09-01T12:57:58Z'
+                  date_modified: '2019-03-20T03:01:52Z'
+                  added_by: BentonAu
+                  modified_by: Supervisor
+        '403':
+          description: Returned when the user does not have permission to view the specified vendor's credit memos.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                Error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+        '404':
+          description: Returned when no vendor is found with the specified ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                Error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Vendors
+  /vendors/{vendor_id}/defaultdistributions:
+    get:
+      operationId: ListDefaultDistributionsSingleVendor
+      summary: Vendor default distributions (List)
+      description: Returns a collection of default distributions for a specified vendor.
+      parameters:
+      - name: vendor_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The identifier of the vendor to get the default distributions.
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: The number of records to skip, for use with pagination.
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: "The number of records to return. \nIf not specified, the default is 100.  \nThe maximum allowed value is 500."
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the specified vendor entity's default distributions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultDistributionApiCollection'
+              example:
+                count: 6
+                value:
+                - distribution_id: 291174
+                  default_distribution_splits:
+                  - distribution_split_id: 502317
+                    ui_project_id: ''
+                    transaction_code_values:
+                    - name: Jurisdiction
+                      value: None
+                      id: 0
+                      inactive: false
+                    - name: Spendable?
+                      value: Spendable
+                      id: 0
+                      inactive: false
+                    - name: RE Appeals
+                      value: ''
+                      id: 0
+                      inactive: false
+                    - name: Grant
+                      value: ''
+                      id: 0
+                      inactive: false
+                    - name: Activities
+                      value: ''
+                      id: 0
+                      inactive: false
+                    percent: 100
+                    account_class: Unrestricted Net Assets
+                  account_number: 01-1000-00
+                  percent: 100
+                  type_code: Debit
+                  custom_fields: []
+                - distribution_id: 291174
+                  default_distribution_splits:
+                  - distribution_split_id: 502318
+                    ui_project_id: ''
+                    transaction_code_values:
+                    - name: Jurisdiction
+                      value: None
+                      id: 0
+                      inactive: false
+                    - name: Spendable?
+                      value: Spendable
+                      id: 0
+                      inactive: false
+                    - name: RE Appeals
+                      value: ''
+                      id: 0
+                      inactive: false
+                    - name: Grant
+                      value: ''
+                      id: 0
+                      inactive: false
+                    - name: Activities
+                      value: ''
+                      id: 0
+                      inactive: false
+                    percent: 100
+                    account_class: Unrestricted Net Assets
+                  account_number: 01-2010-00
+                  percent: 100
+                  type_code: Credit
+                  custom_fields: []
+        '403':
+          description: Returned when the user does not have permission to view the specified vendor's default distributions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                Error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+        '404':
+          description: Returned when no vendor is found with the specified ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                Error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Vendors
+  /vendors/{vendor_id}/notes:
+    post:
+      operationId: CreateVendorNote
+      summary: Vendor note (Create)
+      description: Returns the identifier of the new note.
+      parameters:
+      - name: vendor_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The vendor to which to add this note.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateNoteAction'
+            example:
+              note_type: Note
+              date: '2018-06-27T12:00:00Z'
+              content: This is a note
+              description: Note description
+              type: Other
+              is_complete: true
+              assign_to: Benton
+              completed_date: '2018-06-27T12:00:00Z'
+        description: The note we are adding to this vendor.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the ID of the created vendor note.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Int32CreatedResult'
+              example:
+                record_id: 843
+        '400':
+          description: Returned when the request is not in the correct format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DomainErrorMessage'
+              example:
+                Error: Failed to save {record}
+                Details:
+                - The total percent distributed must equal 100%.
+        '403':
+          description: Returned when the user does not have permission to create a vendor note.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                Error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+        '404':
+          description: Returned when no vendor is found with the specified ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                Error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Vendors
+    get:
+      operationId: ListVendorNotes
+      summary: Vendor notes (List)
+      description: Returns the notes and actions of the vendor requested.
+      parameters:
+      - name: vendor_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The identifier of the vendor to get.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the specified vendor entity's notes.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NoteActionPagedResponse'
+              example:
+                count: 2
+                results:
+                - note_action_id: 5
+                  note_type: Action
+                  date: '2006-10-01T12:00:00Z'
+                  description: Call ADS to schedule annual security system check.
+                  type: Follow Up
+                  is_complete: false
+                  assign_to: Supervisor
+                - note_action_id: 1
+                  note_type: Note
+                  date: '2002-01-17T12:00:00Z'
+                  content: Bill Jones made contact on 12/20/2001 in order to convey an increase in the contract agreement.  Increase will first be reflected in 03/01/2002 statement.
+                  description: Contract Increase
+                  type: Contract Change
+                  is_complete: false
+        '403':
+          description: Returned when the user does not have permission to view the specified vendor's notes.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                Error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+        '404':
+          description: Returned when no vendor is found with the specified ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                Error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Vendors
+components:
+  schemas:
+    DefaultDistributionApiCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/DefaultDistribution'
+      additionalProperties: false
+      description: Collection Response
+    DomainErrorMessage:
+      type: object
+      properties:
+        Error:
+          type:
+          - string
+          - 'null'
+        Details:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+        ErrorPath:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    AddressContactMethod:
+      required:
+      - contact_info
+      - contact_type
+      type: object
+      properties:
+        contact_method_id:
+          type: integer
+          description: The address contact method identifier.
+          format: int32
+        contact_type:
+          minLength: 1
+          type: string
+          description: The type of contact (email, phone, etc).
+        contact_info:
+          minLength: 1
+          type: string
+          description: The contact information (email address, phone number, etc) for this method.
+      additionalProperties: false
+      description: Address information
+    CustomFieldDataType:
+      title: CustomFieldDataType
+      enum:
+      - Text
+      - Number
+      - DateTime
+      - Currency
+      - Boolean
+      - Table
+      - FuzzyDate
+      type: string
+    BasicErrorMessage:
+      type: object
+      properties:
+        Error:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    AddressContactMethodPagedResponse:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+        results:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/AddressContactMethod'
+      additionalProperties: false
+      description: Paged Response
+    CreditMemoInvoiceApplicationSummary:
+      type: object
+      properties:
+        invoice_number:
+          type:
+          - string
+          - 'null'
+          description: The number of this invoice.
+        invoice_date:
+          type: string
+          description: The date of this invoice.
+          format: date-time
+        credit_memo_amount_applied:
+          type: number
+          description: The credit memo amount applied to this invoice.
+          format: decimal
+        invoice_id:
+          type:
+          - integer
+          - 'null'
+          description: The invoice identifier for this application.
+          format: int32
+      additionalProperties: false
+    DefaultDistributionSplit:
+      required:
+      - transaction_code_values
+      type: object
+      properties:
+        distribution_split_id:
+          type: integer
+          description: The distribution split identifier.
+          format: int32
+        ui_project_id:
+          type:
+          - string
+          - 'null'
+          description: The user-visible identifier of the project.
+        transaction_code_values:
+          type: array
+          items:
+            $ref: '#/components/schemas/TransactionCodeValue'
+          description: The distribution transaction code values.
+        percent:
+          type:
+          - number
+          - 'null'
+          description: The distribution journal entry amount percentage.
+          format: decimal
+        account_class:
+          type:
+          - string
+          - 'null'
+          description: The account class for this distribution split.
+      additionalProperties: false
+      description: Journal Entry Distribution.
+    PostStatus:
+      title: PostStatus
+      enum:
+      - DoNotPost
+      - NotYetPosted
+      - Posted
+      type: string
+    Vendor1099Information:
+      type: object
+      properties:
+        default_box_numbers:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/VendorDefaultBoxNumber'
+          description: The default box numbers for this vendor.
+      additionalProperties: false
+      description: Contract for vendor 1099 information
+    DefaultDistribution:
+      required:
+      - default_distribution_splits
+      type: object
+      properties:
+        distribution_id:
+          type: integer
+          description: The distribution identifier.
+          format: int32
+        default_distribution_splits:
+          type: array
+          items:
+            $ref: '#/components/schemas/DefaultDistributionSplit'
+          description: The distribution split.
+        account_number:
+          type:
+          - string
+          - 'null'
+          description: The account number for this distribution.
+        percent:
+          type:
+          - number
+          - 'null'
+          description: The distribution journal entry amount percentage.
+          format: decimal
+        type_code:
+          $ref: '#/components/schemas/DistributionTypeCode'
+        custom_fields:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CustomField'
+          description: The custom fields of the distribution.
+      additionalProperties: false
+      description: Distribution.
+    Int32CreatedResult:
+      type: object
+      properties:
+        record_id:
+          type: integer
+          format: int32
+      additionalProperties: false
+    VendorContact:
+      type: object
+      properties:
+        vendor_contact_id:
+          type: integer
+          description: The identifier for this vendor contact.
+          format: int32
+        address_description:
+          type:
+          - string
+          - 'null'
+          description: The address description for this contact.
+        address_line:
+          type:
+          - string
+          - 'null'
+          description: The address line for this contact.
+        contact_display_name:
+          type:
+          - string
+          - 'null'
+          description: The contact display name for this contact.
+      additionalProperties: false
+      description: Contract for vendor contact.
+    CreditMemoSummaryApiCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CreditMemoSummary'
+      additionalProperties: false
+      description: Collection Response
+    VendorType:
+      title: VendorType
+      enum:
+      - Organization
+      - Individual
+      type: string
+    VendorContactApiCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/VendorContact'
+      additionalProperties: false
+      description: Collection Response
+    VendorSummaryApiCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/VendorSummary'
+      additionalProperties: false
+      description: Collection Response
+    VendorAddress:
+      required:
+      - description
+      type: object
+      properties:
+        address_id:
+          type: integer
+          description: The address identifier.
+          format: int32
+        description:
+          minLength: 1
+          type: string
+          description: The description for this address.
+        country:
+          type:
+          - string
+          - 'null'
+          description: The country for the address.
+        city:
+          type:
+          - string
+          - 'null'
+          description: The city for the address.
+        county:
+          type:
+          - string
+          - 'null'
+          description: The county for the address.
+        state:
+          type:
+          - string
+          - 'null'
+          description: The state or province (or suburb in NZ) for the address.
+        postal:
+          type:
+          - string
+          - 'null'
+          description: Refers to the Postal Code or ZIP of the address.
+        address_line:
+          type:
+          - string
+          - 'null'
+          description: The street/address line for this address.
+        is_primary:
+          type: boolean
+          description: If this address is the primary address.
+        is_invoices:
+          type: boolean
+          description: If invoices are sent to this address.
+        is_pos:
+          type: boolean
+          description: If purchase orders are sent to this address.
+        is_1099:
+          type: boolean
+          description: If 1099s are sent to this address.
+        title:
+          type:
+          - string
+          - 'null'
+          description: The title for the primary contact.
+        first_name:
+          type:
+          - string
+          - 'null'
+          description: The first name of the primary contact.
+        middle_name:
+          type:
+          - string
+          - 'null'
+          description: The middle initial or name of the primary contact.
+        last_name:
+          type:
+          - string
+          - 'null'
+          description: The last name of the primary contact.
+        suffix:
+          type:
+          - string
+          - 'null'
+          description: The suffix of the primary contact.
+        position:
+          type:
+          - string
+          - 'null'
+          description: The position of the primary contact.
+        address_contact_methods:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/AddressContactMethod'
+          description: The list of contact methods for this address.
+        payee_name:
+          type:
+          - string
+          - 'null'
+          description: The payee name
+      additionalProperties: false
+      description: Address information
+    TransactionCodeValue:
+      required:
+      - id
+      - value
+      type: object
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+          description: The transaction code name.
+        value:
+          type: string
+          description: The transaction code value.
+        id:
+          type: integer
+          description: The transaction code value id.
+          format: int32
+        inactive:
+          type: boolean
+          description: Indicate if record is inactive or not.
+      additionalProperties: false
+      description: Transaction code value
+    NoteActionRecordType:
+      title: NoteActionRecordType
+      enum:
+      - Note
+      - Action
+      type: string
+    CreateAddressContactMethod:
+      required:
+      - contact_info
+      type: object
+      properties:
+        vendor_id:
+          type: integer
+          description: Vendor identifier.
+          format: int32
+        address_id:
+          type: integer
+          description: Address identifier.
+          format: int32
+        contact_type:
+          type:
+          - string
+          - 'null'
+          description: The type of contact (email, phone, etc).
+        contact_info:
+          minLength: 1
+          type: string
+          description: The contact information (email address, phone number, etc) for this method.
+      additionalProperties: false
+    CustomFieldOptions:
+      type: object
+      properties:
+        custom_field_id:
+          type: integer
+          description: The identifier of the custom field.
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the custom field.
+        type:
+          $ref: '#/components/schemas/CustomFieldDataType'
+        is_required:
+          type: boolean
+          description: Required status of the custom field.
+        table_values:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: List of table values.
+      additionalProperties: false
+      description: Custom field options
+    NoteAction:
+      type: object
+      properties:
+        note_action_id:
+          type: integer
+          description: The note or action identifier.
+          format: int32
+        note_type:
+          $ref: '#/components/schemas/NoteActionRecordType'
+        date:
+          type:
+          - string
+          - 'null'
+          description: The date of the note or action.
+          format: date-time
+        content:
+          type:
+          - string
+          - 'null'
+          description: The content of the note or action.
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the note or action.
+        type:
+          type:
+          - string
+          - 'null'
+          description: The type of the note or action.
+        is_complete:
+          type: boolean
+          description: If the action has been completed.
+        assign_to:
+          type:
+          - string
+          - 'null'
+          description: The assigned of the note or action.
+        completed_date:
+          type:
+          - string
+          - 'null'
+          description: The completion date of the note or action.
+          format: date-time
+      additionalProperties: false
+      description: Response class for a note/action.
+    AttachmentType:
+      title: AttachmentType
+      enum:
+      - Link
+      - Physical
+      type: string
+    AttachmentSummaryApiCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/AttachmentSummary'
+      additionalProperties: false
+      description: Collection Response
+    NoteActionPagedResponse:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+        results:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/NoteAction'
+      additionalProperties: false
+      description: Paged Response
+    DistributionTypeCode:
+      title: DistributionTypeCode
+      enum:
+      - Debit
+      - Credit
+      type: string
+      description: The type code for the distribution, debit or credit
+    VendorAddressPagedResponse:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+        results:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/VendorAddress'
+      additionalProperties: false
+      description: Paged Response
+    VendorDetail:
+      required:
+      - vendor_name
+      - vendor_type
+      type: object
+      properties:
+        vendor_id:
+          type: integer
+          description: Vendor identifier.
+          format: int32
+        vendor_name:
+          minLength: 1
+          type: string
+          description: The name of the vendor.
+        vendor_type:
+          $ref: '#/components/schemas/VendorType'
+        balance_due:
+          type:
+          - number
+          - 'null'
+          description: The balance due on this vendor.
+          format: decimal
+        ui_defined_id:
+          type:
+          - string
+          - 'null'
+          description: The user-defined identifier for this vendor.
+        tax_id_number:
+          type:
+          - string
+          - 'null'
+          description: The tax id number for this vendor
+        psb_activity_code:
+          type:
+          - string
+          - 'null'
+          description: The Psb activity code for this vendor (CANADA only).
+        psb_activity_code_id:
+          type:
+          - integer
+          - 'null'
+          description: The Psb activity code id for this vendor (CANADA only).
+          format: int32
+        psb_activity_code_desc:
+          type:
+          - string
+          - 'null'
+          description: The Psb activity code description for this vendor (CANADA only).
+        gst_tax_type:
+          type:
+          - string
+          - 'null'
+          description: The tax type for this vendor (CANADA and AUSTRALIA only).
+        gst_tax_type_desc:
+          type:
+          - string
+          - 'null'
+          description: The tax type description for this vendor (CANADA and AUSTRALIA only).
+        gst_branch:
+          type:
+          - string
+          - 'null'
+          description: The branch for this vendor (AUSTRALIA only).
+        customer_number:
+          type:
+          - string
+          - 'null'
+          description: The customer number.
+        vendor_status:
+          $ref: '#/components/schemas/VendorStatus'
+        issue_1099s:
+          type: boolean
+          description: If to issue 1099s to this vendor.
+        addresses:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/VendorAddress'
+          description: The address(es) of the vendor.
+        vendor_payment_default:
+          $ref: '#/components/schemas/VendorPaymentDefault'
+        custom_fields:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CustomField'
+          description: The custom fields on this vendor.
+        date_added:
+          type:
+          - string
+          - 'null'
+          description: The created date of the vendor.
+          format: date-time
+        date_modified:
+          type:
+          - string
+          - 'null'
+          description: The modified date of the vendor.
+          format: date-time
+        added_by:
+          type:
+          - string
+          - 'null'
+          description: The creator of the vendor.
+        modified_by:
+          type:
+          - string
+          - 'null'
+          description: The modifier of the vendor.
+      additionalProperties: false
+      description: Detailed vendor information.
+    EditVendorAddress:
+      type: object
+      properties:
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description for this address.
+        country:
+          type:
+          - string
+          - 'null'
+          description: The country for the address.
+        city:
+          type:
+          - string
+          - 'null'
+          description: The city for the address.
+        county:
+          type:
+          - string
+          - 'null'
+          description: The county for the address.
+        state:
+          type:
+          - string
+          - 'null'
+          description: The state or province (or suburb in NZ) for the address.
+        postal:
+          type:
+          - string
+          - 'null'
+          description: Refers to the Postal Code or ZIP of the address.
+        address_line:
+          type:
+          - string
+          - 'null'
+          description: The street/address line for this address.
+        is_primary:
+          type:
+          - boolean
+          - 'null'
+          description: If this address is the primary address.
+        is_invoices:
+          type:
+          - boolean
+          - 'null'
+          description: If invoices are sent to this address.
+        is_pos:
+          type:
+          - boolean
+          - 'null'
+          description: If purchase orders are sent to this address.
+        is_1099:
+          type:
+          - boolean
+          - 'null'
+          description: If 1099s are sent to this address.
+        title:
+          type:
+          - string
+          - 'null'
+          description: The title for the primary contact.
+        first_name:
+          type:
+          - string
+          - 'null'
+          description: The first name of the primary contact.
+        middle_name:
+          type:
+          - string
+          - 'null'
+          description: The middle initial or name of the primary contact.
+        last_name:
+          type:
+          - string
+          - 'null'
+          description: The last name of the primary contact.
+        suffix:
+          type:
+          - string
+          - 'null'
+          description: The suffix of the primary contact.
+        position:
+          type:
+          - string
+          - 'null'
+          description: The position of the primary contact.
+        address_contact_methods:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/AddressContactMethod'
+          description: The list of contact methods for this address.
+      additionalProperties: false
+      description: The contract for edit vendor address
+    VendorPaymentDefault:
+      required:
+      - payment_method
+      - payment_option
+      type: object
+      properties:
+        has_credit_limit:
+          type:
+          - boolean
+          - 'null'
+          description: If or not this vendor has as credit limit.
+        credit_limit:
+          type:
+          - number
+          - 'null'
+          description: The credit limit, if any.
+          format: decimal
+        payment_terms:
+          type:
+          - string
+          - 'null'
+          description: The terms of the payment (NET).
+        account_name:
+          type:
+          - string
+          - 'null'
+          description: The account from which to pay invoices.
+        payment_method:
+          $ref: '#/components/schemas/PaymentMethod'
+        payment_option:
+          $ref: '#/components/schemas/VendorPaymentOption'
+      additionalProperties: false
+      description: Vendor Information.
+    CreateAttachment:
+      required:
+      - media_type
+      - name
+      - parent_id
+      - type
+      type: object
+      properties:
+        parent_id:
+          type: integer
+          description: The identifier of the parent item for this attachment.
+          format: int32
+        name:
+          minLength: 1
+          type: string
+          description: The name of this attachment.
+        url:
+          type:
+          - string
+          - 'null'
+          description: The URL of this attachment.
+        type:
+          $ref: '#/components/schemas/AttachmentType'
+        media_type:
+          minLength: 1
+          type: string
+          description: User-defined category of this attachment. Available values are the entries in the Media Type table for the parent record. Use the value types defined in /mediaTypes
+        file:
+          type:
+          - string
+          - 'null'
+          description: The uploaded file for this attachment.
+          format: binary
+      additionalProperties: false
+      description: Request for creating an attachment.
+    PaymentMethod:
+      title: PaymentMethod
+      enum:
+      - Check
+      - EFT
+      - BankDraft
+      - CreditCard
+      type: string
+    CustomFieldOptionsPagedResponse:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+        results:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CustomFieldOptions'
+      additionalProperties: false
+      description: Paged Response
+    CreateVendor:
+      required:
+      - vendor_name
+      type: object
+      properties:
+        vendor_name:
+          minLength: 1
+          type: string
+          description: Vendor name.
+        vendor_type:
+          $ref: '#/components/schemas/VendorType'
+        customer_number:
+          type:
+          - string
+          - 'null'
+          description: The customer number.
+        tax_id_number:
+          type:
+          - string
+          - 'null'
+          description: The tax id number.
+        vendor_status:
+          $ref: '#/components/schemas/VendorStatus'
+        issue_1099s:
+          type: boolean
+          description: If to issue 1099s to this vendor.
+        address:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/VendorAddress'
+          description: The address(es) of the vendor.
+        vendor_payment_default:
+          $ref: '#/components/schemas/VendorPaymentDefault'
+        custom_fields:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CreateCustomField'
+          description: The custom fields on this vendor.
+        ui_defined_id:
+          type:
+          - string
+          - 'null'
+          description: The user defined identifier for this vendor.
+        gst_tax_type_id:
+          type:
+          - integer
+          - 'null'
+          description: The tax type identifier for this vendor (CANADA and AUSTRALIA only).
+          format: int32
+        psb_activity_code_id:
+          type:
+          - integer
+          - 'null'
+          description: The Psb activity code identifier for this vendor (CANADA only).
+          format: int32
+        gst_branch:
+          type:
+          - string
+          - 'null'
+          description: The GST branch identifier for this vendor (AUSTRALIA only).
+      additionalProperties: false
+      description: Contract for creating a vendor.
+    CreateVendorAddress:
+      type: object
+      properties:
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description for this address.
+        country:
+          type:
+          - string
+          - 'null'
+          description: The country for the address.
+        city:
+          type:
+          - string
+          - 'null'
+          description: The city for the address.
+        county:
+          type:
+          - string
+          - 'null'
+          description: The county for this address.
+        state:
+          type:
+          - string
+          - 'null'
+          description: The state or province (or suburb in NZ) for the address.
+        address_line:
+          type:
+          - string
+          - 'null'
+          description: The street information / address line for this address.
+        postal:
+          type:
+          - string
+          - 'null'
+          description: Refers to the Postal Code or ZIP of the address.
+        is_primary:
+          type: boolean
+          description: If this address is the primary address.
+        is_invoices:
+          type: boolean
+          description: If invoices are sent to this address.
+        is_pos:
+          type: boolean
+          description: If POs are sent to this address.
+        issue_1099s:
+          type: boolean
+          description: If 1099s are sent to this address.
+        title:
+          type:
+          - string
+          - 'null'
+          description: The title for the primary contact.
+        first_name:
+          type:
+          - string
+          - 'null'
+          description: The first name of the primary contact.
+        middle_name:
+          type:
+          - string
+          - 'null'
+          description: The middle initial or name of the primary contact.
+        last_name:
+          type:
+          - string
+          - 'null'
+          description: The last name of the primary contact.
+        suffix:
+          type:
+          - string
+          - 'null'
+          description: The suffix of the primary contact.
+        position:
+          type:
+          - string
+          - 'null'
+          description: The position of the primary contact.
+        address_contact_methods:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/AddressContactMethod'
+          description: The list of contact methods for this address.
+      additionalProperties: false
+    CreateCustomField:
+      required:
+      - field_name
+      - value
+      type: object
+      properties:
+        field_name:
+          minLength: 1
+          type: string
+          description: The name of the custom field.
+        value:
+          type: string
+          description: The value for this custom field.
+        comments:
+          type:
+          - string
+          - 'null'
+          description: The description for this custom field.
+        date:
+          type:
+          - string
+          - 'null'
+          description: The date on this custom field.
+          format: date-time
+      additionalProperties: false
+      description: The create contract for custom fields.
+    CreateNoteAction:
+      type: object
+      properties:
+        note_type:
+          $ref: '#/components/schemas/NoteActionRecordType'
+        date:
+          type:
+          - string
+          - 'null'
+          description: Gets or sets the date.
+          format: date-time
+        content:
+          type:
+          - string
+          - 'null'
+          description: Gets or sets the content.
+        description:
+          type:
+          - string
+          - 'null'
+          description: Gets or sets the description.
+        type:
+          type:
+          - string
+          - 'null'
+          description: Gets or sets the action or note type.
+        is_complete:
+          type: boolean
+          description: Gets or sets the bool value.
+        assign_to:
+          type:
+          - string
+          - 'null'
+          description: Gets or sets the assign to.
+        completed_date:
+          type:
+          - string
+          - 'null'
+          description: Gets or sets the date.
+          format: date-time
+      additionalProperties: false
+      description: Request for creating a note/action.
+    VendorDefaultBoxNumber:
+      type: object
+      properties:
+        number:
+          type:
+          - string
+          - 'null'
+          description: The number for the box number.
+        state:
+          type:
+          - string
+          - 'null'
+          description: The reporting state for the box number.
+        percent:
+          type:
+          - number
+          - 'null'
+          description: The percent for the box number.
+          format: decimal
+      additionalProperties: false
+      description: The contract for vendor default box number.
+    VendorSummary:
+      required:
+      - vendor_name
+      type: object
+      properties:
+        vendor_id:
+          type: integer
+          description: Vendor identifier.
+          format: int32
+        vendor_name:
+          minLength: 1
+          type: string
+          description: The name of the vendor.
+        balance_due:
+          type:
+          - number
+          - 'null'
+          description: The balance due on this vendor.
+          format: decimal
+        ui_defined_id:
+          type:
+          - string
+          - 'null'
+          description: The user-defined identifier of this vendor.
+        customer_number:
+          type:
+          - string
+          - 'null'
+          description: The customer number.
+        vendor_status:
+          $ref: '#/components/schemas/VendorStatus'
+        issue_1099s:
+          type: boolean
+          description: If to issue 1099s to this vendor.
+        primary_address:
+          $ref: '#/components/schemas/VendorAddress'
+        payment_method:
+          $ref: '#/components/schemas/PaymentMethod'
+        payment_defaults:
+          $ref: '#/components/schemas/VendorPaymentDefault'
+        date_added:
+          type:
+          - string
+          - 'null'
+          description: The created date of the vendor.
+          format: date-time
+        date_modified:
+          type:
+          - string
+          - 'null'
+          description: The modified date of the vendor.
+          format: date-time
+        added_by:
+          type:
+          - string
+          - 'null'
+          description: The creator of the vendor.
+        modified_by:
+          type:
+          - string
+          - 'null'
+          description: The modifier of the vendor.
+      additionalProperties: false
+      description: Brief vendor information
+    CustomField:
+      type: object
+      properties:
+        field_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the custom field.
+        value:
+          type:
+          - string
+          - 'null'
+          description: The value of the custom field.
+        comments:
+          type:
+          - string
+          - 'null'
+          description: The description of the custom field.
+        type:
+          $ref: '#/components/schemas/CustomFieldDataType'
+        is_required:
+          type: boolean
+          description: Required status of the custom field.
+        date:
+          type:
+          - string
+          - 'null'
+          description: The date on this custom field.
+          format: date-time
+      additionalProperties: false
+      description: Custom field definition.
+    EditVendor:
+      type: object
+      properties:
+        vendor_name:
+          type:
+          - string
+          - 'null'
+          description: Vendor name.
+        vendor_type:
+          $ref: '#/components/schemas/VendorType'
+        customer_number:
+          type:
+          - string
+          - 'null'
+          description: The customer number.
+        vendor_status:
+          $ref: '#/components/schemas/VendorStatus'
+        issue_1099s:
+          type:
+          - boolean
+          - 'null'
+          description: If to issue 1099s to this vendor.
+        vendor_payment_default:
+          $ref: '#/components/schemas/VendorPaymentDefault'
+        custom_fields:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CustomField'
+          description: The custom fields on this vendor.
+      additionalProperties: false
+      description: Contract for editing a vendor.
+    CreditMemoStatus:
+      title: CreditMemoStatus
+      enum:
+      - Applied
+      - Unapplied
+      - PartiallyApplied
+      - Deleted
+      type: string
+    CreditMemoSummary:
+      type: object
+      properties:
+        credit_memo_id:
+          type: integer
+          description: The identifier of the credit memo.
+          format: int32
+        vendor_id:
+          type:
+          - integer
+          - 'null'
+          description: The vendor id associated with the credit memo.
+          format: int32
+        vendor_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the vendor for this credit memo.
+        date:
+          type: string
+          description: The date of the credit memo.
+          format: date-time
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the credit memo.
+        status:
+          $ref: '#/components/schemas/CreditMemoStatus'
+        amount:
+          type: number
+          description: The amount of the credit memo.
+          format: decimal
+        balance:
+          type: number
+          description: The remaining balance of the credit memo.
+          format: decimal
+        number:
+          type:
+          - string
+          - 'null'
+          description: The user defined number of the credit memo.
+        post_status:
+          $ref: '#/components/schemas/PostStatus'
+        post_date:
+          type:
+          - string
+          - 'null'
+          description: The post date of the credit memo.
+          format: date-time
+        invoice_applications:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CreditMemoInvoiceApplicationSummary'
+          description: The invoices this credit memo is applied to.
+        date_added:
+          type:
+          - string
+          - 'null'
+          description: The created date of the credit memo.
+          format: date-time
+        date_modified:
+          type:
+          - string
+          - 'null'
+          description: The modified date of the credit memo.
+          format: date-time
+        added_by:
+          type:
+          - string
+          - 'null'
+          description: The creator of the credit memo.
+        modified_by:
+          type:
+          - string
+          - 'null'
+          description: The modifier of the credit memo.
+      additionalProperties: false
+      description: Class for credit memo summary contract
+    VendorStatus:
+      title: VendorStatus
+      enum:
+      - Active
+      - Inactive
+      - OnHold
+      type: string
+    VendorPaymentOption:
+      title: VendorPaymentOption
+      enum:
+      - OnePerInvoice
+      - OneForAll
+      type: string
+    AttachmentSummary:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The attachment identifier.
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of this attachment.
+        url:
+          type:
+          - string
+          - 'null'
+          description: The URL of this attachment.
+        type:
+          $ref: '#/components/schemas/AttachmentType'
+        media_type:
+          type:
+          - string
+          - 'null'
+          description: User-defined category of this attachment. Available values are the entries in the Media Type table for the parent record. Use the value types defined in /mediaTypes
+        date_attached:
+          type: string
+          description: The date the attachment was added.
+          format: date-time
+      additionalProperties: false
+      description: Response class for an attachment.
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

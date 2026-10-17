@@ -1,0 +1,219 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: General Ledger Fiscalyears API'
+  description: This API is used to manage the general ledger, including accounts, projects, and journal entries. This API has a maximum request size limit of 8mb.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/56eb17a0a9db9516c46bff6f
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/generalledger/v1
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Fiscalyears
+paths:
+  /fiscalyears:
+    get:
+      operationId: ListFiscalYears
+      summary: Fiscal year (List)
+      description: Returns the list of fiscal year details.
+      responses:
+        '200':
+          description: ' Returned when the operation is successful. The response body contains the fiscal year details.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiCollection_FiscalYear'
+              example:
+                count: 21
+                value:
+                - fiscal_year_id: 1
+                  year: '2000'
+                  description: Fiscal Year 2000
+                  start_date: '2000-01-01T00:00:00Z'
+                  end_date: '2000-12-31T00:00:00Z'
+                  status: Purged
+                  fiscal_periods:
+                  - fiscal_period_id: 1
+                    start_date: '2000-01-01T00:00:00Z'
+                    end_date: '2000-01-31T00:00:00Z'
+                    sequence: 1
+                    closed: true
+                  - fiscal_period_id: 2
+                    start_date: '2000-02-01T00:00:00Z'
+                    end_date: '2000-02-29T00:00:00Z'
+                    sequence: 2
+                    closed: true
+                  - fiscal_period_id: 3
+                    start_date: '2000-03-01T00:00:00Z'
+                    end_date: '2000-03-31T00:00:00Z'
+                    sequence: 3
+                    closed: true
+                  - fiscal_period_id: 4
+                    start_date: '2000-04-01T00:00:00Z'
+                    end_date: '2000-04-30T00:00:00Z'
+                    sequence: 4
+                    closed: true
+                  - fiscal_period_id: 5
+                    start_date: '2000-05-01T00:00:00Z'
+                    end_date: '2000-05-31T00:00:00Z'
+                    sequence: 5
+                    closed: true
+                  - fiscal_period_id: 6
+                    start_date: '2000-06-01T00:00:00Z'
+                    end_date: '2000-06-30T00:00:00Z'
+                    sequence: 6
+                    closed: true
+                  - fiscal_period_id: 7
+                    start_date: '2000-07-01T00:00:00Z'
+                    end_date: '2000-07-31T00:00:00Z'
+                    sequence: 7
+                    closed: true
+                  - fiscal_period_id: 8
+                    start_date: '2000-08-01T00:00:00Z'
+                    end_date: '2000-08-31T00:00:00Z'
+                    sequence: 8
+                    closed: true
+                  - fiscal_period_id: 9
+                    start_date: '2000-09-01T00:00:00Z'
+                    end_date: '2000-09-30T00:00:00Z'
+                    sequence: 9
+                    closed: true
+                  - fiscal_period_id: 10
+                    start_date: '2000-10-01T00:00:00Z'
+                    end_date: '2000-10-31T00:00:00Z'
+                    sequence: 10
+                    closed: true
+                  - fiscal_period_id: 11
+                    start_date: '2000-11-01T00:00:00Z'
+                    end_date: '2000-11-30T00:00:00Z'
+                    sequence: 11
+                    closed: true
+                  - fiscal_period_id: 12
+                    start_date: '2000-12-01T00:00:00Z'
+                    end_date: '2000-12-31T00:00:00Z'
+                    sequence: 12
+                    closed: true
+        '403':
+          description: Returned when the user does not have permission to view fiscal year details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Fiscalyears
+components:
+  schemas:
+    BasicErrorMessage:
+      type: object
+      properties:
+        Error:
+          type: string
+          x-ms-summary: Error
+      x-display-name: Basic error message
+      x-ms-summary: Basic error message
+    FiscalPeriod:
+      type: object
+      properties:
+        fiscal_period_id:
+          format: int32
+          description: The identifier for this fiscal period.
+          type: integer
+          x-ms-summary: Fiscal period id
+        start_date:
+          format: date-time
+          description: The start date for this fiscal period.
+          type: string
+          x-ms-summary: Start date
+        end_date:
+          format: date-time
+          description: The end date for this fiscal period.
+          type: string
+          x-ms-summary: End date
+        sequence:
+          format: int32
+          description: The sequence of this fiscal period.
+          type: integer
+          x-ms-summary: Sequence
+        closed:
+          description: If or not this fiscal period is closed.
+          type: boolean
+          x-ms-summary: Closed
+      x-display-name: Fiscal period
+      x-ms-summary: Fiscal period
+    ApiCollection_FiscalYear:
+      type: object
+      properties:
+        count:
+          format: int32
+          type: integer
+          x-ms-summary: Count
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/FiscalYear'
+          x-ms-summary: Value
+      x-hidden: true
+      x-display-name: Api collection `1
+      x-ms-summary: Api collection `1
+    FiscalYear:
+      type: object
+      properties:
+        fiscal_year_id:
+          format: int32
+          description: The identifier for this fiscal year.
+          type: integer
+          x-ms-summary: Fiscal year id
+        year:
+          description: The year of this fiscal year.
+          type: string
+          x-ms-summary: Year
+        description:
+          description: The description of this fiscal year.
+          type: string
+          x-ms-summary: Description
+        start_date:
+          format: date-time
+          description: The start date for this fiscal year.
+          type: string
+          x-ms-summary: Start date
+        end_date:
+          format: date-time
+          description: The end date for this fiscal year.
+          type: string
+          x-ms-summary: End date
+        status:
+          description: The status of this fiscal year.
+          enum:
+          - Open
+          - PreClosed
+          - Closed
+          - Purged
+          - Optimized
+          type: string
+          x-ms-summary: Status
+        fiscal_periods:
+          description: The fiscal periods for this fiscal year.
+          type: array
+          items:
+            $ref: '#/components/schemas/FiscalPeriod'
+          x-ms-summary: Fiscal periods
+      x-display-name: Fiscal year
+      x-ms-summary: Fiscal year
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

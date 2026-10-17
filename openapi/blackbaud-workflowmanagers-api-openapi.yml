@@ -1,0 +1,205 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: GrantsConnect Workflowmanagers API'
+  description: This API provides access to read and update data within GrantsConnect.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/grants-connect
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/grants-connect
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Workflowmanagers
+paths:
+  /v1/workflowmanagers/search:
+    post:
+      operationId: SearchWorkflowManagers
+      summary: Search workflow managers (PREVIEW)
+      description: 'Retrieves information about workflow managers.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkflowManagersRequestModel'
+            example:
+              id: 1
+              name: Workflow 1
+              user_id: 1
+              first_name: John
+              last_name: Smith
+              email: testEmail@mail.com
+              limit: 10
+              page: 1
+              date_modified: '2025-01-01T12:00:00Z'
+              include_inactive: true
+        description: Specifies the conditions of the workflow manager's to search. If no filter is provided, the response will return all workflow manager's.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReturnPaginatedWorkflowManagers'
+              example:
+                records:
+                - id: 1
+                  name: Workflow1
+                  description: Description of Workflow1
+                  workflow_managers:
+                  - user_id: 1
+                    first_name: John
+                    last_name: Doe
+                    email: JohnDoe@mail.com
+                record_count: 1
+      tags:
+      - Workflowmanagers
+components:
+  schemas:
+    WorkflowManagerModel:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The identifier of the Workflow.
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the Workflow.
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the Workflow.
+        workflow_managers:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ReturnBasicUserDetails'
+          description: The workflows that this user is a manager of.
+      additionalProperties: false
+      description: Basic information about worklow managers.
+    ReturnBasicUserDetails:
+      type: object
+      properties:
+        user_id:
+          type: integer
+          description: The identifier of the user.
+          format: int32
+        first_name:
+          type:
+          - string
+          - 'null'
+          description: The first name of the user.
+        last_name:
+          type:
+          - string
+          - 'null'
+          description: The last name of the user.
+        email:
+          type:
+          - string
+          - 'null'
+          description: The email of the user.
+      additionalProperties: false
+      description: Basic information about a user. This may be an applicant or a Grant Manager user.
+    WorkflowManagersRequestModel:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The identifier of the Workflow.
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the Workflow.
+        user_id:
+          type:
+          - integer
+          - 'null'
+          description: The identifier of the workflow manager (user).
+          format: int32
+        first_name:
+          type:
+          - string
+          - 'null'
+          description: The first name of the workflow manager.
+        last_name:
+          type:
+          - string
+          - 'null'
+          description: The last name of the workflow manager.
+        email:
+          type:
+          - string
+          - 'null'
+          description: The email of the workflow manager.
+        limit:
+          maximum: 500
+          minimum: 50
+          type: integer
+          description: Specifies the maximum number of records to return per page.
+          format: int32
+          default: 50
+        page:
+          maximum: 2147483647
+          minimum: 1
+          type: integer
+          description: Specifies the page number for pagination.
+          format: int32
+          default: 1
+        date_modified:
+          type:
+          - string
+          - 'null'
+          description: If provided, only records modified since the date and time specified will be returned. Time zone is UTC.
+          format: date-time
+        include_inactive:
+          type: boolean
+          description: Specifies if inactive records should be returned. Value is true or false.
+          default: false
+      additionalProperties: false
+      description: Filters to apply to the workflow managers search. Specify conditions of the workflow managers to return detailed information.
+    ReturnPaginatedWorkflowManagers:
+      type: object
+      properties:
+        records:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/WorkflowManagerModel'
+          description: The details returned for the current page.
+        record_count:
+          type:
+          - integer
+          - 'null'
+          description: The total number of records in the search result.
+          format: int32
+      additionalProperties: false
+      description: Returns a paginated view of workflow managers.
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

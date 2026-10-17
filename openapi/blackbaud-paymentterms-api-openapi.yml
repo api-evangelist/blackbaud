@@ -1,0 +1,111 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Accounts Payable Paymentterms API'
+  description: This API is used to manage accounts payable, including vendors and invoices.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/57a342f1d7dcde1c28a749fe
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/accountspayable/v1
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Paymentterms
+paths:
+  /paymentterms:
+    get:
+      operationId: ListPaymentTerms
+      summary: Payment term (List)
+      description: Returns a list of payment terms.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the list of payment terms.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentTermPagedResponse'
+              example:
+                count: 2
+                results:
+                - id: 1
+                  description: Pay in 15 days
+                  value: Net 15
+                  due_days: 15
+                  discount_percent: 2
+                  discount_days: 5
+                - id: 2
+                  description: Pay in 30 days
+                  value: Net 30
+                  due_days: 30
+                  discount_percent: 1.5
+                  discount_days: 10
+      tags:
+      - Paymentterms
+components:
+  schemas:
+    PaymentTerm:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The identifier for this payment term.
+          format: int32
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the payment term.
+        value:
+          type:
+          - string
+          - 'null'
+          description: The value of the payment term.
+        due_days:
+          type:
+          - integer
+          - 'null'
+          description: The number of due days for the payment term.
+          format: int32
+        discount_percent:
+          type:
+          - number
+          - 'null'
+          description: The discount percent of the payment term.
+          format: decimal
+        discount_days:
+          type:
+          - integer
+          - 'null'
+          description: The number of discount days for the payment term.
+          format: int32
+      additionalProperties: false
+      description: Contract for payment term.
+    PaymentTermPagedResponse:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+        results:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/PaymentTerm'
+      additionalProperties: false
+      description: Paged Response
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

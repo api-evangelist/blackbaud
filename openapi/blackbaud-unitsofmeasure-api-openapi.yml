@@ -1,0 +1,92 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Accounts Payable Unitsofmeasure API'
+  description: This API is used to manage accounts payable, including vendors and invoices.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/57a342f1d7dcde1c28a749fe
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/accountspayable/v1
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Unitsofmeasure
+paths:
+  /unitsofmeasure:
+    get:
+      operationId: ListUnitsOfMeasure
+      summary: Unit of measure (List)
+      description: Returns a list of units of measure.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains a list of units of measure.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnitOfMeasureApiCollection'
+              example:
+                count: 2
+                value:
+                - id: 272
+                  description: Box
+                  value: Box
+                  inactive: false
+                - id: 1785
+                  description: Carton
+                  value: Carton
+                  inactive: false
+      tags:
+      - Unitsofmeasure
+components:
+  schemas:
+    UnitOfMeasure:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The identifier for this unit of measure.
+          format: int32
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the unit of measure.
+        value:
+          type:
+          - string
+          - 'null'
+          description: The value of the unit of measure.
+        inactive:
+          type: boolean
+          description: Whether or not the unit of measure is active.
+      additionalProperties: false
+      description: Contract for unit of measure.
+    UnitOfMeasureApiCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UnitOfMeasure'
+      additionalProperties: false
+      description: Collection Response
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

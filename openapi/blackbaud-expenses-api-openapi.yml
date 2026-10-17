@@ -1,0 +1,423 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Event Expenses API'
+  description: This API manages event information and related entities such as participant.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/event
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/event
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Expenses
+paths:
+  /v1/expenses/{expense_id}:
+    delete:
+      operationId: DeleteEventExpense
+      summary: Deletes an event expense (PREVIEW)
+      description: 'Deletes an event expense.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: expense_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The ID of the event expense.
+      responses:
+        '200':
+          description: Returned when the operation succeeds.
+        '400':
+          description: Returned when the specified event expense ID is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Expenses-expense_id-Delete400ApplicationJsonResponse'
+              example:
+              - message: The request body is not in the appropriate format.
+                error_name: BadRequest
+                error_code: 400
+                raw_message: The request body is not in the appropriate format.
+        '403':
+          description: Returned when the user does not have permission to delete the event expense.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Expenses-expense_id-Delete403ApplicationJsonResponse'
+              example:
+              - message: The user does not have the necessary permissions for this task.
+                error_name: Forbidden
+                error_code: 403
+                raw_message: The user does not have the necessary permissions for this task.
+      tags:
+      - Expenses
+    patch:
+      operationId: EditEventExpense
+      summary: Edit an event expense (PREVIEW)
+      description: 'Edit an event expense.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: expense_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The ID of the event expense.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditEventExpense'
+            example:
+              expense_type:
+                id: string
+                name: string
+              expense_amount: 0
+              budgeted_amount: 0
+              amount_paid: 0
+              expense_date:
+                d: 0
+                m: 0
+                y: 0
+              vendor_id: string
+              comments: string
+        description: An object that represents the changes to the event expense.
+      responses:
+        '200':
+          description: Returned when the operation succeeds.
+        '400':
+          description: Returned when the specified request parameters are not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Expenses-expense_id-Patch400ApplicationJsonResponse'
+              example:
+              - message: The request body is not in the appropriate format.
+                error_name: BadRequest
+                error_code: 400
+                raw_message: The request body is not in the appropriate format.
+        '403':
+          description: Returned when the user does not have permission to edit an event expense.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Expenses-expense_id-Patch403ApplicationJsonResponse'
+              example:
+              - message: The user does not have the necessary permissions for this task.
+                error_name: Forbidden
+                error_code: 403
+                raw_message: The user does not have the necessary permissions for this task.
+        '404':
+          description: Returned when the specified event expense is not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Expenses-expense_id-Patch404ApplicationJsonResponse'
+              example:
+              - message: The requested resource could not be found.
+                error_name: ResourceNotFound
+                error_code: 404
+                raw_message: The requested resource could not be found.
+      tags:
+      - Expenses
+    get:
+      operationId: GetEventExpense
+      summary: Gets an event expense. (PREVIEW)
+      description: 'Returns an event expense for a given expense ID.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: expense_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The expense ID of an event.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains event expense details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventExpense'
+              example:
+                id: '1'
+                expense_type:
+                  id: '190'
+                  name: Advertising
+                  is_inactive: false
+                budgeted: 1000
+                expense: 500
+                paid: 500
+                date:
+                  d: 1
+                  m: 1
+                  y: 2024
+                comments: Country Club Event.
+                vendor:
+                  participant_id: '35'
+                  display_name: Robert Hernandez
+        '400':
+          description: Returned when the specified request parameters are not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Expenses-expense_id-Get400ApplicationJsonResponse'
+              example:
+              - message: The request body is not in the appropriate format.
+                error_name: BadRequest
+                error_code: 400
+                raw_message: The request body is not in the appropriate format.
+        '403':
+          description: Returned when the user does not have rights to view the event expense.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Expenses-expense_id-Get403ApplicationJsonResponse'
+              example:
+              - message: The user does not have the necessary permissions for this task.
+                error_name: Forbidden
+                error_code: 403
+                raw_message: The user does not have the necessary permissions for this task.
+        '404':
+          description: Returned when the specified event expense is not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Expenses-expense_id-Get404ApplicationJsonResponse'
+              example:
+              - message: The requested resource could not be found.
+                error_name: ResourceNotFound
+                error_code: 404
+                raw_message: The requested resource could not be found.
+      tags:
+      - Expenses
+components:
+  schemas:
+    V1Expenses-expense_id-Patch403ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    V1Expenses-expense_id-Patch404ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    ExpenseTypeLookup:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: The ID of the expense type.
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the expense type.
+      additionalProperties: false
+      description: Expense type look up model.
+    ExpenseType:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: The ID of the expense type.
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the expense type.
+        is_inactive:
+          type: boolean
+          description: Whether the expense type is inactive. True if inactive.
+      additionalProperties: false
+      description: Expense type is the custom type for the event expense.
+    ServiceError:
+      type: object
+      properties:
+        message:
+          type:
+          - string
+          - 'null'
+          description: The description of the error.
+        error_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the error.
+        error_code:
+          type: integer
+          description: The number associated with the error.
+          format: int32
+        raw_message:
+          type:
+          - string
+          - 'null'
+          description: The description of the error which can include argument placeholders.
+        error_args:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: The argument data for the placeholders.
+      additionalProperties: false
+      description: Explains the reason for an error.
+    V1Expenses-expense_id-Delete403ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    V1Expenses-expense_id-Delete400ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    V1Expenses-expense_id-Get404ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    V1Expenses-expense_id-Get403ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    V1Expenses-expense_id-Patch400ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    EventExpense:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: The ID of the event expense.
+        expense_type:
+          $ref: '#/components/schemas/ExpenseType'
+        budgeted:
+          type: number
+          description: The budgeted amount of the event expense.
+          format: double
+        expense:
+          type: number
+          description: The amount of the event expense.
+          format: double
+        paid:
+          type: number
+          description: The amount paid of the event expense.
+          format: double
+        date:
+          $ref: '#/components/schemas/FuzzyDate'
+        comments:
+          type:
+          - string
+          - 'null'
+          description: The comments of the event expense.
+        vendor:
+          $ref: '#/components/schemas/Vendor'
+      additionalProperties: false
+      description: Defines a data model for an event expense.
+    EditEventExpense:
+      type: object
+      properties:
+        expense_type:
+          $ref: '#/components/schemas/ExpenseTypeLookup'
+        expense_amount:
+          type: number
+          description: The amount spent for the event.
+          format: double
+        budgeted_amount:
+          type: number
+          description: The budgeted amount for the event expense.
+          format: double
+        amount_paid:
+          type: number
+          description: The amount paid to the vendor.
+          format: double
+        expense_date:
+          $ref: '#/components/schemas/FuzzyDate'
+        vendor_id:
+          type:
+          - string
+          - 'null'
+          description: The participant ID of the vendor.
+        comments:
+          type:
+          - string
+          - 'null'
+          description: Quick reference information pinned to the expense's record.
+      additionalProperties: false
+      description: An event expense is a debt incurred from hosting an event.
+    FuzzyDate:
+      type: object
+      properties:
+        d:
+          type:
+          - integer
+          - 'null'
+          description: The day in the fuzzy date.
+          format: int32
+        m:
+          type:
+          - integer
+          - 'null'
+          description: The month in the fuzzy date.
+          format: int32
+        y:
+          type:
+          - integer
+          - 'null'
+          description: The year in the fuzzy date.
+          format: int32
+      additionalProperties: false
+      description: Fuzzy dates provide a versatile date type to create partial dates such as February 9 (with no year indicated).
+    Vendor:
+      type: object
+      properties:
+        participant_id:
+          type:
+          - string
+          - 'null'
+          description: The ID of a vendor participant of an event expense.
+        display_name:
+          type:
+          - string
+          - 'null'
+          description: The display name of a vendor participant of an event expense.
+      additionalProperties: false
+      description: Vendor details of event expense.
+    V1Expenses-expense_id-Get400ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

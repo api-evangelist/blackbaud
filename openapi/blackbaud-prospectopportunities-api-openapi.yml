@@ -1,0 +1,1360 @@
+openapi: 3.2.0
+info:
+  title: Blackbaud Prospectopportunities API
+  version: '1.0'
+  x-refined-note:
+  - x-apievangelist-provenance differs across the merged source definitions and was not carried
+  description: 'Operations tagged Prospectopportunities across 2 of this provider''s published API definitions: blackbaud-altru-prospect-api-openapi.yml, blackbaud-crm-prospect-api-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.sky.blackbaud.com/alt-prsmg
+- url: https://api.sky.blackbaud.com/crm-prsmg
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Prospectopportunities
+paths:
+  /prospectopportunities:
+    post:
+      operationId: CreateProspectOpportunity
+      summary: Create a prospect opportunity
+      description: Adds an opportunity to a prospect plan.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewProspectOpportunity'
+            example:
+              prospect_plan_id: ''
+              header: ''
+              prospect_plan: ''
+              expected_ask_amount: 0
+              ask_amount: 0
+              accepted_amount: 0
+              status: Unqualified
+              expected_ask_date: ''
+              ask_date: ''
+              response_date: ''
+              comment: ''
+              designation:
+              - designation_id: ''
+                amount: 0
+                sequence: 0
+                constituent: ''
+                transaction_currency_id: ''
+                funding_method: ''
+                category: ''
+                type: ''
+                use: ''
+              prospect_plan_name: ''
+              prospect_id: ''
+              group: false
+              likelihood_type_code: ''
+              opportunity_type: ''
+              transaction_currency: ''
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully creates the resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to create the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Prospectopportunities
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-prsmg
+  /prospectopportunities/search:
+    get:
+      operationId: SearchProspectOpportunities
+      summary: Search for prospect opportunities
+      description: Search for opportunity
+      parameters:
+      - name: keyname
+        in: query
+        required: false
+        schema:
+          type: string
+        description: last/org/group name
+      - name: firstname
+        in: query
+        required: false
+        schema:
+          type: string
+        description: first name
+      - name: lookup_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: lookup id
+      - name: designationuserid
+        in: query
+        required: false
+        schema:
+          type: string
+        description: designation
+      - name: ask_amount
+        in: query
+        required: false
+        schema:
+          type: number
+        description: ask amount
+      - name: ask_date
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Format - date (as full-date in RFC3339). ask date
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - Unqualified
+          - Qualified
+          - Response pending
+          - Accepted
+          - Rejected
+          - Canceled
+        description: status
+      - name: includeinactive
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: include inactive
+      - name: includedeceased
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: include deceased
+      - name: checknickname
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: check nickname
+      - name: checkaliases
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: check aliases
+      - name: exactmatchonly
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: match all criteria exactly
+      - name: checkalternatelookupids
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: check alternate lookup ids
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Limits the number of records to return.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of result entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProspectOpportunitySearchCollection'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to view the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+      tags:
+      - Prospectopportunities
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-prsmg
+  /prospectopportunities/{opportunity_id}:
+    patch:
+      operationId: EditProspectOpportunity
+      summary: Edit a prospect opportunity
+      description: Edits an opportunity.
+      parameters:
+      - name: opportunity_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The opportunity id.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditProspectOpportunity'
+            example:
+              header: jean h. aertker
+              prospect_plan: major giving
+              expected_ask_amount: 0
+              ask_amount: 0
+              accepted_amount: 0
+              status: Unqualified
+              expected_ask_date: '2021-06-02T12:00:00Z'
+              ask_date: '2021-06-02T12:00:00Z'
+              response_date: '2021-06-09T12:00:00Z'
+              comment: ''
+              designation:
+              - id: ''
+                designation_id: ''
+                amount: 0
+                sequence: 0
+                constituent: ''
+                constituent_name: ''
+                transaction_currency_id: ''
+                funding_method: ''
+                category: ''
+                type: ''
+                use: ''
+              prospect_plan_name: jean's major giving plan
+              prospect_id: 17035913-5d1a-4318-a1c2-fc0b6b5daf46
+              group: false
+              likelihood_type_code: ''
+              opportunity_type: ''
+              transaction_currency: ''
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully edits the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to edit the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Prospectopportunities
+    get:
+      operationId: GetProspectOpportunity
+      summary: Get a prospect opportunity
+      description: Edits an opportunity.
+      parameters:
+      - name: opportunity_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The opportunity id.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the specified resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProspectOpportunity'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to get the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Prospectopportunities
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-prsmg
+  /prospectopportunities/{prospect_plan_id}/list:
+    get:
+      operationId: ListProspectOpportunities
+      summary: List prospect opportunities
+      description: List of opportunities for a prospect plan.
+      parameters:
+      - name: prospect_plan_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The prospect plan id.
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - Unqualified
+          - Qualified
+          - Response pending
+          - Accepted
+          - Rejected
+          - Canceled
+        description: 'status:'
+      - name: amount
+        in: query
+        required: false
+        schema:
+          type: number
+        description: 'minimum amount:'
+      - name: ask_date
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Format - date (as full-date in RFC3339). ask date since:'
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Limits the number of records to return.
+      - name: session_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: A unique key provided by user for paging results. The same key will be returned in a successful response.
+      - name: infinity_session
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Values for cookies related to the Infinity load balancer session.
+      - name: more_rows_range_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Key for accessing cached results on subsequent calls to this data list.
+      - name: start_row_index
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Number of rows to skip,get result after these rows.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of result entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProspectOpportunityListCollection'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to view the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+      tags:
+      - Prospectopportunities
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-prsmg
+components:
+  schemas:
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type: integer
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type: string
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: false
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-display-name: Problem details
+      x-display-id: ProblemDetails
+    EditProspectOpportunity:
+      type: object
+      properties:
+        header:
+          maxLength: 700
+          minLength: 0
+          type: string
+          description: The header. Read-only in the SOAP API.
+        prospect_plan:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The plan type. Read-only in the SOAP API.
+        expected_ask_amount:
+          type: number
+          description: The expected ask amount.
+          format: double
+        ask_amount:
+          type: number
+          description: The ask amount.
+          format: double
+        accepted_amount:
+          type: number
+          description: The accepted amount.
+          format: double
+        status:
+          type: string
+          description: The status. Available values are <i>unqualified</i>, <i>qualified</i>, <i>response pending</i>, <i>accepted</i>, <i>rejected</i>, <i>canceled</i>
+        expected_ask_date:
+          type: string
+          description: 'The expected ask date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        ask_date:
+          type: string
+          description: 'The ask date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        response_date:
+          type: string
+          description: 'The response date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        comment:
+          type: string
+          description: The comments.
+        designation:
+          type: array
+          items:
+            $ref: '#/components/schemas/EditProspectOpportunityDesignation'
+          description: Designation.
+        prospect_plan_name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The plan name. Read-only in the SOAP API.
+        prospect_id:
+          type: string
+          description: The prospect ID. Read-only in the SOAP API.
+        group:
+          type: boolean
+          description: Indicates whether group. Read-only in the SOAP API.
+        likelihood_type_code:
+          type: string
+          description: The likelihood. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/5022c5b9-dc82-4748-9084-2e73d6d5c3ac.
+        opportunity_type:
+          type: string
+          description: The opportunity type. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/opportunitytypecode/entries
+        transaction_currency:
+          type: string
+          description: The transaction currency. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/8a664965-e688-48d0-8f83-a95ba6708eae.
+      additionalProperties: false
+      description: EditProspectOpportunity
+      example:
+        header: jean h. aertker
+        prospect_plan: major giving
+        expected_ask_amount: 0
+        ask_amount: 0
+        accepted_amount: 0
+        status: Unqualified
+        expected_ask_date: '2021-06-02T12:00:00Z'
+        ask_date: '2021-06-02T12:00:00Z'
+        response_date: '2021-06-09T12:00:00Z'
+        comment: ''
+        designation:
+        - id: ''
+          designation_id: ''
+          amount: 0
+          sequence: 0
+          constituent: ''
+          constituent_name: ''
+          transaction_currency_id: ''
+          funding_method: ''
+          category: ''
+          type: ''
+          use: ''
+        prospect_plan_name: jean's major giving plan
+        prospect_id: 17035913-5d1a-4318-a1c2-fc0b6b5daf46
+        group: false
+        likelihood_type_code: ''
+        opportunity_type: ''
+        transaction_currency: ''
+      x-display-name: Opportunity Edit 3 Form
+      x-display-id: Opportunity Edit 3 Form
+    ProspectOpportunityDesignation:
+      required:
+      - amount
+      type: object
+      properties:
+        id:
+          type: string
+          description: id
+        designation_id:
+          type: string
+          description: designation
+        amount:
+          type: number
+          description: amount
+        sequence:
+          type: integer
+          description: sequence
+        constituent:
+          type: string
+          description: The constituent. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/c458b8a1-5f1b-4639-837a-5139e496dbb2?parameters=constituentid,{prospect_id}.
+        constituent_name:
+          type: string
+          description: constituentname
+        transaction_currency_id:
+          type: string
+          description: transactioncurrencyid
+        funding_method:
+          type: string
+          description: The funding method. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/opportunitydesignationfmcode/entries
+        category:
+          type: string
+          description: The category. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/plannedgiftdescategorycode/entries
+        type:
+          type: string
+          description: The type. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/opportunitydesignationtypecode/entries
+        use:
+          type: string
+          description: The use code. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/designationusecode/entries
+      description: ProspectOpportunityDesignation
+      x-display-name: designation
+      x-display-id: designation
+    NewProspectOpportunity:
+      required:
+      - prospect_plan_id
+      - status
+      type: object
+      properties:
+        prospect_plan_id:
+          type: string
+          description: The prospect plan ID.
+        header:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The header. Read-only in the SOAP API.
+        prospect_plan:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The plan type. Read-only in the SOAP API.
+        expected_ask_amount:
+          type: number
+          description: The expected ask amount.
+          format: double
+        ask_amount:
+          type: number
+          description: The ask amount.
+          format: double
+        accepted_amount:
+          type: number
+          description: The accepted amount.
+          format: double
+        status:
+          type: string
+          description: The status. Available values are <i>unqualified</i>, <i>qualified</i>, <i>response pending</i>, <i>accepted</i>, <i>rejected</i>, <i>canceled</i>
+        expected_ask_date:
+          type: string
+          description: 'The expected ask date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        ask_date:
+          type: string
+          description: 'The ask date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        response_date:
+          type: string
+          description: 'The response date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        comment:
+          type: string
+          description: The comments.
+        designation:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewProspectOpportunityDesignation'
+          description: Designation.
+        prospect_plan_name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The plan name. Read-only in the SOAP API.
+        prospect_id:
+          type: string
+          description: The prospect ID. Read-only in the SOAP API.
+        group:
+          type: boolean
+          description: Indicates whether group. Read-only in the SOAP API.
+        likelihood_type_code:
+          type: string
+          description: The likelihood. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/5022c5b9-dc82-4748-9084-2e73d6d5c3ac.
+        opportunity_type:
+          type: string
+          description: The opportunity type. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/opportunitytypecode/entries
+        transaction_currency:
+          type: string
+          description: The transaction currency. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/8a664965-e688-48d0-8f83-a95ba6708eae.
+      additionalProperties: false
+      description: CreateProspectOpportunity
+      example:
+        prospect_plan_id: ''
+        header: ''
+        prospect_plan: ''
+        expected_ask_amount: 0
+        ask_amount: 0
+        accepted_amount: 0
+        status: Unqualified
+        expected_ask_date: ''
+        ask_date: ''
+        response_date: ''
+        comment: ''
+        designation:
+        - designation_id: ''
+          amount: 0
+          sequence: 0
+          constituent: ''
+          transaction_currency_id: ''
+          funding_method: ''
+          category: ''
+          type: ''
+          use: ''
+        prospect_plan_name: ''
+        prospect_id: ''
+        group: false
+        likelihood_type_code: ''
+        opportunity_type: ''
+        transaction_currency: ''
+      x-display-name: Opportunity Add Form
+      x-display-id: Opportunity Add Form
+    NewProspectOpportunityDesignation:
+      required:
+      - amount
+      type: object
+      properties:
+        designation_id:
+          type: string
+          description: designation
+        amount:
+          type: number
+          description: amount
+        sequence:
+          type: integer
+          description: sequence
+        constituent:
+          type: string
+          description: The constituent. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/c458b8a1-5f1b-4639-837a-5139e496dbb2?parameters=constituentid,{prospect_id}.
+        transaction_currency_id:
+          type: string
+          description: transactioncurrencyid
+        funding_method:
+          type: string
+          description: The funding method. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/opportunitydesignationfmcode/entries
+        category:
+          type: string
+          description: The category. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/plannedgiftdescategorycode/entries
+        type:
+          type: string
+          description: The type. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/opportunitydesignationtypecode/entries
+        use:
+          type: string
+          description: The use code. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/designationusecode/entries
+      description: NewProspectOpportunityDesignation
+      x-display-name: designation
+      x-display-id: designation
+    ProspectOpportunityListCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items available for retrieval into the collection after applying any request parameters.
+          format: int32
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProspectOpportunityListSummary'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+        infinity_session:
+          type: string
+          description: Values for cookies related to the Infinity load balancer session.
+          format: string
+        session_key:
+          type: string
+          description: Session key for paging provided by user in request query parameter.
+          format: string
+        total_available_rows:
+          type: integer
+          description: The number of total rows available.
+          format: int32
+        more_rows_range_key:
+          type: string
+          description: Key for accessing cached results on subsequent calls to this data list.
+          format: string
+        data_no_longer_available:
+          type: boolean
+          description: Indicates data is no longer available in the context of this session.
+          format: boolean
+      additionalProperties: false
+      description: A collection of items. Data lists can contain paginated results.
+    EditProspectOpportunityDesignation:
+      required:
+      - amount
+      type: object
+      properties:
+        id:
+          type: string
+          description: id
+        designation_id:
+          type: string
+          description: designation
+        amount:
+          type: number
+          description: amount
+        sequence:
+          type: integer
+          description: sequence
+        constituent:
+          type: string
+          description: The constituent. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/c458b8a1-5f1b-4639-837a-5139e496dbb2?parameters=constituentid,{prospect_id}.
+        constituent_name:
+          type: string
+          description: constituentname
+        transaction_currency_id:
+          type: string
+          description: transactioncurrencyid
+        funding_method:
+          type: string
+          description: The funding method. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/opportunitydesignationfmcode/entries
+        category:
+          type: string
+          description: The category. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/plannedgiftdescategorycode/entries
+        type:
+          type: string
+          description: The type. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/opportunitydesignationtypecode/entries
+        use:
+          type: string
+          description: The use code. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/designationusecode/entries
+      description: EditProspectOpportunityDesignation
+      x-display-name: designation
+      x-display-id: designation
+    ProspectOpportunitySearchCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items available for retrieval into the collection after applying any request parameters.
+          format: int32
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProspectOpportunitySearchSummary'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+      additionalProperties: false
+      description: A collection of items. Data lists can contain paginated results.
+    ProspectOpportunitySearchSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID.
+        lookup_id:
+          type: string
+          description: The lookup ID.
+        name:
+          type: string
+          description: The name.
+        designation:
+          type: string
+          description: The designation.
+        ask_amount:
+          type: number
+          description: The ask amount.
+          format: double
+        ask_date:
+          type: string
+          description: 'The ask date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        status:
+          type: string
+          description: The status.
+        prospect_plan_name:
+          type: string
+          description: The prospect plan.
+        prospect_plan_type:
+          type: string
+          description: The prospect plan type.
+        transaction_currency_id:
+          type: string
+          description: The transaction currency ID.
+      additionalProperties: false
+      description: SearchProspectOpportunities
+      x-display-name: Opportunity Search
+      x-display-id: Opportunity Search
+    PostResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The newly created ID.
+      additionalProperties: false
+      description: Defines the shape of a post response object.
+    ProspectOpportunity:
+      required:
+      - status
+      type: object
+      properties:
+        header:
+          maxLength: 700
+          minLength: 0
+          type: string
+          description: The header. Read-only in the SOAP API.
+        prospect_plan:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The plan type. Read-only in the SOAP API.
+        expected_ask_amount:
+          type: number
+          description: The expected ask amount.
+          format: double
+        ask_amount:
+          type: number
+          description: The ask amount.
+          format: double
+        accepted_amount:
+          type: number
+          description: The accepted amount.
+          format: double
+        status:
+          type: string
+          description: The status. Available values are <i>unqualified</i>, <i>qualified</i>, <i>response pending</i>, <i>accepted</i>, <i>rejected</i>, <i>canceled</i>
+        expected_ask_date:
+          type: string
+          description: 'The expected ask date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        ask_date:
+          type: string
+          description: 'The ask date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        response_date:
+          type: string
+          description: 'The response date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        comment:
+          type: string
+          description: The comments.
+        designation:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProspectOpportunityDesignation'
+          description: Designation.
+        prospect_plan_name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The plan name. Read-only in the SOAP API.
+        prospect_id:
+          type: string
+          description: The prospect ID. Read-only in the SOAP API.
+        group:
+          type: boolean
+          description: Indicates whether group. Read-only in the SOAP API.
+        likelihood_type_code:
+          type: string
+          description: The likelihood. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/5022c5b9-dc82-4748-9084-2e73d6d5c3ac.
+        opportunity_type:
+          type: string
+          description: The opportunity type. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/opportunitytypecode/entries
+        transaction_currency:
+          type: string
+          description: The transaction currency. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/8a664965-e688-48d0-8f83-a95ba6708eae.
+      additionalProperties: false
+      description: GetProspectOpportunity
+      x-display-name: Opportunity Edit 3 Form
+      x-display-id: Opportunity Edit 3 Form
+    ProspectOpportunityListSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID.
+        status:
+          type: string
+          description: The status.
+        amount:
+          type: number
+          description: The amount.
+          format: double
+        opportunity_type:
+          type: string
+          description: The opportunity type.
+        expected_ask_date:
+          type: string
+          description: 'The expected ask date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        ask_date:
+          type: string
+          description: 'The ask date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        response_date:
+          type: string
+          description: 'The response date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        base_currency_id:
+          type: string
+          description: The base currency.
+      additionalProperties: false
+      description: ListProspectOpportunities
+      x-display-name: Prospect Plan Opportunity List
+      x-display-id: Prospect Plan Opportunity List
+    EditProspectOpportunity_2:
+      type: object
+      properties:
+        header:
+          maxLength: 700
+          minLength: 0
+          type: string
+          description: The header. Read-only in the SOAP API.
+        prospect_plan:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The plan type. Read-only in the SOAP API.
+        expected_ask_amount:
+          type: number
+          description: The expected ask amount.
+          format: double
+        ask_amount:
+          type: number
+          description: The ask amount.
+          format: double
+        accepted_amount:
+          type: number
+          description: The accepted amount.
+          format: double
+        status:
+          type: string
+          description: The status. Available values are <i>unqualified</i>, <i>qualified</i>, <i>response pending</i>, <i>accepted</i>, <i>rejected</i>, <i>canceled</i>
+        expected_ask_date:
+          type: string
+          description: 'The expected ask date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        ask_date:
+          type: string
+          description: 'The ask date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        response_date:
+          type: string
+          description: 'The response date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        comment:
+          type: string
+          description: The comments.
+        designation:
+          type: array
+          items:
+            $ref: '#/components/schemas/EditProspectOpportunityDesignation_2'
+          description: Designation.
+        prospect_plan_name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The plan name. Read-only in the SOAP API.
+        prospect_id:
+          type: string
+          description: The prospect ID. Read-only in the SOAP API.
+        group:
+          type: boolean
+          description: Indicates whether group. Read-only in the SOAP API.
+        likelihood_type_code:
+          type: string
+          description: The likelihood. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/5022c5b9-dc82-4748-9084-2e73d6d5c3ac.
+        opportunity_type:
+          type: string
+          description: The opportunity type. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/opportunitytypecode/entries
+        transaction_currency:
+          type: string
+          description: The transaction currency. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/8a664965-e688-48d0-8f83-a95ba6708eae.
+      additionalProperties: false
+      description: EditProspectOpportunity
+      example:
+        header: jean h. aertker
+        prospect_plan: major giving
+        expected_ask_amount: 0
+        ask_amount: 0
+        accepted_amount: 0
+        status: Unqualified
+        expected_ask_date: '2021-06-02T12:00:00Z'
+        ask_date: '2021-06-02T12:00:00Z'
+        response_date: '2021-06-09T12:00:00Z'
+        comment: ''
+        designation:
+        - id: ''
+          designation_id: ''
+          amount: 0
+          sequence: 0
+          constituent: ''
+          constituent_name: ''
+          transaction_currency_id: ''
+          funding_method: ''
+          category: ''
+          type: ''
+          use: ''
+        prospect_plan_name: jean's major giving plan
+        prospect_id: 17035913-5d1a-4318-a1c2-fc0b6b5daf46
+        group: false
+        likelihood_type_code: ''
+        opportunity_type: ''
+        transaction_currency: ''
+      x-display-name: Opportunity Edit 3 Form
+      x-display-id: Opportunity Edit 3 Form
+    ProspectOpportunityDesignation_2:
+      required:
+      - amount
+      type: object
+      properties:
+        id:
+          type: string
+          description: id
+        designation_id:
+          type: string
+          description: designation
+        amount:
+          type: number
+          description: amount
+        sequence:
+          type: integer
+          description: sequence
+        constituent:
+          type: string
+          description: The constituent. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/c458b8a1-5f1b-4639-837a-5139e496dbb2?parameters=constituentid,{prospect_id}.
+        constituent_name:
+          type: string
+          description: constituentname
+        transaction_currency_id:
+          type: string
+          description: transactioncurrencyid
+        funding_method:
+          type: string
+          description: The funding method. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/opportunitydesignationfmcode/entries
+        category:
+          type: string
+          description: The category. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/plannedgiftdescategorycode/entries
+        type:
+          type: string
+          description: The type. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/opportunitydesignationtypecode/entries
+        use:
+          type: string
+          description: The use code. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/designationusecode/entries
+      description: ProspectOpportunityDesignation
+      x-display-name: designation
+      x-display-id: designation
+    NewProspectOpportunity_2:
+      required:
+      - prospect_plan_id
+      - status
+      type: object
+      properties:
+        prospect_plan_id:
+          type: string
+          description: The prospect plan ID.
+        header:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The header. Read-only in the SOAP API.
+        prospect_plan:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The plan type. Read-only in the SOAP API.
+        expected_ask_amount:
+          type: number
+          description: The expected ask amount.
+          format: double
+        ask_amount:
+          type: number
+          description: The ask amount.
+          format: double
+        accepted_amount:
+          type: number
+          description: The accepted amount.
+          format: double
+        status:
+          type: string
+          description: The status. Available values are <i>unqualified</i>, <i>qualified</i>, <i>response pending</i>, <i>accepted</i>, <i>rejected</i>, <i>canceled</i>
+        expected_ask_date:
+          type: string
+          description: 'The expected ask date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        ask_date:
+          type: string
+          description: 'The ask date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        response_date:
+          type: string
+          description: 'The response date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        comment:
+          type: string
+          description: The comments.
+        designation:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewProspectOpportunityDesignation_2'
+          description: Designation.
+        prospect_plan_name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The plan name. Read-only in the SOAP API.
+        prospect_id:
+          type: string
+          description: The prospect ID. Read-only in the SOAP API.
+        group:
+          type: boolean
+          description: Indicates whether group. Read-only in the SOAP API.
+        likelihood_type_code:
+          type: string
+          description: The likelihood. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/5022c5b9-dc82-4748-9084-2e73d6d5c3ac.
+        opportunity_type:
+          type: string
+          description: The opportunity type. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/opportunitytypecode/entries
+        transaction_currency:
+          type: string
+          description: The transaction currency. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/8a664965-e688-48d0-8f83-a95ba6708eae.
+      additionalProperties: false
+      description: CreateProspectOpportunity
+      example:
+        prospect_plan_id: ''
+        header: ''
+        prospect_plan: ''
+        expected_ask_amount: 0
+        ask_amount: 0
+        accepted_amount: 0
+        status: Unqualified
+        expected_ask_date: ''
+        ask_date: ''
+        response_date: ''
+        comment: ''
+        designation:
+        - designation_id: ''
+          amount: 0
+          sequence: 0
+          constituent: ''
+          transaction_currency_id: ''
+          funding_method: ''
+          category: ''
+          type: ''
+          use: ''
+        prospect_plan_name: ''
+        prospect_id: ''
+        group: false
+        likelihood_type_code: ''
+        opportunity_type: ''
+        transaction_currency: ''
+      x-display-name: Opportunity Add Form
+      x-display-id: Opportunity Add Form
+    NewProspectOpportunityDesignation_2:
+      required:
+      - amount
+      type: object
+      properties:
+        designation_id:
+          type: string
+          description: designation
+        amount:
+          type: number
+          description: amount
+        sequence:
+          type: integer
+          description: sequence
+        constituent:
+          type: string
+          description: The constituent. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/c458b8a1-5f1b-4639-837a-5139e496dbb2?parameters=constituentid,{prospect_id}.
+        transaction_currency_id:
+          type: string
+          description: transactioncurrencyid
+        funding_method:
+          type: string
+          description: The funding method. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/opportunitydesignationfmcode/entries
+        category:
+          type: string
+          description: The category. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/plannedgiftdescategorycode/entries
+        type:
+          type: string
+          description: The type. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/opportunitydesignationtypecode/entries
+        use:
+          type: string
+          description: The use code. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/designationusecode/entries
+      description: NewProspectOpportunityDesignation
+      x-display-name: designation
+      x-display-id: designation
+    EditProspectOpportunityDesignation_2:
+      required:
+      - amount
+      type: object
+      properties:
+        id:
+          type: string
+          description: id
+        designation_id:
+          type: string
+          description: designation
+        amount:
+          type: number
+          description: amount
+        sequence:
+          type: integer
+          description: sequence
+        constituent:
+          type: string
+          description: The constituent. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/c458b8a1-5f1b-4639-837a-5139e496dbb2?parameters=constituentid,{prospect_id}.
+        constituent_name:
+          type: string
+          description: constituentname
+        transaction_currency_id:
+          type: string
+          description: transactioncurrencyid
+        funding_method:
+          type: string
+          description: The funding method. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/opportunitydesignationfmcode/entries
+        category:
+          type: string
+          description: The category. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/plannedgiftdescategorycode/entries
+        type:
+          type: string
+          description: The type. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/opportunitydesignationtypecode/entries
+        use:
+          type: string
+          description: The use code. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/designationusecode/entries
+      description: EditProspectOpportunityDesignation
+      x-display-name: designation
+      x-display-id: designation
+    ProspectOpportunity_2:
+      required:
+      - status
+      type: object
+      properties:
+        header:
+          maxLength: 700
+          minLength: 0
+          type: string
+          description: The header. Read-only in the SOAP API.
+        prospect_plan:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The plan type. Read-only in the SOAP API.
+        expected_ask_amount:
+          type: number
+          description: The expected ask amount.
+          format: double
+        ask_amount:
+          type: number
+          description: The ask amount.
+          format: double
+        accepted_amount:
+          type: number
+          description: The accepted amount.
+          format: double
+        status:
+          type: string
+          description: The status. Available values are <i>unqualified</i>, <i>qualified</i>, <i>response pending</i>, <i>accepted</i>, <i>rejected</i>, <i>canceled</i>
+        expected_ask_date:
+          type: string
+          description: 'The expected ask date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        ask_date:
+          type: string
+          description: 'The ask date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        response_date:
+          type: string
+          description: 'The response date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        comment:
+          type: string
+          description: The comments.
+        designation:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProspectOpportunityDesignation_2'
+          description: Designation.
+        prospect_plan_name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The plan name. Read-only in the SOAP API.
+        prospect_id:
+          type: string
+          description: The prospect ID. Read-only in the SOAP API.
+        group:
+          type: boolean
+          description: Indicates whether group. Read-only in the SOAP API.
+        likelihood_type_code:
+          type: string
+          description: The likelihood. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/5022c5b9-dc82-4748-9084-2e73d6d5c3ac.
+        opportunity_type:
+          type: string
+          description: The opportunity type. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/opportunitytypecode/entries
+        transaction_currency:
+          type: string
+          description: The transaction currency. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/8a664965-e688-48d0-8f83-a95ba6708eae.
+      additionalProperties: false
+      description: GetProspectOpportunity
+      x-display-name: Opportunity Edit 3 Form
+      x-display-id: Opportunity Edit 3 Form
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+x-refined-from:
+- blackbaud-altru-prospect-api-openapi.yml
+- blackbaud-crm-prospect-api-openapi.yml

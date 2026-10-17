@@ -1,0 +1,319 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Enrollment Management Checklists API'
+  description: Blackbaud Education Management API for Enrollment Management
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/afe-edems
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/afe-edems
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Checklists
+paths:
+  /v1/checklists/{candidate_id}:
+    get:
+      operationId: V1ChecklistsByCandidate_idGet
+      summary: Candidate checklist (Get)
+      description: 'Returns a candidate''s checklist for a specified year.
+
+
+        Requires the following role in the Education Management system:
+
+
+        Admissions Manager
+
+
+        Admissions Staff'
+      parameters:
+      - name: candidate_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The user ID of the candidate
+      - name: entering_year
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Set to the ID or label of a school year. Defaults to current admissions year.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CandidateChecklist'
+              example:
+                type:
+                  id: 1
+                  name: Standard Candidate Checklist
+                  is_inactive: false
+                  is_archived: false
+                steps:
+                - id: 1
+                  type:
+                    id: 1
+                    name: Math recommendation
+                    type: Recommendation
+                    milestone: Application
+                    due_date_default: '2015-08-31T12:00:00Z'
+                    publishing_options:
+                      use_options: true
+                      name: Math Teacher Appraisal
+                      description: Feedback on the maths
+                      link: www.example.com/recs
+                      file: www.example.com/recs/sample.doc
+                  status: Awaiting
+                  due_date: '2025-08-31T12:00:00Z'
+                  date_completed: '2025-08-31T12:00:00Z'
+                  comment: A comment
+      tags:
+      - Checklists
+  /v1/checklists/{candidate_id}/steps:
+    patch:
+      operationId: V1ChecklistsByCandidate_idStepsPatch
+      summary: Candidate checklist step (Edit)
+      description: 'Updates a checklist step on a candidate''s checklist
+
+
+        Requires the following role in the Education Management system:
+
+
+        Admissions Manager
+
+
+        Admissions Staff'
+      parameters:
+      - name: candidate_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The user ID of the candidate
+      - name: entering_year
+        in: query
+        required: false
+        schema:
+          type: string
+        description: The ID or label of the entering year. Defaults to current admissions year.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CandidateChecklistStepEdit'
+            example:
+              step_type_id: 1
+              status: Waived
+              date_due: '2025-08-31T12:00:00Z'
+              date_completed: '2025-08-31T12:00:00Z'
+              comment: A stependous comment
+        description: The update model with a candidate's checklist step values
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Checklists-candidate_id-StepsPatch200ApplicationJsonResponse'
+              example: 0
+      tags:
+      - Checklists
+components:
+  schemas:
+    CandidateChecklistStepEdit:
+      required:
+      - step_type_id
+      type: object
+      properties:
+        step_type_id:
+          type: integer
+          description: The ID of the checklist type's step
+          format: int32
+        status:
+          type:
+          - string
+          - 'null'
+          description: 'The candidate�s status for the checklist step. Allowed values: Awaiting, Requested, Waived, Completed'
+        date_due:
+          type:
+          - string
+          - 'null'
+          description: The due date of the step
+        date_completed:
+          type:
+          - string
+          - 'null'
+          description: The date the step was completed
+        comment:
+          type:
+          - string
+          - 'null'
+          description: 'The comment for the step. Max length: 4000 characters.'
+      additionalProperties: false
+      description: An object with a candidate's checklist step values
+    CandidateChecklist:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/ChecklistTypeRead'
+        steps:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CandidateChecklistStepRead'
+          description: An array of the candidate's checklist steps
+      additionalProperties: false
+      description: An object with information about the candidate's instance of a candidate checklist, include checklist type and steps
+    ChecklistStepRead:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the Checklist Step
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the Checklist Step
+        type:
+          type:
+          - string
+          - 'null'
+          description: The type of checklist step
+        milestone:
+          type:
+          - string
+          - 'null'
+          description: The milestone the step is part of
+        due_date_default:
+          type:
+          - string
+          - 'null'
+          description: The date the checklist step is due by default
+          format: date-time
+        is_required:
+          type:
+          - boolean
+          - 'null'
+          description: True if checklist step is required
+        publishing_options:
+          $ref: '#/components/schemas/ChecklistStepPublishingOptionsRead'
+      additionalProperties: false
+      description: Admissions Checklist Step
+    ChecklistTypeRead:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the Checklist Type
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the Checklist Type
+        is_inactive:
+          type:
+          - boolean
+          - 'null'
+          description: True if the Checklist Type is inactive and is no longer assigned to candidates.
+        is_archived:
+          type:
+          - boolean
+          - 'null'
+          description: True if the Checklist Type is archived
+      additionalProperties: false
+      description: Admissions Checklist Type
+    V1Checklists-candidate_id-StepsPatch200ApplicationJsonResponse:
+      type: integer
+      format: int32
+      x-apim-inline: true
+    CandidateChecklistStepRead:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the checklist step for the candidate
+          format: int32
+        type:
+          $ref: '#/components/schemas/ChecklistStepRead'
+        status:
+          type:
+          - string
+          - 'null'
+          description: The candidate�s status for this step.
+        due_date:
+          type:
+          - string
+          - 'null'
+          description: The due date of the step
+          format: date-time
+        date_completed:
+          type:
+          - string
+          - 'null'
+          description: The date the step was completed
+          format: date-time
+        comment:
+          type:
+          - string
+          - 'null'
+          description: The comment for this checklist step
+      additionalProperties: false
+      description: An object with information about the candidate's instance of a checklist step, including ID, type, status, date due and completed and the comment.
+    ChecklistStepPublishingOptionsRead:
+      type: object
+      properties:
+        use_options:
+          type:
+          - boolean
+          - 'null'
+          description: True if publishing options are in use
+        name:
+          type:
+          - string
+          - 'null'
+          description: The published name of the checklist step
+        description:
+          type:
+          - string
+          - 'null'
+          description: The published description of the checklist step
+        link:
+          type:
+          - string
+          - 'null'
+          description: The published link of the checklist step
+        file:
+          type:
+          - string
+          - 'null'
+          description: The file to publish for the checklist step
+      additionalProperties: false
+      description: Admissions Checklist Step Publishing Options
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

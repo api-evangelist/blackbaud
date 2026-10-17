@@ -1,0 +1,158 @@
+openapi: 3.2.0
+info:
+  title: Blackbaud Media Types API
+  version: '1.0'
+  x-refined-note:
+  - x-apievangelist-provenance differs across the merged source definitions and was not carried
+  description: 'Operations tagged MediaTypes across 3 of this provider''s published API definitions: blackbaud-accounts-payable-api-openapi.yml, blackbaud-general-ledger-api-openapi.yml, blackbaud-treasury-api-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.sky.blackbaud.com/accountspayable/v1
+- url: https://api.sky.blackbaud.com/generalledger/v1
+- url: https://api.sky.blackbaud.com/treasury/v1
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: MediaTypes
+paths:
+  /mediaTypes:
+    get:
+      operationId: ListAccountsPayableMediaTypes
+      summary: Accounts Payable Media Type (List)
+      description: Returns a list of media type options.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the list of media types.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MediaTypePagedResponse'
+              example:
+                count: 1
+                results:
+                - type_id: 279
+                  description: Manual
+                  value: Manual
+      tags:
+      - MediaTypes
+    servers:
+    - url: https://api.sky.blackbaud.com/accountspayable/v1
+components:
+  schemas:
+    MediaTypePagedResponse:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+        results:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/MediaType'
+      additionalProperties: false
+      description: Paged Response
+    MediaType:
+      type: object
+      properties:
+        type_id:
+          type: integer
+          description: The identifier for this media type.
+          format: int32
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the media type.
+        value:
+          type:
+          - string
+          - 'null'
+          description: The value of the media type.
+      additionalProperties: false
+      description: Response class for media type.
+    ApiCollection_MediaType:
+      type: object
+      properties:
+        count:
+          format: int32
+          type: integer
+          x-ms-summary: Count
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/MediaType_2'
+          x-ms-summary: Value
+      x-hidden: true
+      x-display-name: Api collection `1
+      x-ms-summary: Api collection `1
+    MediaType_2:
+      description: Contract for media type.
+      type: object
+      properties:
+        type_id:
+          format: int32
+          description: The identifier for this media type.
+          type: integer
+          x-ms-summary: Type id
+        description:
+          description: The description of the media type.
+          type: string
+          x-ms-summary: Description
+        value:
+          description: The value of the media type.
+          type: string
+          x-ms-summary: Value
+      x-display-name: Media type
+      x-ms-summary: Media type
+    ApiCollection_MediaType_2:
+      type: object
+      properties:
+        count:
+          format: int32
+          type: integer
+          x-ms-summary: Count
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/MediaType_3'
+          x-ms-summary: Value
+      x-hidden: true
+      x-display-name: Api collection `1
+      x-ms-summary: Api collection `1
+    MediaType_3:
+      description: Contract for media type.
+      type: object
+      properties:
+        type_id:
+          format: int32
+          description: The identifier for this media type.
+          type: integer
+          x-ms-summary: Type id
+        description:
+          description: The description of the media type.
+          type: string
+          x-ms-summary: Description
+        value:
+          description: The value of the media type.
+          type: string
+          x-ms-summary: Value
+      x-display-name: Media type
+      x-ms-summary: Media type
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+x-refined-from:
+- blackbaud-accounts-payable-api-openapi.yml
+- blackbaud-general-ledger-api-openapi.yml
+- blackbaud-treasury-api-openapi.yml

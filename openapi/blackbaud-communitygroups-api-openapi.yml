@@ -1,0 +1,697 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: School Communitygroups API'
+  description: This API is used to provide access to school information such as users, academics, admissions, athletics, content, lists, and general school info.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/school
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/school
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Communitygroups
+paths:
+  /v1/communitygroups/rosters:
+    get:
+      operationId: V1CommunitygroupsRostersGet
+      summary: Community groups rosters
+      description: 'Returns the community group rosters for a selected year. Uses current school year by default.
+
+
+        Requires the following role in the Education Management system:
+
+
+        Schedule Manager
+
+
+        Community Group Manager'
+      parameters:
+      - name: school_year
+        in: query
+        required: false
+        schema:
+          type: string
+        description: The ID or label of the school year. Defaults to the current school year.
+      - name: school_level
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Limits rosters returned to school level specified.
+      - name: section_ids
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Limits rosters returned to sections specified.Provide comma-delimited list of section_id values.
+      - name: last_modified
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Limits rosters returned to sections that were modified on or after the date provided. Use ISO-8601 date-time format: 2024-09-01T00:00:00-5:00.'
+      - name: include_inactive
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: 'false'
+        description: Set to True to include inactive sections. Defaults to false.
+      responses:
+        '200':
+          description: A List of Community Group rosters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1CommunitygroupsRostersGet200ApplicationJsonResponse'
+              example:
+                count: 1
+                value:
+                - section:
+                    id: 1
+                    name: Fencing – 2 (Boys)
+                    identifier: 2 (Boys)
+                    offering:
+                      id: 1
+                      name: Fencing
+                      type:
+                        id: 11
+                        description: Community Groups
+                      course_code: CHR240
+                      description: Fun with pointy sticks
+                      length: 1
+                      credits: 0.5
+                      status: Active
+                      publish_to_website: true
+                      record_attendance: false
+                      school_level:
+                        id: 1
+                        abbreviation: US
+                        name: Upper School
+                      school_year: 2023 - 2024
+                    duration:
+                      id: 1
+                      name: Fall
+                    school_year:
+                      id: 1234
+                      begin_date: '2019-08-30T12:00:00Z'
+                      current_year: true
+                      end_date: '2020-08-30T12:00:00Z'
+                      published: true
+                      begin_billing_year_date: '2019-08-30T12:00:00Z'
+                      end_billing_year_date: '2020-08-30T12:00:00Z'
+                    lead_section_id: 1
+                    modified: '2024-09-30T01:30:05Z'
+                  roster:
+                  - user:
+                      id: 1
+                      email: JohnJr@domain.com
+                      first_name: John
+                      last_name: Smith
+                      maiden_name: Brannigan
+                      middle_name: Robert
+                      preferred_name: Jack
+                      preferred_last_name: Brannigan
+                      prefix: Mr.
+                      suffix: Jr.
+                    enroll_date: '2024-09-30T01:30:05Z'
+                    depart_date: '2024-09-30T01:30:05Z'
+                    leader:
+                      is_leader: true
+                      is_head: true
+                      is_faculty: true
+                      type: Teacher
+                    photo:
+                      large_filename_url: //some.cdn.com/pathTo/largeFilename
+                      thumb_filename_url: //some.cdn.com/pathTo/thumbFilename
+                    status: Enrolled
+      tags:
+      - Communitygroups
+components:
+  schemas:
+    Duration:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the duration
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The Name of the duration
+      additionalProperties: false
+      description: An object describing the term or season for the section
+    RosterUser:
+      type: object
+      properties:
+        user:
+          $ref: '#/components/schemas/UserBaseRead'
+        enroll_date:
+          type:
+          - string
+          - 'null'
+          description: The date enrolled
+          format: date-time
+        depart_date:
+          type:
+          - string
+          - 'null'
+          description: The date dropped or left
+          format: date-time
+        leader:
+          $ref: '#/components/schemas/RosterLeader'
+        photo:
+          $ref: '#/components/schemas/ProfilePictureUrls'
+        status:
+          type:
+          - string
+          - 'null'
+          description: The status of the enrollment
+        enrollment_type:
+          $ref: '#/components/schemas/EnrollmentType'
+      additionalProperties: false
+      description: An object with roster user information
+    UserBaseRead:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID associated with a user
+          format: int32
+        email:
+          type:
+          - string
+          - 'null'
+          description: The email address of a user
+        first_name:
+          type:
+          - string
+          - 'null'
+          description: The first name of a user
+        last_name:
+          type:
+          - string
+          - 'null'
+          description: The last name of a user
+        maiden_name:
+          type:
+          - string
+          - 'null'
+          description: The maiden name of a user
+        middle_name:
+          type:
+          - string
+          - 'null'
+          description: The middle name of a user
+        preferred_name:
+          type:
+          - string
+          - 'null'
+          description: The nickname of a user
+        preferred_last_name:
+          type:
+          - string
+          - 'null'
+          description: The preferred last name of a user
+        prefix:
+          type:
+          - string
+          - 'null'
+          description: The prefix of a user
+        suffix:
+          type:
+          - string
+          - 'null'
+          description: The suffix of a user
+      additionalProperties: false
+      description: UserBaseRead Model
+    RosterLeader:
+      type: object
+      properties:
+        is_leader:
+          type:
+          - boolean
+          - 'null'
+          description: True if the roster user is a leader.
+        is_head:
+          type:
+          - boolean
+          - 'null'
+          description: True if the leader is the head teacher, head coach, etc.
+        is_faculty:
+          type:
+          - boolean
+          - 'null'
+          description: True if the leader is a faculty user
+        type:
+          type:
+          - string
+          - 'null'
+          description: The type of leader
+      additionalProperties: false
+      description: An object with leader information
+    Year:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of a school year
+          format: int32
+        begin_date:
+          type:
+          - string
+          - 'null'
+          description: 'The begin date in a school year date range. Uses <a href="https://tools.ietf.org/html/rfc3339" target="_blank">ISO-8601</a> (24H) format: 2003-04-21T10:29:43'
+          format: date-time
+        current_year:
+          type:
+          - boolean
+          - 'null'
+          description: Returns True if Current Year is enabled for the respective school year
+        end_date:
+          type:
+          - string
+          - 'null'
+          description: 'The end date in a school year date range. Uses <a href="https://tools.ietf.org/html/rfc3339" target="_blank">ISO-8601</a> (24H) format: 2003-04-21T10:29:43'
+          format: date-time
+        published:
+          type:
+          - boolean
+          - 'null'
+          description: Gets or sets the published flag
+        school_year_label:
+          type:
+          - string
+          - 'null'
+          description: The label used to identify the range of dates in a school year
+        begin_billing_year_date:
+          type:
+          - string
+          - 'null'
+          description: 'The begin billing year date in a school year date range. Uses <a href="https://tools.ietf.org/html/rfc3339" target="_blank">ISO-8601</a> (24H) format: 2003-04-21T10:29:43'
+          format: date-time
+        end_billing_year_date:
+          type:
+          - string
+          - 'null'
+          description: 'The end billing year date in a school year date range. Uses <a href="https://tools.ietf.org/html/rfc3339" target="_blank">ISO-8601</a> (24H) format: 2003-04-21T10:29:43'
+          format: date-time
+      additionalProperties: false
+      description: An object with school year information
+    BlockBase:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the block
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The block name
+        type:
+          $ref: '#/components/schemas/IdDescriptorField'
+        offering_type:
+          $ref: '#/components/schemas/IdDescriptorField'
+        is_inactive:
+          type:
+          - boolean
+          - 'null'
+          description: True if the block is inactive
+      additionalProperties: false
+      description: ''
+    Level:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of a school level
+          format: int32
+        abbreviation:
+          type:
+          - string
+          - 'null'
+          description: The abbreviation associated with a school level
+        name:
+          type:
+          - string
+          - 'null'
+          description: The label used to identify a school level
+        address:
+          $ref: '#/components/schemas/SchoolAddress'
+        school_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the School
+        school_address:
+          $ref: '#/components/schemas/SchoolAddress'
+      additionalProperties: false
+      description: An object with school level information
+    V1CommunitygroupsRostersGet200ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/SectionRosterModel'
+      x-apim-inline: true
+    SectionRosterModel:
+      type: object
+      properties:
+        section:
+          $ref: '#/components/schemas/Section'
+        roster:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/RosterUser'
+          description: An array of roster users assigned to the section. This includes members and leaders.
+      additionalProperties: false
+      description: An object with section roster information
+    SchoolAddress:
+      type: object
+      properties:
+        address1:
+          type:
+          - string
+          - 'null'
+          description: The address line
+        address2:
+          type:
+          - string
+          - 'null'
+          description: The address line
+        address3:
+          type:
+          - string
+          - 'null'
+          description: The address line
+        city:
+          type:
+          - string
+          - 'null'
+          description: The city
+        state:
+          type:
+          - string
+          - 'null'
+          description: TThe state for the address
+        zip:
+          type:
+          - string
+          - 'null'
+          description: The postal/ZIP code for the address
+        county_province:
+          type:
+          - string
+          - 'null'
+          description: The county or province for the address
+        country:
+          type:
+          - string
+          - 'null'
+          description: The country for the address
+        phone:
+          type:
+          - string
+          - 'null'
+          description: The phone number for the address
+        fax:
+          type:
+          - string
+          - 'null'
+          description: The fax number for the address
+        website:
+          type:
+          - string
+          - 'null'
+          description: The website for the address
+      additionalProperties: false
+      description: An object with information about the address of the school level, including address fields, phone fields and website.
+    IdDescriptorField:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID of the field
+          format: int32
+        description:
+          type:
+          - string
+          - 'null'
+          description: Description of the field
+      additionalProperties: false
+      description: ''
+    BuildingRoomRead:
+      type: object
+      properties:
+        room_id:
+          type:
+          - integer
+          - 'null'
+          description: Identifier for the room
+          format: int32
+        room_number:
+          type:
+          - string
+          - 'null'
+          description: Room number
+        name:
+          type:
+          - string
+          - 'null'
+          description: Room name
+        code:
+          type:
+          - string
+          - 'null'
+          description: Room code
+        capacity:
+          type:
+          - string
+          - 'null'
+          description: Room capacity
+        room_type:
+          type:
+          - string
+          - 'null'
+          description: Denotes how the room is used
+        room_type_id:
+          type:
+          - integer
+          - 'null'
+          description: Identifier for the room type
+          format: int32
+        notes:
+          type:
+          - string
+          - 'null'
+          description: The notes for the room
+        building:
+          $ref: '#/components/schemas/IdDescriptorField'
+        type:
+          $ref: '#/components/schemas/IdDescriptorField'
+      additionalProperties: false
+      description: ''
+    OfferingModel:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The Id of the Offering
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the offering
+        type:
+          $ref: '#/components/schemas/OfferingType'
+        course_code:
+          type:
+          - string
+          - 'null'
+          description: The course code for the offering
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the offering
+        length:
+          type:
+          - integer
+          - 'null'
+          description: The length of the offering in terms
+          format: int32
+        credits:
+          type:
+          - number
+          - 'null'
+          description: The credits for the offering
+          format: float
+        status:
+          type:
+          - string
+          - 'null'
+          description: 'The status of the offering. Possible values: Active, Inactive.'
+        publish_to_website:
+          type:
+          - boolean
+          - 'null'
+          description: True when the Publish to Website setting is selected; otherwise, false.
+        record_attendance:
+          type:
+          - boolean
+          - 'null'
+          description: True when the Record Attendance setting is selected; otherwise, false. This is always FALSE for Community Groups offering type.
+        max_requests:
+          type:
+          - integer
+          - 'null'
+          description: The maximum number of requests for the offering. This is NULL for Athletics and Community Groups offering types.
+          format: int32
+        school_level:
+          $ref: '#/components/schemas/Level'
+        school_year:
+          type:
+          - string
+          - 'null'
+          description: The School year of the offering
+      additionalProperties: false
+      description: An object with offering information
+    OfferingType:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of an offering type
+          format: int32
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of an offering type
+      additionalProperties: false
+      description: An object with offering type information
+    Section:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the section. This is the the class ID for academics, team ID for athletics, building_id for dorms, etc. dependent on offering type
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the roster group
+        identifier:
+          type:
+          - string
+          - 'null'
+          description: The section identifier
+        offering:
+          $ref: '#/components/schemas/OfferingModel'
+        duration:
+          $ref: '#/components/schemas/Duration'
+        school_year:
+          $ref: '#/components/schemas/Year'
+        lead_section_id:
+          type:
+          - integer
+          - 'null'
+          description: The section id for the lead section (i.e. first term) of the class.
+          format: int32
+        modified:
+          type:
+          - string
+          - 'null'
+          description: The last modified date for the section
+          format: date-time
+        photo:
+          $ref: '#/components/schemas/ProfilePictureUrls'
+        room:
+          $ref: '#/components/schemas/BuildingRoomRead'
+        block:
+          $ref: '#/components/schemas/BlockBase'
+      additionalProperties: false
+      description: An object with section information
+    EnrollmentType:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the enrollment type
+          format: int32
+        description:
+          type:
+          - string
+          - 'null'
+          description: The enrollment type
+        earns_credit:
+          type:
+          - boolean
+          - 'null'
+          description: True if the school tracks attempted and earned credit for students with this enrollment type.
+        use_all_grades:
+          type:
+          - boolean
+          - 'null'
+          description: True if a student with this enrollment type can earn any grades valid for the section. False if the grades get translated, such as if the enrollment type only allows Pass/Fail grades.
+        takes_attendance:
+          type:
+          - boolean
+          - 'null'
+          description: True if the school tracks attendance for students with this enrollment type.
+        is_default:
+          type:
+          - boolean
+          - 'null'
+          description: True if this is the default enrollment type
+      additionalProperties: false
+      description: An object with information about the enrollment type, including whether attendance is tracked, whether students can earn credit, or whether grades are limited to pass/fail.
+    ProfilePictureUrls:
+      type: object
+      properties:
+        large_filename_url:
+          type:
+          - string
+          - 'null'
+          description: URL to users Large profile picture
+        thumb_filename_url:
+          type:
+          - string
+          - 'null'
+          description: URL to users Thumbnail profile picture
+      additionalProperties: false
+      description: An object with profile photo and thumbnail
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

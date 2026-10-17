@@ -1,0 +1,1340 @@
+openapi: 3.2.0
+info:
+  title: Blackbaud Phones API
+  version: '1.0'
+  x-refined-note:
+  - x-apievangelist-provenance differs across the merged source definitions and was not carried
+  description: 'Operations tagged Phones across 3 of this provider''s published API definitions: blackbaud-altru-constituent-api-openapi.yml, blackbaud-constituent-api-openapi.yml, blackbaud-crm-constituent-api-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.sky.blackbaud.com/alt-conmg
+- url: https://api.sky.blackbaud.com/constituent/v1
+- url: https://api.sky.blackbaud.com/crm-conmg
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Phones
+paths:
+  /phones:
+    post:
+      operationId: CreateConstituentPhone
+      summary: Create a constituent phone
+      description: This operation is used to add phone records.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewConstituentPhone'
+            example:
+              constituent_id: ''
+              phone_type: ''
+              number: ''
+              primary: false
+              do_not_call: false
+              spouse_name: ''
+              update_matching_spouse_phone: false
+              household: false
+              household_member: false
+              update_matching_household_phone: false
+              start_time: ''
+              end_time: ''
+              info_source: ''
+              info_source_comments: ''
+              country: ''
+              seasonal_start_date: ''
+              seasonal_end_date: ''
+              start_date: ''
+              do_not_call_reason: ''
+              confidential: false
+              country_codes:
+              - country_id: ''
+                country_code: ''
+              constituent_data_review_rollback_reason: ''
+              forced_primary: false
+              can_edit_primary: false
+              invalid_fields: ''
+              origin: User
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully creates the resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to create the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Phones
+    get:
+      operationId: ListConstituentPhonesAllConstituents
+      summary: Phone list (All constituents)
+      description: 'Returns a paginated list of phones.
+
+
+        The default sorting behavior is to list phones in ascending order based on when they were created.
+
+
+        However, the last_modified parameter overrides the default sorting behavior to list phones in ascending order based on when they were last modified. The last_modified parameter also adds the sort_token parameter to the next_link URL to ensure that phones are stably sorted and that order persists when changes occur while working through a paginated list.
+
+
+        If the last_modified and date_added parameters are both specified, the sorting behavior is to list phones based on when they were last modified.
+
+
+        Note: This endpoint returns data with an average latency of about 30 minutes. In addition, historic records have a default date_added timestamp of 1600-01-01 00:00:00.000 +00:00. The timestamp for newer records reflects when the records were added.'
+      parameters:
+      - name: date_added
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Represents a filter for phones created on or after the specified date. The filter respects time offsets from UTC per the ISO-8601 format: 2016-05-05T17:59:31.1600745-04:00.'
+      - name: last_modified
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Represents a filter for phones modified on or after the specified date. The filter respects time offsets from UTC per the ISO-8601 format: 2016-05-05T17:59:31.1600745-04:00.'
+      - name: include_inactive
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: Set this parameter to "true" to include inactive phones in the response.
+      - name: sort_token
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Represents a token filter to provide the next stable-sorted list of phones. This will be provided on the next_link collection response property when last_modified or sort_token filters are specified on the request.
+      - name: constituent_id
+        in: query
+        required: false
+        schema:
+          type: array
+        description: Represents a list of constituent identifiers. Returns phones if any of the specified constituent identifiers match any of the phones' associated constituents. For example, "constituent_id=280&amp;constituent_id=1232" returns phones with either "280" or "1232" constituent identifiers.
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Represents the number of records to return. The default is 500. The maximum is 5000.
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Represents the number of records to skip. For use with pagination.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a <a href="https://developer.blackbaud.com/skyapi/api/entity-reference/constituent#Collection">collection</a> of <a href="https://developer.blackbaud.com/skyapi/api/entity-reference/constituent#Phone">phone</a> entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiCollectionOfPhoneRead'
+              example:
+                count: 574
+                next_link: https://api.sky.blackbaud.com/constituent/v1/phones?offset=4&limit=4
+                value:
+                - id: '1'
+                  constituent_id: '281'
+                  date_added: '1600-01-01T00:00:00Z'
+                  date_modified: '2016-10-19T19:42:38.775Z'
+                  do_not_call: true
+                  inactive: false
+                  number: 404-977-5810
+                  primary: false
+                  type: Business
+                - id: '3'
+                  constituent_id: '186'
+                  date_added: '1600-01-01T00:00:00Z'
+                  date_modified: '2016-10-19T19:42:38.775Z'
+                  do_not_call: false
+                  inactive: false
+                  number: 912-555-1215
+                  primary: false
+                  type: Home
+                - id: '4'
+                  constituent_id: '187'
+                  date_added: '1600-01-01T00:00:00Z'
+                  date_modified: '2016-10-19T19:42:38.775Z'
+                  do_not_call: false
+                  inactive: false
+                  number: 843-798-6698
+                  primary: false
+                  type: Home
+                - id: '5'
+                  constituent_id: '188'
+                  date_added: '1600-01-01T00:00:00Z'
+                  date_modified: '2016-10-19T19:42:38.775Z'
+                  do_not_call: false
+                  inactive: false
+                  number: 612-321-0047
+                  primary: false
+                  type: Home
+        '400':
+          description: Returned when the specified request parameters are not in the appropriate format.
+        '403':
+          description: Returned when the user does not have permission to view the phones.
+      tags:
+      - Phones
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-conmg
+  /phones/{phone_id}:
+    delete:
+      operationId: DeleteConstituentPhone
+      summary: Delete a constituent phone
+      description: This deletion handles only the basic deletion rules for a phone (currently none).
+      parameters:
+      - name: phone_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The phone id
+      responses:
+        '200':
+          description: Returned when the operation successfully deletes the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to delete the resource.
+      tags:
+      - Phones
+    patch:
+      operationId: EditConstituentPhone
+      summary: Edit a constituent phone
+      description: This operation is used to edit phone records.
+      parameters:
+      - name: phone_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The phone id.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditConstituentPhone'
+            example:
+              phone_type: Business
+              number: '8439195648'
+              primary: true
+              do_not_call: false
+              spouse_name: ''
+              spouse_has_matching_phone: false
+              update_matching_spouse_phone: false
+              household: false
+              household_member: false
+              update_matching_household_phone: false
+              matching_household_members: []
+              start_time:
+                hour: 3
+                minute: 30
+              end_time:
+                hour: 5
+                minute: 30
+              info_source: ''
+              info_source_comments: ''
+              country: ''
+              seasonal_start_date:
+                month: 3
+                day: 21
+              seasonal_end_date:
+                month: 3
+                day: 21
+              start_date: ''
+              end_date: ''
+              do_not_call_reason: ''
+              confidential: false
+              country_codes:
+              - countryid: ''
+                countrycode: ''
+              constituent_data_review_rollback_reason: ''
+              forced_primary: false
+              can_edit_primary: false
+              invalid_fields: ''
+              origin_code: User
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully edits the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to edit the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Phones
+    get:
+      operationId: GetConstituentPhone
+      summary: Get a constituent phone
+      description: This operation is used to edit phone records.
+      parameters:
+      - name: phone_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The phone id.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the specified resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConstituentPhone'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to get the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Phones
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-conmg
+components:
+  schemas:
+    NewConstituentPhoneCountryCodes:
+      type: object
+      properties:
+        country_id:
+          type: string
+          description: countryid
+        country_code:
+          type: string
+          description: country code
+      description: NewConstituentPhoneCountryCodes
+      x-display-name: country_codes
+      x-display-id: country_codes
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type: integer
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type: string
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: false
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-display-name: Problem details
+      x-display-id: ProblemDetails
+    HourMinute:
+      type: object
+      properties:
+        hour:
+          type: integer
+          description: The hour.
+          format: int32
+        minute:
+          type: integer
+          description: The minute.
+          format: int32
+      description: HourMinute
+      x-display-name: Hour Minute
+      x-display-id: Hour Minute
+    EditConstituentPhoneMatchingHouseholdMembers:
+      type: object
+      properties:
+        constituent_id:
+          type: string
+          description: constituent id
+        name:
+          type: string
+          description: household member
+        relationship_to_primary:
+          type: string
+          description: relationship to primary
+      description: EditConstituentPhoneMatchingHouseholdMembers
+      x-display-name: matching_household_members
+      x-display-id: matching_household_members
+    ConstituentPhoneMatchingHouseholdMembers:
+      type: object
+      properties:
+        constituent_id:
+          type: string
+          description: constituent id
+        name:
+          type: string
+          description: household member
+        relationship_to_primary:
+          type: string
+          description: relationship to primary
+      description: ConstituentPhoneMatchingHouseholdMembers
+      x-display-name: matching_household_members
+      x-display-id: matching_household_members
+    EditConstituentPhoneCountryCodes:
+      type: object
+      properties:
+        country_id:
+          type: string
+          description: countryid
+        country_code:
+          type: string
+          description: country code
+      description: EditConstituentPhoneCountryCodes
+      x-display-name: country_codes
+      x-display-id: country_codes
+    MonthDay:
+      type: object
+      properties:
+        month:
+          type: integer
+          description: The month.
+          format: int32
+        day:
+          type: integer
+          description: The day.
+          format: int32
+      description: MonthDay
+      example:
+        month: 4
+        day: 13
+      x-display-name: Month Day
+      x-display-id: Month Day
+    EditConstituentPhone:
+      type: object
+      properties:
+        phone_type:
+          type: string
+          description: The type. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/phonetypecode/entries
+        number:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The number.
+        primary:
+          type: boolean
+          description: Indicates whether set as primary phone number.
+        do_not_call:
+          type: boolean
+          description: Indicates whether do not call this phone number.
+        spouse_name:
+          maxLength: 154
+          minLength: 0
+          type: string
+          description: The spouse name. Read-only in the SOAP API.
+        spouse_has_matching_phone:
+          type: boolean
+          description: Indicates whether spouse has matching phone. Read-only in the SOAP API.
+        update_matching_spouse_phone:
+          type: boolean
+          description: Indicates whether update matching phone information for household.
+        household:
+          type: boolean
+          description: Indicates whether household. Read-only in the SOAP API.
+        household_member:
+          type: boolean
+          description: Indicates whether household member. Read-only in the SOAP API.
+        update_matching_household_phone:
+          type: boolean
+          description: Indicates whether update matching phone numbers in household.
+        matching_household_members:
+          type: array
+          items:
+            $ref: '#/components/schemas/EditConstituentPhoneMatchingHouseholdMembers'
+          description: Matching household members.
+        start_time:
+          $ref: '#/components/schemas/HourMinute'
+        end_time:
+          $ref: '#/components/schemas/HourMinute'
+        info_source:
+          type: string
+          description: The information source. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/infosourcecode/entries
+        info_source_comments:
+          maxLength: 256
+          minLength: 0
+          type: string
+          description: The comments.
+        country:
+          type: string
+          description: The country. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/c9649672-353d-42e8-8c25-4d34bbabfbba.
+        seasonal_start_date:
+          $ref: '#/components/schemas/MonthDay'
+        seasonal_end_date:
+          $ref: '#/components/schemas/MonthDay'
+        start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        end_date:
+          type: string
+          description: 'The end date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        do_not_call_reason:
+          type: string
+          description: The reason. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/donotcallreasoncode/entries
+        confidential:
+          type: boolean
+          description: Indicates whether this phone number is confidential.
+        country_codes:
+          type: array
+          items:
+            $ref: '#/components/schemas/EditConstituentPhoneCountryCodes'
+          description: Country codes.
+        constituent_data_review_rollback_reason:
+          type: string
+          description: The reason. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/484441bc-f0e6-4f5f-a6bf-49f02881dd13.
+        forced_primary:
+          type: boolean
+          description: Indicates whether forced primary. Read-only in the SOAP API.
+        can_edit_primary:
+          type: boolean
+          description: Indicates whether can edit primary. Read-only in the SOAP API.
+        invalid_fields:
+          maxLength: 256
+          minLength: 0
+          type: string
+          description: The invalid fields. Read-only in the SOAP API.
+        origin:
+          type: string
+          description: The origin. Read-only in the SOAP API. Available values are <i>user</i>, <i>web forms</i>
+      additionalProperties: false
+      description: EditConstituentPhone
+      example:
+        phone_type: Business
+        number: '8439195648'
+        primary: true
+        do_not_call: false
+        spouse_name: ''
+        spouse_has_matching_phone: false
+        update_matching_spouse_phone: false
+        household: false
+        household_member: false
+        update_matching_household_phone: false
+        matching_household_members: []
+        start_time:
+          hour: 3
+          minute: 30
+        end_time:
+          hour: 5
+          minute: 30
+        info_source: ''
+        info_source_comments: ''
+        country: ''
+        seasonal_start_date:
+          month: 3
+          day: 21
+        seasonal_end_date:
+          month: 3
+          day: 21
+        start_date: ''
+        end_date: ''
+        do_not_call_reason: ''
+        confidential: false
+        country_codes:
+        - countryid: ''
+          countrycode: ''
+        constituent_data_review_rollback_reason: ''
+        forced_primary: false
+        can_edit_primary: false
+        invalid_fields: ''
+        origin_code: User
+      x-display-name: Phone Edit Form 3
+      x-display-id: Phone Edit Form 3
+    ConstituentPhone:
+      required:
+      - number
+      type: object
+      properties:
+        phone_type:
+          type: string
+          description: The type. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/phonetypecode/entries
+        number:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The number.
+        primary:
+          type: boolean
+          description: Indicates whether set as primary phone number.
+        do_not_call:
+          type: boolean
+          description: Indicates whether do not call this phone number.
+        spouse_name:
+          maxLength: 154
+          minLength: 0
+          type: string
+          description: The spouse name. Read-only in the SOAP API.
+        spouse_has_matching_phone:
+          type: boolean
+          description: Indicates whether spouse has matching phone. Read-only in the SOAP API.
+        update_matching_spouse_phone:
+          type: boolean
+          description: Indicates whether update matching phone information for household.
+        household:
+          type: boolean
+          description: Indicates whether household. Read-only in the SOAP API.
+        household_member:
+          type: boolean
+          description: Indicates whether household member. Read-only in the SOAP API.
+        update_matching_household_phone:
+          type: boolean
+          description: Indicates whether update matching phone numbers in household.
+        matching_household_members:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConstituentPhoneMatchingHouseholdMembers'
+          description: Matching household members.
+        start_time:
+          $ref: '#/components/schemas/HourMinute'
+        end_time:
+          $ref: '#/components/schemas/HourMinute'
+        info_source:
+          type: string
+          description: The information source. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/infosourcecode/entries
+        info_source_comments:
+          maxLength: 256
+          minLength: 0
+          type: string
+          description: The comments.
+        country:
+          type: string
+          description: The country. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/c9649672-353d-42e8-8c25-4d34bbabfbba.
+        seasonal_start_date:
+          $ref: '#/components/schemas/MonthDay'
+        seasonal_end_date:
+          $ref: '#/components/schemas/MonthDay'
+        start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        end_date:
+          type: string
+          description: 'The end date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        do_not_call_reason:
+          type: string
+          description: The reason. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/donotcallreasoncode/entries
+        confidential:
+          type: boolean
+          description: Indicates whether this phone number is confidential.
+        country_codes:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConstituentPhoneCountryCodes'
+          description: Country codes.
+        constituent_data_review_rollback_reason:
+          type: string
+          description: The reason. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/484441bc-f0e6-4f5f-a6bf-49f02881dd13.
+        forced_primary:
+          type: boolean
+          description: Indicates whether forced primary. Read-only in the SOAP API.
+        can_edit_primary:
+          type: boolean
+          description: Indicates whether can edit primary. Read-only in the SOAP API.
+        invalid_fields:
+          maxLength: 256
+          minLength: 0
+          type: string
+          description: The invalid fields. Read-only in the SOAP API.
+        origin:
+          type: string
+          description: The origin. Read-only in the SOAP API. Available values are <i>user</i>, <i>web forms</i>
+      additionalProperties: false
+      description: GetConstituentPhone
+      x-display-name: Phone Edit Form 3
+      x-display-id: Phone Edit Form 3
+    NewConstituentPhone:
+      required:
+      - constituent_id
+      - number
+      type: object
+      properties:
+        constituent_id:
+          type: string
+          description: The constituent ID.
+        phone_type:
+          type: string
+          description: The type. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/phonetypecode/entries
+        number:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The number.
+        primary:
+          type: boolean
+          description: Indicates whether set as primary phone number.
+        do_not_call:
+          type: boolean
+          description: Indicates whether do not call this phone number.
+        spouse_name:
+          maxLength: 154
+          minLength: 0
+          type: string
+          description: The spouse name. Read-only in the SOAP API.
+        update_matching_spouse_phone:
+          type: boolean
+          description: Indicates whether update matching phone information for household.
+        household:
+          type: boolean
+          description: Indicates whether household. Read-only in the SOAP API.
+        household_member:
+          type: boolean
+          description: Indicates whether household member. Read-only in the SOAP API.
+        update_matching_household_phone:
+          type: boolean
+          description: Indicates whether copy phone information to household members.
+        start_time:
+          $ref: '#/components/schemas/HourMinute'
+        end_time:
+          $ref: '#/components/schemas/HourMinute'
+        info_source:
+          type: string
+          description: The information source. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/infosourcecode/entries
+        info_source_comments:
+          maxLength: 256
+          minLength: 0
+          type: string
+          description: The comments.
+        country:
+          type: string
+          description: The country. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/c9649672-353d-42e8-8c25-4d34bbabfbba.
+        seasonal_start_date:
+          $ref: '#/components/schemas/MonthDay'
+        seasonal_end_date:
+          $ref: '#/components/schemas/MonthDay'
+        start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        do_not_call_reason:
+          type: string
+          description: The reason. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/donotcallreasoncode/entries
+        confidential:
+          type: boolean
+          description: Indicates whether this phone number is confidential.
+        country_codes:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewConstituentPhoneCountryCodes'
+          description: Country codes.
+        constituent_data_review_rollback_reason:
+          type: string
+          description: The reason. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/484441bc-f0e6-4f5f-a6bf-49f02881dd13.
+        forced_primary:
+          type: boolean
+          description: Indicates whether forced primary. Read-only in the SOAP API.
+        can_edit_primary:
+          type: boolean
+          description: Indicates whether can edit primary. Read-only in the SOAP API.
+        invalid_fields:
+          maxLength: 256
+          minLength: 0
+          type: string
+          description: The invalid fields. Read-only in the SOAP API.
+        origin:
+          type: string
+          description: The origin. Available values are <i>user</i>, <i>web forms</i>
+      additionalProperties: false
+      description: CreateConstituentPhone
+      example:
+        constituent_id: ''
+        phone_type: ''
+        number: ''
+        primary: false
+        do_not_call: false
+        spouse_name: ''
+        update_matching_spouse_phone: false
+        household: false
+        household_member: false
+        update_matching_household_phone: false
+        start_time: ''
+        end_time: ''
+        info_source: ''
+        info_source_comments: ''
+        country: ''
+        seasonal_start_date: ''
+        seasonal_end_date: ''
+        start_date: ''
+        do_not_call_reason: ''
+        confidential: false
+        country_codes:
+        - country_id: ''
+          country_code: ''
+        constituent_data_review_rollback_reason: ''
+        forced_primary: false
+        can_edit_primary: false
+        invalid_fields: ''
+        origin: User
+      x-display-name: Phone Add Form
+      x-display-id: Phone Add Form
+    PostResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The newly created ID.
+      additionalProperties: false
+      description: Defines the shape of a post response object.
+    ConstituentPhoneCountryCodes:
+      type: object
+      properties:
+        country_id:
+          type: string
+          description: countryid
+        country_code:
+          type: string
+          description: country code
+      description: ConstituentPhoneCountryCodes
+      x-display-name: country_codes
+      x-display-id: country_codes
+    ApiCollectionOfPhoneRead:
+      description: Fetching data all at once quickly becomes unmanageable. The collection entity helps by returning paginated chunks of large data sets. This entity includes helpful metadata and properties to paginate and iterate through the data.
+      type: object
+      properties:
+        count:
+          format: int32
+          description: The number of items available for retrieval into the collection after applying any request parameters. The <b>limit</b> and <b>offset</b> parameters do not affect the <b>count</b>, but to facilitate paging, they may affect the number of items in the <b>value</b> result set.
+          type: integer
+        next_link:
+          description: For paginated responses, the URI for the next page of results.
+          type: string
+        value:
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+          type: array
+          items:
+            $ref: '#/components/schemas/PhoneRead'
+      x-hidden: true
+      x-base-type: '#/definitions/ApiCollection'
+    PhoneAdd:
+      description: Phones store information about constituent phone numbers and where to call individuals and organizations.
+      required:
+      - constituent_id
+      - number
+      - type
+      type: object
+      properties:
+        constituent_id:
+          description: The immutable system record ID of the constituent associated with the phone.
+          type: string
+        do_not_call:
+          description: Indicates whether the constituent requests not to be contacted at this number.
+          type: boolean
+        inactive:
+          description: Indicates whether the phone is inactive.
+          type: boolean
+        number:
+          description: The phone number.
+          type: string
+        primary:
+          description: Indicates whether this is the constituent's primary phone.
+          type: boolean
+        type:
+          description: The phone type. Available values are the entries in the <a href="https://developer.sky.blackbaud.com/docs/services/56b76470069a0509c8f1c5b3/operations/ListPhoneTypes"><b>Phone Types</b></a> table.
+          type: string
+      x-hidden: true
+      x-display-name: Create phone
+      x-display-id: CreatePhone
+    PhoneRead:
+      description: Phones store information about constituent phone numbers and where to call individuals and organizations.
+      type: object
+      properties:
+        id:
+          description: The immutable system record ID of the phone.
+          type: string
+        constituent_id:
+          description: The immutable system record ID of the constituent associated with the phone.
+          type: string
+        date_added:
+          format: date-time
+          description: 'The date when the phone was created. Includes an offset from UTC in <a href="https://tools.ietf.org/html/rfc3339">ISO-8601 format: </a><i>1969-11-21T10:29:43-04:00</i>.'
+          type: string
+          x-supports-datetime-offset: true
+        date_modified:
+          format: date-time
+          description: 'The date when the phone was last modified. Includes an offset from UTC in <a href="https://tools.ietf.org/html/rfc3339">ISO-8601 format: </a><i>1969-11-21T10:29:43-04:00</i>.'
+          type: string
+          x-supports-datetime-offset: true
+        do_not_call:
+          description: Indicates whether the constituent requests not to be contacted at this number.
+          type: boolean
+        inactive:
+          description: Indicates whether the phone is inactive.
+          type: boolean
+        number:
+          description: The phone number.
+          type: string
+        primary:
+          description: Indicates whether this is the constituent's primary phone.
+          type: boolean
+        type:
+          description: The phone type. Available values are the entries in the <a href="https://developer.sky.blackbaud.com/docs/services/56b76470069a0509c8f1c5b3/operations/ListPhoneTypes"><b>Phone Types</b></a> table.
+          type: string
+      x-display-name: Phone
+      x-display-id: Phone
+    PhoneEdit:
+      description: Phones store information about constituent phone numbers and where to call individuals and organizations.
+      type: object
+      properties:
+        do_not_call:
+          description: Indicates whether the constituent requests not to be contacted at this number.
+          type: boolean
+        inactive:
+          description: Indicates whether the phone is inactive.
+          type: boolean
+        number:
+          description: The phone number. This property cannot be set to null.
+          type: string
+        primary:
+          description: Indicates whether this is the constituent's primary phone.
+          type: boolean
+        type:
+          description: The phone type. Available values are the entries in the <a href="https://developer.sky.blackbaud.com/docs/services/56b76470069a0509c8f1c5b3/operations/ListPhoneTypes"><b>Phone Types</b></a> table. This property cannot be set to null.
+          type: string
+      x-hidden: true
+      x-display-name: Edit phone
+      x-display-id: EditPhone
+    PostResponse_2:
+      description: Defines the shape of a post response object.
+      type: object
+      properties:
+        id:
+          description: The newly created ID
+          type: string
+      x-hidden: true
+    EditConstituentPhone_2:
+      type: object
+      properties:
+        phone_type:
+          type: string
+          description: The type. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/phonetypecode/entries
+        number:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The number.
+        primary:
+          type: boolean
+          description: Indicates whether set as primary phone number.
+        do_not_call:
+          type: boolean
+          description: Indicates whether do not call this phone number.
+        spouse_name:
+          maxLength: 154
+          minLength: 0
+          type: string
+          description: The spouse name. Read-only in the SOAP API.
+        spouse_has_matching_phone:
+          type: boolean
+          description: Indicates whether spouse has matching phone. Read-only in the SOAP API.
+        update_matching_spouse_phone:
+          type: boolean
+          description: Indicates whether update matching phone information for household.
+        household:
+          type: boolean
+          description: Indicates whether household. Read-only in the SOAP API.
+        household_member:
+          type: boolean
+          description: Indicates whether household member. Read-only in the SOAP API.
+        update_matching_household_phone:
+          type: boolean
+          description: Indicates whether update matching phone numbers in household.
+        matching_household_members:
+          type: array
+          items:
+            $ref: '#/components/schemas/EditConstituentPhoneMatchingHouseholdMembers'
+          description: Matching household members.
+        start_time:
+          $ref: '#/components/schemas/HourMinute'
+        end_time:
+          $ref: '#/components/schemas/HourMinute'
+        info_source:
+          type: string
+          description: The information source. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/infosourcecode/entries
+        info_source_comments:
+          maxLength: 256
+          minLength: 0
+          type: string
+          description: The comments.
+        country:
+          type: string
+          description: The country. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/c9649672-353d-42e8-8c25-4d34bbabfbba.
+        seasonal_start_date:
+          $ref: '#/components/schemas/MonthDay'
+        seasonal_end_date:
+          $ref: '#/components/schemas/MonthDay'
+        start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        end_date:
+          type: string
+          description: 'The end date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        do_not_call_reason:
+          type: string
+          description: The reason. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/donotcallreasoncode/entries
+        confidential:
+          type: boolean
+          description: Indicates whether this phone number is confidential.
+        country_codes:
+          type: array
+          items:
+            $ref: '#/components/schemas/EditConstituentPhoneCountryCodes'
+          description: Country codes.
+        constituent_data_review_rollback_reason:
+          type: string
+          description: The reason. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/484441bc-f0e6-4f5f-a6bf-49f02881dd13.
+        forced_primary:
+          type: boolean
+          description: Indicates whether forced primary. Read-only in the SOAP API.
+        can_edit_primary:
+          type: boolean
+          description: Indicates whether can edit primary. Read-only in the SOAP API.
+        invalid_fields:
+          maxLength: 256
+          minLength: 0
+          type: string
+          description: The invalid fields. Read-only in the SOAP API.
+        origin:
+          type: string
+          description: The origin. Read-only in the SOAP API. Available values are <i>user</i>, <i>web forms</i>
+        donottext:
+          type: boolean
+          description: Indicates whether do not text message this phone number.
+      additionalProperties: false
+      description: EditConstituentPhone
+      example:
+        phone_type: Business
+        number: '8439195648'
+        primary: true
+        do_not_call: false
+        spouse_name: ''
+        spouse_has_matching_phone: false
+        update_matching_spouse_phone: false
+        household: false
+        household_member: false
+        update_matching_household_phone: false
+        matching_household_members: []
+        start_time:
+          hour: 3
+          minute: 30
+        end_time:
+          hour: 5
+          minute: 30
+        info_source: ''
+        info_source_comments: ''
+        country: ''
+        seasonal_start_date:
+          month: 3
+          day: 21
+        seasonal_end_date:
+          month: 3
+          day: 21
+        start_date: ''
+        end_date: ''
+        do_not_call_reason: ''
+        confidential: false
+        country_codes:
+        - countryid: ''
+          countrycode: ''
+        constituent_data_review_rollback_reason: ''
+        forced_primary: false
+        can_edit_primary: false
+        invalid_fields: ''
+        origin_code: User
+      x-display-name: Phone Edit Form 3
+      x-display-id: Phone Edit Form 3
+    ConstituentPhone_2:
+      required:
+      - number
+      type: object
+      properties:
+        phone_type:
+          type: string
+          description: The type. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/phonetypecode/entries
+        number:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The number.
+        primary:
+          type: boolean
+          description: Indicates whether set as primary phone number.
+        do_not_call:
+          type: boolean
+          description: Indicates whether do not call this phone number.
+        spouse_name:
+          maxLength: 154
+          minLength: 0
+          type: string
+          description: The spouse name. Read-only in the SOAP API.
+        spouse_has_matching_phone:
+          type: boolean
+          description: Indicates whether spouse has matching phone. Read-only in the SOAP API.
+        update_matching_spouse_phone:
+          type: boolean
+          description: Indicates whether update matching phone information for household.
+        household:
+          type: boolean
+          description: Indicates whether household. Read-only in the SOAP API.
+        household_member:
+          type: boolean
+          description: Indicates whether household member. Read-only in the SOAP API.
+        update_matching_household_phone:
+          type: boolean
+          description: Indicates whether update matching phone numbers in household.
+        matching_household_members:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConstituentPhoneMatchingHouseholdMembers'
+          description: Matching household members.
+        start_time:
+          $ref: '#/components/schemas/HourMinute'
+        end_time:
+          $ref: '#/components/schemas/HourMinute'
+        info_source:
+          type: string
+          description: The information source. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/infosourcecode/entries
+        info_source_comments:
+          maxLength: 256
+          minLength: 0
+          type: string
+          description: The comments.
+        country:
+          type: string
+          description: The country. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/c9649672-353d-42e8-8c25-4d34bbabfbba.
+        seasonal_start_date:
+          $ref: '#/components/schemas/MonthDay'
+        seasonal_end_date:
+          $ref: '#/components/schemas/MonthDay'
+        start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        end_date:
+          type: string
+          description: 'The end date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        do_not_call_reason:
+          type: string
+          description: The reason. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/donotcallreasoncode/entries
+        confidential:
+          type: boolean
+          description: Indicates whether this phone number is confidential.
+        country_codes:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConstituentPhoneCountryCodes'
+          description: Country codes.
+        constituent_data_review_rollback_reason:
+          type: string
+          description: The reason. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/484441bc-f0e6-4f5f-a6bf-49f02881dd13.
+        forced_primary:
+          type: boolean
+          description: Indicates whether forced primary. Read-only in the SOAP API.
+        can_edit_primary:
+          type: boolean
+          description: Indicates whether can edit primary. Read-only in the SOAP API.
+        invalid_fields:
+          maxLength: 256
+          minLength: 0
+          type: string
+          description: The invalid fields. Read-only in the SOAP API.
+        origin:
+          type: string
+          description: The origin. Read-only in the SOAP API. Available values are <i>user</i>, <i>web forms</i>
+        donottext:
+          type: boolean
+          description: Indicates whether do not text message this phone number.
+      additionalProperties: false
+      description: GetConstituentPhone
+      x-display-name: Phone Edit Form 3
+      x-display-id: Phone Edit Form 3
+    NewConstituentPhone_2:
+      required:
+      - constituent_id
+      - number
+      type: object
+      properties:
+        constituent_id:
+          type: string
+          description: The constituent ID.
+        phone_type:
+          type: string
+          description: The type. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/phonetypecode/entries
+        number:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The number.
+        primary:
+          type: boolean
+          description: Indicates whether set as primary phone number.
+        do_not_call:
+          type: boolean
+          description: Indicates whether do not call this phone number.
+        spouse_name:
+          maxLength: 154
+          minLength: 0
+          type: string
+          description: The spouse name. Read-only in the SOAP API.
+        update_matching_spouse_phone:
+          type: boolean
+          description: Indicates whether update matching phone information for household.
+        household:
+          type: boolean
+          description: Indicates whether household. Read-only in the SOAP API.
+        household_member:
+          type: boolean
+          description: Indicates whether household member. Read-only in the SOAP API.
+        update_matching_household_phone:
+          type: boolean
+          description: Indicates whether copy phone information to household members.
+        start_time:
+          $ref: '#/components/schemas/HourMinute'
+        end_time:
+          $ref: '#/components/schemas/HourMinute'
+        info_source:
+          type: string
+          description: The information source. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/infosourcecode/entries
+        info_source_comments:
+          maxLength: 256
+          minLength: 0
+          type: string
+          description: The comments.
+        country:
+          type: string
+          description: The country. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/c9649672-353d-42e8-8c25-4d34bbabfbba.
+        seasonal_start_date:
+          $ref: '#/components/schemas/MonthDay'
+        seasonal_end_date:
+          $ref: '#/components/schemas/MonthDay'
+        start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        do_not_call_reason:
+          type: string
+          description: The reason. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/donotcallreasoncode/entries
+        confidential:
+          type: boolean
+          description: Indicates whether this phone number is confidential.
+        country_codes:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewConstituentPhoneCountryCodes'
+          description: Country codes.
+        constituent_data_review_rollback_reason:
+          type: string
+          description: The reason. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/484441bc-f0e6-4f5f-a6bf-49f02881dd13.
+        forced_primary:
+          type: boolean
+          description: Indicates whether forced primary. Read-only in the SOAP API.
+        can_edit_primary:
+          type: boolean
+          description: Indicates whether can edit primary. Read-only in the SOAP API.
+        invalid_fields:
+          maxLength: 256
+          minLength: 0
+          type: string
+          description: The invalid fields. Read-only in the SOAP API.
+        origin:
+          type: string
+          description: The origin. Available values are <i>user</i>, <i>web forms</i>
+        donottext:
+          type: boolean
+          description: Indicates whether do not text message this phone number.
+      additionalProperties: false
+      description: CreateConstituentPhone
+      example:
+        constituent_id: ''
+        phone_type: ''
+        number: ''
+        primary: false
+        do_not_call: false
+        spouse_name: ''
+        update_matching_spouse_phone: false
+        household: false
+        household_member: false
+        update_matching_household_phone: false
+        start_time: ''
+        end_time: ''
+        info_source: ''
+        info_source_comments: ''
+        country: ''
+        seasonal_start_date: ''
+        seasonal_end_date: ''
+        start_date: ''
+        do_not_call_reason: ''
+        confidential: false
+        country_codes:
+        - country_id: ''
+          country_code: ''
+        constituent_data_review_rollback_reason: ''
+        forced_primary: false
+        can_edit_primary: false
+        invalid_fields: ''
+        origin: User
+        donottext: false
+      x-display-name: Phone Add Form
+      x-display-id: Phone Add Form
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+x-refined-from:
+- blackbaud-altru-constituent-api-openapi.yml
+- blackbaud-constituent-api-openapi.yml
+- blackbaud-crm-constituent-api-openapi.yml

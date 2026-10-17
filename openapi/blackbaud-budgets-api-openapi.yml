@@ -1,0 +1,2046 @@
+openapi: 3.2.0
+info:
+  title: Blackbaud Budgets API
+  version: '1.0'
+  x-refined-note:
+  - x-apievangelist-provenance differs across the merged source definitions and was not carried
+  description: 'Operations tagged Budgets across 2 of this provider''s published API definitions: blackbaud-general-ledger-api-openapi.yml, blackbaud-grantsconnect-api-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.sky.blackbaud.com/generalledger/v1
+- url: https://api.sky.blackbaud.com/grants-connect
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Budgets
+paths:
+  /budgets:
+    post:
+      operationId: CreateBudget
+      summary: Budget (Create)
+      description: Returns the identifier for the newly created budget scenario.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateBudget'
+            example:
+              scenario_id: Scenario2
+              start_period: 1
+              end_period: 3
+              start_fiscal_year: '2018'
+              end_fiscal_year: '2018'
+              budget_type: PeriodRange
+              lines:
+              - account_number: 01-1000-00
+                project_id: '1100'
+                grant_description: None
+                notes: Some note
+                total: 30
+                periods:
+                - amount: 10
+                  sequence: 1
+                  year_id: '2018'
+                - amount: 10
+                  sequence: 2
+                  year_id: '2018'
+                - amount: 10
+                  sequence: 3
+                  year_id: '2018'
+        description: The budget scenario to create.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the identifier for the new budget.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreatedResult_Int32'
+              example:
+                record_id: 843
+        '400':
+          description: Returned when specified journal entries are not in the correct format or are invalid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DomainErrorMessage'
+              example:
+                Error: Failed to save {record}
+                Details:
+                - The total percent distributed must equal 100%.
+                ErrorPath: null
+        '403':
+          description: Returned when the user does not have permission to create budgets.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Budgets
+    get:
+      operationId: ListBudgets
+      summary: Budget (List)
+      description: Returns a top level overview of every budget scenario.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains budget views.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiCollection_BudgetScenarioView'
+              example:
+                count: 121
+                value:
+                - budget_scenario_id: 368
+                  description: 5% Above Operating Cost
+                  start_fiscal_year: '2015'
+                  end_fiscal_year: '2015'
+                  start_date: '2015-01-01T00:00:00Z'
+                  end_date: '2015-12-31T00:00:00Z'
+                  status: Active
+                  budget_type: FiscalYear
+                  locked: Unlocked
+                  scenario_id: '11'
+                - budget_scenario_id: 367
+                  description: 5% Above Operating Cost
+                  start_fiscal_year: '2018'
+                  end_fiscal_year: '2018'
+                  start_date: '2018-01-01T00:00:00Z'
+                  end_date: '2018-12-31T00:00:00Z'
+                  status: Active
+                  budget_type: FiscalYear
+                  locked: Unlocked
+                  scenario_id: '11'
+        '403':
+          description: Returned when the user does not have permission to view budgets.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Budgets
+    servers:
+    - url: https://api.sky.blackbaud.com/generalledger/v1
+  /budgets/scenarios:
+    post:
+      operationId: CreateBudgetScenario
+      summary: Budget scenario (Create)
+      description: Returns the identifier for the newly created scenario id.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateScenarioId'
+            example:
+              value: Scenario3
+              description: New scenario id
+              status: Active
+        description: The budget scenario id to create.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the identifier for the new scenario id.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreatedResult_Int32'
+              example:
+                record_id: 843
+        '400':
+          description: Returned when specified journal entries are not in the correct format or are invalid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DomainErrorMessage'
+              example:
+                Error: Invalid Request
+                Details:
+                - The value 'fake' is not valid for transaction_status.
+                ErrorPath: null
+        '403':
+          description: Returned when the user does not have permission to create budget scenarios.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Budgets
+    get:
+      operationId: ListBudgetScenarios
+      summary: Budget scenario (List)
+      description: Returns details for every scenario ID.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains budget details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiCollection_ScenarioId'
+              example:
+                count: 37
+                value:
+                - id: 2016
+                  value: '123456'
+                  description: '321654897'
+                  inactive: false
+                - id: 2011
+                  value: Benton
+                  description: Benton
+                  inactive: false
+                - id: 2013
+                  value: db1
+                  description: db2
+                  inactive: false
+        '403':
+          description: Returned when the user does not have permission to view budgets.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Budgets
+    servers:
+    - url: https://api.sky.blackbaud.com/generalledger/v1
+  /budgets/{scenario_id}:
+    patch:
+      operationId: EditBudget
+      summary: Budget (Edit)
+      description: Returns the identifier for the newly edited budget scenario.
+      parameters:
+      - name: scenario_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The identifier for the budget scenario.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditBudgetLineArray'
+            example:
+            - account_number: 01-1000-00
+              project_id: '1100'
+              grant_description: None
+              total: 30
+              periods:
+              - amount: 10
+                sequence: 1
+                year_id: '2018'
+              - amount: 10
+                sequence: 2
+                year_id: '2018'
+              - amount: 10
+                sequence: 3
+                year_id: '2018'
+              notes: Some note
+        description: The new lines for a budget scenario.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the identifier for the edited budget.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreatedResult_Int32'
+              example:
+                record_id: 843
+        '400':
+          description: Returned when specified budget lines are not in the correct format or are invalid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DomainErrorMessage'
+              example:
+                Error: Invalid Request
+                Details:
+                - The value 'fake' is not valid for transaction_status.
+                ErrorPath: null
+        '403':
+          description: Returned when the user does not have permission to edit budgets.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+        '404':
+          description: Returned when no budget is found with the specified ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Budgets
+    get:
+      operationId: GetBudget
+      summary: Budget (Get)
+      description: Returns details for every fiscal period in a budget scenario.
+      parameters:
+      - name: scenario_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The identifier for the budget scenario.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains budget details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiCollection_BudgetScenarioDetail'
+              example:
+                count: 12
+                value:
+                - category: Expenses
+                  fiscal_year: '2017'
+                  total_amount: 1200
+                  fiscal_period: 1
+                  period_amount: 100
+                - category: Expenses
+                  fiscal_year: '2017'
+                  total_amount: 1200
+                  fiscal_period: 2
+                  period_amount: 100
+                - category: Expenses
+                  fiscal_year: '2017'
+                  total_amount: 1200
+                  fiscal_period: 3
+                  period_amount: 100
+        '403':
+          description: Returned when the user does not have permission to view budgets.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+        '404':
+          description: Returned when no budget is found with the specified ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Budgets
+    servers:
+    - url: https://api.sky.blackbaud.com/generalledger/v1
+  /budgets/{scenario_id}/accounts:
+    get:
+      operationId: ListBudgetAccounts
+      summary: Budget account (List)
+      description: Returns details for every fiscal period and account in scenario.
+      parameters:
+      - name: scenario_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The identifier for the budget scenario.
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: "Represents the number of records to return. \nThe default is 100. \nThe maximum allowed value is 500."
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: 'Represents the number of records to skip.
+
+          For use with pagination.'
+      - name: account_number
+        in: query
+        required: false
+        schema:
+          type: string
+        description: The account number over which to filter.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains budget details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiCollection_BudgetAccountDetail'
+              example:
+                count: 12
+                value:
+                - budget_category: Expenses
+                  account_number: 01-5000-00
+                  fiscal_year: '2017'
+                  total_amount: 1200
+                  fiscal_period: 1
+                  period_amount: 100
+                  period_percent: 8.333
+                - budget_category: Expenses
+                  account_number: 01-5000-00
+                  fiscal_year: '2017'
+                  total_amount: 1200
+                  fiscal_period: 2
+                  period_amount: 100
+                  period_percent: 8.333
+        '403':
+          description: Returned when the user does not have permission to view budgets.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+        '404':
+          description: Returned when no budget is found with the specified ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Budgets
+    servers:
+    - url: https://api.sky.blackbaud.com/generalledger/v1
+  /budgets/{scenario_id}/details:
+    get:
+      operationId: GetBudgetDetail
+      summary: Budget detail (Get)
+      description: Returns the specified budget details.
+      parameters:
+      - name: scenario_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The identifier for the budget scenario.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the specified budget.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BudgetDetail'
+              example:
+                scenario_id: '01'
+                description: Test
+                budget_type: FiscalYear
+                status: Inactive
+                start_fiscal_year: 2000-2001 FY
+                end_fiscal_year: 2000-2001 FY
+                start_fiscal_period: 1
+                end_fiscal_period: 12
+                locked: true
+                total_revenue: 0
+                total_expense: 0
+                added_by: Supervisor
+                date_added: '2002-01-29T00:00:00Z'
+                modified_by: Supervisor
+                date_modified: '2008-05-19T11:19:26.863Z'
+        '403':
+          description: Returned when the user does not have permission to view budgets.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+        '404':
+          description: Returned when no budget is found with the specified ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Budgets
+    servers:
+    - url: https://api.sky.blackbaud.com/generalledger/v1
+  /budgets/{scenario_id}/details/lines:
+    get:
+      operationId: ListBudgetLines
+      summary: Budget detail lines (List)
+      description: Returns the specified budget lines.
+      parameters:
+      - name: scenario_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The identifier for the budget scenario.
+      - name: scenarioId
+        in: query
+        required: false
+        schema:
+          type: integer
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: 'Represents the number of records to skip.
+
+          For use with pagination.'
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: "Represents the number of records to return. \nThe default is 100. \nThe maximum allowed value is 5000."
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains a collection of budget lines for the specified budget scenario.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BudgetLine'
+              example:
+                count: 32
+                value:
+                - account_number: 31-405000
+                  account_description: Tuition
+                  budget_line_id: 1
+                  ui_project_id: CC001
+                  project_description: CC at USC - General Operating
+                  grant_description: Helping Hands
+                  notes: This is a note
+                  total: 1079479
+                  periods:
+                  - amount: 0
+                    sequence: 1
+                    year_id: 2005-2006 FY
+                  - amount: 0
+                    sequence: 2
+                    year_id: 2005-2006 FY
+                  - amount: 0
+                    sequence: 3
+                    year_id: 2005-2006 FY
+                  - amount: 0
+                    sequence: 4
+                    year_id: 2005-2006 FY
+                  - amount: 134935
+                    sequence: 5
+                    year_id: 2005-2006 FY
+                  - amount: 134935
+                    sequence: 6
+                    year_id: 2005-2006 FY
+                  - amount: 134935
+                    sequence: 7
+                    year_id: 2005-2006 FY
+                  - amount: 134935
+                    sequence: 8
+                    year_id: 2005-2006 FY
+                  - amount: 134935
+                    sequence: 9
+                    year_id: 2005-2006 FY
+                  - amount: 134935
+                    sequence: 10
+                    year_id: 2005-2006 FY
+                  - amount: 134935
+                    sequence: 11
+                    year_id: 2005-2006 FY
+                  - amount: 134934
+                    sequence: 12
+                    year_id: 2005-2006 FY
+                - account_number: 31-410000
+                  account_description: Gifts
+                  budget_line_id: 2
+                  ui_project_id: CC001
+                  project_description: CC at USC - General Operating
+                  grant_description: SC Arts - 2013-2015
+                  notes: This is another note
+                  total: 50000
+                  periods:
+                  - amount: 0
+                    sequence: 1
+                    year_id: 2005-2006 FY
+                  - amount: 0
+                    sequence: 2
+                    year_id: 2005-2006 FY
+                  - amount: 0
+                    sequence: 3
+                    year_id: 2005-2006 FY
+                  - amount: 0
+                    sequence: 4
+                    year_id: 2005-2006 FY
+                  - amount: 6250
+                    sequence: 5
+                    year_id: 2005-2006 FY
+                  - amount: 6250
+                    sequence: 6
+                    year_id: 2005-2006 FY
+                  - amount: 6250
+                    sequence: 7
+                    year_id: 2005-2006 FY
+                  - amount: 6250
+                    sequence: 8
+                    year_id: 2005-2006 FY
+                  - amount: 6250
+                    sequence: 9
+                    year_id: 2005-2006 FY
+                  - amount: 6250
+                    sequence: 10
+                    year_id: 2005-2006 FY
+                  - amount: 6250
+                    sequence: 11
+                    year_id: 2005-2006 FY
+                  - amount: 6250
+                    sequence: 12
+                    year_id: 2005-2006 FY
+        '403':
+          description: Returned when the user does not have permission to view budgets.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+        '404':
+          description: Returned when no budget is found with the specified ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Budgets
+    servers:
+    - url: https://api.sky.blackbaud.com/generalledger/v1
+  /budgets/{scenario_id}/grants:
+    get:
+      operationId: ListBudgetGrants
+      summary: Budget grant (List)
+      description: Returns details for every fiscal period and grant in scenario.
+      parameters:
+      - name: scenario_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The identifier for the budget scenario.
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: 'Represents the number of records to skip.
+
+          For use with pagination.'
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: "Represents the number of records to return. \nThe default is 100. \nThe maximum allowed value is 500."
+      - name: grant
+        in: query
+        required: false
+        schema:
+          type: string
+        description: The grant name over which to filter.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains budget details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiCollection_BudgetGrantDetail'
+              example:
+                count: 12
+                value:
+                - budget_category: Expenses
+                  account_number: 01-5000-00
+                  grant: Fuller Foundation
+                  fiscal_year: '2018'
+                  total_amount: 1200
+                  fiscal_period: 1
+                  period_amount: 100
+                  period_percent: 8.333
+                - budget_category: Expenses
+                  account_number: 01-5000-00
+                  grant: Fuller Foundation
+                  fiscal_year: '2018'
+                  total_amount: 1200
+                  fiscal_period: 2
+                  period_amount: 100
+                  period_percent: 8.333
+                - budget_category: Expenses
+                  account_number: 01-5000-00
+                  grant: Fuller Foundation
+                  fiscal_year: '2018'
+                  total_amount: 1200
+                  fiscal_period: 3
+                  period_amount: 100
+                  period_percent: 8.333
+        '403':
+          description: Returned when the user does not have permission to view budgets.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+        '404':
+          description: Returned when no budget is found with the specified ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Budgets
+    servers:
+    - url: https://api.sky.blackbaud.com/generalledger/v1
+  /budgets/{scenario_id}/lines:
+    post:
+      operationId: AddBudgetLines
+      summary: Budget lines (Add)
+      description: Adds new rows to an existing budget. Existing rows with an identical account number, project ID, and grant description display in a single, merged row that calculates totals for amounts and distributions.
+      parameters:
+      - name: scenario_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The identifier for the budget scenario.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateBudgetLineContractArray'
+            example:
+            - account_number: 01-1000-00
+              project_id: '1100'
+              grant_description: None
+              total: 1200
+              periods:
+              - amount: 100
+                sequence: 1
+                year_id: '2019'
+              - amount: 100
+                sequence: 2
+                year_id: '2019'
+              - amount: 100
+                sequence: 3
+                year_id: '2019'
+              - amount: 100
+                sequence: 4
+                year_id: '2019'
+              - amount: 100
+                sequence: 5
+                year_id: '2019'
+              - amount: 100
+                sequence: 6
+                year_id: '2019'
+              - amount: 100
+                sequence: 7
+                year_id: '2019'
+              - amount: 100
+                sequence: 8
+                year_id: '2019'
+              - amount: 100
+                sequence: 9
+                year_id: '2019'
+              - amount: 100
+                sequence: 10
+                year_id: '2019'
+              - amount: 100
+                sequence: 11
+                year_id: '2019'
+              - amount: 100
+                sequence: 12
+                year_id: '2019'
+        description: The new lines for a budget scenario.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the identifier for the edited budget.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreatedResult_Int32'
+              example:
+                record_id: 843
+        '400':
+          description: Returned when specified budget lines are not in the correct format or are invalid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DomainErrorMessage'
+              example:
+                Error: Invalid Request
+                Details:
+                - The value 'fake' is not valid for transaction_status.
+                ErrorPath: null
+        '403':
+          description: Returned when the user does not have permission to edit budgets.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+        '404':
+          description: Returned when no budget is found with the specified ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Budgets
+    servers:
+    - url: https://api.sky.blackbaud.com/generalledger/v1
+  /budgets/{scenario_id}/projects:
+    get:
+      operationId: ListBudgetProjects
+      summary: Budget project (List)
+      description: Returns details for every fiscal period and project in scenario.
+      parameters:
+      - name: scenario_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The identifier for the budget scenario.
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: 'Represents the number of records to skip.
+
+          For use with pagination.'
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: "Represents the number of records to return. \nThe default is 100. \nThe maximum allowed value is 500."
+      - name: ui_project_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: The ui project id over which to filter.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains budget details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiCollection_BudgetProjectDetail'
+              example:
+                count: 12
+                value:
+                - budget_category: Expenses
+                  account_number: 01-5000-00
+                  ui_project_id: '1001'
+                  fiscal_year: '2018'
+                  total_amount: 1200
+                  fiscal_period: 1
+                  period_amount: 100
+                  period_percent: 8.333
+                - budget_category: Expenses
+                  account_number: 01-5000-00
+                  ui_project_id: '1001'
+                  fiscal_year: '2018'
+                  total_amount: 1200
+                  fiscal_period: 2
+                  period_amount: 100
+                  period_percent: 8.333
+        '403':
+          description: Returned when the user does not have permission to view budgets.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+        '404':
+          description: Returned when no budget is found with the specified ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Budgets
+    servers:
+    - url: https://api.sky.blackbaud.com/generalledger/v1
+  /v1/budgets/search:
+    post:
+      operationId: SearchBudgets
+      summary: Search budgets (PREVIEW)
+      description: 'Retrieves information about budgets.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApplyBudgetSearchFilters'
+            example:
+              id: 3001
+              name: Annual Operating Budget
+              account_number: BUD-2023-001
+              closed: false
+              tags:
+              - annual
+              - operations
+              limit: 50
+              page: 1
+              date_modified: '2025-01-01T12:00:00Z'
+              include_inactive: false
+        description: Specifies the set of budgets that should be returned
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReturnPaginatedBudgetRecords'
+              example:
+                records:
+                - id: 3001
+                  name: Annual Budget 2024
+                  description: Operating budget for 2024
+                  funding_source_type: Cash
+                  number_of_payments: 12
+                  number_of_funding_sources: 2
+                  total_amount: 100000
+                  total_amount_unavailable: 5000
+                  total_amount_available: 95000
+                  total_overage_amount: 1000
+                  total_payment_amount: 50000
+                  total_payment_amount_overage: 0
+                  total_remaining_overage: 1000
+                  total_amount_reserved: 2000
+                  total_reserved_applications: 3
+                  has_client_processing_type: true
+                  has_yc_processing_type: false
+                  closed: false
+                  account_number: BUD-2024-001
+                  tags:
+                  - 101
+                  - 102
+                  inactive: false
+                record_count: 1
+      tags:
+      - Budgets
+    servers:
+    - url: https://api.sky.blackbaud.com/grants-connect
+  /v1/budgets/{budget_id}/budgetfundingsources:
+    get:
+      operationId: GetBudgetFundingSources
+      summary: Get budget funding source details (PREVIEW)
+      description: 'Retrieves information about the funding sources connected to a budget.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: budget_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The identifier of the budget.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetBudgetFundingSources'
+              example:
+                budget_funding_sources:
+                - funding_source_id: 2001
+                  funding_source_name: General Fund
+                  funding_source_type: Cash
+                  number_of_payments: 10
+                  total_amount_available: 50000
+                  total_units_available: 100
+                  over_allocation_source: false
+      tags:
+      - Budgets
+    servers:
+    - url: https://api.sky.blackbaud.com/grants-connect
+components:
+  schemas:
+    ApiCollection_BudgetScenarioDetail:
+      type: object
+      properties:
+        count:
+          format: int32
+          type: integer
+          x-ms-summary: Count
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/BudgetScenarioDetail'
+          x-ms-summary: Value
+      x-hidden: true
+      x-display-name: Api collection `1
+      x-ms-summary: Api collection `1
+    ApiCollection_ScenarioId:
+      type: object
+      properties:
+        count:
+          format: int32
+          type: integer
+          x-ms-summary: Count
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/ScenarioId'
+          x-ms-summary: Value
+      x-hidden: true
+      x-display-name: Api collection `1
+      x-ms-summary: Api collection `1
+    DomainErrorMessage:
+      type: object
+      properties:
+        Error:
+          type: string
+          x-ms-summary: Error
+        Details:
+          type: array
+          items:
+            type: string
+          x-ms-summary: Details
+        ErrorPath:
+          type: string
+          x-ms-summary: Error path
+      x-display-name: Domain error message
+      x-ms-summary: Domain error message
+    BasicErrorMessage:
+      type: object
+      properties:
+        Error:
+          type: string
+          x-ms-summary: Error
+      x-display-name: Basic error message
+      x-ms-summary: Basic error message
+    CreateBudgetLineContractArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/CreateBudgetLineContract'
+      example:
+      - account_number: 01-1000-00
+        project_id: '1100'
+        grant_description: None
+        total: 1200
+        periods:
+        - amount: 100
+          sequence: 1
+          year_id: '2019'
+        - amount: 100
+          sequence: 2
+          year_id: '2019'
+        - amount: 100
+          sequence: 3
+          year_id: '2019'
+        - amount: 100
+          sequence: 4
+          year_id: '2019'
+        - amount: 100
+          sequence: 5
+          year_id: '2019'
+        - amount: 100
+          sequence: 6
+          year_id: '2019'
+        - amount: 100
+          sequence: 7
+          year_id: '2019'
+        - amount: 100
+          sequence: 8
+          year_id: '2019'
+        - amount: 100
+          sequence: 9
+          year_id: '2019'
+        - amount: 100
+          sequence: 10
+          year_id: '2019'
+        - amount: 100
+          sequence: 11
+          year_id: '2019'
+        - amount: 100
+          sequence: 12
+          year_id: '2019'
+    BudgetGrantDetail:
+      type: object
+      properties:
+        budget_category:
+          description: The budget category for this period.
+          enum:
+          - Revenues
+          - Expenses
+          - Gains
+          - Losses
+          - Gifts
+          - Transfers
+          - Adjustments
+          - Other
+          type: string
+          x-ms-summary: Budget category
+        account_number:
+          description: The account number for this period.
+          type: string
+          x-ms-summary: Account number
+        grant:
+          description: The grant name for this period.
+          type: string
+          x-ms-summary: Grant
+        fiscal_year:
+          description: The fiscal year for this period.
+          type: string
+          x-ms-summary: Fiscal year
+        total_amount:
+          format: double
+          description: The total amount for this period.
+          type: number
+          x-ms-summary: Total amount
+        fiscal_period:
+          format: int32
+          description: The fiscal period.
+          type: integer
+          x-ms-summary: Fiscal period
+        period_amount:
+          format: double
+          description: The amount for this period.
+          type: number
+          x-ms-summary: Period amount
+        period_percent:
+          format: double
+          description: The percent for this period.
+          type: number
+          x-ms-summary: Period percent
+      x-display-name: Budget grant detail
+      x-ms-summary: Budget grant detail
+    CreateBudget:
+      description: Contract for creating budget.
+      required:
+      - scenario_id
+      - start_period
+      - end_period
+      - start_fiscal_year
+      - end_fiscal_year
+      - budget_type
+      - lines
+      type: object
+      properties:
+        scenario_id:
+          description: The description for the scenario.
+          type: string
+          x-ms-summary: Scenario id
+        start_period:
+          format: int32
+          description: The first period of the starting fiscal year of the budget.
+          type: integer
+          x-ms-summary: Start period
+        end_period:
+          format: int32
+          description: The last period of the end fiscal year of the budget.
+          type: integer
+          x-ms-summary: End period
+        start_fiscal_year:
+          description: The starting fiscal year of the budget.
+          type: string
+          x-ms-summary: Start fiscal year
+        end_fiscal_year:
+          description: The ending fiscal year of the budget.
+          type: string
+          x-ms-summary: End fiscal year
+        budget_type:
+          description: The type of the budget.
+          enum:
+          - FiscalYear
+          - PeriodRange
+          type: string
+          x-ms-summary: Budget type
+        lines:
+          description: The list of budget lines for this budget scenario.
+          type: array
+          items:
+            $ref: '#/components/schemas/CreateBudgetLine'
+          x-ms-summary: Lines
+      example:
+        scenario_id: Scenario2
+        start_period: 1
+        end_period: 3
+        start_fiscal_year: '2018'
+        end_fiscal_year: '2018'
+        budget_type: PeriodRange
+        lines:
+        - account_number: 01-1000-00
+          project_id: '1100'
+          grant_description: None
+          notes: Some note
+          total: 30
+          periods:
+          - amount: 10
+            sequence: 1
+            year_id: '2018'
+          - amount: 10
+            sequence: 2
+            year_id: '2018'
+          - amount: 10
+            sequence: 3
+            year_id: '2018'
+      x-display-name: Create budget
+      x-ms-summary: Create budget
+    ScenarioId:
+      type: object
+      properties:
+        id:
+          format: int32
+          description: The database identifier for the scenario id.
+          type: integer
+          x-ms-summary: Id
+        value:
+          description: Short description.
+          type: string
+          x-ms-summary: Value
+        description:
+          description: Long description.
+          type: string
+          x-ms-summary: Description
+        inactive:
+          description: If or not the scenario ID is inactive.
+          type: boolean
+          x-ms-summary: Inactive
+      x-display-name: Scenario id
+      x-ms-summary: Scenario id
+    EditBudgetLine:
+      required:
+      - account_number
+      - total
+      - periods
+      type: object
+      properties:
+        account_number:
+          description: The number for an account on this budget.
+          type: string
+          x-ms-summary: Account number
+        budget_line_id:
+          format: int32
+          type: integer
+          x-ms-summary: Budget line id
+        project_id:
+          description: The project id for this budget line.
+          type: string
+          x-ms-summary: Project id
+        grant_description:
+          description: The description of the {Grant} t-code.
+          type: string
+          x-ms-summary: Grant description
+        total:
+          format: double
+          description: The total amount for this budget line.
+          type: number
+          x-ms-summary: Total
+        periods:
+          description: The period distributions for this budget line.
+          type: array
+          items:
+            $ref: '#/components/schemas/BudgetPeriodInfo'
+          x-ms-summary: Periods
+        notes:
+          description: The note for this budget line.
+          type: string
+          x-ms-summary: Notes
+      x-display-name: Edit budget line
+      x-ms-summary: Edit budget line
+    ApiCollection_BudgetAccountDetail:
+      type: object
+      properties:
+        count:
+          format: int32
+          type: integer
+          x-ms-summary: Count
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/BudgetAccountDetail'
+          x-ms-summary: Value
+      x-hidden: true
+      x-display-name: Api collection `1
+      x-ms-summary: Api collection `1
+    CreateScenarioId:
+      required:
+      - description
+      - status
+      type: object
+      properties:
+        value:
+          description: Short description.
+          type: string
+          x-ms-summary: Value
+        description:
+          description: Long description.
+          type: string
+          x-ms-summary: Description
+        status:
+          description: 'Whether or not the scenario ID is active.
+
+            The default is Active.'
+          enum:
+          - Active
+          - Inactive
+          type: string
+          x-ms-summary: Status
+      example:
+        value: Scenario3
+        description: New scenario id
+        status: Active
+      x-hidden: true
+      x-display-name: Create scenario id
+      x-ms-summary: Create scenario id
+    BudgetAccountDetail:
+      type: object
+      properties:
+        budget_category:
+          description: The budget category for this period.
+          enum:
+          - Revenues
+          - Expenses
+          - Gains
+          - Losses
+          - Gifts
+          - Transfers
+          - Adjustments
+          - Other
+          type: string
+          x-ms-summary: Budget category
+        account_number:
+          description: The account number for this period.
+          type: string
+          x-ms-summary: Account number
+        fiscal_year:
+          description: The fiscal year for this period.
+          type: string
+          x-ms-summary: Fiscal year
+        total_amount:
+          format: double
+          description: The total amount for this period.
+          type: number
+          x-ms-summary: Total amount
+        fiscal_period:
+          format: int32
+          description: The fiscal period.
+          type: integer
+          x-ms-summary: Fiscal period
+        period_amount:
+          format: double
+          description: The amount for this period.
+          type: number
+          x-ms-summary: Period amount
+        period_percent:
+          format: double
+          description: The percent for this period.
+          type: number
+          x-ms-summary: Period percent
+      x-display-name: Budget account detail
+      x-ms-summary: Budget account detail
+    CreatedResult_Int32:
+      type: object
+      properties:
+        record_id:
+          format: int32
+          type: integer
+          x-ms-summary: Record id
+      x-hidden: true
+      x-display-name: Created result `1
+      x-ms-summary: Created result `1
+    ApiCollection_BudgetProjectDetail:
+      type: object
+      properties:
+        count:
+          format: int32
+          type: integer
+          x-ms-summary: Count
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/BudgetProjectDetail'
+          x-ms-summary: Value
+      x-hidden: true
+      x-display-name: Api collection `1
+      x-ms-summary: Api collection `1
+    CreateBudgetLine:
+      description: Budget line
+      required:
+      - account_number
+      - total
+      - periods
+      type: object
+      properties:
+        account_number:
+          description: The number for an account on this budget.
+          type: string
+          x-ms-summary: Account number
+        budget_line_id:
+          format: int32
+          type: integer
+          x-ms-summary: Budget line id
+        project_id:
+          description: The project id for this budget line.
+          type: string
+          x-ms-summary: Project id
+        grant_description:
+          description: The description of the {Grant} t-code.
+          type: string
+          x-ms-summary: Grant description
+        total:
+          format: double
+          description: The total amount for this budget line.
+          type: number
+          x-ms-summary: Total
+        periods:
+          description: The period distributions for this budget line.
+          type: array
+          items:
+            $ref: '#/components/schemas/BudgetPeriodInfo'
+          x-ms-summary: Periods
+      x-display-name: Create budget line
+      x-ms-summary: Create budget line
+    CreateBudgetLineContract:
+      required:
+      - account_number
+      - total
+      - periods
+      type: object
+      properties:
+        account_number:
+          description: The number for an account on this budget.
+          type: string
+          x-ms-summary: Account number
+        project_id:
+          description: The project id for this budget line.
+          type: string
+          x-ms-summary: Project id
+        grant_description:
+          description: The description of the {Grant} t-code.
+          type: string
+          x-ms-summary: Grant description
+        total:
+          format: double
+          description: The total amount for this budget line.
+          type: number
+          x-ms-summary: Total
+        periods:
+          description: The period distributions for this budget line.
+          type: array
+          items:
+            $ref: '#/components/schemas/BudgetPeriodInfo'
+          x-ms-summary: Periods
+      x-hidden: true
+      x-display-name: Create budget line contract
+      x-ms-summary: Create budget line contract
+    BudgetPeriodInfo:
+      description: Budget period info
+      required:
+      - amount
+      - sequence
+      - year_id
+      type: object
+      properties:
+        amount:
+          format: double
+          description: The amount for this period.
+          type: number
+          x-ms-summary: Amount
+        sequence:
+          format: int32
+          description: The sequence number of the fiscal year of this period.
+          type: integer
+          x-ms-summary: Sequence
+        year_id:
+          description: The fiscal year of this period.
+          type: string
+          x-ms-summary: Year id
+      x-display-name: Budget period info
+      x-ms-summary: Budget period info
+    BudgetProjectDetail:
+      type: object
+      properties:
+        budget_category:
+          description: The budget category for this period.
+          enum:
+          - Revenues
+          - Expenses
+          - Gains
+          - Losses
+          - Gifts
+          - Transfers
+          - Adjustments
+          - Other
+          type: string
+          x-ms-summary: Budget category
+        account_number:
+          description: The account number for this period.
+          type: string
+          x-ms-summary: Account number
+        ui_project_id:
+          description: The user-visible identifier of the project.
+          type: string
+          x-ms-summary: Ui project id
+        fiscal_year:
+          description: The fiscal year for this period.
+          type: string
+          x-ms-summary: Fiscal year
+        total_amount:
+          format: double
+          description: The total amount for this period.
+          type: number
+          x-ms-summary: Total amount
+        fiscal_period:
+          format: int32
+          description: The fiscal period.
+          type: integer
+          x-ms-summary: Fiscal period
+        period_amount:
+          format: double
+          description: The amount for this period.
+          type: number
+          x-ms-summary: Period amount
+        period_percent:
+          format: double
+          description: The percent for this period.
+          type: number
+          x-ms-summary: Period percent
+      x-display-name: Budget project detail
+      x-ms-summary: Budget project detail
+    EditBudgetLineArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/EditBudgetLine'
+      example:
+      - account_number: 01-1000-00
+        project_id: '1100'
+        grant_description: None
+        total: 30
+        periods:
+        - amount: 10
+          sequence: 1
+          year_id: '2018'
+        - amount: 10
+          sequence: 2
+          year_id: '2018'
+        - amount: 10
+          sequence: 3
+          year_id: '2018'
+        notes: Some note
+    ApiCollection_BudgetScenarioView:
+      type: object
+      properties:
+        count:
+          format: int32
+          type: integer
+          x-ms-summary: Count
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/BudgetScenarioView'
+          x-ms-summary: Value
+      x-hidden: true
+      x-display-name: Api collection `1
+      x-ms-summary: Api collection `1
+    BudgetDetail:
+      description: Budget Detail
+      type: object
+      properties:
+        scenario_id:
+          description: The scenario id for this budget.
+          type: string
+          x-ms-summary: Scenario id
+        description:
+          description: The description for this budget.
+          type: string
+          x-ms-summary: Description
+        budget_type:
+          description: The budget type for this budget.
+          enum:
+          - FiscalYear
+          - PeriodRange
+          type: string
+          x-ms-summary: Budget type
+        status:
+          description: The status of this budget.
+          enum:
+          - Active
+          - Inactive
+          type: string
+          x-ms-summary: Status
+        start_fiscal_year:
+          description: The start fiscal year for this budget.
+          type: string
+          x-ms-summary: Start fiscal year
+        end_fiscal_year:
+          description: The end fiscal year for this budget.
+          type: string
+          x-ms-summary: End fiscal year
+        start_fiscal_period:
+          format: int32
+          description: The start fiscal period for this budget.
+          type: integer
+          x-ms-summary: Start fiscal period
+        end_fiscal_period:
+          format: int32
+          description: The end fiscal period for this budget.
+          type: integer
+          x-ms-summary: End fiscal period
+        locked:
+          description: The status of the lock for this budget.
+          type: boolean
+          x-ms-summary: Locked
+        total_revenue:
+          format: double
+          description: The total revenue for this budget.
+          type: number
+          x-ms-summary: Total revenue
+        total_expense:
+          format: double
+          description: The total expense for this budget.
+          type: number
+          x-ms-summary: Total expense
+        added_by:
+          description: The name of who added this budget.
+          type: string
+          x-ms-summary: Added by
+        date_added:
+          format: date-time
+          description: The date this budget was added.
+          type: string
+          x-ms-summary: Date added
+        modified_by:
+          description: The name of who modified this budget.
+          type: string
+          x-ms-summary: Modified by
+        date_modified:
+          format: date-time
+          description: The date this budget was modified.
+          type: string
+          x-ms-summary: Date modified
+      x-display-name: Budget detail
+      x-ms-summary: Budget detail
+    ApiCollection_BudgetGrantDetail:
+      type: object
+      properties:
+        count:
+          format: int32
+          type: integer
+          x-ms-summary: Count
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/BudgetGrantDetail'
+          x-ms-summary: Value
+      x-hidden: true
+      x-display-name: Api collection `1
+      x-ms-summary: Api collection `1
+    BudgetLine:
+      description: Budget line
+      required:
+      - account_number
+      - account_description
+      - total
+      - periods
+      type: object
+      properties:
+        account_number:
+          description: The number for an account on this budget.
+          type: string
+          x-ms-summary: Account number
+        account_description:
+          description: The description for an account on this budget.
+          type: string
+          x-ms-summary: Account description
+        budget_line_id:
+          format: int32
+          type: integer
+          x-ms-summary: Budget line id
+        ui_project_id:
+          description: The user defined project id for this budget line.
+          type: string
+          x-ms-summary: Ui project id
+        project_description:
+          description: The description for a project on this budget line.
+          type: string
+          x-ms-summary: Project description
+        grant_description:
+          description: The description of the {Grant} t-code.
+          type: string
+          x-ms-summary: Grant description
+        total:
+          format: double
+          description: The total amount for this budget line.
+          type: number
+          x-ms-summary: Total
+        periods:
+          description: The period distributions for this budget line.
+          type: array
+          items:
+            $ref: '#/components/schemas/BudgetPeriodInfo'
+          x-ms-summary: Periods
+        notes:
+          description: The note for this budget line.
+          type: string
+          x-ms-summary: Notes
+      x-display-name: Budget line
+      x-ms-summary: Budget line
+    BudgetScenarioDetail:
+      type: object
+      properties:
+        category:
+          description: The budget category for this period.
+          enum:
+          - Revenues
+          - Expenses
+          - Gains
+          - Losses
+          - Gifts
+          - Transfers
+          - Adjustments
+          - Other
+          type: string
+          x-ms-summary: Category
+        fiscal_year:
+          description: The fiscal year of this period.
+          type: string
+          x-ms-summary: Fiscal year
+        total_amount:
+          format: double
+          description: The total amount for this period.
+          type: number
+          x-ms-summary: Total amount
+        fiscal_period:
+          format: int32
+          description: The fiscal period.
+          type: integer
+          x-ms-summary: Fiscal period
+        period_amount:
+          format: double
+          description: The amount for this period.
+          type: number
+          x-ms-summary: Period amount
+      x-display-name: Budget scenario detail
+      x-ms-summary: Budget scenario detail
+    BudgetScenarioView:
+      type: object
+      properties:
+        budget_scenario_id:
+          format: int32
+          description: The identifier for this budget scenario.
+          type: integer
+          x-ms-summary: Budget scenario id
+        description:
+          description: The description for this budget scenario.
+          type: string
+          x-ms-summary: Description
+        start_fiscal_year:
+          description: The start fiscal year for this budget scenario.
+          type: string
+          x-ms-summary: Start fiscal year
+        end_fiscal_year:
+          description: The end fiscal year for this budget scenario.
+          type: string
+          x-ms-summary: End fiscal year
+        start_date:
+          format: date-time
+          description: The start date for this budget scenario.
+          type: string
+          x-ms-summary: Start date
+        end_date:
+          format: date-time
+          description: The end date for this budget scenario.
+          type: string
+          x-ms-summary: End date
+        status:
+          description: The status of this budget scenario.
+          enum:
+          - Active
+          - Inactive
+          type: string
+          x-ms-summary: Status
+        budget_type:
+          description: The type for this budget scenario.
+          enum:
+          - FiscalYear
+          - PeriodRange
+          type: string
+          x-ms-summary: Budget type
+        locked:
+          description: The locked status of this budget scenario.
+          enum:
+          - Locked
+          - Unlocked
+          type: string
+          x-ms-summary: Locked
+        scenario_id:
+          description: The scenario id of this budget scenario.
+          type: string
+          x-ms-summary: Scenario id
+      x-hidden: true
+      x-display-name: Budget scenario view
+      x-ms-summary: Budget scenario view
+    ApplyBudgetSearchFilters:
+      type: object
+      properties:
+        id:
+          maximum: 2147483647
+          minimum: 1
+          type:
+          - integer
+          - 'null'
+          description: If provided, results will filter on the identifier of the budget.
+          format: int32
+        name:
+          maxLength: 50
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: If provided, results will filter on the name of the budget.
+        account_number:
+          maxLength: 100
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: If provided, results will filter on the unique identifier for the budget. This may be an internal ID assigned by the client or another ID used internally for reporting.
+        closed:
+          type:
+          - boolean
+          - 'null'
+          description: Specifies if closed budgets should be returned. Value is true or false.
+        tags:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: If provided, results will filter on system tags assigned to the budget.
+        limit:
+          maximum: 500
+          minimum: 50
+          type: integer
+          description: Specifies the maximum number of records to return per page.
+          format: int32
+          default: 50
+        page:
+          maximum: 2147483647
+          minimum: 1
+          type: integer
+          description: Specifies the page number for pagination.
+          format: int32
+          default: 1
+        date_modified:
+          type:
+          - string
+          - 'null'
+          description: If provided, only records modified since the date and time specified will be returned. Time zone is UTC.
+          format: date-time
+        include_inactive:
+          type: boolean
+          description: Specifies if inactive records should be returned. Value is true or false.
+          default: false
+      additionalProperties: false
+      description: Filters to apply to the search. Specify conditions of the budgets to return detailed information.
+    ReturnBudgetFundingSourceInformation:
+      type: object
+      properties:
+        funding_source_id:
+          type: integer
+          description: The identifier of the funding source.
+          format: int32
+        funding_source_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the funding source.
+        funding_source_type:
+          $ref: '#/components/schemas/FundingSourceTypes'
+        number_of_payments:
+          type: integer
+          description: The total number of payments made using the funding source.
+          format: int32
+        total_amount_available:
+          type: number
+          description: The total monetary amount available to be used for payments. This excludes the total spent, total reserved, and total unavailable.
+          format: double
+        total_units_available:
+          type: integer
+          description: The total number of units available for use in payments. In-kind funding sources only.
+          format: int32
+        over_allocation_source:
+          type: boolean
+          description: Indicates that the funding source is used for budget overages. Value is true or false.
+      additionalProperties: false
+      description: Detailed information about the funding sources used by the budget, including payment details.
+    ReturnPaginatedBudgetRecords:
+      type: object
+      properties:
+        records:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ReturnBudgetQueryResults'
+          description: The details returned for the current page.
+        record_count:
+          type:
+          - integer
+          - 'null'
+          description: The total number of records in the search result.
+          format: int32
+      additionalProperties: false
+      description: Returns a paginated view of awards.
+    GetBudgetFundingSources:
+      type: object
+      properties:
+        budget_funding_sources:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ReturnBudgetFundingSourceInformation'
+          description: The funding sources connected to the budget.
+      additionalProperties: false
+      description: Returns information about the funding sources connected to a budget.
+    FundingSourceTypes:
+      enum:
+      - Cash
+      - InKind
+      type: string
+      description: The types of funding sources that may be used to fund awards and payments<p>Available values:</p><ul><li><i>Cash</i></li><li><i>InKind</i></li></ul>
+    ReturnBudgetQueryResults:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The identifier of the budget.
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the budget.
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the budget.
+        funding_source_type:
+          $ref: '#/components/schemas/FundingSourceTypes'
+        number_of_payments:
+          type: integer
+          description: The total number of payments made using the budget.
+          format: int32
+        number_of_funding_sources:
+          type: integer
+          description: The total number of funding sources assigned to the budget.
+          format: int32
+        total_amount:
+          type: number
+          description: The total monetary amount of the budget.
+          format: double
+        total_amount_unavailable:
+          type: number
+          description: The total monetary amount of the budget that cannot be used for payments. Funds can become unavailable if a funding source is closed or if the budget is closed without reallocating the funds.
+          format: double
+        total_amount_available:
+          type: number
+          description: The total monetary amount available to be used for payments. This excludes the total spent, total reserved, and total unavailable.
+          format: double
+        total_overage_amount:
+          type:
+          - number
+          - 'null'
+          description: The total monetary amount of funds available for overages. This is only available if the budget allows overages.
+          format: double
+        total_payment_amount:
+          type: number
+          description: The total monetary amount of the budget spent or allocated towards payments.
+          format: double
+        total_payment_amount_overage:
+          type: number
+          description: The total monetary amount of the budget spent on overages.
+          format: double
+        total_remaining_overage:
+          type: number
+          description: The total monetary amount of overage funds that remain.
+          format: double
+        total_amount_reserved:
+          type:
+          - number
+          - 'null'
+          description: The total monetary amount reserved for applications based on amount requested.
+          format: double
+        total_reserved_applications:
+          type:
+          - integer
+          - 'null'
+          description: The total number of applications with reserved funds from the budget.
+          format: int32
+        has_client_processing_type:
+          type: boolean
+          description: Indicates that the budget contains a client-processed funding source. Value is true or false.
+        has_yc_processing_type:
+          type: boolean
+          description: Indicates that the budget contains a YourCause-processed funding source. Value is true or false.
+        closed:
+          type: boolean
+          description: Indicates if the budget is closed. Value is true or false.
+        account_number:
+          type:
+          - string
+          - 'null'
+          description: A unique identifier for the budget. This may be an internal ID assigned by the client or another ID used internally for reporting.
+        currency:
+          type:
+          - string
+          - 'null'
+          description: The currency of the budget.
+        tags:
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+            format: int32
+          description: System tags assigned to the budget.
+        inactive:
+          type: boolean
+          description: Indicates if the budget is inactive. Value is true or false.
+      additionalProperties: false
+      description: Detailed information about budgets.
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+x-refined-from:
+- blackbaud-general-ledger-api-openapi.yml
+- blackbaud-grantsconnect-api-openapi.yml

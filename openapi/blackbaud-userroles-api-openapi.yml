@@ -1,0 +1,207 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: GrantsConnect Userroles API'
+  description: This API provides access to read and update data within GrantsConnect.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/grants-connect
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/grants-connect
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Userroles
+paths:
+  /v1/userroles/search:
+    post:
+      operationId: SearchUserRoles
+      summary: Search user role by details (PREVIEW)
+      description: 'Retrieves information about user roles.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRolesRequestModel'
+            example:
+              role_name: TestRoleName
+              role_id: 12345
+              user_id: 1234
+              first_name: TestFirst
+              last_name: TestLast
+              email: TestEmail@mail.com
+              limit: 50
+              page: 1
+              date_modified: '2025-01-01T12:00:00Z'
+              include_inactive: false
+        description: Specifies the conditions of the user roles to search.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReturnPaginatedUserRoles'
+              example:
+                records:
+                - role_name: Test Role
+                  role_id: 12345
+                  role_description: This is a test role.
+                  users_in_role:
+                  - user_id: 67890
+                    first_name: Test
+                    last_name: User
+                    email: testEmail@mail.com
+                record_count: 1
+      tags:
+      - Userroles
+components:
+  schemas:
+    ApplyBasicUserDetailsFilters:
+      type: object
+      properties:
+        user_id:
+          type:
+          - integer
+          - 'null'
+          description: The identifier of the user.
+          format: int32
+        first_name:
+          type:
+          - string
+          - 'null'
+          description: The first name of the user.
+        last_name:
+          type:
+          - string
+          - 'null'
+          description: The last name of the user.
+        email:
+          type:
+          - string
+          - 'null'
+          description: The email of the user.
+      additionalProperties: false
+      description: Basic information about a user. This may be an applicant or a Grant Manager user.
+    UserRolesRequestModel:
+      type: object
+      properties:
+        role_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the role.
+        role_id:
+          type:
+          - integer
+          - 'null'
+          description: The identifier of the role.
+          format: int32
+        user_id:
+          type:
+          - integer
+          - 'null'
+          description: The identifier of the user.
+          format: int32
+        first_name:
+          type:
+          - string
+          - 'null'
+          description: The first name of the user.
+        last_name:
+          type:
+          - string
+          - 'null'
+          description: The last name of the user.
+        email:
+          type:
+          - string
+          - 'null'
+          description: The email of the user.
+        limit:
+          maximum: 500
+          minimum: 50
+          type: integer
+          description: Specifies the maximum number of records to return per page.
+          format: int32
+          default: 50
+        page:
+          maximum: 2147483647
+          minimum: 1
+          type: integer
+          description: Specifies the page number for pagination.
+          format: int32
+          default: 1
+        date_modified:
+          type:
+          - string
+          - 'null'
+          description: If provided, only records modified since the date and time specified will be returned. Time zone is UTC.
+          format: date-time
+        include_inactive:
+          type: boolean
+          description: Specifies if inactive records should be returned. Value is true or false.
+          default: false
+      additionalProperties: false
+      description: Filters to apply to the user roles search. Specify conditions of the roles and the users within those roles to return detailed information.
+    UserRoles:
+      type: object
+      properties:
+        role_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the role.
+        role_id:
+          type: integer
+          description: The identifier of the role.
+          format: int32
+        role_description:
+          type:
+          - string
+          - 'null'
+          description: The desription of the role.
+        users_in_role:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ApplyBasicUserDetailsFilters'
+          description: The list of users in this role.
+      additionalProperties: false
+      description: Basic information about the roles and their users in those roles.
+    ReturnPaginatedUserRoles:
+      type: object
+      properties:
+        records:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UserRoles'
+          description: The details returned for the current page.
+        record_count:
+          type:
+          - integer
+          - 'null'
+          description: The total number of records in the search result.
+          format: int32
+      additionalProperties: false
+      description: Returns a paginated view of the user roles.
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

@@ -1,0 +1,107 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Gift Giftreceipts API'
+  description: This API manages gift information and related entities such as gift splits, gift fundraisers, and soft credits.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/58bdd5edd7dcde06046081d6
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/gift/v1
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Giftreceipts
+paths:
+  /giftreceipts/{receipt_id}:
+    patch:
+      operationId: EditGiftReceipt
+      summary: Gift receipt (Edit)
+      description: Edits a gift receipt.
+      parameters:
+      - name: receipt_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The immutable system record ID of the gift receipt to edit. It uses the parent gift's ID as its value.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReceiptEdit'
+            example:
+              amount:
+                value: 120
+              date: '2018-12-31T00:00:00Z'
+              number: 12345
+              status: Receipted
+        description: An object that represents the properties of the gift receipt to edit.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GiftreceiptsReceipt_idPatch200ApplicationJsonResponse'
+              example: {}
+        '400':
+          description: Returned when the specified receipt ID in the URL or the specified request body is not in the appropriate format.
+        '403':
+          description: Returned when the user does not have permission to edit the gift receipt.
+        '404':
+          description: Returned when the specified gift receipt is not found.
+      tags:
+      - Giftreceipts
+components:
+  schemas:
+    Currency:
+      description: For consistency, currency is configured at the organization level. This ensures that all monetary amounts are consistent, regardless of where they are entered or viewed.
+      type: object
+      properties:
+        value:
+          format: double
+          description: The monetary value.
+          type: number
+    ReceiptEdit:
+      description: 'An object that represents the gift receipt to edit.
+
+        To help donors track their giving for tax purposes, your organization should provide gift receipts.'
+      type: object
+      properties:
+        amount:
+          $ref: '#/components/schemas/Currency'
+          description: The amount of the receipt.
+        date:
+          format: date-time
+          description: 'The date on the receipt. Uses <a href="https://tools.ietf.org/html/rfc3339">ISO-8601 format: </a><i>1969-11-21T10:29:43</i>.'
+          type: string
+          x-supports-datetime-offset: false
+        number:
+          format: int32
+          description: The number of the receipt.
+          type: integer
+        status:
+          description: 'The receipt status of the gift. Available values are: <i>RECEIPTED</i>, <i>NEEDSRECEIPT</i>, and <i>DONOTRECEIPT.</i>
+
+            When <code>receipt_status</code> is set to <i>NEEDSRECEIPT</i> or <i>DONOTRECEIPT</i>, <code>receipt_date</code> should be null.'
+          type: string
+      x-hidden: true
+      x-display-name: Edit Receipt
+      x-display-id: EditReceipt
+    GiftreceiptsReceipt_idPatch200ApplicationJsonResponse:
+      type: object
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

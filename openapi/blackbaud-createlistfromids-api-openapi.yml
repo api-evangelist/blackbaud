@@ -1,0 +1,115 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: List Createlistfromids API'
+  description: This API manages lists.
+  version: v1
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/list
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/list
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Createlistfromids
+paths:
+  /createlistfromids:
+    post:
+      operationId: CreateListFromIds
+      summary: Create a list from set of identifiers
+      description: Creates a new list filtered to the specified set of identifiers. Returns a unique identifier for the new list The name parameter must be unique and not in use on an existing list. The ids parameter is limited to 100,000 identifiers. The name parameter is limited to 50 characters
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateListFromIdsRequest'
+            example:
+              name: List of interesting people
+              description: List of people that were identified in another system
+              list_type: Constituent
+              list_permissions: OthersCanView
+              ids:
+              - '1'
+              - '2'
+              - '3'
+              - '5'
+              - '8'
+              - '13'
+        description: Represents a request to create a Constituent List from an idset
+      responses:
+        '200':
+          description: The identifier of the newly created list.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateListFromIdsResponse'
+              example:
+                id: c9335603-56f5-4253-a4f4-34bde8354d75
+        '400':
+          description: Returned when the specified request parameters are not in the appropriate format.
+        '403':
+          description: Returned when the user does not have permission to view lists.
+      tags:
+      - Createlistfromids
+components:
+  schemas:
+    CreateListFromIdsRequest:
+      description: Represents a request to create a list filtered to a set of unique record identifiers
+      required:
+      - name
+      - list_type
+      - list_permissions
+      - ids
+      type: object
+      properties:
+        name:
+          description: The name of the list
+          type: string
+        description:
+          description: The description of the list
+          type: string
+        list_type:
+          description: Determines the type of list to create. Currently supports 'Constituent', 'Gift', 'Action', 'Opportunity'.
+          enum:
+          - Constituent
+          - Gift
+          - Action
+          - Opportunity
+          type: string
+        list_permissions:
+          description: Determines whether other users can access the list. Currently supports 'OnlyOwnerCanAccess', 'OthersCanView', 'OthersCanViewAndEdit'.
+          enum:
+          - OnlyOwnerCanAccess
+          - OthersCanView
+          - OthersCanViewAndEdit
+          type: string
+        ids:
+          description: The unique identifiers for the records contained in the list. Limited to a maximumum 100,000 identifiers.
+          type: array
+          items:
+            type: string
+      x-display-name: CreateListFromIdsRequest
+      x-display-id: Createlistfromidsrequest
+    CreateListFromIdsResponse:
+      description: Represents response when creating a list from a set of unique record identifiers
+      type: object
+      properties:
+        id:
+          description: The identifier for the new list
+          type: string
+      x-display-name: CreateListFromIdsResponse
+      x-display-id: Createlistfromidsresponse
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

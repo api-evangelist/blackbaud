@@ -1,0 +1,417 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: General Ledger Transactiondistributions…'
+  description: This API is used to manage the general ledger, including accounts, projects, and journal entries. This API has a maximum request size limit of 8mb.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/56eb17a0a9db9516c46bff6f
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/generalledger/v1
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Transactiondistributions
+paths:
+  /transactiondistributions:
+    get:
+      operationId: ListTransactionDistributions
+      summary: Transaction distribution (List)
+      description: Returns a list of transactions matching the search criteria
+      parameters:
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: 'Represents the number of records to skip.
+
+          For use with pagination.'
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: "Represents the number of records to return. \nThe default is 100. \nThe maximum allowed value is 5000."
+      - name: account_number
+        in: query
+        required: false
+        schema:
+          type: string
+        description: The account number.
+      - name: ui_project_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: The project user-visible identifier.
+      - name: batch_id
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: The database batch identifier.
+      - name: ui_batch_id
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: The user-visible batch identifier.
+      - name: journal
+        in: query
+        required: false
+        schema:
+          type: string
+        description: The full name of the journal.
+      - name: from_date
+        in: query
+        required: false
+        schema:
+          type: string
+        description: The minimum post date to include records.
+      - name: to_date
+        in: query
+        required: false
+        schema:
+          type: string
+        description: The maximum post date to include records.
+      - name: type_code
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - Debit
+          - Credit
+        description: The journal entry transaction type (debit or credit).
+      - name: transaction_code_1_value
+        in: query
+        required: false
+        schema:
+          type: string
+        description: The transaction code 1 value.
+      - name: transaction_code_2_value
+        in: query
+        required: false
+        schema:
+          type: string
+        description: The transaction code 2 value.
+      - name: transaction_code_3_value
+        in: query
+        required: false
+        schema:
+          type: string
+        description: The transaction code 3 value.
+      - name: transaction_code_4_value
+        in: query
+        required: false
+        schema:
+          type: string
+        description: The transaction code 4 value.
+      - name: transaction_code_5_value
+        in: query
+        required: false
+        schema:
+          type: string
+        description: The transaction code 5 value.
+      - name: last_modified
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Returns modified records based on or after a specified date.
+      - name: encumbrance
+        in: query
+        required: false
+        schema:
+          type: string
+        description: The encumbrance of the transaction distribution.
+      - name: post_status
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - Posted
+          - NotYetPosted
+        description: The post status of the transaction distribution.
+      - name: include_tax_entity
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: Include tax entity information.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the list transaction distributions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiCollection_TransactionDistribution'
+              example:
+                count: 379362
+                value:
+                - transaction_id: 5348
+                  transaction_amount: 333.33
+                  distribution_id: 13861
+                  batch_id: 50
+                  ui_batch_id: 240
+                  distribution_amount: 30
+                  account_number: 01-5450-02
+                  account_class: Unrestricted Net Assets
+                  ui_project_id: '1001'
+                  post_date: '2005-01-10T00:00:00Z'
+                  type_code: Debit
+                  reference: AlphaGraphics-6363636-003
+                  journal: Accounts Payable
+                  encumbrance: Regular
+                  transaction_code_values:
+                  - name: Jurisdiction
+                    value: Youth Services
+                    id: 0
+                  - name: Spendable?
+                    value: Spendable
+                    id: 0
+                  date_added: '2004-11-10T16:44:50.53Z'
+                  added_by: Supervisor
+                  date_modified: '2004-11-11T09:16:10.123Z'
+                  modified_by: Supervisor
+                  post_status: Posted
+                  tax_entity_name: GST
+                - transaction_id: 5348
+                  transaction_amount: 333.33
+                  distribution_id: 13862
+                  batch_id: 50
+                  ui_batch_id: 240
+                  distribution_amount: 30
+                  account_number: 01-5450-02
+                  account_class: Temporarily Restricted Net Assets
+                  ui_project_id: '1002'
+                  post_date: '2005-01-10T00:00:00Z'
+                  type_code: Debit
+                  reference: AlphaGraphics-6363636-003
+                  journal: Accounts Payable
+                  encumbrance: Regular
+                  transaction_code_values:
+                  - name: Jurisdiction
+                    value: Emergency Relief
+                    id: 0
+                  - name: Spendable?
+                    value: Non-Spendable
+                    id: 0
+                  date_added: '2004-11-10T16:44:50.53Z'
+                  added_by: Supervisor
+                  date_modified: '2004-11-11T09:16:10.123Z'
+                  modified_by: Supervisor
+                  post_status: Posted
+        '400':
+          description: Returned when the request is not in the correct format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DomainErrorMessage'
+              example:
+                Error: string
+                Details:
+                - string
+                ErrorPath: string
+        '403':
+          description: Returned when the user does not have permission to view journal entries.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Transactiondistributions
+components:
+  schemas:
+    DomainErrorMessage:
+      type: object
+      properties:
+        Error:
+          type: string
+          x-ms-summary: Error
+        Details:
+          type: array
+          items:
+            type: string
+          x-ms-summary: Details
+        ErrorPath:
+          type: string
+          x-ms-summary: Error path
+      x-display-name: Domain error message
+      x-ms-summary: Domain error message
+    ApiCollection_TransactionDistribution:
+      type: object
+      properties:
+        count:
+          format: int32
+          type: integer
+          x-ms-summary: Count
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/TransactionDistribution'
+          x-ms-summary: Value
+      x-hidden: true
+      x-display-name: Api collection `1
+      x-ms-summary: Api collection `1
+    BasicErrorMessage:
+      type: object
+      properties:
+        Error:
+          type: string
+          x-ms-summary: Error
+      x-display-name: Basic error message
+      x-ms-summary: Basic error message
+    TransactionDistribution:
+      description: Transaction Distribution.
+      required:
+      - transaction_code_values
+      type: object
+      properties:
+        transaction_id:
+          format: int32
+          description: The transaction identifier.
+          type: integer
+          x-ms-summary: Transaction id
+        transaction_amount:
+          format: double
+          description: The transaction amount.
+          type: number
+          x-ms-summary: Transaction amount
+        distribution_id:
+          format: int32
+          description: The distribution identifier.
+          type: integer
+          x-ms-summary: Distribution id
+        batch_id:
+          format: int32
+          description: The database batch identifier
+          type: integer
+          x-ms-summary: Batch id
+        ui_batch_id:
+          format: int32
+          description: The user-visible batch identifier
+          type: integer
+          x-ms-summary: Ui batch id
+        distribution_amount:
+          format: double
+          description: The distribution amount.
+          type: number
+          x-ms-summary: Distribution amount
+        account_number:
+          description: The account number.
+          type: string
+          x-ms-summary: Account number
+        account_class:
+          description: The account class.
+          type: string
+          x-ms-summary: Account class
+        ui_project_id:
+          description: The project user-visible identifier.
+          type: string
+          x-ms-summary: Ui project id
+        post_date:
+          format: date-time
+          description: The transaction post date.
+          type: string
+          x-ms-summary: Post date
+        type_code:
+          description: The transaction type (debit or credit).
+          enum:
+          - Debit
+          - Credit
+          type: string
+          x-ms-summary: Type code
+        reference:
+          description: The transaction reference.
+          type: string
+          x-ms-summary: Reference
+        journal:
+          description: The full name of the journal.
+          type: string
+          x-ms-summary: Journal
+        encumbrance:
+          description: The transaction encumbrance type.
+          type: string
+          x-ms-summary: Encumbrance
+        transaction_code_values:
+          description: The distribution transaction codes.
+          type: array
+          items:
+            $ref: '#/components/schemas/TransactionCodeValue'
+          x-ms-summary: Transaction code values
+        date_added:
+          format: date-time
+          description: The created date of the transaction distribution.
+          type: string
+          x-ms-summary: Date added
+        added_by:
+          description: The creator of the transaction distribution.
+          type: string
+          x-ms-summary: Added by
+        date_modified:
+          format: date-time
+          description: The modified date of the transaction distribution.
+          type: string
+          x-ms-summary: Date modified
+        modified_by:
+          description: The modifier of the transaction distribution.
+          type: string
+          x-ms-summary: Modified by
+        post_status:
+          description: The post status of the transaction distribution.
+          enum:
+          - Posted
+          - NotYetPosted
+          type: string
+          x-ms-summary: Post status
+        tax_entity_name:
+          description: The tax entity name of the transaction distribution.
+          type: string
+          x-ms-summary: Tax entity name
+      x-display-name: Transaction distribution
+      x-ms-summary: Transaction distribution
+    TransactionCodeValue:
+      description: Transaction code value
+      required:
+      - value
+      - id
+      type: object
+      properties:
+        name:
+          description: The transaction code name.
+          type: string
+          x-ms-summary: Name
+        value:
+          description: The transaction code value.
+          type: string
+          x-ms-summary: Value
+        id:
+          format: int32
+          description: The transaction code value id.
+          type: integer
+          x-ms-summary: Id
+        inactive:
+          description: Indicate if record is inactive or not.
+          type: boolean
+          x-ms-summary: Inactive
+      x-display-name: Transaction code value
+      x-ms-summary: Transaction code value
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

@@ -1,0 +1,1891 @@
+openapi: 3.2.0
+info:
+  title: Blackbaud Individuals API
+  version: '1.0'
+  x-refined-note:
+  - x-apievangelist-provenance differs across the merged source definitions and was not carried
+  description: 'Operations tagged Individuals across 2 of this provider''s published API definitions: blackbaud-altru-constituent-api-openapi.yml, blackbaud-crm-constituent-api-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.sky.blackbaud.com/alt-conmg
+- url: https://api.sky.blackbaud.com/crm-conmg
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Individuals
+paths:
+  /individuals:
+    post:
+      operationId: CreateIndividual
+      summary: Create an individual
+      description: This operation is used to add an individual constituent, spouse(optional), and business(optional).
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewIndividual'
+            example:
+              last_name: ''
+              first_name: ''
+              middle_name: ''
+              title: ''
+              suffix: ''
+              nickname: ''
+              maiden_name: ''
+              birth_date: ''
+              gender: Unknown
+              marital_status: ''
+              address_type: ''
+              address_country: ''
+              address_block: ''
+              address_city: ''
+              address_state: ''
+              address_post_code: ''
+              address_do_not_mail: false
+              address_do_not_mail_reason: ''
+              phone_type: ''
+              phone_number: ''
+              email_address_type: ''
+              email_address: ''
+              skip_adding_security_groups: false
+              existing_spouse: false
+              spouse_id: ''
+              spouse_last_name: ''
+              spouse_first_name: ''
+              spouse_middle_name: ''
+              spouse_title: ''
+              spouse_suffix: ''
+              spouse_nick_name: ''
+              spouse_maiden_name: ''
+              spouse_birth_date: ''
+              spouse_gender: Unknown
+              spouse_relationship_type_code: ''
+              spouse_reciprocal_type_code: ''
+              spouse_start_date: ''
+              copy_primary_information: false
+              primary_soft_credit_relationship_exists: false
+              primary_soft_credit_match_factor: 0
+              reciprocal_soft_credit_relationship_exists: false
+              reciprocal_soft_credit_match_factor: 0
+              existing_organization: false
+              organization_id: ''
+              organization_name: ''
+              organization_address_type: ''
+              organization_country: ''
+              organization_address_block: ''
+              organization_city: ''
+              organization_state: ''
+              organization_post_code: ''
+              organization_do_not_mail: false
+              organization_do_not_mail_reason: ''
+              organization_phone_type: ''
+              organization_number: ''
+              organization_relationship_type_code: ''
+              organization_reciprocal_type_code: ''
+              organization_start_date: ''
+              organization_end_date: ''
+              contact: false
+              contact_type: ''
+              primary_contact: false
+              position: ''
+              matching_gift_relationship: false
+              reciprocal_recognition_type: ''
+              primary_recognition_type: ''
+              address_omit_from_validation: false
+              address_dpc: ''
+              address_cart: ''
+              address_lot: ''
+              address_county: ''
+              address_congressional_district: ''
+              address_last_validation_attempt_date: ''
+              address_validation_message: ''
+              address_certification_data: 0
+              organization_omit_from_validation: false
+              organization_dpc: ''
+              organization_cart: ''
+              organization_lot: ''
+              organization_county: ''
+              organization_congressional_district: ''
+              organization_last_validation_attempt_date: ''
+              organization_validation_message: ''
+              organization_certification_data: 0
+              validation_countries:
+              - country_id: ''
+                browsable: false
+              zip_lookup_countries:
+              - country_id: ''
+                country_name: ''
+              spouse_relationship: false
+              house_hold_copy_primary_contact_info: false
+              job_category: ''
+              career_level: ''
+              address_info_source: ''
+              organization_info_source: ''
+              title_2: ''
+              suffix_2: ''
+              spouse_title_2: ''
+              spouse_suffix_2: ''
+              skip_adding_sites: false
+              constituent_type: 0
+              organization_primary_soft_credit_relationship_exists: false
+              organization_primary_soft_credit_match_factor: 0
+              organization_reciprocal_soft_credit_relationship_exists: false
+              organization_reciprocal_soft_credit_match_factor: 0
+              organization_primary_recognition_type: ''
+              organization_reciprocal_recognition_type: ''
+              opt_out_ads: false
+              opt_out_sale: false
+              gpc: false
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully creates the resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to create the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Individuals
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-conmg
+  /individuals/{constituent_id}:
+    patch:
+      operationId: EditIndividual
+      summary: Edit an individual
+      description: This operation is used to edit biographical inoperationation for an individual.
+      parameters:
+      - name: constituent_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The constituent id.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditIndividual'
+            example:
+              last_name: Adamson
+              first_name: Eric
+              middle_name: Arnold
+              maiden_name: ''
+              nickname: ''
+              title: Mr.
+              suffix: ''
+              gender: Male
+              birth_date:
+                year: 1990
+                month: 8
+                day: 16
+              age: 29
+              gives_anonymously: false
+              picture: ''
+              picture_thumbnail: ''
+              picture_changed: false
+              web_address: ''
+              marital_status: ''
+              title_2: ''
+              suffix_2: ''
+              deceased: false
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully edits the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to edit the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Individuals
+    get:
+      operationId: GetIndividual
+      summary: Get an individual
+      description: This operation is used to edit biographical inoperationation for an individual.
+      parameters:
+      - name: constituent_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The constituent id.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the specified resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Individual'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to get the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Individuals
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-conmg
+  /individuals/{constituent_id}/recentrevenueview:
+    get:
+      operationId: ViewIndividualRecentRevenue
+      summary: View an individual's recent revenue'
+      description: Displays recent revenue inoperationation for an individual.
+      parameters:
+      - name: constituent_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The constituent id.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the specified resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IndividualRecentRevenueView'
+      tags:
+      - Individuals
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-conmg
+  /individuals/{constituent_id}/revenuesummaryview:
+    get:
+      operationId: ViewIndividualRevenueSummary
+      summary: View an individual's revenue summary
+      description: Displays revenue summary inoperationation about an individual.
+      parameters:
+      - name: constituent_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The constituent id.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the specified resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IndividualRevenueSummaryView'
+      tags:
+      - Individuals
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-conmg
+components:
+  schemas:
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type: integer
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type: string
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: false
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-display-name: Problem details
+      x-display-id: ProblemDetails
+    EditIndividual:
+      type: object
+      properties:
+        last_name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The last name.
+        first_name:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: The first name.
+        middle_name:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: The middle name.
+        maiden_name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The maiden name.
+        nickname:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: The nickname.
+        title:
+          type: string
+          description: The title. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/titlecode/entries
+        suffix:
+          type: string
+          description: The suffix. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/suffixcode/entries
+        gender:
+          type: string
+          description: The gender. Available values are <i>unknown</i>, <i>male</i>, <i>female</i>, <i>other</i>
+        birth_date:
+          $ref: '#/components/schemas/FuzzyDate'
+        age:
+          type: integer
+          description: The age. Read-only in the SOAP API.
+          format: int32
+        gives_anonymously:
+          type: boolean
+          description: Indicates whether gives anonymously.
+        picture:
+          type: string
+          description: The image.
+        picture_thumbnail:
+          type: string
+          description: The image.
+        picture_changed:
+          type: boolean
+          description: Indicates whether picture changed.
+        web_address:
+          type: string
+          description: The website.
+        marital_status:
+          type: string
+          description: The marital status. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/maritalstatuscode/entries
+        title_2:
+          type: string
+          description: The title 2. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/titlecode/entries
+        suffix_2:
+          type: string
+          description: The suffix 2. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/suffixcode/entries
+        deceased:
+          type: boolean
+          description: Indicates whether is deceased. Read-only in the SOAP API.
+        optoutads:
+          type: boolean
+          description: Indicates whether opt out of targeted ads.
+        optoutsale:
+          type: boolean
+          description: Indicates whether opt out of sale.
+        gpc:
+          type: boolean
+          description: Indicates whether gpc.
+      additionalProperties: false
+      description: EditIndividual
+      example:
+        last_name: Adamson
+        first_name: Eric
+        middle_name: Arnold
+        maiden_name: ''
+        nickname: ''
+        title: Mr.
+        suffix: ''
+        gender: Male
+        birth_date:
+          year: 1990
+          month: 8
+          day: 16
+        age: 29
+        gives_anonymously: false
+        picture: ''
+        picture_thumbnail: ''
+        picture_changed: false
+        web_address: ''
+        marital_status: ''
+        title_2: ''
+        suffix_2: ''
+        deceased: false
+      x-display-name: Individual Biographical Edit Form 3
+      x-display-id: Individual Biographical Edit Form 3
+    NewIndividualValidationCountries:
+      type: object
+      properties:
+        country_id:
+          type: string
+          description: countryid
+        browsable:
+          type: boolean
+          description: browsable
+      description: NewIndividualValidationCountries
+      x-display-name: validation_countries
+      x-display-id: validation_countries
+    ConstituentRevenueConstituentrevenuerecent:
+      type: object
+      properties:
+        id:
+          type: string
+          description: revenue split id
+        date:
+          type: string
+          description: date
+          format: date
+        type:
+          type: string
+          description: type
+        amount:
+          type: number
+          description: amount
+        currency_id:
+          type: string
+          description: currency id
+        given_anonymously:
+          type: boolean
+          description: given anonymously
+      description: ConstituentRevenueConstituentrevenuerecent
+      x-display-name: constituentrevenuerecent
+      x-display-id: constituentrevenuerecent
+    NewIndividualZipLookupCountries:
+      type: object
+      properties:
+        country_id:
+          type: string
+          description: countryid
+        country_name:
+          type: string
+          description: name
+      description: NewIndividualZipLookupCountries
+      x-display-name: zip_lookup_countries
+      x-display-id: zip_lookup_countries
+    Individual:
+      required:
+      - last_name
+      - gender
+      type: object
+      properties:
+        last_name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The last name.
+        first_name:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: The first name.
+        middle_name:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: The middle name.
+        maiden_name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The maiden name.
+        nickname:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: The nickname.
+        title:
+          type: string
+          description: The title. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/titlecode/entries
+        suffix:
+          type: string
+          description: The suffix. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/suffixcode/entries
+        gender:
+          type: string
+          description: The gender. Available values are <i>unknown</i>, <i>male</i>, <i>female</i>, <i>other</i>
+        birth_date:
+          $ref: '#/components/schemas/FuzzyDate'
+        age:
+          type: integer
+          description: The age. Read-only in the SOAP API.
+          format: int32
+        gives_anonymously:
+          type: boolean
+          description: Indicates whether gives anonymously.
+        picture:
+          type: string
+          description: The image.
+        picture_thumbnail:
+          type: string
+          description: The image.
+        picture_changed:
+          type: boolean
+          description: Indicates whether picture changed.
+        web_address:
+          type: string
+          description: The website.
+        marital_status:
+          type: string
+          description: The marital status. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/maritalstatuscode/entries
+        title_2:
+          type: string
+          description: The title 2. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/titlecode/entries
+        suffix_2:
+          type: string
+          description: The suffix 2. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/suffixcode/entries
+        deceased:
+          type: boolean
+          description: Indicates whether is deceased. Read-only in the SOAP API.
+        optoutads:
+          type: boolean
+          description: Indicates whether opt out of targeted ads.
+        optoutsale:
+          type: boolean
+          description: Indicates whether opt out of sale.
+        gpc:
+          type: boolean
+          description: Indicates whether gpc.
+      additionalProperties: false
+      description: GetIndividual
+      x-display-name: Individual Biographical Edit Form 3
+      x-display-id: Individual Biographical Edit Form 3
+    IndividualRevenueSummaryView:
+      type: object
+      properties:
+        household_id:
+          type: string
+          description: The household ID.
+        total_giving:
+          type: number
+          description: The total revenue.
+          format: double
+        total_house_hold_and_member_giving:
+          type: number
+          description: The total household revenue.
+          format: double
+        membership_revenue:
+          type: number
+          description: The membership revenue.
+          format: double
+        event_revenue:
+          type: number
+          description: The event revenue.
+          format: double
+        is_registrant:
+          type: boolean
+          description: Indicates whether is registrant.
+        is_volunteer:
+          type: boolean
+          description: Indicates whether is volunteer.
+        revenue_id:
+          type: string
+          description: The revenue ID.
+        ticket_revenue:
+          type: number
+          description: The ticket revenue.
+          format: double
+        facility_revenue:
+          type: number
+          description: The facility revenue.
+          format: double
+        merchandise_revenue:
+          type: number
+          description: The merchandise revenue.
+          format: double
+        currency_id:
+          type: string
+          description: The currency ID.
+      additionalProperties: false
+      description: ViewIndividualRevenueSummary
+      x-display-name: Individual Revenue Summary View Data Form
+      x-display-id: Individual Revenue Summary View Data Form
+    NewIndividual:
+      required:
+      - last_name
+      - gender
+      type: object
+      properties:
+        last_name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: 'The the constituent''s last name. character limit: 100..'
+        first_name:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: 'The the constituent''s first name. character limit: 50..'
+        middle_name:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: 'The the constituent''s middle name. character limit: 50..'
+        title:
+          type: string
+          description: The the constituent's primary title. for individuals only.. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/titlecode/entries
+        suffix:
+          type: string
+          description: The the constituent's suffix.. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/suffixcode/entries
+        nickname:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: 'The the constituent''s nickname. character limit: 50..'
+        maiden_name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: 'The the constituent''s maiden name. character limit: 100..'
+        birth_date:
+          $ref: '#/components/schemas/FuzzyDate'
+        gender:
+          type: string
+          description: The the constituent's gender.. Available values are <i>unknown</i>, <i>male</i>, <i>female</i>, <i>other</i>
+        marital_status:
+          type: string
+          description: The the constituent's marital status.. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/maritalstatuscode/entries
+        address_type:
+          type: string
+          description: The the address type of the constituent's address.. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/addresstypecode/entries
+        address_country:
+          type: string
+          description: The the country of the constituent's address.. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/c9649672-353d-42e8-8c25-4d34bbabfbba.
+        address_block:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: 'The the constituent''s address. character limit: 150..'
+        address_city:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: 'The the city of the constituent''s address. character limit: 50..'
+        address_state:
+          type: string
+          description: The the state of the constituent's address.. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/7fa91401-596c-4f7c-936d-6e41683121d7?parameters=country_id,{address_countryid}.
+        address_post_code:
+          maxLength: 12
+          minLength: 0
+          type: string
+          description: 'The the postal code of the constituent''s address. character limit: 12..'
+        address_do_not_mail:
+          type: boolean
+          description: Indicates whether indicates whether the constituent should not be contacted at this address..
+        address_do_not_mail_reason:
+          type: string
+          description: The indicates the reason the constituent should not be contacted at this address.. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/donotmailreasoncode/entries
+        phone_type:
+          type: string
+          description: The the phone type of the constituent's phone.. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/phonetypecode/entries
+        phone_number:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The the constituent's phone number..
+        email_address_type:
+          type: string
+          description: The the email address type of the constituent's email.. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/emailaddresstypecode/entries
+        email_address:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The the constituent's email address..
+        skip_adding_security_groups:
+          type: boolean
+          description: Indicates whether skip adding security groups.
+        existing_spouse:
+          type: boolean
+          description: Indicates whether search existing individuals.
+        spouse_id:
+          type: string
+          description: The an individual related to the constituent. this individual will be added to the same household as the constituent..
+        spouse_last_name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: 'The the related individual''s last name. character limit: 100..'
+        spouse_first_name:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: 'The the related individual''s first name. character limit: 50..'
+        spouse_middle_name:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: 'The the related individual''s middle name. character limit: 50..'
+        spouse_title:
+          type: string
+          description: The the related individual's title. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/titlecode/entries
+        spouse_suffix:
+          type: string
+          description: The the related individual's suffix. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/suffixcode/entries
+        spouse_nick_name:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: 'The the related individual''s nickname. character limit: 50..'
+        spouse_maiden_name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: 'The the related individual''s maiden name. character limit: 100..'
+        spouse_birth_date:
+          $ref: '#/components/schemas/FuzzyDate'
+        spouse_gender:
+          type: string
+          description: The the related individual's gender.. Available values are <i>unknown</i>, <i>male</i>, <i>female</i>, <i>other</i>
+        spouse_relationship_type_code:
+          type: string
+          description: The the type of relationship between the constituent and related individual. can be expressed as, "the individual is the constituent's _______".. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/4e869c5a-9b9d-4e84-b6e0-1fc66bafbafc?parameters=gender,{gendercode}&parameters=appliestoconstituenttype,{constituent_type}.
+        spouse_reciprocal_type_code:
+          type: string
+          description: The the type of relationship between the related individual and the constituent. can be expressed as, "the constituent is the individual's _______".. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/c3018803-2ea5-4f62-91cf-412e88d15f9b?parameters=appliestoconstituenttype,{constituent_type}&parameters=constituentid,{spouse_id}&parameters=appliestorelationshiptypeid,{spouse_relationshiptypecodeid}&parameters=gender,{spouse_gendercode}&parameters=relatestoconstituenttype,{0}.
+        spouse_start_date:
+          type: string
+          description: 'The the start date of the relationship.. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        copy_primary_information:
+          type: boolean
+          description: Indicates whether indicates whether to copy the constituent's primary information to the related constituent's record..
+        primary_soft_credit_relationship_exists:
+          type: boolean
+          description: Indicates whether soft credit individual for constituent's payments.
+        primary_soft_credit_match_factor:
+          type: number
+          description: The recognition match percent.
+          format: double
+        reciprocal_soft_credit_relationship_exists:
+          type: boolean
+          description: Indicates whether soft credit constituent for individual's payments.
+        reciprocal_soft_credit_match_factor:
+          type: number
+          description: The recognition match percent.
+          format: double
+        existing_organization:
+          type: boolean
+          description: Indicates whether search existing organizations.
+        organization_id:
+          type: string
+          description: The the related organization's id..
+        organization_name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: 'The the related organization''s name. character limit: 100..'
+        organization_address_type:
+          type: string
+          description: The the address type of the related organization's address.. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/addresstypecode/entries
+        organization_country:
+          type: string
+          description: The the country of the related organization's address.. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/c9649672-353d-42e8-8c25-4d34bbabfbba.
+        organization_address_block:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: 'The the related organization''s address. character limit: 150..'
+        organization_city:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: 'The the city of the related organization''s address. character limit: 50..'
+        organization_state:
+          type: string
+          description: The the state of the related organization's address.. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/7fa91401-596c-4f7c-936d-6e41683121d7?parameters=country_id,{organization_countryid}.
+        organization_post_code:
+          maxLength: 12
+          minLength: 0
+          type: string
+          description: 'The the postal code of the related organization''s address. character limit: 50..'
+        organization_do_not_mail:
+          type: boolean
+          description: Indicates whether indicates whether the organization should not be contacted at this address..
+        organization_do_not_mail_reason:
+          type: string
+          description: The indicates the reason the organization should not be contacted at this address.. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/donotmailreasoncode/entries
+        organization_phone_type:
+          type: string
+          description: The the phone type of the related organization's phone.. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/phonetypecode/entries
+        organization_number:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: 'The the related organization''s phone number. character limit: 100..'
+        organization_relationship_type_code:
+          type: string
+          description: The the type of relationship between the constituent and related organization. can be expressed as, "the organization is the constituent's _______".. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/4e869c5a-9b9d-4e84-b6e0-1fc66bafbafc?parameters=gender,{gendercode}&parameters=appliestoconstituenttype,{constituent_type}.
+        organization_reciprocal_type_code:
+          type: string
+          description: The the type of relationship between the related organization and the constituent. can be expressed as, "the constituent is the organization's _______".. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/c3018803-2ea5-4f62-91cf-412e88d15f9b?parameters=appliestoconstituenttype,{constituent_type}&parameters=constituentid,{organization_id}&parameters=appliestorelationshiptypeid,{organization_relationshiptypecodeid}&parameters=relatestoconstituenttype,{1}.
+        organization_start_date:
+          type: string
+          description: 'The the related organization''s start date.. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        organization_end_date:
+          type: string
+          description: 'The the related organization''s end date.. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        contact:
+          type: boolean
+          description: Indicates whether contact.
+        contact_type:
+          type: string
+          description: The the related organization's contact type.. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/contacttypecode/entries
+        primary_contact:
+          type: boolean
+          description: Indicates whether indicates whether this is the constituent's primary contact..
+        position:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: 'The the constituent''s job title. character limit: 100..'
+        matching_gift_relationship:
+          type: boolean
+          description: Indicates whether indicates whether this organization will match an individual's contributions..
+        reciprocal_recognition_type:
+          type: string
+          description: The recognition credit type. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/revenuerecognitiontypecode/entries
+        primary_recognition_type:
+          type: string
+          description: The recognition credit type. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/revenuerecognitiontypecode/entries
+        address_omit_from_validation:
+          type: boolean
+          description: Indicates whether indicates the constituent's address is omitted from validation..
+        address_dpc:
+          maxLength: 8
+          minLength: 0
+          type: string
+          description: The address dpc.
+        address_cart:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: The address cart.
+        address_lot:
+          maxLength: 5
+          minLength: 0
+          type: string
+          description: The address lot.
+        address_county:
+          type: string
+          description: The address county. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/countycode/entries
+        address_congressional_district:
+          type: string
+          description: The address congressional district. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/congressionaldistrictcode/entries
+        address_last_validation_attempt_date:
+          type: string
+          description: 'The address last validation attempt date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        address_validation_message:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The address validation message.
+        address_certification_data:
+          type: integer
+          description: The address certification data.
+          format: int32
+        organization_omit_from_validation:
+          type: boolean
+          description: Indicates whether indicates the organization is omitted from validation..
+        organization_dpc:
+          maxLength: 8
+          minLength: 0
+          type: string
+          description: The organization dpc.
+        organization_cart:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: The organization cart.
+        organization_lot:
+          maxLength: 5
+          minLength: 0
+          type: string
+          description: The organization lot.
+        organization_county:
+          type: string
+          description: The organization county. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/countycode/entries
+        organization_congressional_district:
+          type: string
+          description: The organization congressional district. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/congressionaldistrictcode/entries
+        organization_last_validation_attempt_date:
+          type: string
+          description: 'The organization last validation attempt date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        organization_validation_message:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The organization validation message.
+        organization_certification_data:
+          type: integer
+          description: The organization certification data.
+          format: int32
+        validation_countries:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewIndividualValidationCountries'
+          description: Validation countries.
+        zip_lookup_countries:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewIndividualZipLookupCountries'
+          description: Zip lookup countries.
+        spouse_relationship:
+          type: boolean
+          description: Indicates whether indicates whether this is a spouse relationship with the constituent..
+        house_hold_copy_primary_contact_info:
+          type: boolean
+          description: Indicates whether indicates whether to copy the individual's primary contact information to the household..
+        job_category:
+          type: string
+          description: The the constituent's job category.. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/jobcategorycode/entries
+        career_level:
+          type: string
+          description: The the constituent's career level.. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/careerlevelcode/entries
+        address_info_source:
+          type: string
+          description: The the infomation source of the constituent's address .. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/infosourcecode/entries
+        organization_info_source:
+          type: string
+          description: The the infomation source of the related organization.. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/infosourcecode/entries
+        title_2:
+          type: string
+          description: The the constituent's second title.. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/titlecode/entries
+        suffix_2:
+          type: string
+          description: The the related individual's second suffix.. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/suffixcode/entries
+        spouse_title_2:
+          type: string
+          description: The the related individual's second title.. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/titlecode/entries
+        spouse_suffix_2:
+          type: string
+          description: The the constituent's second suffix.. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/suffixcode/entries
+        skip_adding_sites:
+          type: boolean
+          description: Indicates whether skip adding sites.
+        constituent_type:
+          type: integer
+          description: The the constituent's type.. Read-only in the SOAP API.
+          format: int32
+        organization_primary_soft_credit_relationship_exists:
+          type: boolean
+          description: Indicates whether indicates whether to apply recognition credits from gifts made by the organization to the individual..
+        organization_primary_soft_credit_match_factor:
+          type: number
+          description: The the match percentage for recognition credits applied to the individual from gifts made by the organization..
+          format: double
+        organization_reciprocal_soft_credit_relationship_exists:
+          type: boolean
+          description: Indicates whether apply recognition credits from gifts by the individual to the organization..
+        organization_reciprocal_soft_credit_match_factor:
+          type: number
+          description: The the match percentage for recognition credits applied to the organization from gifts made by the individual..
+          format: double
+        organization_primary_recognition_type:
+          type: string
+          description: The the recognition type of credits applied to the individual from the organization.. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/revenuerecognitiontypecode/entries
+        organization_reciprocal_recognition_type:
+          type: string
+          description: The the recognition type of credits applied to the organization from the individual.. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/revenuerecognitiontypecode/entries
+        opt_out_ads:
+          type: boolean
+          description: Indicates whether individual opted out of targeted advertising..
+        opt_out_sale:
+          type: boolean
+          description: Indicates whether individual opted out of sale of personal data..
+        gpc:
+          type: boolean
+          description: Indicates whether gpc.
+      additionalProperties: false
+      description: CreateIndividual
+      example:
+        last_name: ''
+        first_name: ''
+        middle_name: ''
+        title: ''
+        suffix: ''
+        nickname: ''
+        maiden_name: ''
+        birth_date: ''
+        gender: Unknown
+        marital_status: ''
+        address_type: ''
+        address_country: ''
+        address_block: ''
+        address_city: ''
+        address_state: ''
+        address_post_code: ''
+        address_do_not_mail: false
+        address_do_not_mail_reason: ''
+        phone_type: ''
+        phone_number: ''
+        email_address_type: ''
+        email_address: ''
+        skip_adding_security_groups: false
+        existing_spouse: false
+        spouse_id: ''
+        spouse_last_name: ''
+        spouse_first_name: ''
+        spouse_middle_name: ''
+        spouse_title: ''
+        spouse_suffix: ''
+        spouse_nick_name: ''
+        spouse_maiden_name: ''
+        spouse_birth_date: ''
+        spouse_gender: Unknown
+        spouse_relationship_type_code: ''
+        spouse_reciprocal_type_code: ''
+        spouse_start_date: ''
+        copy_primary_information: false
+        primary_soft_credit_relationship_exists: false
+        primary_soft_credit_match_factor: 0
+        reciprocal_soft_credit_relationship_exists: false
+        reciprocal_soft_credit_match_factor: 0
+        existing_organization: false
+        organization_id: ''
+        organization_name: ''
+        organization_address_type: ''
+        organization_country: ''
+        organization_address_block: ''
+        organization_city: ''
+        organization_state: ''
+        organization_post_code: ''
+        organization_do_not_mail: false
+        organization_do_not_mail_reason: ''
+        organization_phone_type: ''
+        organization_number: ''
+        organization_relationship_type_code: ''
+        organization_reciprocal_type_code: ''
+        organization_start_date: ''
+        organization_end_date: ''
+        contact: false
+        contact_type: ''
+        primary_contact: false
+        position: ''
+        matching_gift_relationship: false
+        reciprocal_recognition_type: ''
+        primary_recognition_type: ''
+        address_omit_from_validation: false
+        address_dpc: ''
+        address_cart: ''
+        address_lot: ''
+        address_county: ''
+        address_congressional_district: ''
+        address_last_validation_attempt_date: ''
+        address_validation_message: ''
+        address_certification_data: 0
+        organization_omit_from_validation: false
+        organization_dpc: ''
+        organization_cart: ''
+        organization_lot: ''
+        organization_county: ''
+        organization_congressional_district: ''
+        organization_last_validation_attempt_date: ''
+        organization_validation_message: ''
+        organization_certification_data: 0
+        validation_countries:
+        - country_id: ''
+          browsable: false
+        zip_lookup_countries:
+        - country_id: ''
+          country_name: ''
+        spouse_relationship: false
+        house_hold_copy_primary_contact_info: false
+        job_category: ''
+        career_level: ''
+        address_info_source: ''
+        organization_info_source: ''
+        title_2: ''
+        suffix_2: ''
+        spouse_title_2: ''
+        spouse_suffix_2: ''
+        skip_adding_sites: false
+        constituent_type: 0
+        organization_primary_soft_credit_relationship_exists: false
+        organization_primary_soft_credit_match_factor: 0
+        organization_reciprocal_soft_credit_relationship_exists: false
+        organization_reciprocal_soft_credit_match_factor: 0
+        organization_primary_recognition_type: ''
+        organization_reciprocal_recognition_type: ''
+        opt_out_ads: false
+        opt_out_sale: false
+        gpc: false
+      x-display-name: Individual, Spouse, Business Add Form
+      x-display-id: Individual, Spouse, Business Add Form
+    PostResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The newly created ID.
+      additionalProperties: false
+      description: Defines the shape of a post response object.
+    FuzzyDate:
+      type: object
+      properties:
+        year:
+          type: integer
+          description: The year.
+          format: int32
+        month:
+          type: integer
+          description: The month.
+          format: int32
+        day:
+          type: integer
+          description: The day.
+          format: int32
+      description: FuzzyDate
+      example:
+        year: 2024
+        month: 4
+        day: 13
+      x-display-name: Month Day
+      x-display-id: Month Day
+    IndividualRecentRevenueView:
+      type: object
+      properties:
+        constituentrevenuerecent:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConstituentRevenueConstituentrevenuerecent'
+          description: Constituentrevenuerecent.
+      additionalProperties: false
+      description: ViewIndividualRecentRevenue
+      x-display-name: Individual Recent Revenue View Data Form
+      x-display-id: Individual Recent Revenue View Data Form
+    EditIndividual_2:
+      type: object
+      properties:
+        last_name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The last name.
+        first_name:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: The first name.
+        middle_name:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: The middle name.
+        maiden_name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The maiden name.
+        nickname:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: The nickname.
+        title:
+          type: string
+          description: The title. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/titlecode/entries
+        suffix:
+          type: string
+          description: The suffix. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/suffixcode/entries
+        gender:
+          type: string
+          description: The gender. Available values are <i>unknown</i>, <i>male</i>, <i>female</i>, <i>other</i>
+        gender_code:
+          type: string
+          description: The gender. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/gendercode/entries
+        birth_date:
+          $ref: '#/components/schemas/FuzzyDate'
+        age:
+          type: integer
+          description: The age. Read-only in the SOAP API.
+          format: int32
+        gives_anonymously:
+          type: boolean
+          description: Indicates whether gives anonymously.
+        picture:
+          type: string
+          description: The image.
+        picture_thumbnail:
+          type: string
+          description: The image.
+        picture_changed:
+          type: boolean
+          description: Indicates whether picture changed.
+        web_address:
+          type: string
+          description: The website.
+        marital_status:
+          type: string
+          description: The marital status. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/maritalstatuscode/entries
+        title_2:
+          type: string
+          description: The title 2. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/titlecode/entries
+        suffix_2:
+          type: string
+          description: The suffix 2. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/suffixcode/entries
+        deceased:
+          type: boolean
+          description: Indicates whether is deceased. Read-only in the SOAP API.
+      additionalProperties: false
+      description: EditIndividual
+      example:
+        last_name: Adamson
+        first_name: Eric
+        middle_name: Arnold
+        maiden_name: ''
+        nickname: ''
+        title: Mr.
+        suffix: ''
+        gender: Male
+        birth_date:
+          year: 1990
+          month: 8
+          day: 16
+        age: 29
+        gives_anonymously: false
+        picture: ''
+        picture_thumbnail: ''
+        picture_changed: false
+        web_address: ''
+        marital_status: ''
+        title_2: ''
+        suffix_2: ''
+        deceased: false
+      x-display-name: Individual Biographical Edit Form 3
+      x-display-id: Individual Biographical Edit Form 3
+    Individual_2:
+      required:
+      - last_name
+      - gender
+      type: object
+      properties:
+        last_name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The last name.
+        first_name:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: The first name.
+        middle_name:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: The middle name.
+        maiden_name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The maiden name.
+        nickname:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: The nickname.
+        title:
+          type: string
+          description: The title. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/titlecode/entries
+        suffix:
+          type: string
+          description: The suffix. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/suffixcode/entries
+        gender:
+          type: string
+          description: The gender. Available values are <i>unknown</i>, <i>male</i>, <i>female</i>, <i>other</i>
+        gender_code:
+          type: string
+          description: The gender. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/gendercode/entries
+        birth_date:
+          $ref: '#/components/schemas/FuzzyDate'
+        age:
+          type: integer
+          description: The age. Read-only in the SOAP API.
+          format: int32
+        gives_anonymously:
+          type: boolean
+          description: Indicates whether gives anonymously.
+        picture:
+          type: string
+          description: The image.
+        picture_thumbnail:
+          type: string
+          description: The image.
+        picture_changed:
+          type: boolean
+          description: Indicates whether picture changed.
+        web_address:
+          type: string
+          description: The website.
+        marital_status:
+          type: string
+          description: The marital status. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/maritalstatuscode/entries
+        title_2:
+          type: string
+          description: The title 2. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/titlecode/entries
+        suffix_2:
+          type: string
+          description: The suffix 2. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/suffixcode/entries
+        deceased:
+          type: boolean
+          description: Indicates whether is deceased. Read-only in the SOAP API.
+      additionalProperties: false
+      description: GetIndividual
+      x-display-name: Individual Biographical Edit Form 3
+      x-display-id: Individual Biographical Edit Form 3
+    NewIndividual_2:
+      required:
+      - last_name
+      - gender
+      type: object
+      properties:
+        last_name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: 'The the constituent''s last name. character limit: 100..'
+        first_name:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: 'The the constituent''s first name. character limit: 50..'
+        middle_name:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: 'The the constituent''s middle name. character limit: 50..'
+        title:
+          type: string
+          description: The the constituent's primary title. for individuals only.. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/titlecode/entries
+        suffix:
+          type: string
+          description: The the constituent's suffix.. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/suffixcode/entries
+        nickname:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: 'The the constituent''s nickname. character limit: 50..'
+        maiden_name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: 'The the constituent''s maiden name. character limit: 100..'
+        birth_date:
+          $ref: '#/components/schemas/FuzzyDate'
+        gender:
+          type: string
+          description: The the constituent's gender.. Available values are <i>unknown</i>, <i>male</i>, <i>female</i>, <i>other</i>
+        marital_status:
+          type: string
+          description: The the constituent's marital status.. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/maritalstatuscode/entries
+        address_type:
+          type: string
+          description: The the address type of the constituent's address.. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/addresstypecode/entries
+        address_country:
+          type: string
+          description: The the country of the constituent's address.. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/c9649672-353d-42e8-8c25-4d34bbabfbba.
+        address_block:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: 'The the constituent''s address. character limit: 150..'
+        address_city:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: 'The the city of the constituent''s address. character limit: 50..'
+        address_state:
+          type: string
+          description: The the state of the constituent's address.. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/7fa91401-596c-4f7c-936d-6e41683121d7?parameters=country_id,{address_countryid}.
+        address_post_code:
+          maxLength: 12
+          minLength: 0
+          type: string
+          description: 'The the postal code of the constituent''s address. character limit: 12..'
+        address_do_not_mail:
+          type: boolean
+          description: Indicates whether indicates whether the constituent should not be contacted at this address..
+        address_do_not_mail_reason:
+          type: string
+          description: The indicates the reason the constituent should not be contacted at this address.. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/donotmailreasoncode/entries
+        phone_type:
+          type: string
+          description: The the phone type of the constituent's phone.. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/phonetypecode/entries
+        phone_number:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The the constituent's phone number..
+        email_address_type:
+          type: string
+          description: The the email address type of the constituent's email.. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/emailaddresstypecode/entries
+        email_address:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The the constituent's email address..
+        skip_adding_security_groups:
+          type: boolean
+          description: Indicates whether skip adding security groups.
+        existing_spouse:
+          type: boolean
+          description: Indicates whether search existing individuals.
+        spouse_id:
+          type: string
+          description: The an individual related to the constituent. this individual will be added to the same household as the constituent..
+        spouse_last_name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: 'The the related individual''s last name. character limit: 100..'
+        spouse_first_name:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: 'The the related individual''s first name. character limit: 50..'
+        spouse_middle_name:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: 'The the related individual''s middle name. character limit: 50..'
+        spouse_title:
+          type: string
+          description: The the related individual's title. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/titlecode/entries
+        spouse_suffix:
+          type: string
+          description: The the related individual's suffix. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/suffixcode/entries
+        spouse_nick_name:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: 'The the related individual''s nickname. character limit: 50..'
+        spouse_maiden_name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: 'The the related individual''s maiden name. character limit: 100..'
+        spouse_birth_date:
+          $ref: '#/components/schemas/FuzzyDate'
+        spouse_gender:
+          type: string
+          description: The the related individual's gender.. Available values are <i>unknown</i>, <i>male</i>, <i>female</i>, <i>other</i>
+        spouse_relationship_type_code:
+          type: string
+          description: The the type of relationship between the constituent and related individual. can be expressed as, "the individual is the constituent's _______".. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/4e869c5a-9b9d-4e84-b6e0-1fc66bafbafc?parameters=gender,{gendercode}&parameters=appliestoconstituenttype,{constituent_type}&parameters=relatestoconstituenttype,{0}.
+        spouse_reciprocal_type_code:
+          type: string
+          description: The the type of relationship between the related individual and the constituent. can be expressed as, "the constituent is the individual's _______".. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/c3018803-2ea5-4f62-91cf-412e88d15f9b?parameters=appliestoconstituenttype,{constituent_type}&parameters=constituentid,{spouse_id}&parameters=appliestorelationshiptypeid,{spouse_relationshiptypecodeid}&parameters=gender,{spouse_gendercode}&parameters=relatestoconstituenttype,{0}.
+        spouse_start_date:
+          type: string
+          description: 'The the start date of the relationship.. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        copy_primary_information:
+          type: boolean
+          description: Indicates whether indicates whether to copy the constituent's primary information to the related constituent's record..
+        primary_soft_credit_relationship_exists:
+          type: boolean
+          description: Indicates whether soft credit individual for constituent's payments.
+        primary_soft_credit_match_factor:
+          type: number
+          description: The recognition match percent.
+          format: double
+        reciprocal_soft_credit_relationship_exists:
+          type: boolean
+          description: Indicates whether soft credit constituent for individual's payments.
+        reciprocal_soft_credit_match_factor:
+          type: number
+          description: The recognition match percent.
+          format: double
+        existing_organization:
+          type: boolean
+          description: Indicates whether search existing organizations.
+        organization_id:
+          type: string
+          description: The the related organization's id..
+        organization_name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: 'The the related organization''s name. character limit: 100..'
+        organization_address_type:
+          type: string
+          description: The address type. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/addresstypecode/entries
+        organization_country:
+          type: string
+          description: The the country of the related organization's address.. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/c9649672-353d-42e8-8c25-4d34bbabfbba.
+        organization_address_block:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: 'The the related organization''s address. character limit: 150..'
+        organization_city:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: 'The the city of the related organization''s address. character limit: 50..'
+        organization_state:
+          type: string
+          description: The the state of the related organization's address.. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/7fa91401-596c-4f7c-936d-6e41683121d7?parameters=country_id,{organization_countryid}.
+        organization_post_code:
+          maxLength: 12
+          minLength: 0
+          type: string
+          description: 'The the postal code of the related organization''s address. character limit: 50..'
+        organization_do_not_mail:
+          type: boolean
+          description: Indicates whether indicates whether the organization should not be contacted at this address..
+        organization_do_not_mail_reason:
+          type: string
+          description: The indicates the reason the organization should not be contacted at this address.. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/donotmailreasoncode/entries
+        organization_phone_type:
+          type: string
+          description: The the phone type of the related organization's phone.. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/phonetypecode/entries
+        organization_number:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: 'The the related organization''s phone number. character limit: 100..'
+        organization_relationship_type_code:
+          type: string
+          description: The the type of relationship between the constituent and related organization. can be expressed as, "the organization is the constituent's _______".. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/4e869c5a-9b9d-4e84-b6e0-1fc66bafbafc?parameters=gender,{gendercode}&parameters=appliestoconstituenttype,{constituent_type}&parameters=relatestoconstituenttype,{1}.
+        organization_reciprocal_type_code:
+          type: string
+          description: The the type of relationship between the related organization and the constituent. can be expressed as, "the constituent is the organization's _______".. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/c3018803-2ea5-4f62-91cf-412e88d15f9b?parameters=appliestoconstituenttype,{constituent_type}&parameters=constituentid,{organization_id}&parameters=appliestorelationshiptypeid,{organization_relationshiptypecodeid}&parameters=relatestoconstituenttype,{1}.
+        organization_start_date:
+          type: string
+          description: 'The the related organization''s start date.. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        organization_end_date:
+          type: string
+          description: 'The the related organization''s end date.. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        contact:
+          type: boolean
+          description: Indicates whether contact.
+        contact_type:
+          type: string
+          description: The the related organization's contact type.. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/contacttypecode/entries
+        primary_contact:
+          type: boolean
+          description: Indicates whether indicates whether this is the constituent's primary contact..
+        position:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: 'The the constituent''s job title. character limit: 100..'
+        matching_gift_relationship:
+          type: boolean
+          description: Indicates whether indicates whether this organization will match an individual's contributions..
+        reciprocal_recognition_type:
+          type: string
+          description: The recognition credit type. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/revenuerecognitiontypecode/entries
+        primary_recognition_type:
+          type: string
+          description: The recognition credit type. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/revenuerecognitiontypecode/entries
+        address_omit_from_validation:
+          type: boolean
+          description: Indicates whether indicates the constituent's address is omitted from validation..
+        address_dpc:
+          maxLength: 8
+          minLength: 0
+          type: string
+          description: The address dpc.
+        address_cart:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: The address cart.
+        address_lot:
+          maxLength: 5
+          minLength: 0
+          type: string
+          description: The address lot.
+        address_county:
+          type: string
+          description: The address county. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/countycode/entries
+        address_congressional_district:
+          type: string
+          description: The address congressional district. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/congressionaldistrictcode/entries
+        address_last_validation_attempt_date:
+          type: string
+          description: 'The address last validation attempt date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        address_validation_message:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: The address validation message.
+        address_certification_data:
+          type: integer
+          description: The address certification data.
+          format: int32
+        organization_omit_from_validation:
+          type: boolean
+          description: Indicates whether omit from validation.
+        organization_dpc:
+          maxLength: 8
+          minLength: 0
+          type: string
+          description: The organization dpc.
+        organization_cart:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: The organization cart.
+        organization_lot:
+          maxLength: 5
+          minLength: 0
+          type: string
+          description: The organization lot.
+        organization_county:
+          type: string
+          description: The organization county. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/countycode/entries
+        organization_congressional_district:
+          type: string
+          description: The organization congressional district. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/congressionaldistrictcode/entries
+        organization_last_validation_attempt_date:
+          type: string
+          description: 'The organization last validation attempt date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        organization_validation_message:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: The organization validation message.
+        organization_certification_data:
+          type: integer
+          description: The organization certification data.
+          format: int32
+        validation_countries:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewIndividualValidationCountries'
+          description: Validation countries.
+        zip_lookup_countries:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewIndividualZipLookupCountries'
+          description: Zip lookup countries.
+        spouse_relationship:
+          type: boolean
+          description: Indicates whether indicates whether this is a spouse relationship with the constituent..
+        house_hold_copy_primary_contact_info:
+          type: boolean
+          description: Indicates whether indicates whether to copy the individual's primary contact information to the household..
+        job_category:
+          type: string
+          description: The the constituent's job category.. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/jobcategorycode/entries
+        career_level:
+          type: string
+          description: The the constituent's career level.. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/careerlevelcode/entries
+        address_info_source:
+          type: string
+          description: The the infomation source of the constituent's address .. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/infosourcecode/entries
+        organization_info_source:
+          type: string
+          description: The the infomation source of the related organization.. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/infosourcecode/entries
+        title_2:
+          type: string
+          description: The the constituent's second title.. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/titlecode/entries
+        suffix_2:
+          type: string
+          description: The the related individual's second suffix.. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/suffixcode/entries
+        spouse_title_2:
+          type: string
+          description: The the related individual's second title.. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/titlecode/entries
+        spouse_suffix_2:
+          type: string
+          description: The the constituent's second suffix.. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/suffixcode/entries
+        skip_adding_sites:
+          type: boolean
+          description: Indicates whether skip adding sites.
+        constituent_type:
+          type: integer
+          description: The the constituent's type.. Read-only in the SOAP API.
+          format: int32
+        organization_primary_soft_credit_relationship_exists:
+          type: boolean
+          description: Indicates whether indicates whether to apply recognition credits from gifts made by the organization to the individual..
+        organization_primary_soft_credit_match_factor:
+          type: number
+          description: The the match percentage for recognition credits applied to the individual from gifts made by the organization..
+          format: double
+        organization_reciprocal_soft_credit_relationship_exists:
+          type: boolean
+          description: Indicates whether apply recognition credits from gifts by the individual to the organization..
+        organization_reciprocal_soft_credit_match_factor:
+          type: number
+          description: The the match percentage for recognition credits applied to the organization from gifts made by the individual..
+          format: double
+        organization_primary_recognition_type:
+          type: string
+          description: The the recognition type of credits applied to the individual from the organization.. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/revenuerecognitiontypecode/entries
+        organization_reciprocal_recognition_type:
+          type: string
+          description: The the recognition type of credits applied to the organization from the individual.. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/revenuerecognitiontypecode/entries
+        gender_code:
+          type: string
+          description: The gender. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/gendercode/entries
+        spouse_gender_code:
+          type: string
+          description: The gender. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/gendercode/entries
+      additionalProperties: false
+      description: CreateIndividual
+      example:
+        last_name: ''
+        first_name: ''
+        middle_name: ''
+        title: ''
+        suffix: ''
+        nickname: ''
+        maiden_name: ''
+        birth_date: ''
+        gender: Unknown
+        marital_status: ''
+        address_type: ''
+        address_country: ''
+        address_block: ''
+        address_city: ''
+        address_state: ''
+        address_post_code: ''
+        address_do_not_mail: false
+        address_do_not_mail_reason: ''
+        phone_type: ''
+        phone_number: ''
+        email_address_type: ''
+        email_address: ''
+        skip_adding_security_groups: false
+        existing_spouse: false
+        spouse_id: ''
+        spouse_last_name: ''
+        spouse_first_name: ''
+        spouse_middle_name: ''
+        spouse_title: ''
+        spouse_suffix: ''
+        spouse_nick_name: ''
+        spouse_maiden_name: ''
+        spouse_birth_date: ''
+        spouse_gender: Unknown
+        spouse_relationship_type_code: ''
+        spouse_reciprocal_type_code: ''
+        spouse_start_date: ''
+        copy_primary_information: false
+        primary_soft_credit_relationship_exists: false
+        primary_soft_credit_match_factor: 0
+        reciprocal_soft_credit_relationship_exists: false
+        reciprocal_soft_credit_match_factor: 0
+        existing_organization: false
+        organization_id: ''
+        organization_name: ''
+        organization_address_type: ''
+        organization_country: ''
+        organization_address_block: ''
+        organization_city: ''
+        organization_state: ''
+        organization_post_code: ''
+        organization_do_not_mail: false
+        organization_do_not_mail_reason: ''
+        organization_phone_type: ''
+        organization_number: ''
+        organization_relationship_type_code: ''
+        organization_reciprocal_type_code: ''
+        organization_start_date: ''
+        organization_end_date: ''
+        contact: false
+        contact_type: ''
+        primary_contact: false
+        position: ''
+        matching_gift_relationship: false
+        reciprocal_recognition_type: ''
+        primary_recognition_type: ''
+        address_omit_from_validation: false
+        address_dpc: ''
+        address_cart: ''
+        address_lot: ''
+        address_county: ''
+        address_congressional_district: ''
+        address_last_validation_attempt_date: ''
+        address_validation_message: ''
+        address_certification_data: 0
+        organization_omit_from_validation: false
+        organization_dpc: ''
+        organization_cart: ''
+        organization_lot: ''
+        organization_county: ''
+        organization_congressional_district: ''
+        organization_last_validation_attempt_date: ''
+        organization_validation_message: ''
+        organization_certification_data: 0
+        validation_countries:
+        - country_id: ''
+          browsable: false
+        zip_lookup_countries:
+        - country_id: ''
+          country_name: ''
+        spouse_relationship: false
+        house_hold_copy_primary_contact_info: false
+        job_category: ''
+        career_level: ''
+        address_info_source: ''
+        organization_info_source: ''
+        title_2: ''
+        suffix_2: ''
+        spouse_title_2: ''
+        spouse_suffix_2: ''
+        skip_adding_sites: false
+        constituent_type: 0
+        organization_primary_soft_credit_relationship_exists: false
+        organization_primary_soft_credit_match_factor: 0
+        organization_reciprocal_soft_credit_relationship_exists: false
+        organization_reciprocal_soft_credit_match_factor: 0
+        organization_primary_recognition_type: ''
+        organization_reciprocal_recognition_type: ''
+        gender_code: ''
+        spouse_gender_code: ''
+      x-display-name: Individual, Spouse, Business Add Form
+      x-display-id: Individual, Spouse, Business Add Form
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+x-refined-from:
+- blackbaud-altru-constituent-api-openapi.yml
+- blackbaud-crm-constituent-api-openapi.yml

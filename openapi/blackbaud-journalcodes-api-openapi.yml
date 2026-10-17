@@ -1,0 +1,94 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: General Ledger Journalcodes API'
+  description: This API is used to manage the general ledger, including accounts, projects, and journal entries. This API has a maximum request size limit of 8mb.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/56eb17a0a9db9516c46bff6f
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/generalledger/v1
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Journalcodes
+paths:
+  /journalcodes:
+    get:
+      operationId: ListJournalCodes
+      summary: Journal code (List)
+      description: Returns the list of all available journal codes.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the list of all available journal codes.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JournalCodeArray'
+              example:
+              - journal_code_id: 1771
+                code: ET
+                journal: eTapestry
+              - journal_code_id: 237
+                code: JE
+                journal: Journal Entry
+              - journal_code_id: 238
+                code: AP
+                journal: Accounts Payable
+        '403':
+          description: Returned when the user does not have permission to view journal codes.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Journalcodes
+components:
+  schemas:
+    BasicErrorMessage:
+      type: object
+      properties:
+        Error:
+          type: string
+          x-ms-summary: Error
+      x-display-name: Basic error message
+      x-ms-summary: Basic error message
+    JournalCode:
+      description: Journal Entry Code.
+      type: object
+      properties:
+        journal_code_id:
+          format: int32
+          description: The identifier of the journal.
+          type: integer
+          x-ms-summary: Journal code id
+        code:
+          description: The abbreviated code of the journal.
+          type: string
+          x-ms-summary: Code
+        journal:
+          description: The full journal name of the journal.
+          type: string
+          x-ms-summary: Journal
+      x-display-name: Journal code
+      x-ms-summary: Journal code
+    JournalCodeArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/JournalCode'
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

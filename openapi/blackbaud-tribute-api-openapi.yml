@@ -1,0 +1,350 @@
+openapi: 3.2.0
+info:
+  title: Blackbaud Tribute API
+  version: '1.0'
+  x-refined-note:
+  - x-apievangelist-provenance differs across the merged source definitions and was not carried
+  description: 'Operations tagged Tribute across 2 of this provider''s published API definitions: blackbaud-altru-constituent-api-openapi.yml, blackbaud-crm-constituent-api-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.sky.blackbaud.com/alt-conmg
+- url: https://api.sky.blackbaud.com/crm-conmg
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Tribute
+paths:
+  /tribute:
+    post:
+      operationId: CreateTribute
+      summary: Create a tribute
+      description: This operation is used for adding a new tribute to a revenue record.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewTribute'
+            example:
+              revenue_id: ''
+              tribute_id: ''
+              amount: 0
+              designation_id: ''
+              splits:
+              - id: ''
+                designation_id: ''
+                amount: 0
+                base_currency_id: ''
+              apply_default_designation: false
+              revenue_posted: false
+              revenue_designation_id: ''
+              allow_default: false
+              base_currency_id: ''
+              tribute_anonymous: false
+              friends_asking_friends: false
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully creates the resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to create the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Tribute
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-conmg
+  /tribute/{revenue_tribute_id}:
+    patch:
+      operationId: EditTribute
+      summary: Edit a tribute
+      description: This operation is used for editing a tribute for a given revenue record.
+      parameters:
+      - name: revenue_tribute_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The revenue tribute id.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditTribute'
+            example:
+              tribute_id: ''
+              amount: 0
+              designation_id: ''
+              base_currency_id: ''
+              tribute_anonymous: false
+              friends_asking_friends: false
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully edits the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to edit the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Tribute
+    get:
+      operationId: GetTribute
+      summary: Get a tribute
+      description: This operation is used for editing a tribute for a given revenue record.
+      parameters:
+      - name: revenue_tribute_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The revenue tribute id.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the specified resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tribute'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to get the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Tribute
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-conmg
+components:
+  schemas:
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type: integer
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type: string
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: false
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-display-name: Problem details
+      x-display-id: ProblemDetails
+    Tribute:
+      required:
+      - tribute_id
+      - amount
+      type: object
+      properties:
+        tribute_id:
+          type: string
+          description: The tribute. Read-only in the SOAP API.
+        amount:
+          type: number
+          description: The amount.
+          format: double
+        designation_id:
+          type: string
+          description: The default designation. Read-only in the SOAP API.
+        base_currency_id:
+          type: string
+          description: The base currency. Read-only in the SOAP API.
+        tribute_anonymous:
+          type: boolean
+          description: Indicates whether do not display on website.
+        friends_asking_friends:
+          type: boolean
+          description: Indicates whether friends asking friends. Read-only in the SOAP API.
+      additionalProperties: false
+      description: GetTribute
+      x-display-name: Revenue Tribute Edit Form
+      x-display-id: Revenue Tribute Edit Form
+    NewTributeSplits:
+      type: object
+      properties:
+        id:
+          type: string
+          description: id
+        designation_id:
+          type: string
+          description: designation
+        amount:
+          type: number
+          description: amount
+        base_currency_id:
+          type: string
+          description: currency
+      description: NewTributeSplits
+      x-display-name: splits
+      x-display-id: splits
+    EditTribute:
+      type: object
+      properties:
+        tribute_id:
+          type: string
+          description: The tribute. Read-only in the SOAP API.
+        amount:
+          type: number
+          description: The amount.
+          format: double
+        designation_id:
+          type: string
+          description: The default designation. Read-only in the SOAP API.
+        base_currency_id:
+          type: string
+          description: The base currency. Read-only in the SOAP API.
+        tribute_anonymous:
+          type: boolean
+          description: Indicates whether do not display on website.
+        friends_asking_friends:
+          type: boolean
+          description: Indicates whether friends asking friends. Read-only in the SOAP API.
+      additionalProperties: false
+      description: EditTribute
+      example:
+        tribute_id: ''
+        amount: 0
+        designation_id: ''
+        base_currency_id: ''
+        tribute_anonymous: false
+        friends_asking_friends: false
+      x-display-name: Revenue Tribute Edit Form
+      x-display-id: Revenue Tribute Edit Form
+    NewTribute:
+      required:
+      - revenue_id
+      - tribute_id
+      - amount
+      type: object
+      properties:
+        revenue_id:
+          type: string
+          description: The revenue ID.
+        tribute_id:
+          type: string
+          description: The tribute.
+        amount:
+          type: number
+          description: The amount.
+          format: double
+        designation_id:
+          type: string
+          description: The default designation.
+        splits:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewTributeSplits'
+          description: Splits.
+        apply_default_designation:
+          type: boolean
+          description: Indicates whether apply default designation to revenue.
+        revenue_posted:
+          type: boolean
+          description: Indicates whether isrevenueposted. Read-only in the SOAP API.
+        revenue_designation_id:
+          type: string
+          description: The revenuedesignationid. Read-only in the SOAP API.
+        allow_default:
+          type: boolean
+          description: Indicates whether allowdefault. Read-only in the SOAP API.
+        base_currency_id:
+          type: string
+          description: The currency. Read-only in the SOAP API.
+        tribute_anonymous:
+          type: boolean
+          description: Indicates whether do not display on website.
+        friends_asking_friends:
+          type: boolean
+          description: Indicates whether friends asking friends. Read-only in the SOAP API.
+      additionalProperties: false
+      description: CreateTribute
+      example:
+        revenue_id: ''
+        tribute_id: ''
+        amount: 0
+        designation_id: ''
+        splits:
+        - id: ''
+          designation_id: ''
+          amount: 0
+          base_currency_id: ''
+        apply_default_designation: false
+        revenue_posted: false
+        revenue_designation_id: ''
+        allow_default: false
+        base_currency_id: ''
+        tribute_anonymous: false
+        friends_asking_friends: false
+      x-display-name: Revenue Tribute Add Form
+      x-display-id: Revenue Tribute Add Form
+    PostResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The newly created ID.
+      additionalProperties: false
+      description: Defines the shape of a post response object.
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+x-refined-from:
+- blackbaud-altru-constituent-api-openapi.yml
+- blackbaud-crm-constituent-api-openapi.yml

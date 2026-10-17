@@ -1,0 +1,273 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Altru Sales API'
+  description: Altru Sales SKY API
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/alt-slsmg
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/alt-slsmg
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Sales
+paths:
+  /sales/{sales_order_id}/orders:
+    get:
+      operationId: ListOrderTicketDetails
+      summary: List order ticket details
+      description: List all generated tickets for an order for print history purposes.
+      parameters:
+      - name: sales_order_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The sales order id.
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Limits the number of records to return.
+      - name: session_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: A unique key provided by user for paging results. The same key will be returned in a successful response.
+      - name: infinity_session
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Values for cookies related to the Infinity load balancer session.
+      - name: more_rows_range_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Key for accessing cached results on subsequent calls to this data list.
+      - name: start_row_index
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Number of rows to skip,get result after these rows.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of result entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderTicketListCollection'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to view the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+      tags:
+      - Sales
+  /sales/{sales_order_id}/tickets:
+    get:
+      operationId: ListOrderTicketsWithoutRefunds
+      summary: List sales order tickets without refunds
+      description: Lists all tickets belonging to a sales order, regardless of whether they have been refunded.
+      parameters:
+      - name: sales_order_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The sales order id.
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Limits the number of records to return.
+      - name: session_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: A unique key provided by user for paging results. The same key will be returned in a successful response.
+      - name: infinity_session
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Values for cookies related to the Infinity load balancer session.
+      - name: more_rows_range_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Key for accessing cached results on subsequent calls to this data list.
+      - name: start_row_index
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Number of rows to skip,get result after these rows.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of result entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderTicketListCollection'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to view the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+      tags:
+      - Sales
+components:
+  schemas:
+    HourMinute:
+      type: object
+      properties:
+        hour:
+          type: integer
+          description: The hour.
+          format: int32
+        minute:
+          type: integer
+          description: The minute.
+          format: int32
+      description: HourMinute
+      x-display-name: Hour Minute
+      x-display-id: Hour Minute
+    OrderTicketListCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items available for retrieval into the collection after applying any request parameters.
+          format: int32
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderTicketListSummary'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+        infinity_session:
+          type: string
+          description: Values for cookies related to the Infinity load balancer session.
+          format: string
+        session_key:
+          type: string
+          description: Session key for paging provided by user in request query parameter.
+          format: string
+        total_available_rows:
+          type: integer
+          description: The number of total rows available.
+          format: int32
+        more_rows_range_key:
+          type: string
+          description: Key for accessing cached results on subsequent calls to this data list.
+          format: string
+        data_no_longer_available:
+          type: boolean
+          description: Indicates data is no longer available in the context of this session.
+          format: boolean
+      additionalProperties: false
+      description: A collection of items. Data lists can contain paginated results.
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type: integer
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type: string
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: false
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-display-name: Problem details
+      x-display-id: ProblemDetails
+    OrderTicketListSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID.
+        name:
+          type: string
+          description: The name.
+        event_date:
+          type: string
+          description: 'The event date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        event_time:
+          $ref: '#/components/schemas/HourMinute'
+        print_count:
+          type: integer
+          description: The times printed.
+          format: int32
+        bar_code:
+          type: string
+          description: The barcode ID.
+        status:
+          type: string
+          description: The status.
+        status_code:
+          type: integer
+          description: The status code.
+          format: int32
+        applied_to_membership:
+          type: boolean
+          description: Indicates whether applied to membership.
+        membership_sales_order_id:
+          type: string
+          description: The membership sales order ID.
+        scan_datetime:
+          type: string
+          description: 'The scan date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+      additionalProperties: false
+      description: ListOrderTicketDetails
+      x-display-name: Order Ticket Detail Data List
+      x-display-id: Order Ticket Detail Data List
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

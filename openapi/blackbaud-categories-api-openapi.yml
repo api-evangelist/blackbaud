@@ -1,0 +1,701 @@
+openapi: 3.2.0
+info:
+  title: Blackbaud Categories API
+  x-refined-note:
+  - x-apievangelist-provenance differs across the merged source definitions and was not carried
+  version: '1.0'
+  description: 'Operations tagged Categories across 2 of this provider''s published API definitions: blackbaud-oneroster-api-openapi.yml, blackbaud-query-api-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.sky.blackbaud.com/afe-rostr/ims/oneroster
+- url: https://api.sky.blackbaud.com/query
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Categories
+paths:
+  /categories:
+    get:
+      operationId: getAllCategories
+      summary: Categories all
+      description: Returns a collection of categories.
+      responses:
+        '200':
+          description: OK - It was possible to read the collection.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoriesOutputModel'
+              example:
+                categories:
+                - title: Homework
+                  sourcedId: lic-222-543
+                  status: active
+                  dateLastModified: '2022-09-26T01:30:00Z'
+                - title: Project
+                  sourcedId: lic-222-544
+                  status: active
+                  dateLastModified: '2022-09-26T01:30:00Z'
+      tags:
+      - Categories
+    post:
+      operationId: AddQueryCategory
+      summary: Adds a query category
+      description: Adds a query category.
+      parameters:
+      - name: product
+        in: query
+        required: true
+        schema:
+          type: string
+          enum:
+          - RE
+          - FE
+        description: The Blackbaud product for the request<p>Members:</p><ul><li><i>RE</i> - The Raiser's Edge</li><li><i>FE</i> - The Financial Edge</li></ul>
+      - name: module
+        in: query
+        required: true
+        schema:
+          type: string
+          enum:
+          - None
+          - GeneralLedger
+          - AccountsPayable
+          - AccountsReceivable
+          - FixedAssets
+          - CashReceipts
+        description: The module for the request (RE requests must use 'None', FE requests require one of the other values)<p>Members:</p><ul><li><i>None</i></li><li><i>GeneralLedger</i></li><li><i>AccountsPayable</i></li><li><i>AccountsReceivable</i></li><li><i>FixedAssets</i></li><li><i>CashReceipts</i></li></ul>
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QueryCategoryWrite'
+            example:
+              name: category
+        description: Query category write
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the ID of query category added.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse'
+              example:
+                id: 53CEEC04-3FAA-47D2-B112-D4A997A7F99D
+        '400':
+          description: Returned when the request is invalid.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/QueryCategoryAddErrorCodes'
+              example:
+                type: urn:blackbaud:missing-product
+                title: One or more validation errors occurred.
+                status: 400
+                detail: Product was not supplied.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '403':
+          description: Returned when the user does not have permission to access the resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: urn:blackbaud:forbidden
+                title: The requested action is forbidden.
+                status: 403
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+      tags:
+      - Categories
+    servers:
+    - url: https://api.sky.blackbaud.com/afe-rostr/ims/oneroster
+  /categories/{id}:
+    get:
+      operationId: getCategory
+      summary: Category by id
+      description: Returns a specific category.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: sourcedId for the category
+      responses:
+        '200':
+          description: OK - It was possible to read the resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryOutputModel'
+              example:
+                category:
+                  title: Homework
+                  sourcedId: lic-222-543
+                  status: active
+                  dateLastModified: '2022-09-26T01:30:00Z'
+      tags:
+      - Categories
+    put:
+      operationId: putCategory
+      summary: Category create/update
+      description: Returns the category object that was created or updated.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: sourcedId for the category
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryInputModel'
+            example:
+              category:
+                title: Homework
+                sourcedId: lic-222-sourcedId
+                status: active
+                dateLastModified: '2022-09-26T01:30:00Z'
+        description: input model for a category
+      responses:
+        '201':
+          description: OK - It was possible to read the resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryOutputModel'
+              example:
+                category:
+                  title: Homework
+                  sourcedId: lic-222-543
+                  status: active
+                  dateLastModified: '2022-09-26T01:30:00Z'
+      tags:
+      - Categories
+    delete:
+      operationId: DeleteQueryCategory
+      summary: Deletes a query category
+      description: Deletes a query category.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the query category to be deleted
+      - name: product
+        in: query
+        required: true
+        schema:
+          type: string
+          enum:
+          - RE
+          - FE
+        description: The Blackbaud product for the request<p>Members:</p><ul><li><i>RE</i> - The Raiser's Edge</li><li><i>FE</i> - The Financial Edge</li></ul>
+      - name: module
+        in: query
+        required: true
+        schema:
+          type: string
+          enum:
+          - None
+          - GeneralLedger
+          - AccountsPayable
+          - AccountsReceivable
+          - FixedAssets
+          - CashReceipts
+        description: The module for the request (RE requests must use 'None', FE requests require one of the other values)<p>Members:</p><ul><li><i>None</i></li><li><i>GeneralLedger</i></li><li><i>AccountsPayable</i></li><li><i>AccountsReceivable</i></li><li><i>FixedAssets</i></li><li><i>CashReceipts</i></li></ul>
+      responses:
+        '200':
+          description: Returned when the operation succeeds.
+        '400':
+          description: Returned when the request is invalid.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/QueryCategoryDeleteErrorCodes'
+              example:
+                type: urn:blackbaud:missing-product
+                title: One or more validation errors occurred.
+                status: 400
+                detail: Product was not supplied.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '403':
+          description: Returned when the user does not have permission to access the resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: urn:blackbaud:forbidden
+                title: The requested action is forbidden.
+                status: 403
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+      tags:
+      - Categories
+    patch:
+      operationId: EditQueryCategory
+      summary: Edit a query category
+      description: Edit a query category.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The ID of the query category to edit
+      - name: product
+        in: query
+        required: true
+        schema:
+          type: string
+          enum:
+          - RE
+          - FE
+        description: The Blackbaud product for the request<p>Members:</p><ul><li><i>RE</i> - The Raiser's Edge</li><li><i>FE</i> - The Financial Edge</li></ul>
+      - name: module
+        in: query
+        required: true
+        schema:
+          type: string
+          enum:
+          - None
+          - GeneralLedger
+          - AccountsPayable
+          - AccountsReceivable
+          - FixedAssets
+          - CashReceipts
+        description: The module for the request (RE requests must use 'None', FE requests require one of the other values)<p>Members:</p><ul><li><i>None</i></li><li><i>GeneralLedger</i></li><li><i>AccountsPayable</i></li><li><i>AccountsReceivable</i></li><li><i>FixedAssets</i></li><li><i>CashReceipts</i></li></ul>
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QueryCategoryEdit'
+            example:
+              sequence: 2
+              name: Name
+        description: Query category edit
+      responses:
+        '200':
+          description: Returned when the operation succeeds.
+        '400':
+          description: Returned when the request is invalid.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/QueryCategoryEditErrorCodes'
+              example:
+                type: urn:blackbaud:missing-product
+                title: One or more validation errors occurred.
+                status: 400
+                detail: Product was not supplied.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '403':
+          description: Returned when the user does not have permission to access the resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: urn:blackbaud:forbidden
+                title: The requested action is forbidden.
+                status: 403
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+      tags:
+      - Categories
+    servers:
+    - url: https://api.sky.blackbaud.com/afe-rostr/ims/oneroster
+components:
+  schemas:
+    StatusInfoModel:
+      type: object
+      properties:
+        imsx_codeMajor:
+          type:
+          - string
+          - 'null'
+        imsx_severity:
+          type:
+          - string
+          - 'null'
+        imsx_messageRefIdentifier:
+          type:
+          - string
+          - 'null'
+        imsx_operationRefIdentifier:
+          type:
+          - string
+          - 'null'
+        imsx_description:
+          type:
+          - string
+          - 'null'
+        imsx_codeMinor:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    CategoryModel:
+      type: object
+      properties:
+        title:
+          type:
+          - string
+          - 'null'
+        sourcedId:
+          type:
+          - string
+          - 'null'
+        status:
+          type:
+          - string
+          - 'null'
+        dateLastModified:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        metadata:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: string
+      additionalProperties: false
+    CategoriesOutputModel:
+      type: object
+      properties:
+        categories:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CategoryModel'
+        statusInfoSet:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/StatusInfoModel'
+      additionalProperties: false
+    CategoryInputModel:
+      type: object
+      properties:
+        category:
+          $ref: '#/components/schemas/CategoryModel'
+      additionalProperties: false
+    CategoryOutputModel:
+      type: object
+      properties:
+        category:
+          $ref: '#/components/schemas/CategoryModel'
+        statusInfoSet:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/StatusInfoModel'
+      additionalProperties: false
+    QueryDefinitionServiceErrorCodes:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".<br/><br/>Available values:<table><tr><th>type</th><th>detail</th></tr><tr><td>urn:blackbaud:model-validation-error</td><td>A model validation rule was violated, such as a missing required field.</td></tr><tr><td>urn:blackbaud:missing-product</td><td>Product was not supplied.</td></tr><tr><td>urn:blackbaud:invalid-product</td><td>Supplied product is invalid.</td></tr><tr><td>urn:blackbaud:invalid-module</td><td>Supplied module is invalid.</td></tr><tr><td>urn:blackbaud:invalid-module-for-product</td><td>Module {0} is not valid for product {1}</td></tr></table>
+        title:
+          type:
+          - string
+          - 'null'
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type:
+          - integer
+          - 'null'
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: {}
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-bb-error-types:
+      - urn:blackbaud:model-validation-error
+      - urn:blackbaud:missing-product
+      - urn:blackbaud:invalid-product
+      - urn:blackbaud:invalid-module
+      - urn:blackbaud:invalid-module-for-product
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".
+        title:
+          type:
+          - string
+          - 'null'
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type:
+          - integer
+          - 'null'
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: {}
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+    QueryCategoryAddErrorCodes:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".<br/><br/>Available values:<table><tr><th>type</th><th>detail</th></tr><tr><td>urn:blackbaud:model-validation-error</td><td>A model validation rule was violated, such as a missing required field.</td></tr><tr><td>urn:blackbaud:missing-product</td><td>Product was not supplied.</td></tr><tr><td>urn:blackbaud:invalid-product</td><td>Supplied product is invalid.</td></tr><tr><td>urn:blackbaud:invalid-module</td><td>Supplied module is invalid.</td></tr><tr><td>urn:blackbaud:invalid-module-for-product</td><td>Module {0} is not valid for product {1}</td></tr><tr><td>urn:blackbaud:query-category-name-must-be-unique</td><td>Query category name must be unique.</td></tr></table>
+        title:
+          type:
+          - string
+          - 'null'
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type:
+          - integer
+          - 'null'
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: {}
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-bb-error-types:
+      - urn:blackbaud:model-validation-error
+      - urn:blackbaud:missing-product
+      - urn:blackbaud:invalid-product
+      - urn:blackbaud:invalid-module
+      - urn:blackbaud:invalid-module-for-product
+      - urn:blackbaud:query-category-name-must-be-unique
+    QueryCategory:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The category ID
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The category name
+        sequence:
+          type: integer
+          description: The category sequence
+          format: int32
+      additionalProperties: false
+      description: A query category
+    QueryCategoryEditErrorCodes:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".<br/><br/>Available values:<table><tr><th>type</th><th>detail</th></tr><tr><td>urn:blackbaud:model-validation-error</td><td>A model validation rule was violated, such as a missing required field.</td></tr><tr><td>urn:blackbaud:missing-product</td><td>Product was not supplied.</td></tr><tr><td>urn:blackbaud:invalid-product</td><td>Supplied product is invalid.</td></tr><tr><td>urn:blackbaud:invalid-module</td><td>Supplied module is invalid.</td></tr><tr><td>urn:blackbaud:invalid-module-for-product</td><td>Module {0} is not valid for product {1}</td></tr><tr><td>urn:blackbaud:general-category-cannot-be-renamed</td><td>General category cannot be renamed.</td></tr><tr><td>urn:blackbaud:general-category-cannot-be-moved</td><td>General category cannot be moved.</td></tr><tr><td>urn:blackbaud:category-cannot-be-renamed-to-general</td><td>Category cannot be renamed to general.</td></tr><tr><td>urn:blackbaud:sequence-cannot-be-less-than-or-equal-to-one</td><td>Sequence cannot be less than or equal to one.</td></tr></table>
+        title:
+          type:
+          - string
+          - 'null'
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type:
+          - integer
+          - 'null'
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: {}
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-bb-error-types:
+      - urn:blackbaud:model-validation-error
+      - urn:blackbaud:missing-product
+      - urn:blackbaud:invalid-product
+      - urn:blackbaud:invalid-module
+      - urn:blackbaud:invalid-module-for-product
+      - urn:blackbaud:general-category-cannot-be-renamed
+      - urn:blackbaud:general-category-cannot-be-moved
+      - urn:blackbaud:category-cannot-be-renamed-to-general
+      - urn:blackbaud:sequence-cannot-be-less-than-or-equal-to-one
+    QueryCategoryDeleteErrorCodes:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".<br/><br/>Available values:<table><tr><th>type</th><th>detail</th></tr><tr><td>urn:blackbaud:model-validation-error</td><td>A model validation rule was violated, such as a missing required field.</td></tr><tr><td>urn:blackbaud:missing-product</td><td>Product was not supplied.</td></tr><tr><td>urn:blackbaud:invalid-product</td><td>Supplied product is invalid.</td></tr><tr><td>urn:blackbaud:invalid-module</td><td>Supplied module is invalid.</td></tr><tr><td>urn:blackbaud:invalid-module-for-product</td><td>Module {0} is not valid for product {1}</td></tr><tr><td>urn:blackbaud:general-query-category-cannot-be-deleted</td><td>General query category cannot be deleted.</td></tr></table>
+        title:
+          type:
+          - string
+          - 'null'
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type:
+          - integer
+          - 'null'
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: {}
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-bb-error-types:
+      - urn:blackbaud:model-validation-error
+      - urn:blackbaud:missing-product
+      - urn:blackbaud:invalid-product
+      - urn:blackbaud:invalid-module
+      - urn:blackbaud:invalid-module-for-product
+      - urn:blackbaud:general-query-category-cannot-be-deleted
+    GetQueryCategoriesResponse:
+      type: object
+      properties:
+        categories:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/QueryCategory'
+          description: The query categories
+      additionalProperties: false
+      description: Response model for GetQueryCategories
+    QueryCategoryEdit:
+      type: object
+      properties:
+        sequence:
+          type: integer
+          description: Sequence of the category, affecting order in the list
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: Name of the query category
+      additionalProperties: false
+      description: Model used to edit a query category
+    PostResponse:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: The identifier of the resulting record
+      additionalProperties: false
+      description: Response object for POST requests
+    QueryCategoryWrite:
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          minLength: 1
+          type: string
+          description: Name of the query category
+      additionalProperties: false
+      description: Model for adding a query category
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+x-refined-from:
+- blackbaud-oneroster-api-openapi.yml
+- blackbaud-query-api-openapi.yml

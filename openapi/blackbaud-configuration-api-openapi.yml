@@ -1,0 +1,1275 @@
+openapi: 3.2.0
+info:
+  title: Blackbaud Configuration API
+  version: '1.0'
+  x-refined-note:
+  - x-apievangelist-provenance differs across the merged source definitions and was not carried
+  description: 'Operations tagged Configuration across 3 of this provider''s published API definitions: blackbaud-consent-api-openapi.yml, blackbaud-general-ledger-api-openapi.yml, blackbaud-query-api-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.sky.blackbaud.com/consent
+- url: https://api.sky.blackbaud.com/generalledger/v1
+- url: https://api.sky.blackbaud.com/query
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Configuration
+paths:
+  /configuration/channels:
+    post:
+      operationId: AddChannelCategory
+      summary: Add channel category
+      description: Add consent configuration for a channel and category.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConsentChannelCategoryWrite'
+            example:
+              channel: Mail
+              category: Targeted Ads
+              solicit_code_assignments:
+              - response: OptIn
+                add_remove: Remove
+                solicit_code: Do not mail targeted ads
+              - response: OptOut
+                add_remove: Add
+                solicit_code: Do not mail targeted ads
+        description: The request representing the channel category mapping to be added.
+      responses:
+        '200':
+          description: Returned when the operation succeeds.
+        '400':
+          description: Returned when the channel category already exists or the request includes an invalid property.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/AddChannelCategory400ResponseTypes'
+              example:
+                type: urn:blackbaud:model-validation-error
+                title: One or more validation errors occurred.
+                status: 400
+                detail: The date field is required.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '404':
+          description: Returned when the specified category or one of the provided solicit codes are not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: urn:blackbaud:model-validation-error
+                title: One or more validation errors occurred.
+                status: 400
+                detail: The date field is required.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+      tags:
+      - Configuration
+    get:
+      operationId: GetConsentChannelConfiguration
+      summary: Get consent channel configuration
+      description: Gets the collection of consent channel configuration.
+      parameters:
+      - name: channels
+        in: query
+        required: false
+        schema:
+          type: array
+        description: Optional collection of channels with which to filter the results.<br/><br/>Available values:<ul><li>Email</li><li>Mail</li><li>SMS</li><li>Phone</li><li>AutoPhone</li><li>Social</li><li>DataProcessing</li><li>Other</li></ul>
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body includes the collection of consent channel category configurations.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsentChannelConfigurationReadCollection'
+              example:
+                channel_configurations:
+                - channel: Email
+                  categories:
+                  - category: Newsletters
+                    inactive: false
+                    solicit_code_assignments:
+                    - solicit_code: Send newsletters
+                      response: OptIn
+                      add_remove: Add
+                    - solicit_code: Do not send newsletters
+                      response: OptIn
+                      add_remove: Remove
+                    - solicit_code: Send newsletters
+                      response: OptOut
+                      add_remove: Remove
+                    - solicit_code: Do not send newsletters
+                      response: OptOut
+                      add_remove: Add
+                - channel: DataProcessing
+                  categories:
+                  - category: Profiling
+                    inactive: false
+                    solicit_code_assignments:
+                    - solicit_code: Profiling allowed
+                      response: OptIn
+                      add_remove: Add
+                    - solicit_code: Do not profile
+                      response: OptIn
+                      add_remove: Remove
+                    - solicit_code: Do not profile
+                      response: OptOut
+                      add_remove: Add
+                    - solicit_code: Profiling allowed
+                      response: OptOut
+                      add_remove: Remove
+                count: 2
+                offset: 0
+                limit: 500
+      tags:
+      - Configuration
+    servers:
+    - url: https://api.sky.blackbaud.com/consent
+  /configuration/channels/{channel}:
+    patch:
+      operationId: EditConsentChannel
+      summary: Edit consent channel
+      description: Edit a consent channel.
+      parameters:
+      - name: channel
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The channel.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConsentChannelWrite'
+            example:
+              active: false
+        description: The changes to be applied to the consent defaults.
+      responses:
+        '200':
+          description: Returned when the operation succeeds.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsentDefaults'
+              example:
+                consent_statement: I agree to receive email.
+                privacy_policy: Privacy Policy v1.2.3
+        '400':
+          description: Returned when attempting to update an invalid or mandatory channel (Email, Mail, Phone).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/EditConsentChannel400ResponseTypes'
+              example:
+                type: urn:blackbaud:model-validation-error
+                title: One or more validation errors occurred.
+                status: 400
+                detail: The date field is required.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+      tags:
+      - Configuration
+    servers:
+    - url: https://api.sky.blackbaud.com/consent
+  /configuration/channels/{channel}/categories/{category}:
+    delete:
+      operationId: DeleteChannelCategoryConfiguration
+      summary: Delete channel category configuration
+      description: Delete a channel category configuration.
+      parameters:
+      - name: channel
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The channel.
+      - name: category
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The category.
+      responses:
+        '200':
+          description: Returned when the operation succeeds.
+        '404':
+          description: Returned when the specified category or channel category configuration is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: urn:blackbaud:model-validation-error
+                title: One or more validation errors occurred.
+                status: 400
+                detail: The date field is required.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '403':
+          description: Returned when the user does not have permission to delete the channel category configuration.
+      tags:
+      - Configuration
+    servers:
+    - url: https://api.sky.blackbaud.com/consent
+  /configuration/channels/{channel}/solicitcodeassignments:
+    patch:
+      operationId: EditChannelSolicitCodeAssignments
+      summary: Edit channel solicit code assignments
+      description: Edit channel solicit code assignments for the given channel and optional category.
+      parameters:
+      - name: channel
+        in: path
+        required: true
+        schema:
+          type: string
+          enum:
+          - Email
+          - Mail
+          - SMS
+          - Phone
+          - AutoPhone
+          - Social
+          - DataProcessing
+          - Other
+        description: The channel.<p>Members:</p><ul><li><i>Email</i> - Email</li><li><i>Mail</i> - Mail</li><li><i>SMS</i> - SMS</li><li><i>Phone</i> - Phone</li><li><i>AutoPhone</i> - AutoPhone</li><li><i>Social</i> - Social media</li><li><i>DataProcessing</i> - Data processing</li><li><i>Other</i> - Other</li></ul>
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditSolicitCodeAssignmentsRequest'
+            example:
+              category: Targeted Ads
+              solicit_code_assignments:
+              - response: OptIn
+                add_remove: Remove
+                solicit_code: Do not mail targeted ads
+              - response: OptOut
+                add_remove: Add
+                solicit_code: Do not mail targeted ads
+        description: The update solicit code assignments request.
+      responses:
+        '200':
+          description: Returned when the operation succeeds.
+        '400':
+          description: Returned when the channel category already exists or the request includes an invalid property.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/UpdateSolicitCodeAssignments400ResponseTypes'
+              example:
+                type: urn:blackbaud:model-validation-error
+                title: One or more validation errors occurred.
+                status: 400
+                detail: The date field is required.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '404':
+          description: Returned when the specified channel category configuration is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: urn:blackbaud:model-validation-error
+                title: One or more validation errors occurred.
+                status: 400
+                detail: The date field is required.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '403':
+          description: Returned when the user does not have permission to update the solicit code assignments.
+      tags:
+      - Configuration
+    servers:
+    - url: https://api.sky.blackbaud.com/consent
+  /configuration/defaults:
+    patch:
+      operationId: EditConsentDefaults
+      summary: Edit consent defaults
+      description: Edit the default consent statement and/or privacy policy.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConsentDefaults'
+            example:
+              consent_statement: I agree to receive email.
+              privacy_policy: Privacy Policy v1.2.3
+        description: The changes to be applied to the consent defaults.
+      responses:
+        '200':
+          description: Returned when the operation succeeds.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsentDefaults'
+              example:
+                consent_statement: I agree to receive email.
+                privacy_policy: Privacy Policy v1.2.3
+      tags:
+      - Configuration
+    get:
+      operationId: GetConsentDefaults
+      summary: Get consent defaults
+      description: Gets the default consent statement and privacy policy.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body includes the default consent statement and privacy policy.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsentDefaults'
+              example:
+                consent_statement: I agree to receive email.
+                privacy_policy: Privacy Policy v1.2.3
+      tags:
+      - Configuration
+    servers:
+    - url: https://api.sky.blackbaud.com/consent
+  /configuration/client_names:
+    get:
+      operationId: ListClientNames
+      summary: Client names (List)
+      description: Returns the client type names.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains a list of client names for types.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiCollection_ClientName'
+              example:
+                count: 20
+                value:
+                - record_type: Fund
+                  client_record_type_name: FUND
+                - record_type: fund
+                  client_record_type_name: fund
+      tags:
+      - Configuration
+    servers:
+    - url: https://api.sky.blackbaud.com/generalledger/v1
+  /configuration/contactsuffixes:
+    get:
+      operationId: ListContactSuffixes
+      summary: Contact suffixes (List)
+      description: Returns a list of contact suffixes for contact information in projects and vendors.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains a list of contact suffixes for contact information in vendors and invoices.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiCollection_ContactSuffixClass'
+              example:
+                count: 4
+                value:
+                - id: 1
+                  suffix: Sr.
+                  inactive: false
+                - id: 2
+                  suffix: III
+                  inactive: false
+                - id: 3
+                  suffix: M.D.
+                  inactive: false
+                - id: 4
+                  suffix: Ph.D.
+                  inactive: false
+      tags:
+      - Configuration
+    servers:
+    - url: https://api.sky.blackbaud.com/generalledger/v1
+  /configuration/contacttitles:
+    get:
+      operationId: ListContactTitles
+      summary: Contact titles (List)
+      description: Returns a list of contact titles for contact information in projects and vendors.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains a list of contact titles for contact information in vendors and invoices.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiCollection_ContactTitleClass'
+              example:
+                count: 4
+                value:
+                - id: 1
+                  title: Mr.
+                  inactive: false
+                - id: 2
+                  title: Mrs.
+                  inactive: false
+                - id: 3
+                  title: Ms.
+                  inactive: false
+                - id: 4
+                  title: Dr.
+                  inactive: false
+      tags:
+      - Configuration
+    servers:
+    - url: https://api.sky.blackbaud.com/generalledger/v1
+  /configuration/contacttypes:
+    get:
+      operationId: ListContactTypes
+      summary: Contact types (List)
+      description: Returns a list of contact types for contact information in projects and vendors.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains a list of contact types for contact information in vendors and invoices.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiCollection_ContactType'
+              example:
+                count: 2
+                value:
+                - id: 362
+                  type: Business
+                  inactive: false
+                - id: 282
+                  type: Cell
+                  inactive: false
+                - id: 358
+                  type: E-mail
+                  inactive: false
+      tags:
+      - Configuration
+    servers:
+    - url: https://api.sky.blackbaud.com/generalledger/v1
+  /configuration/settings:
+    get:
+      operationId: GeneralLedgerSettings
+      summary: General Ledger (settings)
+      description: Returns General ledger configuration including country and currency information.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the general ledger settings.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiCollection_Settings'
+              example:
+                installedCountry: Country Name
+                currencyChar: $
+                currencyPrecision: '2'
+      tags:
+      - Configuration
+    servers:
+    - url: https://api.sky.blackbaud.com/generalledger/v1
+  /configuration/useroptions:
+    patch:
+      operationId: EditUserOptions
+      summary: Edit current user options
+      description: Edit current user options.
+      parameters:
+      - name: product
+        in: query
+        required: true
+        schema:
+          type: string
+          enum:
+          - RE
+          - FE
+        description: The Blackbaud product for the request<p>Members:</p><ul><li><i>RE</i> - The Raiser's Edge</li><li><i>FE</i> - The Financial Edge</li></ul>
+      - name: module
+        in: query
+        required: true
+        schema:
+          type: string
+          enum:
+          - None
+          - GeneralLedger
+          - AccountsPayable
+          - AccountsReceivable
+          - FixedAssets
+          - CashReceipts
+        description: The module for the request (RE requests must use 'None', FE requests require one of the other values)<p>Members:</p><ul><li><i>None</i></li><li><i>GeneralLedger</i></li><li><i>AccountsPayable</i></li><li><i>AccountsReceivable</i></li><li><i>FixedAssets</i></li><li><i>CashReceipts</i></li></ul>
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserOptions'
+            example:
+              display_code_table_long_description: true
+        description: Current user options
+      responses:
+        '200':
+          description: Returned when the operation succeeds.
+        '400':
+          description: Returned when the request is invalid.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/QueryDefinitionServiceErrorCodes'
+              example:
+                type: urn:blackbaud:missing-product
+                title: One or more validation errors occurred.
+                status: 400
+                detail: Product was not supplied.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '403':
+          description: Returned when the user does not have permission to access the resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails_2'
+              example:
+                type: urn:blackbaud:forbidden
+                title: The requested action is forbidden.
+                status: 403
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+      tags:
+      - Configuration
+    get:
+      operationId: GetUserOptions
+      summary: Get current user options
+      description: Get current user options.
+      parameters:
+      - name: product
+        in: query
+        required: true
+        schema:
+          type: string
+          enum:
+          - RE
+          - FE
+        description: The Blackbaud product for the request<p>Members:</p><ul><li><i>RE</i> - The Raiser's Edge</li><li><i>FE</i> - The Financial Edge</li></ul>
+      - name: module
+        in: query
+        required: true
+        schema:
+          type: string
+          enum:
+          - None
+          - GeneralLedger
+          - AccountsPayable
+          - AccountsReceivable
+          - FixedAssets
+          - CashReceipts
+        description: The module for the request (RE requests must use 'None', FE requests require one of the other values)<p>Members:</p><ul><li><i>None</i></li><li><i>GeneralLedger</i></li><li><i>AccountsPayable</i></li><li><i>AccountsReceivable</i></li><li><i>FixedAssets</i></li><li><i>CashReceipts</i></li></ul>
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the current user options.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserOptions'
+              example:
+                display_code_table_long_description: true
+        '400':
+          description: Returned when the request is invalid.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/QueryDefinitionServiceErrorCodes'
+              example:
+                type: urn:blackbaud:missing-product
+                title: One or more validation errors occurred.
+                status: 400
+                detail: Product was not supplied.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '403':
+          description: Returned when the user does not have permission to access the resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails_2'
+              example:
+                type: urn:blackbaud:forbidden
+                title: The requested action is forbidden.
+                status: 403
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+      tags:
+      - Configuration
+    servers:
+    - url: https://api.sky.blackbaud.com/query
+components:
+  schemas:
+    ConsentChannelCategoryRead:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: The consent channel category identifier
+        category_id:
+          type:
+          - string
+          - 'null'
+          description: The category identifier
+        category:
+          type:
+          - string
+          - 'null'
+          description: The category name for the mapped category.
+        inactive:
+          type:
+          - boolean
+          - 'null'
+          description: Flag indicating whether or not the consent channel category is currently inactive
+        solicit_code_assignments:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ConsentSolicitCodeAssignmentRead'
+          description: The list of solicit code assignment.
+      additionalProperties: false
+      description: Represents the consent channel category.
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".
+        title:
+          type:
+          - string
+          - 'null'
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type:
+          - integer
+          - 'null'
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type:
+          - string
+          - 'null'
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type:
+          - string
+          - 'null'
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: {}
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+    ConsentChannelConfigurationRead:
+      type: object
+      properties:
+        channel:
+          type:
+          - string
+          - 'null'
+          description: The channel of consent setting.
+        inactive:
+          type:
+          - boolean
+          - 'null'
+          description: Flag indicating whether or not the consent channel is inactive.
+        categories:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ConsentChannelCategoryRead'
+          description: The list of channel category.
+      additionalProperties: false
+      description: Represents the configured mappings between a consent channel and categories
+    UpdateSolicitCodeAssignments400ResponseTypes:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".<br/><br/>Available values:<table><tr><th>type</th><th>detail</th></tr><tr><td>urn:blackbaud:model-validation-error</td><td>A model validation rule was violated, such as a missing required field.</td></tr><tr><td>urn:blackbaud:inactive-channel</td><td>The channel is inactive.</td></tr><tr><td>urn:blackbaud:invalid-channel</td><td>The channel is invalid.</td></tr><tr><td>urn:blackbaud:invalid-number-of-requests</td><td>A single bulk request must include between 1 and 500 requests.</td></tr><tr><td>urn:blackbaud:invalid-consent-response</td><td>One or more solicit code assignments include an invalid consent response.</td></tr><tr><td>urn:blackbaud:invalid-add-remove</td><td>One or more solicit code assignments include an invalid add/remove.</td></tr><tr><td>urn:blackbaud:inactive-category</td><td>The category is inactive.</td></tr><tr><td>urn:blackbaud:invalid-category</td><td>The consent category is invalid.</td></tr><tr><td>urn:blackbaud:inactive-solicit-code</td><td>One or more solicit code assignments include an inactive solicit code.</td></tr><tr><td>urn:blackbaud:invalid-solicit-code</td><td>One or more solicit code assignments include an invalid solicit code.</td></tr></table>
+        title:
+          type:
+          - string
+          - 'null'
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type:
+          - integer
+          - 'null'
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type:
+          - string
+          - 'null'
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type:
+          - string
+          - 'null'
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: {}
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-bb-error-types:
+      - urn:blackbaud:model-validation-error
+      - urn:blackbaud:inactive-channel
+      - urn:blackbaud:invalid-channel
+      - urn:blackbaud:invalid-number-of-requests
+      - urn:blackbaud:invalid-consent-response
+      - urn:blackbaud:invalid-add-remove
+      - urn:blackbaud:inactive-category
+      - urn:blackbaud:invalid-category
+      - urn:blackbaud:inactive-solicit-code
+      - urn:blackbaud:invalid-solicit-code
+    ConsentChannelWrite:
+      required:
+      - active
+      type: object
+      properties:
+        active:
+          type: boolean
+          description: Flag indicating whether or not the consent channel is active.
+      additionalProperties: false
+      description: Defines a model to represent a consent channel write operation.
+    ConsentSolicitCodeAssignmentRead:
+      type: object
+      properties:
+        solicit_code:
+          type:
+          - string
+          - 'null'
+          description: The solicit code name for the solicit code assignment.
+        response:
+          enum:
+          - OptIn
+          - OptOut
+          type: string
+          description: The response of solicit opt in or opt out.<p>Members:</p><ul><li><i>OptIn</i></li><li><i>OptOut</i></li></ul>
+        add_remove:
+          enum:
+          - Add
+          - Remove
+          type: string
+          description: The add remove solicit response.<p>Members:</p><ul><li><i>Add</i></li><li><i>Remove</i></li></ul>
+      additionalProperties: false
+      description: Represents the consent solicit code assignment.
+    EditConsentChannel400ResponseTypes:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".<br/><br/>Available values:<table><tr><th>type</th><th>detail</th></tr><tr><td>urn:blackbaud:model-validation-error</td><td>A model validation rule was violated, such as a missing required field.</td></tr><tr><td>urn:blackbaud:invalid-channel</td><td>The channel is invalid.</td></tr><tr><td>urn:blackbaud:mandatory-consent-channel</td><td>The given channel may not be edited.</td></tr></table>
+        title:
+          type:
+          - string
+          - 'null'
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type:
+          - integer
+          - 'null'
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type:
+          - string
+          - 'null'
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type:
+          - string
+          - 'null'
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: {}
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-bb-error-types:
+      - urn:blackbaud:model-validation-error
+      - urn:blackbaud:invalid-channel
+      - urn:blackbaud:mandatory-consent-channel
+    ConsentDefaults:
+      type: object
+      properties:
+        consent_statement:
+          type:
+          - string
+          - 'null'
+          description: Consent statement for consent configuration.
+        privacy_policy:
+          type:
+          - string
+          - 'null'
+          description: Privacy policy for consent configuration.
+      additionalProperties: false
+      description: Defines model to represent consent defaults.
+    ConsentChannelConfigurationReadCollection:
+      required:
+      - limit
+      - offset
+      type: object
+      properties:
+        channel_configurations:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ConsentChannelConfigurationRead'
+          description: The list of consent channel configurations.
+        count:
+          type: integer
+          description: The total number of items in the collection.
+          format: int32
+        offset:
+          maximum: 2147483647
+          minimum: 0
+          type: integer
+          description: The offset value used for pagination or positioning within a collection.
+          format: int32
+          default: 0
+        limit:
+          maximum: 10000
+          minimum: 1
+          type: integer
+          description: The limit representing the maximum number of items to retrieve or display.
+          format: int32
+          default: 500
+        continuation_token:
+          type:
+          - string
+          - 'null'
+          description: The continuation token used for pagination to retrieve the next set of results.
+      additionalProperties: false
+      description: The consent channel configurations.
+    AddChannelCategory400ResponseTypes:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".<br/><br/>Available values:<table><tr><th>type</th><th>detail</th></tr><tr><td>urn:blackbaud:model-validation-error</td><td>A model validation rule was violated, such as a missing required field.</td></tr><tr><td>urn:blackbaud:invalid-channel</td><td>The channel is invalid.</td></tr><tr><td>urn:blackbaud:invalid-consent-response</td><td>One or more solicit code assignments include an invalid consent response.</td></tr><tr><td>urn:blackbaud:inactive-category</td><td>The category is inactive.</td></tr><tr><td>urn:blackbaud:invalid-category</td><td>The consent category is invalid.</td></tr><tr><td>urn:blackbaud:inactive-solicit-code</td><td>One or more solicit code assignments include an inactive solicit code.</td></tr><tr><td>urn:blackbaud:invalid-solicit-code</td><td>One or more solicit code assignments include an invalid solicit code.</td></tr><tr><td>urn:blackbaud:consent-channel-category-already-exists</td><td>The consent channel category already exists.</td></tr><tr><td>urn:blackbaud:invalid-add-remove</td><td>One or more solicit code assignments include an invalid add/remove.</td></tr></table>
+        title:
+          type:
+          - string
+          - 'null'
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type:
+          - integer
+          - 'null'
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type:
+          - string
+          - 'null'
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type:
+          - string
+          - 'null'
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: {}
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-bb-error-types:
+      - urn:blackbaud:model-validation-error
+      - urn:blackbaud:invalid-channel
+      - urn:blackbaud:invalid-consent-response
+      - urn:blackbaud:inactive-category
+      - urn:blackbaud:invalid-category
+      - urn:blackbaud:inactive-solicit-code
+      - urn:blackbaud:invalid-solicit-code
+      - urn:blackbaud:consent-channel-category-already-exists
+      - urn:blackbaud:invalid-add-remove
+    ConsentChannelCategoryWrite:
+      required:
+      - category
+      - channel
+      type: object
+      properties:
+        channel:
+          enum:
+          - Email
+          - Mail
+          - SMS
+          - Phone
+          - AutoPhone
+          - Social
+          - DataProcessing
+          - Other
+          type: string
+          description: The channel<p>Members:</p><ul><li><i>Email</i> - Email</li><li><i>Mail</i> - Mail</li><li><i>SMS</i> - SMS</li><li><i>Phone</i> - Phone</li><li><i>AutoPhone</i> - AutoPhone</li><li><i>Social</i> - Social media</li><li><i>DataProcessing</i> - Data processing</li><li><i>Other</i> - Other</li></ul>
+        category:
+          type: string
+          description: The category name or system identifier
+        solicit_code_assignments:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ConsentSolicitCodeAssignmentWrite'
+          description: Collection of consent solicit code assignments to be configured for the channel category.
+      additionalProperties: false
+      description: Represents a request to configure a consent channel category.
+    EditSolicitCodeAssignmentsRequest:
+      type: object
+      properties:
+        category:
+          type:
+          - string
+          - 'null'
+          description: The optional category identifier or description.
+        solicit_code_assignments:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ConsentSolicitCodeAssignmentWrite'
+          description: The collection of solicit code assignments to be updated for the specified category.
+      additionalProperties: false
+      description: Represents a request to edit solicit code assignments for a specific category.
+    ConsentSolicitCodeAssignmentWrite:
+      required:
+      - add_remove
+      - response
+      - solicit_code
+      type: object
+      properties:
+        response:
+          enum:
+          - OptIn
+          - OptOut
+          - NoResponse
+          type: string
+          description: The consent response that will trigger this solicit code assignment<p>Members:</p><ul><li><i>OptIn</i> - Opt-in</li><li><i>OptOut</i> - Opt-out</li><li><i>NoResponse</i> - No response</li></ul>
+        add_remove:
+          enum:
+          - Add
+          - Remove
+          type: string
+          description: Add/Remove the solicit code when the given consent response is received.<p>Members:</p><ul><li><i>Add</i> - Add.</li><li><i>Remove</i> - Remove.</li></ul>
+        solicit_code:
+          type: string
+          description: The solicit code name
+        sequence:
+          type:
+          - integer
+          - 'null'
+          description: Optional sequence number for the solicit code assignment.
+          format: int32
+      additionalProperties: false
+      description: Represents a request to write a consent solicit code assignment.
+    ApiCollection_ContactSuffixClass:
+      type: object
+      properties:
+        count:
+          format: int32
+          type: integer
+          x-ms-summary: Count
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContactSuffixClass'
+          x-ms-summary: Value
+      x-hidden: true
+      x-display-name: Api collection `1
+      x-ms-summary: Api collection `1
+    ContactSuffixClass:
+      description: Contract for contact title.
+      type: object
+      properties:
+        id:
+          format: int32
+          description: The identifier for this contact suffix.
+          type: integer
+          x-ms-summary: Id
+        suffix:
+          description: The suffix value of the contact suffix.
+          type: string
+          x-ms-summary: Suffix
+        inactive:
+          description: Whether the contact suffix is inactive or not.
+          type: boolean
+          x-ms-summary: Inactive
+      x-hidden: true
+      x-display-name: Contact suffix class
+      x-ms-summary: Contact suffix class
+    ClientName:
+      description: A client's custom name for a record type.
+      type: object
+      properties:
+        record_type:
+          description: The name of the record type.
+          type: string
+          x-ms-summary: Record type
+        client_record_type_name:
+          description: The client's name for this record type.
+          type: string
+          x-ms-summary: Client record type name
+      x-display-name: Client name
+      x-ms-summary: Client name
+    ContactTitleClass:
+      description: Contract for contact title.
+      type: object
+      properties:
+        id:
+          format: int32
+          description: The identifier for this contact title.
+          type: integer
+          x-ms-summary: Id
+        type:
+          description: The title value of the contact title.
+          type: string
+          x-ms-summary: Type
+        inactive:
+          description: Whether the contact title is inactive or not.
+          type: boolean
+          x-ms-summary: Inactive
+      x-hidden: true
+      x-display-name: Contact title class
+      x-ms-summary: Contact title class
+    Settings:
+      description: Contract for genaral ledger settings
+      type: object
+      properties:
+        installedCountry:
+          description: Country name
+          type: string
+          x-ms-summary: Installed country
+        currencyChar:
+          description: Currency symbol
+          type: string
+          x-ms-summary: Currency char
+        currencyPrecision:
+          description: Currency precision
+          type: string
+          x-ms-summary: Currency precision
+      x-display-name: Settings
+      x-ms-summary: Settings
+    ContactType:
+      description: Contract for contact type.
+      type: object
+      properties:
+        id:
+          format: int32
+          description: The identifier for this contact type.
+          type: integer
+          x-ms-summary: Id
+        type:
+          description: The type of the contact type.
+          type: string
+          x-ms-summary: Type
+        inactive:
+          description: Whether the contact type is inactive or not.
+          type: boolean
+          x-ms-summary: Inactive
+      x-hidden: true
+      x-display-name: Contact type
+      x-ms-summary: Contact type
+    ApiCollection_ContactTitleClass:
+      type: object
+      properties:
+        count:
+          format: int32
+          type: integer
+          x-ms-summary: Count
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContactTitleClass'
+          x-ms-summary: Value
+      x-hidden: true
+      x-display-name: Api collection `1
+      x-ms-summary: Api collection `1
+    ApiCollection_ContactType:
+      type: object
+      properties:
+        count:
+          format: int32
+          type: integer
+          x-ms-summary: Count
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContactType'
+          x-ms-summary: Value
+      x-hidden: true
+      x-display-name: Api collection `1
+      x-ms-summary: Api collection `1
+    ApiCollection_ClientName:
+      type: object
+      properties:
+        count:
+          format: int32
+          type: integer
+          x-ms-summary: Count
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClientName'
+          x-ms-summary: Value
+      x-hidden: true
+      x-display-name: Api collection `1
+      x-ms-summary: Api collection `1
+    ApiCollection_Settings:
+      type: object
+      properties:
+        count:
+          format: int32
+          type: integer
+          x-ms-summary: Count
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/Settings'
+          x-ms-summary: Value
+      x-hidden: true
+      x-display-name: Api collection `1
+      x-ms-summary: Api collection `1
+    ProblemDetails_2:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".
+        title:
+          type:
+          - string
+          - 'null'
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type:
+          - integer
+          - 'null'
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: {}
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+    QueryDefinitionServiceErrorCodes:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".<br/><br/>Available values:<table><tr><th>type</th><th>detail</th></tr><tr><td>urn:blackbaud:model-validation-error</td><td>A model validation rule was violated, such as a missing required field.</td></tr><tr><td>urn:blackbaud:missing-product</td><td>Product was not supplied.</td></tr><tr><td>urn:blackbaud:invalid-product</td><td>Supplied product is invalid.</td></tr><tr><td>urn:blackbaud:invalid-module</td><td>Supplied module is invalid.</td></tr><tr><td>urn:blackbaud:invalid-module-for-product</td><td>Module {0} is not valid for product {1}</td></tr></table>
+        title:
+          type:
+          - string
+          - 'null'
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type:
+          - integer
+          - 'null'
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: {}
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-bb-error-types:
+      - urn:blackbaud:model-validation-error
+      - urn:blackbaud:missing-product
+      - urn:blackbaud:invalid-product
+      - urn:blackbaud:invalid-module
+      - urn:blackbaud:invalid-module-for-product
+    UserOptions:
+      type: object
+      properties:
+        display_code_table_long_description:
+          type: boolean
+          description: Display code table entries by long description (instead of short description).
+      additionalProperties: false
+      description: A set of user options for a given environment + user + product
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+x-refined-from:
+- blackbaud-consent-api-openapi.yml
+- blackbaud-general-ledger-api-openapi.yml
+- blackbaud-query-api-openapi.yml

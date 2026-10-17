@@ -1,0 +1,348 @@
+openapi: 3.2.0
+info:
+  title: Blackbaud Batchinstances API
+  version: '1.0'
+  x-refined-note:
+  - x-apievangelist-provenance differs across the merged source definitions and was not carried
+  description: 'Operations tagged Batchinstances across 2 of this provider''s published API definitions: blackbaud-altru-administration-api-openapi.yml, blackbaud-crm-administration-api-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.sky.blackbaud.com/alt-adnmg
+- url: https://api.sky.blackbaud.com/crm-adnmg
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Batchinstances
+paths:
+  /batchinstances/{batch_instance_id}:
+    patch:
+      operationId: EditBatchInstance
+      summary: Edit a batch instance
+      description: Edit operation for editing a batch header. replaced by batch properties edit operation.
+      parameters:
+      - name: batch_instance_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The batch instance ID.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditBatchInstance'
+            example:
+              batch_number: ''
+              description: ''
+              owner: ''
+              projected_number_of_records: 0
+              projected_total_amount: 0
+              batch_template_id: ''
+              display_total_amount: false
+              can_change_batch_numbers: false
+              projected_total_amount_decimal: 0
+              auto_save_on_row_change: false
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully edits the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to edit the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Batchinstances
+    get:
+      operationId: GetBatchInstance
+      summary: Get a batch instance
+      description: Edit operation for editing a batch header. replaced by batch properties edit operation.
+      parameters:
+      - name: batch_instance_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The batch instance ID.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the specified resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchInstance'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to get the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Batchinstances
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-adnmg
+components:
+  schemas:
+    EditBatchInstance:
+      type: object
+      properties:
+        batch_number:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The batch number.
+        description:
+          maxLength: 1000
+          minLength: 0
+          type: string
+          description: The description.
+        owner:
+          type: string
+          description: The owner. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/ae93a4b2-05a4-437f-b379-2b912e459d8c?parameters=batch_template_id,{batch_template_id}.
+        projected_number_of_records:
+          type: integer
+          description: 'The projected #.'
+          format: int32
+        projected_total_amount:
+          type: number
+          description: The projected amount.
+          format: double
+        batch_template_id:
+          type: string
+          description: The batch design. Read-only in the SOAP API.
+        display_total_amount:
+          type: boolean
+          description: Indicates whether display total amount. Read-only in the SOAP API.
+        can_change_batch_numbers:
+          type: boolean
+          description: Indicates whether can change batch numbers. Read-only in the SOAP API.
+        projected_total_amount_decimal:
+          type: number
+          description: The projected amount. Read-only in the SOAP API.
+          format: double
+        auto_save_on_row_change:
+          type: boolean
+          description: Indicates whether auto save.
+      additionalProperties: false
+      description: EditBatchInstance
+      example:
+        batch_number: ''
+        description: ''
+        owner: ''
+        projected_number_of_records: 0
+        projected_total_amount: 0
+        batch_template_id: ''
+        display_total_amount: false
+        can_change_batch_numbers: false
+        projected_total_amount_decimal: 0
+        auto_save_on_row_change: false
+      x-display-name: Batch Edit Form 2
+      x-display-id: Batch Edit Form 2
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type: integer
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type: string
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: false
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-display-name: Problem details
+      x-display-id: ProblemDetails
+    BatchInstance:
+      required:
+      - batch_number
+      type: object
+      properties:
+        batch_number:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The batch number.
+        description:
+          maxLength: 1000
+          minLength: 0
+          type: string
+          description: The description.
+        owner:
+          type: string
+          description: The owner. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/ae93a4b2-05a4-437f-b379-2b912e459d8c?parameters=batch_template_id,{batch_template_id}.
+        projected_number_of_records:
+          type: integer
+          description: 'The projected #.'
+          format: int32
+        projected_total_amount:
+          type: number
+          description: The projected amount.
+          format: double
+        batch_template_id:
+          type: string
+          description: The batch design. Read-only in the SOAP API.
+        display_total_amount:
+          type: boolean
+          description: Indicates whether display total amount. Read-only in the SOAP API.
+        can_change_batch_numbers:
+          type: boolean
+          description: Indicates whether can change batch numbers. Read-only in the SOAP API.
+        projected_total_amount_decimal:
+          type: number
+          description: The projected amount. Read-only in the SOAP API.
+          format: double
+        auto_save_on_row_change:
+          type: boolean
+          description: Indicates whether auto save.
+      additionalProperties: false
+      description: GetBatchInstance
+      x-display-name: Batch Edit Form 2
+      x-display-id: Batch Edit Form 2
+    EditBatchInstance_2:
+      type: object
+      properties:
+        batch_number:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The batch number.
+        description:
+          maxLength: 1000
+          minLength: 0
+          type: string
+          description: The description.
+        owner:
+          type: string
+          description: The owner. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/ae93a4b2-05a4-437f-b379-2b912e459d8c?parameters=batch_template_id,{batch_template_id}.
+        projected_number_of_records:
+          type: integer
+          description: 'The projected #.'
+          format: int32
+        projected_total_amount:
+          type: number
+          description: The projected amount.
+          format: double
+        batch_template_id:
+          type: string
+          description: The batch design. Read-only in the SOAP API.
+        display_total_amount:
+          type: boolean
+          description: Indicates whether display total amount. Read-only in the SOAP API.
+        can_change_batch_numbers:
+          type: boolean
+          description: Indicates whether can change batch numbers. Read-only in the SOAP API.
+        projected_total_amount_decimal:
+          type: number
+          description: The projected amount. Read-only in the SOAP API.
+          format: double
+        auto_save_on_row_change:
+          type: boolean
+          description: Indicates whether auto save.
+      additionalProperties: false
+      description: EditBatchInstance
+      example:
+        batch_number: ''
+        description: ''
+        owner: ''
+        projected_number_of_records: 0
+        projected_total_amount: 0
+        batch_template_id: ''
+        display_total_amount: false
+        can_change_batch_numbers: false
+        projected_total_amount_decimal: 0
+        auto_save_on_row_change: false
+      x-display-name: Batch Edit Form 2
+      x-display-id: Batch Edit Form 2
+    BatchInstance_2:
+      required:
+      - batch_number
+      type: object
+      properties:
+        batch_number:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The batch number.
+        description:
+          maxLength: 1000
+          minLength: 0
+          type: string
+          description: The description.
+        owner:
+          type: string
+          description: The owner. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/ae93a4b2-05a4-437f-b379-2b912e459d8c?parameters=batch_template_id,{batch_template_id}.
+        projected_number_of_records:
+          type: integer
+          description: 'The projected #.'
+          format: int32
+        projected_total_amount:
+          type: number
+          description: The projected amount.
+          format: double
+        batch_template_id:
+          type: string
+          description: The batch design. Read-only in the SOAP API.
+        display_total_amount:
+          type: boolean
+          description: Indicates whether display total amount. Read-only in the SOAP API.
+        can_change_batch_numbers:
+          type: boolean
+          description: Indicates whether can change batch numbers. Read-only in the SOAP API.
+        projected_total_amount_decimal:
+          type: number
+          description: The projected amount. Read-only in the SOAP API.
+          format: double
+        auto_save_on_row_change:
+          type: boolean
+          description: Indicates whether auto save.
+      additionalProperties: false
+      description: GetBatchInstance
+      x-display-name: Batch Edit Form 2
+      x-display-id: Batch Edit Form 2
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+x-refined-from:
+- blackbaud-altru-administration-api-openapi.yml
+- blackbaud-crm-administration-api-openapi.yml

@@ -1,0 +1,97 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Constituent Constituentcodetypes API'
+  description: This API manages constituent information and related entities such as addresses, phones, emails, and notes.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/56b76470069a0509c8f1c5b3
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/constituent/v1
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Constituentcodetypes
+paths:
+  /constituentcodetypes:
+    get:
+      operationId: ListConstituentCodeTypes
+      summary: Constituent code types
+      description: Returns a list of all constituent code types.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a <a href="https://developer.blackbaud.com/skyapi/api/entity-reference/constituent#Collection">collection</a> of string constituent code types.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiCollectionOfString'
+              example:
+                count: 31
+                value:
+                - Acknowledgee
+                - Added in Blackbaud NetCommunity
+                - Alumnus
+                - Board Member
+                - Corporate Member
+                - Corporation\Business
+                - Current Parent
+                - Development Staff
+                - Donor
+                - Employee
+                - Foundation
+                - Friend
+                - Grandparent
+                - Honor/Memorial
+                - Major Donor
+                - Major Donor Prospect
+                - Matching Gift Company
+                - Member
+                - Online Donor
+                - Parent
+                - Parent Corporation
+                - Past Parent
+                - Patient
+                - Prospective Donor
+                - Staff Doctor
+                - Student
+                - Subsidiary Corporation
+                - Supporter
+                - Trustee
+                - Volunteer
+                - Volunteer Site
+      tags:
+      - Constituentcodetypes
+components:
+  schemas:
+    ApiCollectionOfString:
+      description: Fetching data all at once quickly becomes unmanageable. The collection entity helps by returning paginated chunks of large data sets. This entity includes helpful metadata and properties to paginate and iterate through the data.
+      type: object
+      properties:
+        count:
+          format: int32
+          description: The number of items available for retrieval into the collection after applying any request parameters. The <b>limit</b> and <b>offset</b> parameters do not affect the <b>count</b>, but to facilitate paging, they may affect the number of items in the <b>value</b> result set.
+          type: integer
+        next_link:
+          description: For paginated responses, the URI for the next page of results.
+          type: string
+        value:
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+          type: array
+          items:
+            type: string
+      x-hidden: true
+      x-base-type: '#/definitions/ApiCollection'
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

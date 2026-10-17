@@ -1,0 +1,118 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Event Eventattachmenttags API'
+  description: This API manages event information and related entities such as participant.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/event
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/event
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Eventattachmenttags
+paths:
+  /v1/eventattachmenttags:
+    get:
+      operationId: GetEventAttachmentTags
+      summary: Get event attachment tags
+      description: Returns a list of available attachment tags.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the event attachment tags.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AttachmentTagCollection'
+              example:
+                count: 7
+                value:
+                - Certificate
+                - Document
+                - Logo
+                - PDF
+                - Photo
+                - Slideshow
+                - Spreadsheet
+        '403':
+          description: Returned when the user does not have the rights to view event attachment tags.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1EventattachmenttagsGet403ApplicationJsonResponse'
+              example:
+              - message: The user does not have the necessary permissions for this task.
+                error_name: Forbidden
+                error_code: 403
+                raw_message: The user does not have the necessary permissions for this task.
+      tags:
+      - Eventattachmenttags
+components:
+  schemas:
+    AttachmentTagCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The total number of items in the collection before limit/offset.
+          format: int32
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+      additionalProperties: false
+      description: Defines a collection of attachment tags.
+    ServiceError:
+      type: object
+      properties:
+        message:
+          type:
+          - string
+          - 'null'
+          description: The description of the error.
+        error_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the error.
+        error_code:
+          type: integer
+          description: The number associated with the error.
+          format: int32
+        raw_message:
+          type:
+          - string
+          - 'null'
+          description: The description of the error which can include argument placeholders.
+        error_args:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: The argument data for the placeholders.
+      additionalProperties: false
+      description: Explains the reason for an error.
+    V1EventattachmenttagsGet403ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

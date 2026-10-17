@@ -1,0 +1,338 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Treasury Adjustments API'
+  description: This API is used to manage bank accounts and transactions.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/58e3b2880528ab71c796492e
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/treasury/v1
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Adjustments
+paths:
+  /adjustments/{adjustment_id}:
+    get:
+      operationId: GetBankAccountAdjustment
+      summary: Adjustment (Get)
+      description: Retrieves information about a given adjustment.
+      parameters:
+      - name: adjustment_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The identifier for the adjustment to retrieve.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the specified adjustment.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdjustmentDetail'
+              example:
+                adjustment_id: 2208
+                type: Deposit
+                category: Deposit from GL
+                number: '1659'
+                reference: SmartTuition - Late Fee Withheld Inschool
+                amount: 1
+                transaction_status: Outstanding
+                post_status: Posted
+                post_date: '2018-05-18T00:00:00Z'
+                date: '2018-05-18T00:00:00Z'
+                notes: Adjustment created from Batch 1617
+                distributions:
+                - distribution_id: 291173
+                  amount: 1
+                  description: ''
+                  account_number: 01-1000-00
+                  type_code: Debit
+                  custom_fields: []
+                  distribution_splits:
+                  - distribution_split_id: 502316
+                    ui_project_id: '1009'
+                    transaction_code_values:
+                    - name: Jurisdiction
+                      value: ''
+                    - name: Spendable?
+                      value: ''
+                    - name: RE Appeals
+                      value: ''
+                    - name: Grant
+                      value: ''
+                    - name: Activities
+                      value: ''
+                    amount: 1
+                    percent: 100
+                    account_class: Unrestricted Net Assets
+        '403':
+          description: Returned when the user does not have permission to view an adjustment.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+        '404':
+          description: Returned when the specified record could not be found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Adjustments
+components:
+  schemas:
+    AdjustmentDetail:
+      description: AdjustmentDetail class.
+      type: object
+      properties:
+        adjustment_id:
+          format: int32
+          description: The identifier for this adjustment.
+          type: integer
+          x-ms-summary: Adjustment id
+        type:
+          description: The adjustment type for this adjustment.
+          type: string
+          x-ms-summary: Type
+        category:
+          description: The category for this adjustment.
+          type: string
+          x-ms-summary: Category
+        number:
+          description: The number for this adjustment.
+          type: string
+          x-ms-summary: Number
+        reference:
+          description: The reference for this adjustment.
+          type: string
+          x-ms-summary: Reference
+        amount:
+          format: double
+          description: The amount for this adjustment.
+          type: number
+          x-ms-summary: Amount
+        transaction_status:
+          description: The transaction status for this adjustment.
+          enum:
+          - Outstanding
+          - Cleared
+          - Reconciled
+          - Voided
+          type: string
+          x-ms-summary: Transaction status
+        post_status:
+          description: The post status for this adjustment.
+          enum:
+          - DoNotPost
+          - NotYetPosted
+          - Posted
+          type: string
+          x-ms-summary: Post status
+        post_date:
+          format: date-time
+          description: The post date for this adjustment.
+          type: string
+          x-ms-summary: Post date
+        date:
+          format: date-time
+          description: The date for this adjustment.
+          type: string
+          x-ms-summary: Date
+        notes:
+          description: The notes for this adjustment.
+          type: string
+          x-ms-summary: Notes
+        distributions:
+          description: The distributions for this adjustment.
+          type: array
+          items:
+            $ref: '#/components/schemas/Distribution'
+          x-ms-summary: Distributions
+        reconciled_date:
+          format: date-time
+          description: The reconciled date for this adjustment.
+          type: string
+          x-ms-summary: Reconciled date
+        cleared_date:
+          format: date-time
+          description: The cleared date for this adjustment.
+          type: string
+          x-ms-summary: Cleared date
+      x-display-name: Adjustment detail
+      x-ms-summary: Adjustment detail
+    CustomField:
+      description: Custom field definition.
+      type: object
+      properties:
+        field_name:
+          description: The name of the custom field.
+          type: string
+          x-ms-summary: Field name
+        value:
+          description: The value for this custom field.
+          type: string
+          x-ms-summary: Value
+        comments:
+          description: The description for this custom field.
+          type: string
+          x-ms-summary: Comments
+        type:
+          description: The type of this custom field.
+          enum:
+          - Text
+          - Number
+          - DateTime
+          - Currency
+          - Boolean
+          - Table
+          - FuzzyDate
+          type: string
+          x-ms-summary: Type
+        is_required:
+          description: If this custom field is required.
+          type: boolean
+          x-ms-summary: Is required
+        date:
+          format: date-time
+          description: The date on this custom field.
+          type: string
+          x-ms-summary: Date
+      x-display-name: Custom field
+      x-ms-summary: Custom field
+    BasicErrorMessage:
+      type: object
+      properties:
+        Error:
+          type: string
+          x-ms-summary: Error
+      x-display-name: Basic error message
+      x-ms-summary: Basic error message
+    DistributionSplit:
+      description: Journal Entry Distribution.
+      required:
+      - transaction_code_values
+      type: object
+      properties:
+        distribution_split_id:
+          format: int32
+          description: The distribution split identifier.
+          type: integer
+          x-ms-summary: Distribution split id
+        ui_project_id:
+          description: The user-visible identifier of the project.
+          type: string
+          x-ms-summary: Ui project id
+        transaction_code_values:
+          description: The distribution transaction code values. The values should be in the same order as the codes defined in the database.
+          type: array
+          items:
+            $ref: '#/components/schemas/TransactionCodeValue'
+          x-ms-summary: Transaction code values
+        amount:
+          format: double
+          description: The distribution journal entry amount. Only one of amount or percent can be specified.
+          type: number
+          x-ms-summary: Amount
+        percent:
+          format: double
+          description: The distribution journal entry amount percentage. Only one of amount or percent can be specified.
+          type: number
+          x-ms-summary: Percent
+        account_class:
+          description: The account class for this distribution split.
+          type: string
+          x-ms-summary: Account class
+      x-display-name: Distribution split
+      x-ms-summary: Distribution split
+    Distribution:
+      description: Distribution.
+      required:
+      - distribution_splits
+      type: object
+      properties:
+        distribution_id:
+          format: int32
+          description: The distribution identifier.
+          type: integer
+          x-ms-summary: Distribution id
+        amount:
+          format: double
+          description: The distribution amount.
+          type: number
+          x-ms-summary: Amount
+        description:
+          description: The description for this distribution.
+          type: string
+          x-ms-summary: Description
+        account_number:
+          description: The account number for this distribution.
+          type: string
+          x-ms-summary: Account number
+        type_code:
+          description: The journal entry transaction type (debit or credit).
+          enum:
+          - Debit
+          - Credit
+          type: string
+          x-ms-summary: Type code
+        custom_fields:
+          description: The custom fields for this distribution.
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomField'
+          x-ms-summary: Custom fields
+        distribution_splits:
+          description: The distribution split.
+          type: array
+          items:
+            $ref: '#/components/schemas/DistributionSplit'
+          x-ms-summary: Distribution splits
+      x-display-name: Distribution
+      x-ms-summary: Distribution
+    TransactionCodeValue:
+      description: Transaction code value
+      required:
+      - value
+      - id
+      type: object
+      properties:
+        name:
+          description: The transaction code name.
+          type: string
+          x-ms-summary: Name
+        value:
+          description: The transaction code value.
+          type: string
+          x-ms-summary: Value
+        id:
+          format: int32
+          description: The transaction code value id.
+          type: integer
+          x-ms-summary: Id
+        inactive:
+          description: Indicate if record is inactive or not.
+          type: boolean
+          x-ms-summary: Inactive
+      x-display-name: Transaction code value
+      x-ms-summary: Transaction code value
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

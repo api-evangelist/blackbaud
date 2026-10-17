@@ -1,0 +1,414 @@
+openapi: 3.2.0
+info:
+  title: Blackbaud Constituentnotes API
+  version: '1.0'
+  x-refined-note:
+  - x-apievangelist-provenance differs across the merged source definitions and was not carried
+  description: 'Operations tagged Constituentnotes across 2 of this provider''s published API definitions: blackbaud-altru-constituent-api-openapi.yml, blackbaud-crm-constituent-api-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.sky.blackbaud.com/alt-conmg
+- url: https://api.sky.blackbaud.com/crm-conmg
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Constituentnotes
+paths:
+  /constituentnotes:
+    post:
+      operationId: CreateConstituentNote
+      summary: Create a constituent note
+      description: This operation is used to add a constituent note.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewConstituentNote'
+            example:
+              constituent_id: E6B5E48F-9AC5-40AB-B091-DFB168CB19BE
+              context_type: 0
+              title: Merge note
+              date_entered: '2022-08-24T01:02:47Z'
+              author_id: E6B5E48F-9AC5-40AB-B091-DFB168CB19BE
+              note_type: Merge
+              text_note: Constituent merged 10/12/20
+              html_note: <!DOCTYPE html><html><head></head><body><p>Constituent merged 10/12/20</p></body></html>
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully creates the resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to create the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Constituentnotes
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-conmg
+  /constituentnotes/{constituent_note_id}:
+    delete:
+      operationId: DeleteConstituentNote
+      summary: Delete a constituent note
+      description: This deletion handles only the basic deletion rules for a constituent note (currently none).
+      parameters:
+      - name: constituent_note_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The constituent note id
+      responses:
+        '200':
+          description: Returned when the operation successfully deletes the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to delete the resource.
+      tags:
+      - Constituentnotes
+    patch:
+      operationId: EditConstituentNote
+      summary: Edit a constituent note
+      description: This operation is for editing a given constituent's note.
+      parameters:
+      - name: constituent_note_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The constituent note id.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditConstituentNote'
+            example:
+              context_type: 0
+              title: Merge note
+              date_entered: '2022-08-24T01:02:47Z'
+              author_id: E6B5E48F-9AC5-40AB-B091-DFB168CB19BE
+              note_type: Merge
+              text_note: Constituent merged 10/12/20
+              html_note: <!DOCTYPE html><html><head></head><body><p>Constituent merged 10/12/20</p></body></html>
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully edits the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to edit the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Constituentnotes
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-conmg
+  /constituentnotes/{constituent_note_id}/view:
+    get:
+      operationId: ViewConstituentNote
+      summary: View a constituent note
+      description: This operation displays a constituent note.
+      parameters:
+      - name: constituent_note_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The constituent note id.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the specified resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConstituentNoteView'
+      tags:
+      - Constituentnotes
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-conmg
+components:
+  schemas:
+    ConstituentNoteView:
+      type: object
+      properties:
+        date_entered:
+          type: string
+          description: 'The date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        title:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: The title.
+        text_note:
+          type: string
+          description: The note.
+        author:
+          maxLength: 700
+          minLength: 0
+          type: string
+          description: The author.
+        notetype:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The type.
+      additionalProperties: false
+      description: ViewConstituentNote
+      x-display-name: Constituent Note View Form
+      x-display-id: Constituent Note View Form
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type: integer
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type: string
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: false
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-display-name: Problem details
+      x-display-id: ProblemDetails
+    EditConstituentNote:
+      type: object
+      properties:
+        context_type:
+          type: integer
+          description: The context type. Read-only in the SOAP API.
+          format: int32
+        title:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: The the title of this note.
+        date_entered:
+          type: string
+          description: 'The the date this note was entered. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        author_id:
+          type: string
+          description: The the author of this note.
+        note_type:
+          type: string
+          description: The the user-defined type of this note. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/constituentnotetypecode/entries
+        text_note:
+          type: string
+          description: The the plain text that comprises this note.
+        html_note:
+          type: string
+          description: The the html that comprises this note.
+      additionalProperties: false
+      description: EditConstituentNote
+      example:
+        context_type: 0
+        title: Merge note
+        date_entered: '2022-08-24T01:02:47Z'
+        author_id: E6B5E48F-9AC5-40AB-B091-DFB168CB19BE
+        note_type: Merge
+        text_note: Constituent merged 10/12/20
+        html_note: <!DOCTYPE html><html><head></head><body><p>Constituent merged 10/12/20</p></body></html>
+      x-display-name: Constituent Note Edit Form 2
+      x-display-id: Constituent Note Edit Form 2
+    NewConstituentNote:
+      required:
+      - constituent_id
+      - date_entered
+      - note_type
+      type: object
+      properties:
+        constituent_id:
+          type: string
+          description: The constituent ID.
+        context_type:
+          type: integer
+          description: The context type. Read-only in the SOAP API.
+          format: int32
+        title:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: The the title of this note.
+        date_entered:
+          type: string
+          description: 'The the date this note was entered. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        author_id:
+          type: string
+          description: The the author of this note.
+        note_type:
+          type: string
+          description: The the user-defined type of this note. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/constituentnotetypecode/entries
+        text_note:
+          type: string
+          description: The the plain text that comprises this note.
+        html_note:
+          type: string
+          description: The the html that comprises this note.
+      additionalProperties: false
+      description: CreateConstituentNote
+      example:
+        constituent_id: E6B5E48F-9AC5-40AB-B091-DFB168CB19BE
+        context_type: 0
+        title: Merge note
+        date_entered: '2022-08-24T01:02:47Z'
+        author_id: E6B5E48F-9AC5-40AB-B091-DFB168CB19BE
+        note_type: Merge
+        text_note: Constituent merged 10/12/20
+        html_note: <!DOCTYPE html><html><head></head><body><p>Constituent merged 10/12/20</p></body></html>
+      x-display-name: Constituent Note Add Form
+      x-display-id: Constituent Note Add Form
+    PostResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The newly created ID.
+      additionalProperties: false
+      description: Defines the shape of a post response object.
+    EditConstituentNote_2:
+      type: object
+      properties:
+        context_type:
+          type: integer
+          description: The context type. Read-only in the SOAP API.
+          format: int32
+        title:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: The the title of this note.
+        date_entered:
+          type: string
+          description: 'The the date this note was entered. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        author_id:
+          type: string
+          description: The the author of this note.
+        note_type:
+          type: string
+          description: The the user-defined type of this note. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/constituentnotetypecode/entries
+        text_note:
+          type: string
+          description: The the plain text that comprises this note.
+        html_note:
+          type: string
+          description: The the html that comprises this note.
+      additionalProperties: false
+      description: EditConstituentNote
+      example:
+        context_type: 0
+        title: Merge note
+        date_entered: '2022-08-24T01:02:47Z'
+        author_id: E6B5E48F-9AC5-40AB-B091-DFB168CB19BE
+        note_type: Merge
+        text_note: Constituent merged 10/12/20
+        html_note: <!DOCTYPE html><html><head></head><body><p>Constituent merged 10/12/20</p></body></html>
+      x-display-name: Constituent Note Edit Form 2
+      x-display-id: Constituent Note Edit Form 2
+    NewConstituentNote_2:
+      required:
+      - constituent_id
+      - date_entered
+      - note_type
+      type: object
+      properties:
+        constituent_id:
+          type: string
+          description: The constituent ID.
+        context_type:
+          type: integer
+          description: The context type. Read-only in the SOAP API.
+          format: int32
+        title:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: The the title of this note.
+        date_entered:
+          type: string
+          description: 'The the date this note was entered. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        author_id:
+          type: string
+          description: The the author of this note.
+        note_type:
+          type: string
+          description: The the user-defined type of this note. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/constituentnotetypecode/entries
+        text_note:
+          type: string
+          description: The the plain text that comprises this note.
+        html_note:
+          type: string
+          description: The the html that comprises this note.
+      additionalProperties: false
+      description: CreateConstituentNote
+      example:
+        constituent_id: E6B5E48F-9AC5-40AB-B091-DFB168CB19BE
+        context_type: 0
+        title: Merge note
+        date_entered: '2022-08-24T01:02:47Z'
+        author_id: E6B5E48F-9AC5-40AB-B091-DFB168CB19BE
+        note_type: Merge
+        text_note: Constituent merged 10/12/20
+        html_note: <!DOCTYPE html><html><head></head><body><p>Constituent merged 10/12/20</p></body></html>
+      x-display-name: Constituent Note Add Form
+      x-display-id: Constituent Note Add Form
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+x-refined-from:
+- blackbaud-altru-constituent-api-openapi.yml
+- blackbaud-crm-constituent-api-openapi.yml

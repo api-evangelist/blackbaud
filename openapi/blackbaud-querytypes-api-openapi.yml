@@ -1,0 +1,2271 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Query Querytypes API'
+  description: This API supports defining and executing queries for NXT products
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/query
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/query
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Querytypes
+paths:
+  /querytypes:
+    get:
+      operationId: GetQueryTypes
+      summary: Query type list
+      description: Gets the list of available query types.
+      parameters:
+      - name: product
+        in: query
+        required: true
+        schema:
+          type: string
+          enum:
+          - RE
+          - FE
+        description: The Blackbaud product for the request<p>Members:</p><ul><li><i>RE</i> - The Raiser's Edge</li><li><i>FE</i> - The Financial Edge</li></ul>
+      - name: module
+        in: query
+        required: true
+        schema:
+          type: string
+          enum:
+          - None
+          - GeneralLedger
+          - AccountsPayable
+          - AccountsReceivable
+          - FixedAssets
+          - CashReceipts
+        description: The module for the request (RE requests must use 'None', FE requests require one of the other values)<p>Members:</p><ul><li><i>None</i></li><li><i>GeneralLedger</i></li><li><i>AccountsPayable</i></li><li><i>AccountsReceivable</i></li><li><i>FixedAssets</i></li><li><i>CashReceipts</i></li></ul>
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetQueryTypesResponse'
+              example:
+                query_types:
+                - id: 18
+                  name: Constituent
+                - id: 20
+                  name: Gift
+        '400':
+          description: Returned when the request is invalid.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/QueryDefinitionServiceErrorCodes'
+              example:
+                type: urn:blackbaud:missing-product
+                title: One or more validation errors occurred.
+                status: 400
+                detail: Product was not supplied.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '403':
+          description: Returned when the user does not have permission to access the resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: urn:blackbaud:forbidden
+                title: The requested action is forbidden.
+                status: 403
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+      tags:
+      - Querytypes
+  /querytypes/{query_type_id}/availablefields:
+    get:
+      operationId: GetRootNodesForQueryType
+      summary: Available fields tree (Root)
+      description: Gets the list of nodes at the root of the available fields tree for a query type. **DEPRECATED** — Use the v2 endpoint instead.
+      parameters:
+      - name: query_type_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The query type ID
+      - name: product
+        in: query
+        required: true
+        schema:
+          type: string
+          enum:
+          - RE
+          - FE
+        description: The Blackbaud product for the request<p>Members:</p><ul><li><i>RE</i> - The Raiser's Edge</li><li><i>FE</i> - The Financial Edge</li></ul>
+      - name: module
+        in: query
+        required: true
+        schema:
+          type: string
+          enum:
+          - None
+          - GeneralLedger
+          - AccountsPayable
+          - AccountsReceivable
+          - FixedAssets
+          - CashReceipts
+        description: The module for the request (RE requests must use 'None', FE requests require one of the other values)<p>Members:</p><ul><li><i>None</i></li><li><i>GeneralLedger</i></li><li><i>AccountsPayable</i></li><li><i>AccountsReceivable</i></li><li><i>FixedAssets</i></li><li><i>CashReceipts</i></li></ul>
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetFieldsResponse'
+              example:
+                nodes:
+                - id: 2159
+                  name: Adjustments
+                  node_type: OneToMany
+                - id: 12099
+                  name: Amendments
+                  node_type: OneToMany
+                - id: 2169
+                  name: Appeals
+                  node_type: OneToMany
+                fields:
+                - id: 8452
+                  available_field_name: Acknowledge
+                  selected_field_name: Gift Acknowledge
+                  value_type: Text
+                  one_to_many: false
+                  output_sort_can_add_edit: false
+                  criteria_can_add_edit: false
+                  execute_by_id_supported: false
+                  allowed_filter_operators:
+                  - Equals
+                  - DoesNotEqual
+                  - RelativeComparisons
+                  - OneOf
+                  - StringComparisons
+                  - Blank
+                  - Ask
+                  - OneOfEach
+                  node_path:
+                  - id: '306'
+                    name: Gifts
+                    node_type: OneToMany
+                    gift_processing_options_supported: false
+                  summary_value_type: Text
+                - id: 8453
+                  available_field_name: Acknowledge date
+                  selected_field_name: Gift Acknowledge date
+                  value_type: Text
+                  one_to_many: false
+                  output_sort_can_add_edit: false
+                  criteria_can_add_edit: false
+                  execute_by_id_supported: false
+                  allowed_filter_operators:
+                  - Equals
+                  - DoesNotEqual
+                  - RelativeComparisons
+                  - OneOf
+                  - Blank
+                  - Ask
+                  - OneOfEach
+                  node_path:
+                  - id: '306'
+                    name: Gifts
+                    node_type: OneToMany
+                    gift_processing_options_supported: false
+                - id: 84857
+                  available_field_name: Added By
+                  selected_field_name: Gift Added By
+                  value_type: Lookup
+                  one_to_many: false
+                  output_sort_can_add_edit: true
+                  criteria_can_add_edit: true
+                  execute_by_id_supported: false
+                  allowed_filter_operators:
+                  - Equals
+                  - DoesNotEqual
+                  - RelativeComparisons
+                  - Blank
+                  - Ask
+                  - OneOfEach
+                  node_path:
+                  - id: '306'
+                    name: Gifts
+                    node_type: OneToMany
+                    gift_processing_options_supported: false
+        '400':
+          description: Returned when the request is invalid.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/QueryDefinitionServiceErrorCodes'
+              example:
+                type: urn:blackbaud:missing-product
+                title: One or more validation errors occurred.
+                status: 400
+                detail: Product was not supplied.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '403':
+          description: Returned when the user does not have permission to access the resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: urn:blackbaud:forbidden
+                title: The requested action is forbidden.
+                status: 403
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '404':
+          description: Returned when the requested query type does not exist.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: urn:blackbaud:resource-not-found
+                title: The requested resource could not be found.
+                status: 404
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+      tags:
+      - Querytypes
+  /querytypes/{query_type_id}/availablefields/search:
+    get:
+      operationId: SearchAvailableFields
+      summary: Available field search (PREVIEW)
+      description: 'Searches for available fields. **DEPRECATED** — Use the v2 endpoint instead.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: query_type_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The query type ID
+      - name: product
+        in: query
+        required: true
+        schema:
+          type: string
+          enum:
+          - RE
+          - FE
+        description: The Blackbaud product for the request<p>Members:</p><ul><li><i>RE</i> - The Raiser's Edge</li><li><i>FE</i> - The Financial Edge</li></ul>
+      - name: module
+        in: query
+        required: true
+        schema:
+          type: string
+          enum:
+          - None
+          - GeneralLedger
+          - AccountsPayable
+          - AccountsReceivable
+          - FixedAssets
+          - CashReceipts
+        description: The module for the request (RE requests must use 'None', FE requests require one of the other values)<p>Members:</p><ul><li><i>None</i></li><li><i>GeneralLedger</i></li><li><i>AccountsPayable</i></li><li><i>AccountsReceivable</i></li><li><i>FixedAssets</i></li><li><i>CashReceipts</i></li></ul>
+      - name: search_text
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filters to available nodes and fields where the name contains the specified value (case-insensitive).
+      - name: field_context
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - None
+          - Filter
+          - Sort
+          - Select
+          - ChildSelectFilter
+          - ChildSelectSort
+        description: If the fields are to be used as filter fields, sort fields, or output fields.
+      - name: result_layout
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - MultiRow
+          - SingleRow
+        description: If the fields are to be used in a query with result layout multi-row or single-row.
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: '50'
+        description: Represents the number of matches to return.  Default 50, max 200.
+      - name: continuation_token
+        in: query
+        required: false
+        schema:
+          type: string
+        description: A continuation token provided from a previous search to pick up where the previous search left off returning results.
+      - name: root_node_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: When provided, restricts results to fields that are descendants of the node with this ID.
+      - name: exclude_child_nodes
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: When true, child nodes are not recursed into. Direct fields and child node name matches are still returned.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AvailableFieldsSearchResponse'
+              example:
+                available_fields:
+                - result_type: Field
+                  id_sequence:
+                  - 10516
+                  - 10533
+                  - 10534
+                  - 90072
+                  result_path:
+                  - Spouse
+                  - Relationships
+                  - Assigned Solicitors
+                  - Fund
+                - result_type: Node
+                  id_sequence:
+                  - 10516
+                  - 10533
+                  - 13188
+                  result_path:
+                  - Spouse
+                  - Relationships
+                  - Funds
+                continuation_token: 10516:10533:13188
+                limit: 2
+        '400':
+          description: Returned when the request is invalid.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/AvailableFieldsSearchErrorCodes'
+              example:
+                type: urn:blackbaud:missing-product
+                title: One or more validation errors occurred.
+                status: 400
+                detail: Product was not supplied.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+      tags:
+      - Querytypes
+  /querytypes/{query_type_id}/nodes/availablefields:
+    post:
+      operationId: GetChildrenOfQueryNodes
+      summary: Available fields tree (Nodes)
+      description: Gets the list of nodes and fields that are children of the specified query type and nodes in the available fields tree. **DEPRECATED** — Use the v2 endpoint instead.
+      parameters:
+      - name: query_type_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The query type ID
+      - name: product
+        in: query
+        required: true
+        schema:
+          type: string
+          enum:
+          - RE
+          - FE
+        description: The Blackbaud product for the request<p>Members:</p><ul><li><i>RE</i> - The Raiser's Edge</li><li><i>FE</i> - The Financial Edge</li></ul>
+      - name: module
+        in: query
+        required: true
+        schema:
+          type: string
+          enum:
+          - None
+          - GeneralLedger
+          - AccountsPayable
+          - AccountsReceivable
+          - FixedAssets
+          - CashReceipts
+        description: The module for the request (RE requests must use 'None', FE requests require one of the other values)<p>Members:</p><ul><li><i>None</i></li><li><i>GeneralLedger</i></li><li><i>AccountsPayable</i></li><li><i>AccountsReceivable</i></li><li><i>FixedAssets</i></li><li><i>CashReceipts</i></li></ul>
+      - name: field_context
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - None
+          - Filter
+          - Sort
+          - Select
+          - ChildSelectFilter
+          - ChildSelectSort
+        description: If the fields are to be used as filter fields, sort fields, or output fields.
+      - name: result_layout
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - MultiRow
+          - SingleRow
+        description: If the fields are to be used in a single-row or multi-row result query.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QueryNodesRequest'
+            example:
+              node_ids:
+              - 1
+              - 2
+              - 3
+              - 4
+              - 5
+        description: The nodes request
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetNodesResponse'
+              example:
+                nodes:
+                - node_id: 306
+                  nodes:
+                  - id: 2159
+                    name: Adjustments
+                    node_type: OneToMany
+                  - id: 12099
+                    name: Amendments
+                    node_type: OneToMany
+                  - id: 2169
+                    name: Appeals
+                    node_type: OneToMany
+                  fields:
+                  - id: 8452
+                    available_field_name: Acknowledge
+                    selected_field_name: Gift Acknowledge
+                    value_type: Text
+                    one_to_many: false
+                    output_sort_can_add_edit: false
+                    criteria_can_add_edit: false
+                    execute_by_id_supported: false
+                    allowed_filter_operators:
+                    - Equals
+                    - DoesNotEqual
+                    - RelativeComparisons
+                    - OneOf
+                    - StringComparisons
+                    - Blank
+                    - Ask
+                    - OneOfEach
+                    node_path:
+                    - id: '306'
+                      name: Gifts
+                      node_type: OneToMany
+                      gift_processing_options_supported: false
+                    summary_value_type: Text
+                  - id: 8453
+                    available_field_name: Acknowledge date
+                    selected_field_name: Gift Acknowledge date
+                    value_type: Text
+                    one_to_many: false
+                    output_sort_can_add_edit: false
+                    criteria_can_add_edit: false
+                    execute_by_id_supported: false
+                    allowed_filter_operators:
+                    - Equals
+                    - DoesNotEqual
+                    - RelativeComparisons
+                    - OneOf
+                    - Blank
+                    - Ask
+                    - OneOfEach
+                    node_path:
+                    - id: '306'
+                      name: Gifts
+                      node_type: OneToMany
+                      gift_processing_options_supported: false
+                  - id: 84857
+                    available_field_name: Added By
+                    selected_field_name: Gift Added By
+                    value_type: Lookup
+                    one_to_many: false
+                    output_sort_can_add_edit: true
+                    criteria_can_add_edit: true
+                    execute_by_id_supported: false
+                    allowed_filter_operators:
+                    - Equals
+                    - DoesNotEqual
+                    - RelativeComparisons
+                    - Blank
+                    - Ask
+                    - OneOfEach
+                    node_path:
+                    - id: '306'
+                      name: Gifts
+                      node_type: OneToMany
+                      gift_processing_options_supported: false
+                - node_id: 296
+                  fields:
+                  - id: 129253
+                    available_field_name: Integration Last Changed By
+                    selected_field_name: Constituent Integration Last Changed By
+                    value_type: Text
+                    one_to_many: false
+                    output_sort_can_add_edit: false
+                    criteria_can_add_edit: false
+                    execute_by_id_supported: false
+                    allowed_filter_operators:
+                    - Equals
+                    - DoesNotEqual
+                    - RelativeComparisons
+                    - OneOf
+                    - Blank
+                    - Ask
+                    - OneOfEach
+                    node_path:
+                    - id: '296'
+                      name: Constituent Information
+                      node_type: OneToOne
+                      gift_processing_options_supported: false
+                    summary_value_type: Text
+                  - id: 104790
+                    available_field_name: Academy ID
+                    selected_field_name: Academy ID
+                    value_type: Text
+                    one_to_many: false
+                    output_sort_can_add_edit: false
+                    criteria_can_add_edit: false
+                    execute_by_id_supported: false
+                    allowed_filter_operators:
+                    - Equals
+                    - DoesNotEqual
+                    - RelativeComparisons
+                    - OneOf
+                    - Blank
+                    - Ask
+                    - OneOfEach
+                    node_path:
+                    - id: '296'
+                      name: Constituent Information
+                      node_type: OneToOne
+                      gift_processing_options_supported: false
+                    summary_value_type: Text
+                  - id: 426
+                    available_field_name: Added by
+                    selected_field_name: Constituent Added By
+                    value_type: Lookup
+                    one_to_many: false
+                    output_sort_can_add_edit: true
+                    criteria_can_add_edit: true
+                    execute_by_id_supported: false
+                    allowed_filter_operators:
+                    - Equals
+                    - DoesNotEqual
+                    - OneOf
+                    - Blank
+                    - Ask
+                    - OneOfEach
+                    node_path:
+                    - id: '296'
+                      name: Constituent Information
+                      node_type: OneToOne
+                      gift_processing_options_supported: false
+        '400':
+          description: Returned when the request is invalid.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/QueryDefinitionServiceErrorCodes'
+              example:
+                type: urn:blackbaud:missing-product
+                title: One or more validation errors occurred.
+                status: 400
+                detail: Product was not supplied.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '403':
+          description: Returned when the user does not have permission to access the resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: urn:blackbaud:forbidden
+                title: The requested action is forbidden.
+                status: 403
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '404':
+          description: Returned when any of the requested nodes does not exist for the query type.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: urn:blackbaud:resource-not-found
+                title: The requested resource could not be found.
+                status: 404
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+      tags:
+      - Querytypes
+  /querytypes/{query_type_id}/nodes/{node_id}/availablefields:
+    get:
+      operationId: GetChildrenOfQueryNode
+      summary: Available fields tree (Node)
+      description: Gets the list of nodes and fields that are children of the specified query type and node in the available fields tree. **DEPRECATED** — Use the v2 endpoint instead.
+      parameters:
+      - name: query_type_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The query type ID
+      - name: node_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The parent node ID
+      - name: product
+        in: query
+        required: true
+        schema:
+          type: string
+          enum:
+          - RE
+          - FE
+        description: The Blackbaud product for the request<p>Members:</p><ul><li><i>RE</i> - The Raiser's Edge</li><li><i>FE</i> - The Financial Edge</li></ul>
+      - name: module
+        in: query
+        required: true
+        schema:
+          type: string
+          enum:
+          - None
+          - GeneralLedger
+          - AccountsPayable
+          - AccountsReceivable
+          - FixedAssets
+          - CashReceipts
+        description: The module for the request (RE requests must use 'None', FE requests require one of the other values)<p>Members:</p><ul><li><i>None</i></li><li><i>GeneralLedger</i></li><li><i>AccountsPayable</i></li><li><i>AccountsReceivable</i></li><li><i>FixedAssets</i></li><li><i>CashReceipts</i></li></ul>
+      - name: field_context
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - None
+          - Filter
+          - Sort
+          - Select
+          - ChildSelectFilter
+          - ChildSelectSort
+        description: If the fields are to be used as filter fields, sort fields, or output fields.
+      - name: result_layout
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - MultiRow
+          - SingleRow
+        description: If the fields are to be used in a single-row or multi-row result query.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetFieldsResponse'
+              example:
+                nodes:
+                - id: 2159
+                  name: Adjustments
+                  node_type: OneToMany
+                - id: 12099
+                  name: Amendments
+                  node_type: OneToMany
+                - id: 2169
+                  name: Appeals
+                  node_type: OneToMany
+                fields:
+                - id: 8452
+                  available_field_name: Acknowledge
+                  selected_field_name: Gift Acknowledge
+                  value_type: Text
+                  one_to_many: false
+                  output_sort_can_add_edit: false
+                  criteria_can_add_edit: false
+                  execute_by_id_supported: false
+                  allowed_filter_operators:
+                  - Equals
+                  - DoesNotEqual
+                  - RelativeComparisons
+                  - OneOf
+                  - StringComparisons
+                  - Blank
+                  - Ask
+                  - OneOfEach
+                  node_path:
+                  - id: '306'
+                    name: Gifts
+                    node_type: OneToMany
+                    gift_processing_options_supported: false
+                  summary_value_type: Text
+                - id: 8453
+                  available_field_name: Acknowledge date
+                  selected_field_name: Gift Acknowledge date
+                  value_type: Text
+                  one_to_many: false
+                  output_sort_can_add_edit: false
+                  criteria_can_add_edit: false
+                  execute_by_id_supported: false
+                  allowed_filter_operators:
+                  - Equals
+                  - DoesNotEqual
+                  - RelativeComparisons
+                  - OneOf
+                  - Blank
+                  - Ask
+                  - OneOfEach
+                  node_path:
+                  - id: '306'
+                    name: Gifts
+                    node_type: OneToMany
+                    gift_processing_options_supported: false
+                - id: 84857
+                  available_field_name: Added By
+                  selected_field_name: Gift Added By
+                  value_type: Lookup
+                  one_to_many: false
+                  output_sort_can_add_edit: true
+                  criteria_can_add_edit: true
+                  execute_by_id_supported: false
+                  allowed_filter_operators:
+                  - Equals
+                  - DoesNotEqual
+                  - RelativeComparisons
+                  - Blank
+                  - Ask
+                  - OneOfEach
+                  node_path:
+                  - id: '306'
+                    name: Gifts
+                    node_type: OneToMany
+                    gift_processing_options_supported: false
+        '400':
+          description: Returned when the request is invalid.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/QueryDefinitionServiceErrorCodes'
+              example:
+                type: urn:blackbaud:missing-product
+                title: One or more validation errors occurred.
+                status: 400
+                detail: Product was not supplied.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '403':
+          description: Returned when the user does not have permission to access the resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: urn:blackbaud:forbidden
+                title: The requested action is forbidden.
+                status: 403
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '404':
+          description: Returned when the requested node does not exist for the query type.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: urn:blackbaud:resource-not-found
+                title: The requested resource could not be found.
+                status: 404
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+      tags:
+      - Querytypes
+  /v2/querytypes/{query_type_id}/availablefields:
+    get:
+      operationId: GetRootNodesForQueryTypeV2
+      summary: Available fields tree (Root) (PREVIEW)
+      description: 'Gets the list of nodes at the root of the available fields tree for a query type. (PREVIEW)
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: query_type_id
+        in: path
+        required: true
+        schema:
+          type: integer
+      - name: product
+        in: query
+        required: true
+        schema:
+          type: string
+          enum:
+          - RE
+          - FE
+        description: The Blackbaud product for the request<p>Members:</p><ul><li><i>RE</i> - The Raiser's Edge</li><li><i>FE</i> - The Financial Edge</li></ul>
+      - name: module
+        in: query
+        required: true
+        schema:
+          type: string
+          enum:
+          - None
+          - GeneralLedger
+          - AccountsPayable
+          - AccountsReceivable
+          - FixedAssets
+          - CashReceipts
+        description: The module for the request (RE requests must use 'None', FE requests require one of the other values)<p>Members:</p><ul><li><i>None</i></li><li><i>GeneralLedger</i></li><li><i>AccountsPayable</i></li><li><i>AccountsReceivable</i></li><li><i>FixedAssets</i></li><li><i>CashReceipts</i></li></ul>
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetFieldsResponseV2'
+              example:
+                nodes:
+                - id: '2159'
+                  name: Adjustments
+                  node_type: OneToOne
+                  gift_processing_options_supported: false
+                - id: '12099'
+                  name: Amendments
+                  node_type: OneToOne
+                  gift_processing_options_supported: false
+                - id: '2169'
+                  name: Appeals
+                  node_type: OneToOne
+                  gift_processing_options_supported: false
+                fields:
+                - id: 8452
+                  available_field_name: Acknowledge
+                  selected_field_name: Gift Acknowledge
+                  value_type: Text
+                  one_to_many: false
+                  output_sort_can_add_edit: false
+                  criteria_can_add_edit: false
+                  execute_by_id_supported: false
+                  allowed_filter_operators:
+                  - Equals
+                  - DoesNotEqual
+                  - RelativeComparisons
+                  - OneOf
+                  - StringComparisons
+                  - Blank
+                  - Ask
+                  - OneOfEach
+                  node_path:
+                  - id: '306'
+                    name: Gifts
+                    node_type: OneToMany
+                    gift_processing_options_supported: false
+                  summary_value_type: Text
+                - id: 8453
+                  available_field_name: Acknowledge date
+                  selected_field_name: Gift Acknowledge date
+                  value_type: Text
+                  one_to_many: false
+                  output_sort_can_add_edit: false
+                  criteria_can_add_edit: false
+                  execute_by_id_supported: false
+                  allowed_filter_operators:
+                  - Equals
+                  - DoesNotEqual
+                  - RelativeComparisons
+                  - OneOf
+                  - Blank
+                  - Ask
+                  - OneOfEach
+                  node_path:
+                  - id: '306'
+                    name: Gifts
+                    node_type: OneToMany
+                    gift_processing_options_supported: false
+                - id: 84857
+                  available_field_name: Added By
+                  selected_field_name: Gift Added By
+                  value_type: Lookup
+                  one_to_many: false
+                  output_sort_can_add_edit: true
+                  criteria_can_add_edit: true
+                  execute_by_id_supported: false
+                  allowed_filter_operators:
+                  - Equals
+                  - DoesNotEqual
+                  - RelativeComparisons
+                  - Blank
+                  - Ask
+                  - OneOfEach
+                  node_path:
+                  - id: '306'
+                    name: Gifts
+                    node_type: OneToMany
+                    gift_processing_options_supported: false
+        '400':
+          description: Returned when the request is invalid.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/QueryDefinitionServiceErrorCodes'
+              example:
+                type: urn:blackbaud:missing-product
+                title: One or more validation errors occurred.
+                status: 400
+                detail: Product was not supplied.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '403':
+          description: Returned when the user does not have permission to access the resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: urn:blackbaud:forbidden
+                title: The requested action is forbidden.
+                status: 403
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '404':
+          description: Returned when the requested query type does not exist.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: urn:blackbaud:resource-not-found
+                title: The requested resource could not be found.
+                status: 404
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+      tags:
+      - Querytypes
+  /v2/querytypes/{query_type_id}/availablefields/search:
+    get:
+      operationId: SearchAvailableFieldsV2
+      summary: Available field search (PREVIEW)
+      description: 'Searches for available fields. (PREVIEW)
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: query_type_id
+        in: path
+        required: true
+        schema:
+          type: integer
+      - name: product
+        in: query
+        required: true
+        schema:
+          type: string
+          enum:
+          - RE
+          - FE
+        description: The Blackbaud product for the request<p>Members:</p><ul><li><i>RE</i> - The Raiser's Edge</li><li><i>FE</i> - The Financial Edge</li></ul>
+      - name: module
+        in: query
+        required: true
+        schema:
+          type: string
+          enum:
+          - None
+          - GeneralLedger
+          - AccountsPayable
+          - AccountsReceivable
+          - FixedAssets
+          - CashReceipts
+        description: The module for the request (RE requests must use 'None', FE requests require one of the other values)<p>Members:</p><ul><li><i>None</i></li><li><i>GeneralLedger</i></li><li><i>AccountsPayable</i></li><li><i>AccountsReceivable</i></li><li><i>FixedAssets</i></li><li><i>CashReceipts</i></li></ul>
+      - name: search_text
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filters to available nodes and fields where the name contains the specified value (case-insensitive).
+      - name: field_context
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - None
+          - Filter
+          - Sort
+          - Select
+          - ChildSelectFilter
+          - ChildSelectSort
+        description: If the fields are to be used as filter fields, sort fields, or output fields.
+      - name: result_layout
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - MultiRow
+          - SingleRow
+        description: If the fields are to be used in a query with result layout multi-row or single-row.
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: '50'
+        description: Represents the number of matches to return.  Default 50, max 200.
+      - name: continuation_token
+        in: query
+        required: false
+        schema:
+          type: string
+        description: A continuation token provided from a previous search to pick up where the previous search left off returning results.
+      - name: root_node_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: When provided, restricts results to fields that are descendants of the node with this ID.
+      - name: exclude_child_nodes
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: When true, child nodes are not recursed into. Direct fields and child node name matches are still returned.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AvailableFieldsSearchResponseV2'
+              example:
+                available_fields:
+                - result_type: Field
+                  id_sequence:
+                  - '10516'
+                  - '10533'
+                  - '10534'
+                  - '90072'
+                  result_path:
+                  - Spouse
+                  - Relationships
+                  - Assigned Solicitors
+                  - Fund
+                - result_type: Node
+                  id_sequence:
+                  - '10516'
+                  - '10533'
+                  - '13188'
+                  result_path:
+                  - Spouse
+                  - Relationships
+                  - Funds
+                continuation_token: 10516:10533:13188
+                limit: 2
+        '400':
+          description: Returned when the request is invalid.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/AvailableFieldsSearchErrorCodes'
+              example:
+                type: urn:blackbaud:missing-product
+                title: One or more validation errors occurred.
+                status: 400
+                detail: Product was not supplied.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+      tags:
+      - Querytypes
+  /v2/querytypes/{query_type_id}/nodes/availablefields:
+    post:
+      operationId: GetChildrenOfQueryNodesV2
+      summary: Available fields tree (Nodes) (PREVIEW)
+      description: 'Gets the list of nodes and fields that are children of the specified query type and nodes in the available fields tree. (PREVIEW)
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: query_type_id
+        in: path
+        required: true
+        schema:
+          type: integer
+      - name: product
+        in: query
+        required: true
+        schema:
+          type: string
+          enum:
+          - RE
+          - FE
+        description: The Blackbaud product for the request<p>Members:</p><ul><li><i>RE</i> - The Raiser's Edge</li><li><i>FE</i> - The Financial Edge</li></ul>
+      - name: module
+        in: query
+        required: true
+        schema:
+          type: string
+          enum:
+          - None
+          - GeneralLedger
+          - AccountsPayable
+          - AccountsReceivable
+          - FixedAssets
+          - CashReceipts
+        description: The module for the request (RE requests must use 'None', FE requests require one of the other values)<p>Members:</p><ul><li><i>None</i></li><li><i>GeneralLedger</i></li><li><i>AccountsPayable</i></li><li><i>AccountsReceivable</i></li><li><i>FixedAssets</i></li><li><i>CashReceipts</i></li></ul>
+      - name: field_context
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - None
+          - Filter
+          - Sort
+          - Select
+          - ChildSelectFilter
+          - ChildSelectSort
+        description: 'The context (editor tab), often used to handle differences in
+
+          how various query fields behave depending how they''re used.'
+      - name: result_layout
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - MultiRow
+          - SingleRow
+        description: 'Layout of the query result: single-row or multi-row.'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QueryNodesRequestV2'
+            example:
+              node_ids:
+              - '1'
+              - '2'
+              - '3'
+              - '4'
+              - '5'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetNodesResponseV2'
+              example:
+                nodes:
+                - node_id: '306'
+                  nodes:
+                  - id: '2159'
+                    name: Adjustments
+                    node_type: OneToOne
+                    gift_processing_options_supported: false
+                  - id: '12099'
+                    name: Amendments
+                    node_type: OneToOne
+                    gift_processing_options_supported: false
+                  - id: '2169'
+                    name: Appeals
+                    node_type: OneToOne
+                    gift_processing_options_supported: false
+                  fields:
+                  - id: 8452
+                    available_field_name: Acknowledge
+                    selected_field_name: Gift Acknowledge
+                    value_type: Text
+                    one_to_many: false
+                    output_sort_can_add_edit: false
+                    criteria_can_add_edit: false
+                    execute_by_id_supported: false
+                    allowed_filter_operators:
+                    - Equals
+                    - DoesNotEqual
+                    - RelativeComparisons
+                    - OneOf
+                    - StringComparisons
+                    - Blank
+                    - Ask
+                    - OneOfEach
+                    node_path:
+                    - id: '306'
+                      name: Gifts
+                      node_type: OneToMany
+                      gift_processing_options_supported: false
+                    summary_value_type: Text
+                  - id: 8453
+                    available_field_name: Acknowledge date
+                    selected_field_name: Gift Acknowledge date
+                    value_type: Text
+                    one_to_many: false
+                    output_sort_can_add_edit: false
+                    criteria_can_add_edit: false
+                    execute_by_id_supported: false
+                    allowed_filter_operators:
+                    - Equals
+                    - DoesNotEqual
+                    - RelativeComparisons
+                    - OneOf
+                    - Blank
+                    - Ask
+                    - OneOfEach
+                    node_path:
+                    - id: '306'
+                      name: Gifts
+                      node_type: OneToMany
+                      gift_processing_options_supported: false
+                  - id: 84857
+                    available_field_name: Added By
+                    selected_field_name: Gift Added By
+                    value_type: Lookup
+                    one_to_many: false
+                    output_sort_can_add_edit: true
+                    criteria_can_add_edit: true
+                    execute_by_id_supported: false
+                    allowed_filter_operators:
+                    - Equals
+                    - DoesNotEqual
+                    - RelativeComparisons
+                    - Blank
+                    - Ask
+                    - OneOfEach
+                    node_path:
+                    - id: '306'
+                      name: Gifts
+                      node_type: OneToMany
+                      gift_processing_options_supported: false
+                - node_id: '296'
+                  fields:
+                  - id: 129253
+                    available_field_name: Integration Last Changed By
+                    selected_field_name: Constituent Integration Last Changed By
+                    value_type: Text
+                    one_to_many: false
+                    output_sort_can_add_edit: false
+                    criteria_can_add_edit: false
+                    execute_by_id_supported: false
+                    allowed_filter_operators:
+                    - Equals
+                    - DoesNotEqual
+                    - RelativeComparisons
+                    - OneOf
+                    - Blank
+                    - Ask
+                    - OneOfEach
+                    node_path:
+                    - id: '296'
+                      name: Constituent Information
+                      node_type: OneToOne
+                      gift_processing_options_supported: false
+                    summary_value_type: Text
+                  - id: 104790
+                    available_field_name: Academy ID
+                    selected_field_name: Academy ID
+                    value_type: Text
+                    one_to_many: false
+                    output_sort_can_add_edit: false
+                    criteria_can_add_edit: false
+                    execute_by_id_supported: false
+                    allowed_filter_operators:
+                    - Equals
+                    - DoesNotEqual
+                    - RelativeComparisons
+                    - OneOf
+                    - Blank
+                    - Ask
+                    - OneOfEach
+                    node_path:
+                    - id: '296'
+                      name: Constituent Information
+                      node_type: OneToOne
+                      gift_processing_options_supported: false
+                    summary_value_type: Text
+                  - id: 426
+                    available_field_name: Added by
+                    selected_field_name: Constituent Added By
+                    value_type: Lookup
+                    one_to_many: false
+                    output_sort_can_add_edit: true
+                    criteria_can_add_edit: true
+                    execute_by_id_supported: false
+                    allowed_filter_operators:
+                    - Equals
+                    - DoesNotEqual
+                    - OneOf
+                    - Blank
+                    - Ask
+                    - OneOfEach
+                    node_path:
+                    - id: '296'
+                      name: Constituent Information
+                      node_type: OneToOne
+                      gift_processing_options_supported: false
+        '400':
+          description: Returned when the request is invalid.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/QueryDefinitionServiceErrorCodes'
+              example:
+                type: urn:blackbaud:missing-product
+                title: One or more validation errors occurred.
+                status: 400
+                detail: Product was not supplied.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '403':
+          description: Returned when the user does not have permission to access the resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: urn:blackbaud:forbidden
+                title: The requested action is forbidden.
+                status: 403
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '404':
+          description: Returned when any of the requested nodes does not exist for the query type.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: urn:blackbaud:resource-not-found
+                title: The requested resource could not be found.
+                status: 404
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+      tags:
+      - Querytypes
+  /v2/querytypes/{query_type_id}/nodes/{node_id}/availablefields:
+    get:
+      operationId: GetChildrenOfQueryNodeV2
+      summary: Available fields tree (Node) (PREVIEW)
+      description: 'Gets the list of nodes and fields that are children of the specified query type and node in the available fields tree. (PREVIEW)
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: query_type_id
+        in: path
+        required: true
+        schema:
+          type: integer
+      - name: node_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: product
+        in: query
+        required: true
+        schema:
+          type: string
+          enum:
+          - RE
+          - FE
+        description: The Blackbaud product for the request<p>Members:</p><ul><li><i>RE</i> - The Raiser's Edge</li><li><i>FE</i> - The Financial Edge</li></ul>
+      - name: module
+        in: query
+        required: true
+        schema:
+          type: string
+          enum:
+          - None
+          - GeneralLedger
+          - AccountsPayable
+          - AccountsReceivable
+          - FixedAssets
+          - CashReceipts
+        description: The module for the request (RE requests must use 'None', FE requests require one of the other values)<p>Members:</p><ul><li><i>None</i></li><li><i>GeneralLedger</i></li><li><i>AccountsPayable</i></li><li><i>AccountsReceivable</i></li><li><i>FixedAssets</i></li><li><i>CashReceipts</i></li></ul>
+      - name: field_context
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - None
+          - Filter
+          - Sort
+          - Select
+          - ChildSelectFilter
+          - ChildSelectSort
+        description: 'The context (editor tab), often used to handle differences in
+
+          how various query fields behave depending how they''re used.'
+      - name: result_layout
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - MultiRow
+          - SingleRow
+        description: 'Layout of the query result: single-row or multi-row.'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetFieldsResponseV2'
+              example:
+                nodes:
+                - id: '2159'
+                  name: Adjustments
+                  node_type: OneToOne
+                  gift_processing_options_supported: false
+                - id: '12099'
+                  name: Amendments
+                  node_type: OneToOne
+                  gift_processing_options_supported: false
+                - id: '2169'
+                  name: Appeals
+                  node_type: OneToOne
+                  gift_processing_options_supported: false
+                fields:
+                - id: 8452
+                  available_field_name: Acknowledge
+                  selected_field_name: Gift Acknowledge
+                  value_type: Text
+                  one_to_many: false
+                  output_sort_can_add_edit: false
+                  criteria_can_add_edit: false
+                  execute_by_id_supported: false
+                  allowed_filter_operators:
+                  - Equals
+                  - DoesNotEqual
+                  - RelativeComparisons
+                  - OneOf
+                  - StringComparisons
+                  - Blank
+                  - Ask
+                  - OneOfEach
+                  node_path:
+                  - id: '306'
+                    name: Gifts
+                    node_type: OneToMany
+                    gift_processing_options_supported: false
+                  summary_value_type: Text
+                - id: 8453
+                  available_field_name: Acknowledge date
+                  selected_field_name: Gift Acknowledge date
+                  value_type: Text
+                  one_to_many: false
+                  output_sort_can_add_edit: false
+                  criteria_can_add_edit: false
+                  execute_by_id_supported: false
+                  allowed_filter_operators:
+                  - Equals
+                  - DoesNotEqual
+                  - RelativeComparisons
+                  - OneOf
+                  - Blank
+                  - Ask
+                  - OneOfEach
+                  node_path:
+                  - id: '306'
+                    name: Gifts
+                    node_type: OneToMany
+                    gift_processing_options_supported: false
+                - id: 84857
+                  available_field_name: Added By
+                  selected_field_name: Gift Added By
+                  value_type: Lookup
+                  one_to_many: false
+                  output_sort_can_add_edit: true
+                  criteria_can_add_edit: true
+                  execute_by_id_supported: false
+                  allowed_filter_operators:
+                  - Equals
+                  - DoesNotEqual
+                  - RelativeComparisons
+                  - Blank
+                  - Ask
+                  - OneOfEach
+                  node_path:
+                  - id: '306'
+                    name: Gifts
+                    node_type: OneToMany
+                    gift_processing_options_supported: false
+        '400':
+          description: Returned when the request is invalid.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/QueryDefinitionServiceErrorCodes'
+              example:
+                type: urn:blackbaud:missing-product
+                title: One or more validation errors occurred.
+                status: 400
+                detail: Product was not supplied.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '403':
+          description: Returned when the user does not have permission to access the resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: urn:blackbaud:forbidden
+                title: The requested action is forbidden.
+                status: 403
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '404':
+          description: Returned when the requested node does not exist for the query type.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: urn:blackbaud:resource-not-found
+                title: The requested resource could not be found.
+                status: 404
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+      tags:
+      - Querytypes
+components:
+  schemas:
+    NodeType:
+      enum:
+      - OneToOne
+      - OneToMany
+      - Summary
+      type: string
+      description: Classifications of nodes in the available fields trees.<p>Members:</p><ul><li><i>OneToOne</i> - A nodes which has a 1:1 relationship with its parent node.</li><li><i>OneToMany</i> - A node which has a 1:many relationship with its parent node.</li><li><i>Summary</i> - A node which provides summary information about records returned from its parent node.</li></ul>
+    GetNodeResponse:
+      type: object
+      properties:
+        node_id:
+          type: integer
+          description: The ID of the node.
+          format: int32
+        nodes:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/QueryNode'
+          description: The requested QueryNodes
+        fields:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/QueryField'
+          description: The requested QueryFields
+      additionalProperties: false
+      description: 'Response containing a requested node.
+
+        (deprecated — use v2 with string IDs).'
+    QueryNodesRequestV2:
+      required:
+      - node_ids
+      type: object
+      properties:
+        node_ids:
+          type: array
+          items:
+            type: string
+          description: The set of nodes to retrieve.
+      additionalProperties: false
+      description: A request for a set of available fields tree nodes.
+    GetFieldsResponse:
+      type: object
+      properties:
+        nodes:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/QueryNode'
+          description: The requested QueryNodes
+        fields:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/QueryField'
+          description: The requested QueryFields
+      additionalProperties: false
+      description: 'Response model for GetRootNodesForQueryType and GetChildrenOfQueryNode
+
+        (deprecated — use v2 with string IDs).'
+    AvailableFieldsSearchResultV2:
+      type: object
+      properties:
+        result_type:
+          $ref: '#/components/schemas/AvailableFieldsSearchResultType'
+        id_sequence:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: The sequence of node and field IDs from the root node to the matching node or field.
+        result_path:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: The path of nodes leading to and including the matched node or field.
+        unique_id:
+          type:
+          - string
+          - 'null'
+          description: 'The unique ID of a specific-type field, used to disambiguate fields that share the same
+
+            field ID (e.g., rating categories, phone types). Null when not a specific-type field.'
+      additionalProperties: false
+      description: A matching result from the available fields search.
+    QueryType:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The immutable ID of the query type
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The display name of the query type
+      additionalProperties: false
+      description: 'Query types define a base table against which a query can be executed and
+
+        a set of fields that are available to use in the query.'
+    AvailableFieldsSearchResponseV2:
+      required:
+      - limit
+      type: object
+      properties:
+        available_fields:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/AvailableFieldsSearchResultV2'
+          description: Available nodes/fields that match the search criteria.
+        continuation_token:
+          type:
+          - string
+          - 'null'
+          description: 'A value will be returned here if not all possible results have been returned.
+
+            To get the next page of results, make another request with this token and the same search criteria.'
+        limit:
+          type: integer
+          description: The limit on the search request.
+          format: int32
+      additionalProperties: false
+      description: Results of an available field search
+    QueryField:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID of the field
+          format: int32
+        available_field_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the field to display in the available fields list
+        selected_field_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the field to display when the field is selected for filter, output, or sort
+        unique_id:
+          type:
+          - string
+          - 'null'
+          description: The attribute type ID, or the specific type ID
+        attribute_type_of_data:
+          $ref: '#/components/schemas/AttributeValueType'
+        value_type:
+          $ref: '#/components/schemas/QueryValueType'
+        one_to_many:
+          type: boolean
+          description: Indicates if the field has a one-to-many relationship with the query's base type.
+        output_sort_can_add_edit:
+          type: boolean
+          description: True if add/edit is supported on the output and sort tabs
+        criteria_can_add_edit:
+          type: boolean
+          description: True if add/edit is supported on the criteria tab
+        execute_by_id_supported:
+          type: boolean
+          description: True if a query that references this field can be executed by ID
+        allowed_filter_operators:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/AllowedFilterOperators'
+          description: The set of allowed filter operators for this field.
+        additional_properties:
+          description: Additional properties of the query field
+        node_path:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/QueryNodeBase'
+          description: 'The chain of ancestor nodes for this field, ordered from the field''s immediate parent up to the root node.
+
+            Each entry exposes the node''s ID, localized name, and node type. The field itself is not included.'
+        summary_value_type:
+          $ref: '#/components/schemas/QueryValueType'
+        summary_has_available_fields:
+          type:
+          - boolean
+          - 'null'
+          description: Whether the field is a Summary field that has child filters available.
+          readOnly: true
+        summary_has_default_filters:
+          type:
+          - boolean
+          - 'null'
+          description: Whether the field is an FE Summary field that has default filters applied.
+          readOnly: true
+        address_processing:
+          type: boolean
+          description: Whether the field is an RE Address Processing field.
+        web_view_only:
+          type: boolean
+          description: Whether the field is only available in web view.
+        help_text:
+          type:
+          - string
+          - 'null'
+          description: Optional help text describing how the field behaves, suitable for display in a popover.
+      additionalProperties: false
+      description: A field available for use in a query
+    GetNodesResponseV2:
+      type: object
+      properties:
+        nodes:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/GetNodeResponseV2'
+          description: The requested set of nodes.
+      additionalProperties: false
+      description: Response containing the requested set of nodes.
+    AttributeValueType:
+      enum:
+      - Text
+      - Number
+      - Date
+      - Currency
+      - Boolean
+      - TableEntry
+      - Constituent
+      - FuzzyDate
+      type: string
+      description: The type of value for attributes<p>Members:</p><ul><li><i>Text</i></li><li><i>Number</i></li><li><i>Date</i></li><li><i>Currency</i></li><li><i>Boolean</i></li><li><i>TableEntry</i></li><li><i>Constituent</i></li><li><i>FuzzyDate</i></li></ul>
+    GetQueryTypesResponse:
+      type: object
+      properties:
+        query_types:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/QueryType'
+          description: The requested set of query types.
+        default_query_type_id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the query type to select as the default.
+          format: int32
+      additionalProperties: false
+      description: Response model for GET /querytypes
+    QueryNodeBase:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: 'The ID of the node. Format: plain numeric string for static nodes (e.g., "10516"),
+
+            or "{parentNodeId}_{uniqueId}" for dynamic nodes (e.g., "10516_2212").'
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the node to display
+        node_type:
+          $ref: '#/components/schemas/NodeType'
+        gift_processing_options_supported:
+          type: boolean
+          description: 'Whether this node is eligible to carry a node-level GiftProcessingOptions override as a plain
+
+            Gifts collection node. RE only; always false for FE.'
+        select_from_query_type_ids:
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+            format: int32
+          description: 'The query type IDs that a child select anchored on this node may reference via select-from, i.e.
+
+            "only select from the records found by this other query". An empty or absent collection means
+
+            select-from is not supported on this node. Currently populated only for gift nodes - both the plain
+
+            Gifts collection nodes and the gift summary nodes - which may reference Gift queries. RE only;
+
+            always empty for FE.'
+        web_view_only:
+          type: boolean
+          description: 'Whether the node is only available in web view, mirroring the field-level
+
+            WebViewOnly flag. Lives on the base so it reaches every node shape a caller
+
+            sees: the available fields tree (QueryNodeV2), the ancestor chain on a saved query''s
+
+            fields (NodePath), and a single-row subquery''s own node
+
+            (ChildSelectQueryNode). The node is still returned everywhere; the flag is passed
+
+            through so the SPA can surface it (cloud icon and help doc link) the same way it does for fields.'
+      additionalProperties: false
+      description: Base class containing common properties for query nodes
+    QueryNode:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The integer ID of the node.
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the node to display
+        node_type:
+          $ref: '#/components/schemas/NodeType'
+        fields:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/QueryField'
+          description: The fields of the node, such as for Attribute Types or Specific Types
+      additionalProperties: false
+      description: V1 node in the available fields tree with integer ID (deprecated — use v2 with string IDs).
+    AvailableFieldsSearchErrorCodes:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".<br/><br/>Available values:<table><tr><th>type</th><th>detail</th></tr><tr><td>urn:blackbaud:model-validation-error</td><td>A model validation rule was violated, such as a missing required field.</td></tr><tr><td>urn:blackbaud:missing-product</td><td>Product was not supplied.</td></tr><tr><td>urn:blackbaud:invalid-product</td><td>Supplied product is invalid.</td></tr><tr><td>urn:blackbaud:invalid-module</td><td>Supplied module is invalid.</td></tr><tr><td>urn:blackbaud:invalid-module-for-product</td><td>Module {0} is not valid for product {1}</td></tr><tr><td>urn:blackbaud:required-field</td><td>The required field '{0}' does not have a value.</td></tr><tr><td>urn:blackbaud:invalid-integer-value</td><td>{0} is not a valid value for {1}.</td></tr><tr><td>urn:blackbaud:invalid-available-fields-search-continuation-token</td><td>An invalid available fields search continuation token was provided.  Use a value returned from a previous available field search.</td></tr></table>
+        title:
+          type:
+          - string
+          - 'null'
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type:
+          - integer
+          - 'null'
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: {}
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-bb-error-types:
+      - urn:blackbaud:model-validation-error
+      - urn:blackbaud:missing-product
+      - urn:blackbaud:invalid-product
+      - urn:blackbaud:invalid-module
+      - urn:blackbaud:invalid-module-for-product
+      - urn:blackbaud:required-field
+      - urn:blackbaud:invalid-integer-value
+      - urn:blackbaud:invalid-available-fields-search-continuation-token
+    QueryValueType:
+      enum:
+      - Text
+      - Boolean
+      - Date
+      - FuzzyDate
+      - TableEntry
+      - Lookup
+      - Search
+      - StaticEntry
+      - Summary
+      - FESummaryDate
+      type: string
+      description: The type of value for a field.  Indicates which UI control should be offered to the user for entering filter values.<p>Members:</p><ul><li><i>Text</i> - Text value (string, number, etc.) that doesn't have a list of values or other special functionality (date, search, etc.)</li><li><i>Boolean</i> - Combo box with Yes and No values</li><li><i>Date</i> - Absolute/relative date options</li><li><i>FuzzyDate</i> - Absolute/relative fuzzy date options</li><li><i>TableEntry</i> - Combo box displaying values from a code table lookup</li><li><i>Lookup</i> - Combo box displaying values from a table lookup</li><li><i>Search</i> - Search field</li><li><i>StaticEntry</i> - Combo box displaying a static list of entries</li><li><i>Summary</i> - Summary fields (sum, average, etc.)</li><li><i>FESummaryDate</i> - FE specific value type for date used in certain summary fields</li></ul>
+    AllowedFilterOperators:
+      enum:
+      - Equals
+      - DoesNotEqual
+      - RelativeComparisons
+      - OneOf
+      - StringComparisons
+      - Blank
+      - Ask
+      - SoundsLike
+      - OneOfEach
+      - QueryResults
+      type: string
+      description: The set of allowed filter operators for a query field<p>Members:</p><ul><li><i>Equals</i> - Equals</li><li><i>DoesNotEqual</i> - DoesNotEqual</li><li><i>RelativeComparisons</i> - GreaterThan, GreaterThanOrEqualTo, LessThan, LessThanOrEqualTo, Between, NotBetween</li><li><i>OneOf</i> - OneOf, NotOneOf</li><li><i>StringComparisons</i> - BeginsWith, DoesNotBeginWith, Contains, DoesNotContain, Like, NotLike</li><li><i>Blank</i> - Blank, NotBlank</li><li><i>Ask</i> - Ask</li><li><i>SoundsLike</i> - SoundsLike</li><li><i>OneOfEach</i> - OneOfEach</li><li><i>QueryResults</i> - InQueryResults, NotInQueryResults</li></ul>
+    AvailableFieldsSearchResult:
+      type: object
+      properties:
+        result_type:
+          $ref: '#/components/schemas/AvailableFieldsSearchResultType'
+        id_sequence:
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+            format: int32
+          description: The sequence of node and field IDs from the root node to the matching node or field.
+        result_path:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: The path of nodes leading to and including the matched node or field.
+        rating_unique_id:
+          type:
+          - string
+          - 'null'
+          description: The unique ID of a rating field, null when it is not a rating field
+      additionalProperties: false
+      description: 'A matching result from the available fields search.
+
+        (deprecated — use v2 with string IDs).'
+    QueryNodesRequest:
+      required:
+      - node_ids
+      type: object
+      properties:
+        node_ids:
+          type: array
+          items:
+            type: integer
+            format: int32
+          description: The set of nodes to retrieve (integer IDs).
+      additionalProperties: false
+      description: 'V1 request for a set of available fields tree nodes using integer IDs
+
+        (deprecated — use v2 with string IDs).'
+    QueryNodeV2:
+      type: object
+      properties:
+        fields:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/QueryField'
+          description: "The fields belonging to this node.\n\nThe value indicates the loading state:\n<list type=\"bullet\"><item>`null` — Fields are deferred; the client must make an additional\n  request to load them (e.g., expanding the node in the tree).</item><item>Empty collection — Fields are loaded but the node has none.</item><item>Non-empty collection — Fields are loaded with data.</item></list>"
+        common_fields_node:
+          type: boolean
+          description: Indicates this node is a synthetic "Common Fields" grouping node, so the SPA can handle it accordingly.
+        id:
+          type:
+          - string
+          - 'null'
+          description: 'The ID of the node. Format: plain numeric string for static nodes (e.g., "10516"),
+
+            or "{parentNodeId}_{uniqueId}" for dynamic nodes (e.g., "10516_2212").'
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the node to display
+        node_type:
+          $ref: '#/components/schemas/NodeType'
+        gift_processing_options_supported:
+          type: boolean
+          description: 'Whether this node is eligible to carry a node-level GiftProcessingOptions override as a plain
+
+            Gifts collection node. RE only; always false for FE.'
+        select_from_query_type_ids:
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+            format: int32
+          description: 'The query type IDs that a child select anchored on this node may reference via select-from, i.e.
+
+            "only select from the records found by this other query". An empty or absent collection means
+
+            select-from is not supported on this node. Currently populated only for gift nodes - both the plain
+
+            Gifts collection nodes and the gift summary nodes - which may reference Gift queries. RE only;
+
+            always empty for FE.'
+        web_view_only:
+          type: boolean
+          description: 'Whether the node is only available in web view, mirroring the field-level
+
+            WebViewOnly flag. Lives on the base so it reaches every node shape a caller
+
+            sees: the available fields tree (QueryNodeV2), the ancestor chain on a saved query''s
+
+            fields (NodePath), and a single-row subquery''s own node
+
+            (ChildSelectQueryNode). The node is still returned everywhere; the flag is passed
+
+            through so the SPA can surface it (cloud icon and help doc link) the same way it does for fields.'
+      additionalProperties: false
+      description: A node in the available fields tree
+    AvailableFieldsSearchResponse:
+      required:
+      - limit
+      type: object
+      properties:
+        available_fields:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/AvailableFieldsSearchResult'
+          description: Available nodes/fields that match the search criteria.
+        continuation_token:
+          type:
+          - string
+          - 'null'
+          description: 'A value will be returned here if not all possible results have been returned.
+
+            To get the next page of results, make another request with this token and the same search criteria.'
+        limit:
+          type: integer
+          description: The limit on the search request.
+          format: int32
+      additionalProperties: false
+      description: 'Results of an available field search
+
+        (deprecated — use v2 with string IDs).'
+    AvailableFieldsSearchResultType:
+      enum:
+      - Node
+      - Field
+      type: string
+      description: Whether the AvailableFieldsSearchResultV2 is a node or a field in the available fields tree.<p>Members:</p><ul><li><i>Node</i> - The search result is a node.</li><li><i>Field</i> - The search result is a field.</li></ul>
+    GetNodeResponseV2:
+      type: object
+      properties:
+        node_id:
+          type:
+          - string
+          - 'null'
+          description: The ID of the node.
+        nodes:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/QueryNodeV2'
+          description: The requested QueryNodeV2s
+        fields:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/QueryField'
+          description: The requested QueryFields
+      additionalProperties: false
+      description: A requested node.
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".
+        title:
+          type:
+          - string
+          - 'null'
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type:
+          - integer
+          - 'null'
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: {}
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+    QueryDefinitionServiceErrorCodes:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".<br/><br/>Available values:<table><tr><th>type</th><th>detail</th></tr><tr><td>urn:blackbaud:model-validation-error</td><td>A model validation rule was violated, such as a missing required field.</td></tr><tr><td>urn:blackbaud:missing-product</td><td>Product was not supplied.</td></tr><tr><td>urn:blackbaud:invalid-product</td><td>Supplied product is invalid.</td></tr><tr><td>urn:blackbaud:invalid-module</td><td>Supplied module is invalid.</td></tr><tr><td>urn:blackbaud:invalid-module-for-product</td><td>Module {0} is not valid for product {1}</td></tr></table>
+        title:
+          type:
+          - string
+          - 'null'
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type:
+          - integer
+          - 'null'
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: {}
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-bb-error-types:
+      - urn:blackbaud:model-validation-error
+      - urn:blackbaud:missing-product
+      - urn:blackbaud:invalid-product
+      - urn:blackbaud:invalid-module
+      - urn:blackbaud:invalid-module-for-product
+    GetFieldsResponseV2:
+      type: object
+      properties:
+        nodes:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/QueryNodeV2'
+          description: The requested QueryNodeV2s
+        fields:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/QueryField'
+          description: The requested QueryFields
+      additionalProperties: false
+      description: Response model for GetRootNodesForQueryTypeV2 and GetChildrenOfQueryNodeV2
+    GetNodesResponse:
+      type: object
+      properties:
+        nodes:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/GetNodeResponse'
+          description: The requested set of nodes.
+      additionalProperties: false
+      description: 'Response containing the requested set of nodes.
+
+        (deprecated — use v2 with string IDs).'
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

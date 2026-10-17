@@ -1,0 +1,81 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: School Timezone API'
+  description: This API is used to provide access to school information such as users, academics, admissions, athletics, content, lists, and general school info.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/school
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/school
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Timezone
+paths:
+  /v1/timezone:
+    get:
+      operationId: V1TimezoneGet
+      summary: Core time zone
+      description: 'Returns the current time zone set for the school.
+
+
+        Requires at least one of the following roles in the Education Management system:
+
+
+        Academic Group Manager
+
+
+        Platform Manager
+
+
+        Any Manager Role'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Timezone'
+              example:
+                timezone_name: Eastern Standard Time
+                is_daylight_savings_time: false
+                utc_offset: -05:00:00
+      tags:
+      - Timezone
+components:
+  schemas:
+    Timezone:
+      type: object
+      properties:
+        timezone_name:
+          type:
+          - string
+          - 'null'
+          description: The timezone the school is set to
+        is_daylight_savings_time:
+          type:
+          - boolean
+          - 'null'
+          description: Gets or sets the daylight savings time flag
+        utc_offset:
+          type:
+          - string
+          - 'null'
+          description: The UTC offset
+      additionalProperties: false
+      description: Timezone model
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

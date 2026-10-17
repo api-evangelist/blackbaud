@@ -1,0 +1,400 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: CSRconnect Charities API'
+  description: This API is for YourCause CSRconnect from Blackbaud.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/csr-connect
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/csr-connect
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Charities
+paths:
+  /v1/charities/buckets/search/charities:
+    post:
+      operationId: SearchAffiliateCharities
+      summary: Search for charities in an affiliate's bucket (PREVIEW)
+      description: 'This is a simpler search operation that doesn''t require the caller to send the charity bucket ID. Instead, the API will resolve the charity bucket from the authenticated affiliate and then perform the same bucket search behavior used by the standard bucket search endpoint.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CharitiesBucketRequest'
+            example:
+              terms: habitat
+              page: 1
+              limit: 10
+        description: Search request
+      responses:
+        '401':
+          description: Unauthorized
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: Authentication credentials were missing or invalid.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '400':
+          description: Returned when the specified request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request was invalid or missing required parameters.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of charities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CharityBucketSearchResponse'
+              example:
+                page_count: 3
+                total_count: 25
+                page: 1
+                limit: 10
+                charities:
+                - name: Habitat for Humanity
+                  id: 1001
+                  image_url: https://example.com/images/habitat.png
+                  mission_statement: Building homes, communities, and hope.
+                  registration_number: REG-001
+                  location:
+                    address: 285 Peachtree Center Ave NE
+                    city: Atlanta
+                    state: GA
+                    zip: '30303'
+                    country_code: US
+        '403':
+          description: Returned when the user does not have rights to view the charity bucket.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: You do not have permission to access this resource.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '404':
+          description: Returned when the affiliate is segmented or doesn't have a volunteering bucket configured.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Not Found
+                status: 404
+                detail: The requested resource could not be found.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+      tags:
+      - Charities
+  /v1/charities/buckets/{bucket_id}/search/charities:
+    post:
+      operationId: SearchCharities
+      summary: Search for charities in a charity bucket (PREVIEW)
+      description: 'Returns charities within a charity bucket that meet the provided criteria. Charity buckets are sets of charities eligible for specific CSRconnect features. Pass the bucket ID for the employee and feature you are working with.
+
+
+        Once you have the bucket ID, you can construct a request to search the bucket. In the body of the request, provide the search term, page number, and limit. The term is the string which the API will use to search charity name. The page is the page number of the paginated results you want to pull. The limit is the number of results per page. There is a limit of 25 results per page.
+
+
+        For each valid request, the api will return a payload of charity results and details for each organization.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: bucket_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The ID of the charity bucket
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CharitiesBucketRequest'
+            example:
+              terms: habitat
+              page: 1
+              limit: 10
+        description: Search request
+      responses:
+        '401':
+          description: Unauthorized
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: Authentication credentials were missing or invalid.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '400':
+          description: Returned when the specified request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request was invalid or missing required parameters.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of charities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CharityBucketSearchResponse'
+              example:
+                page_count: 3
+                total_count: 25
+                page: 1
+                limit: 10
+                charities:
+                - name: Habitat for Humanity
+                  id: 1001
+                  image_url: https://example.com/images/habitat.png
+                  mission_statement: Building homes, communities, and hope.
+                  registration_number: REG-001
+                  location:
+                    address: 285 Peachtree Center Ave NE
+                    city: Atlanta
+                    state: GA
+                    zip: '30303'
+                    country_code: US
+        '403':
+          description: Returned when the user does not have rights to view the charity bucket.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: You do not have permission to access this resource.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '404':
+          description: Returned when the charity bucket is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Not Found
+                status: 404
+                detail: The requested resource could not be found.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+      tags:
+      - Charities
+components:
+  schemas:
+    CharitiesBucketRequest:
+      required:
+      - terms
+      type: object
+      properties:
+        terms:
+          type:
+          - string
+          - 'null'
+          description: The term used to search for charities by charity name within the bucket.
+        page:
+          type: integer
+          description: The number of result's page to return.
+          format: int32
+        limit:
+          maximum: 25
+          minimum: 1
+          type: integer
+          description: The maximum number of charities to return per page. Maximum value is 25.
+          format: int32
+          default: 10
+      additionalProperties: false
+      description: Represents the request parameters for searching charities within a bucket.
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference (RFC 3986) that identifies the problem type. When dereferenced, it should provide human-readable documentation for the problem. Defaults to "about:blank" when not present.<br/><br/>Available values:<table><tr><th>type</th><th>detail</th></tr><tr><td>about:blank</td><td>Type is not defined</td></tr></table>
+        title:
+          type:
+          - string
+          - 'null'
+          description: A short, human-readable summary of the problem type.
+        status:
+          type:
+          - integer
+          - 'null'
+          description: The HTTP status code for this occurrence of the problem.
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: {}
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+    LocationResponse:
+      type: object
+      properties:
+        address:
+          type:
+          - string
+          - 'null'
+          description: The street address of the charity.
+        city:
+          type:
+          - string
+          - 'null'
+          description: The city of the charity's address.
+        state:
+          type:
+          - string
+          - 'null'
+          description: The state or province of the charity's address.
+        zip:
+          type:
+          - string
+          - 'null'
+          description: The ZIP or postal code of the charity's address.
+        country_code:
+          type:
+          - string
+          - 'null'
+          description: The ISO 3166-1 alpha-2 country code of the charity's address (e.g. "US", "CA").
+      additionalProperties: false
+      description: Represents the physical address of a charity.
+    CharityResponse:
+      type: object
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the charity.
+        id:
+          type: integer
+          description: Charity ID.
+          format: int32
+        nonprofit_id:
+          type:
+          - string
+          - 'null'
+          description: The charity's nonprofit ID (GUID), used to reference the charity across Blackbaud systems.
+          format: uuid
+        image_url:
+          type:
+          - string
+          - 'null'
+          description: The URL of the charity's logo.
+        mission_statement:
+          type:
+          - string
+          - 'null'
+          description: The charity's mission statement.
+        registration_number:
+          type:
+          - string
+          - 'null'
+          description: The charity's official registration number.
+        location:
+          $ref: '#/components/schemas/LocationResponse'
+      additionalProperties: false
+      description: Represents a charity returned in a charity bucket search.
+    CharityBucketSearchResponse:
+      required:
+      - limit
+      type: object
+      properties:
+        page_count:
+          type: integer
+          description: The total number of pages in the search results.
+          format: int32
+        total_count:
+          type: integer
+          description: The total number of charities matching the search criteria.
+          format: int32
+        page:
+          type: integer
+          description: The current page number of the search results.
+          format: int32
+        limit:
+          type: integer
+          description: The number of charities returned per page.
+          format: int32
+        charities:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CharityResponse'
+          description: The list of charities returned for the current page.
+        continuation_token:
+          type:
+          - string
+          - 'null'
+          description: 'A token to retrieve the next page of results. null when no further results are available.
+
+            Currently always null as the upstream API does not yet support cursor-based pagination.'
+      additionalProperties: false
+      description: Represents the paginated search results for charities within a bucket.
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

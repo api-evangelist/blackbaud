@@ -1,0 +1,246 @@
+openapi: 3.2.0
+info:
+  title: Blackbaud Applicationusers API
+  version: '1.0'
+  x-refined-note:
+  - x-apievangelist-provenance differs across the merged source definitions and was not carried
+  description: 'Operations tagged Applicationusers across 2 of this provider''s published API definitions: blackbaud-altru-administration-api-openapi.yml, blackbaud-crm-administration-api-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.sky.blackbaud.com/alt-adnmg
+- url: https://api.sky.blackbaud.com/crm-adnmg
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Applicationusers
+paths:
+  /applicationusers/thirdpartyauth/bulk:
+    patch:
+      operationId: EditApplicationUserThirdPartyAuthBulk
+      summary: Edit third-party authentication application users in bulk
+      description: A data form used to add multiple third-party authentication application users to the system.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditApplicationUserThirdPartyAuthBulk'
+            example:
+              add_linked_cms_users: false
+              users:
+              - display_name: Robert Smith
+                email_address: robert.smith@example.com
+                site_id: 30af73c5-cfb1-4ec7-a450-9d5f7c9b9f13
+                currency_set: 9d848188-1743-4cf4-8bf9-7cafedb8f5b3
+                cms_user_id: 2ec7ac5a-a41b-4a8e-9128-89dcd5f0f108
+              send_invitation: false
+        description: ConfigurationMessage object representing operation intended to be edited
+      responses:
+        '200':
+          description: Returned when the operation succeeds.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EditApplicationUserThirdPartyAuthBulk'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to update the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Applicationusers
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-adnmg
+  /applicationusers/{application_user_id}:
+    patch:
+      operationId: EditApplicationUser
+      summary: Edit an application user
+      description: Data form used to edit an application user with CMS fields
+      parameters:
+      - name: application_user_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The application user ID.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditApplicationUser'
+            example:
+              constituent_id: 9c3d4e2c-8d1f-4b28-a707-f3f424f8f84b
+              username: robert.smith
+              site_id: e8617fc5-6ce0-41eb-aa89-17268ca4f2f0
+              currency_set: 8adf7694-8a17-4f5b-a6e1-0c13cc9ff4c9
+              cms_username: a6bfab5b-3d95-47dc-bf00-457f164326bd
+        description: ConfigurationMessage object representing operation intended to be updated
+      responses:
+        '200':
+          description: Returned when the operation succeeds.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EditApplicationUser'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to update the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Applicationusers
+    get:
+      operationId: GetApplicationUser
+      summary: Get an application user
+      description: Data form used to edit an application user with CMS fields
+      parameters:
+      - name: application_user_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The application user ID.
+      responses:
+        '200':
+          description: Returned when the operation succeeds.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EditApplicationUser'
+        '403':
+          description: Returned when the user does not have permission to read the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Applicationusers
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-adnmg
+components:
+  schemas:
+    EditApplicationUserThirdPartyAuthBulkUsers:
+      type: object
+      properties:
+        display_name:
+          type: string
+          description: Name.
+        email_address:
+          type: string
+          description: Email invitation to.
+        site_id:
+          type: string
+          description: Site.
+        currency_set:
+          type: string
+          description: Currency set.
+        cms_user_id:
+          type: string
+          description: CMS user.
+      additionalProperties: false
+      description: EditApplicationUserThirdPartyAuthBulkUsers
+      x-display-name: Application users
+      x-display-id: Application users
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type: integer
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type: string
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: false
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-display-name: Problem details
+      x-display-id: ProblemDetails
+    EditApplicationUser:
+      type: object
+      properties:
+        constituent_id:
+          type: string
+          description: The constituent ID.
+        username:
+          type: string
+          description: The application user.
+        site_id:
+          type: string
+          description: The site.
+        currency_set:
+          type: string
+          description: The currency set.
+        cms_username:
+          type: string
+          description: The link to an existing CMS user.
+      additionalProperties: false
+      description: EditApplicationUser
+      x-display-name: Application User CMS Edit Form
+      x-display-id: f20ec6df-abb8-4dbf-95e1-317d45df8dc5
+    EditApplicationUserThirdPartyAuthBulk:
+      type: object
+      properties:
+        add_linked_cms_users:
+          type: boolean
+          description: Indicates whether add linked CMS users.
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/EditApplicationUserThirdPartyAuthBulkUsers'
+          description: Application users.
+        send_invitation:
+          type: boolean
+          description: Indicates whether send invitation.
+      additionalProperties: false
+      description: EditApplicationUserThirdPartyAuthBulk
+      x-display-name: A data form used to add multiple third-party authentication application users to the system.
+      x-display-id: A data form used to add multiple third-party authentication application users to the system.
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+x-refined-from:
+- blackbaud-altru-administration-api-openapi.yml
+- blackbaud-crm-administration-api-openapi.yml

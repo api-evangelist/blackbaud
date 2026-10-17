@@ -1,0 +1,179 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Payments Paymentconfigurations API'
+  description: This API enables users to accept and manage payments via Blackbaud Merchant Services.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/payments
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/payments
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Paymentconfigurations
+paths:
+  /v1/paymentconfigurations:
+    get:
+      operationId: ListPaymentConfiguration
+      summary: Payment configuration list
+      description: Returns a set of payment configurations.
+      parameters:
+      - name: include_inactive
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: 'false'
+        description: True to include payment configurations whose status is inactive.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains a set of payment configurations.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentConfigurationListRead'
+              example:
+                count: 1
+                value:
+                - active: true
+                  avs_level: Medium
+                  csc_level: Full
+                  currency: USD
+                  id: 19761b45-9295-4a5c-aa26-c754200cd90f
+                  name: Blackbaud Payment Configuration
+                  process_mode: Test
+                  supported_cards:
+                  - Discover
+                  - MasterCard
+                  - Visa
+                  use3ds: false
+        '400':
+          description: Returned when the request body is not in the appropriate format. The response body contains error details.
+      tags:
+      - Paymentconfigurations
+  /v1/paymentconfigurations/{payment_configuration_id}:
+    get:
+      operationId: GetPaymentConfiguration
+      summary: Payment configuration
+      description: Returns information about a payment configuration.
+      parameters:
+      - name: payment_configuration_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The identifier for the payment configuration.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains payment configuration details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentConfigurationRead'
+              example:
+                active: true
+                avs_level: Medium
+                csc_level: Full
+                currency: USD
+                id: 19761b45-9295-4a5c-aa26-c754200cd90f
+                name: Blackbaud Payment Configuration
+                process_mode: Test
+                supported_cards:
+                - Discover
+                - MasterCard
+                - Visa
+                use3ds: false
+        '400':
+          description: Returned when the request body is not in the appropriate format. The response body contains error details.
+        '404':
+          description: Returned when the specified payment configuration is not found. The response body contains error details.
+      tags:
+      - Paymentconfigurations
+components:
+  schemas:
+    PaymentConfigurationRead:
+      type: object
+      properties:
+        active:
+          type: boolean
+          description: True if the payment configuration is active.
+          x-bb-suppressions:
+          - parameter_property_name
+        avs_level:
+          type:
+          - string
+          - 'null'
+          description: 'The AVS level for this payment configuration.
+
+            Possible values are None, Full, Medium, or Light.'
+        csc_level:
+          type:
+          - string
+          - 'null'
+          description: 'The CSC level for this payment configuration.
+
+            Possible values are None, Full, or Light.'
+        currency:
+          type:
+          - string
+          - 'null'
+          description: The currency used for this payment configuration.
+        id:
+          type: string
+          description: The unique identifier for this payment configuration.
+          format: uuid
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the payment configuration.
+        process_mode:
+          type:
+          - string
+          - 'null'
+          description: 'The processing mode for this payment configuration.
+
+            Possible values are Live, Test, or Demo.'
+        supported_cards:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: The list of supported card type IINs
+        use3ds:
+          type: boolean
+          description: True if the payment configuration is set to use 3DS processing.
+      additionalProperties: false
+      description: Defines a payment configuration.
+    PaymentConfigurationListRead:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: Total count of PaymentConfigurationRead records
+          format: int32
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/PaymentConfigurationRead'
+          description: An array of PaymentConfigurationRead records
+      additionalProperties: false
+      description: Defines a set of payment configurations.
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

@@ -1,0 +1,1027 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Statistical Unit Units API'
+  description: This API manages information related to tracking statistical units for financial reporting and allocations.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/statistical-unit
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/statistical-unit
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Units
+paths:
+  /v1/units:
+    post:
+      operationId: CreateUnit
+      summary: Unit (Create)
+      description: Creates a non-financial statistical unit.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUnit'
+            example:
+              cumulative: true
+              description: Number of the meals served at the shelter.
+              elements:
+              - id: 17
+              integer: true
+              name: Meals served
+        description: Unit to be created.
+      responses:
+        '200':
+          description: Returned when the operation successfully added a new unit entity.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse'
+              example:
+                id: 40
+        '400':
+          description: Returned when one or more invalid request parameters were provided.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1UnitsPost400ApplicationJsonResponse'
+              example:
+              - message: The value 'xxx' is not valid for Int32.
+                error_name: BadRequest
+                error_code: 400
+                raw_message: The value 'xxx' is not valid for Int32.
+      tags:
+      - Units
+    get:
+      operationId: SearchUnit
+      summary: Unit (Search)
+      description: Searches for non-financial statistical units.
+      parameters:
+      - name: sort
+        in: query
+        required: false
+        schema:
+          type: array
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+      - name: include_inactive
+        in: query
+        required: false
+        schema:
+          type: boolean
+      - name: search_text
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of unit entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnitCollection'
+              example:
+                count: 4
+                value:
+                - id: 65
+                  cumulative: false
+                  description: Total space in the building.
+                  elements:
+                  - id: 5
+                  inactive: true
+                  integer: true
+                  name: Square feet
+        '400':
+          description: Returned when one or more invalid request parameters were provided.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1UnitsGet400ApplicationJsonResponse'
+              example:
+              - message: The value 'xxx' is not valid for Int32.
+                error_name: BadRequest
+                error_code: 400
+                raw_message: The value 'xxx' is not valid for Int32.
+      tags:
+      - Units
+  /v1/units/{unit_id}:
+    delete:
+      operationId: DeleteUnit
+      summary: Unit (Delete)
+      description: Deletes (marks as inactive) a non-financial statistical unit.
+      parameters:
+      - name: unit_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the unit.
+      - name: If-Match
+        in: header
+        required: true
+        schema:
+          type: string
+        description: ETag of the Entity. The value should match the current ETag header value from the unit type GET request or it should be * for an unconditional update.
+      responses:
+        '200':
+          description: Returned when the operation successfully deleted the specified unit entity.
+        '404':
+          description: Returned when the requested unit is not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Units-unit_id-Delete404ApplicationJsonResponse'
+              example:
+              - message: The entity could not be found.
+                error_name: NotFound
+                error_code: 404
+                raw_message: The entity could not be found.
+        '412':
+          description: Returned when the client provides an invalid entity tag in the If-Match header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Units-unit_id-Delete412ApplicationJsonResponse'
+              example:
+              - message: This record was modified by another user. Please try again.
+                error_name: Concurrency
+                error_code: 412
+                raw_message: This record was modified by another user. Please try again.
+      tags:
+      - Units
+    patch:
+      operationId: EditUnit
+      summary: Unit (Edit)
+      description: Updates the name or description of a non-financial statistical unit.
+      parameters:
+      - name: unit_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the unit to update.
+      - name: If-Match
+        in: header
+        required: true
+        schema:
+          type: string
+        description: ETag of the Entity. The value should match the current ETag header value from the unit type GET request or it should be * for an unconditional update.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUnit'
+            example:
+              description: Number of the meals served at the shelter.
+              name: Meals served
+        description: The fields of the unit to be updated.
+      responses:
+        '200':
+          description: Returned when the operation successfully updated the specified unit entity.
+        '400':
+          description: Returned when one or more invalid request parameters were provided.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Units-unit_id-Patch400ApplicationJsonResponse'
+              example:
+              - message: The value 'xxx' is not valid for Int32.
+                error_name: BadRequest
+                error_code: 400
+                raw_message: The value 'xxx' is not valid for Int32.
+        '404':
+          description: Returned when the requested unit is not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Units-unit_id-Patch404ApplicationJsonResponse'
+              example:
+              - message: The entity could not be found.
+                error_name: NotFound
+                error_code: 404
+                raw_message: The entity could not be found.
+        '412':
+          description: Returned when the client provides an invalid entity tag in the If-Match header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Units-unit_id-Patch412ApplicationJsonResponse'
+              example:
+              - message: This record was modified by another user. Please try again.
+                error_name: Concurrency
+                error_code: 412
+                raw_message: This record was modified by another user. Please try again.
+      tags:
+      - Units
+    get:
+      operationId: GetUnit
+      summary: Unit (Get)
+      description: Gets details of a non-financial statistical unit.
+      parameters:
+      - name: unit_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the unit.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a unit entity.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unit'
+              example:
+                id: 65
+                cumulative: false
+                description: Total space in the building.
+                elements:
+                - id: 5
+                inactive: true
+                integer: true
+                name: Square feet
+        '404':
+          description: Returned when the requested unit is not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Units-unit_id-Get404ApplicationJsonResponse'
+              example:
+              - message: The entity could not be found.
+                error_name: NotFound
+                error_code: 404
+                raw_message: The entity could not be found.
+      tags:
+      - Units
+  /v1/units/{unit_id}/counts:
+    post:
+      operationId: CreateCount
+      summary: Count (Create)
+      description: Creates a count for a non-financial statistical unit.
+      parameters:
+      - name: unit_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the unit for which to create the count.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCount'
+            example:
+              date: '2018-05-10T12:00:00Z'
+              line_items:
+              - elements:
+                - id: 1
+                  value: '46'
+                line_number: 1
+                unit_value: 50
+        description: Count to create.
+      responses:
+        '200':
+          description: Returned when the operation successfully added a count entity.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse'
+              example:
+                id: 0
+        '400':
+          description: Returned when one or more invalid request parameters were provided.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Units-unit_id-CountsPost400ApplicationJsonResponse'
+              example:
+              - message: The value 'xxx' is not valid for Int32.
+                error_name: BadRequest
+                error_code: 400
+                raw_message: The value 'xxx' is not valid for Int32.
+        '404':
+          description: Returned when the requested unit is not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Units-unit_id-CountsPost404ApplicationJsonResponse'
+              example:
+              - message: The entity could not be found.
+                error_name: NotFound
+                error_code: 404
+                raw_message: The entity could not be found.
+      tags:
+      - Units
+    get:
+      operationId: SearchCounts
+      summary: Count (Search)
+      description: Searches for counts of a non-financial statistical unit.
+      parameters:
+      - name: unit_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the unit of the counts to search.
+      - name: sort
+        in: query
+        required: false
+        schema:
+          type: array
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+      - name: from_date
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: to_date
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: include_line_items
+        in: query
+        required: false
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of count entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CountCollection'
+              example:
+                count: 4
+                value:
+                - id: 65
+                  date: '2018-05-10T12:00:00Z'
+                  line_items:
+                  - id: 98
+                    elements:
+                    - id: 2
+                      value: '3'
+                    line_number: 1
+                    unit_value: 40.523
+        '400':
+          description: Returned when one or more invalid request parameters were provided.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Units-unit_id-CountsGet400ApplicationJsonResponse'
+              example:
+              - message: The value 'xxx' is not valid for Int32.
+                error_name: BadRequest
+                error_code: 400
+                raw_message: The value 'xxx' is not valid for Int32.
+        '404':
+          description: Returned when the requested unit is not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Units-unit_id-CountsGet404ApplicationJsonResponse'
+              example:
+              - message: The entity could not be found.
+                error_name: NotFound
+                error_code: 404
+                raw_message: The entity could not be found.
+      tags:
+      - Units
+  /v1/units/{unit_id}/counts/{count_id}:
+    delete:
+      operationId: DeleteCount
+      summary: Count (Delete)
+      description: Deletes a count of a non-financial statistical unit.
+      parameters:
+      - name: unit_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the unit.
+      - name: count_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the count.
+      - name: If-Match
+        in: header
+        required: true
+        schema:
+          type: string
+        description: ETag of the Entity. The value should match the current ETag header value from the unit count GET request or it should be * for an unconditional update.
+      responses:
+        '200':
+          description: Returned when the operation successfully deleted the specified count entity.
+        '404':
+          description: Returned when the requested unit is not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Units-unit_id-Counts-count_id-Delete404ApplicationJsonResponse'
+              example:
+              - message: The entity could not be found.
+                error_name: NotFound
+                error_code: 404
+                raw_message: The entity could not be found.
+        '412':
+          description: Returned when the client provides an invalid entity tag in the If-Match header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Units-unit_id-Counts-count_id-Delete412ApplicationJsonResponse'
+              example:
+              - message: This record was modified by another user. Please try again.
+                error_name: Concurrency
+                error_code: 412
+                raw_message: This record was modified by another user. Please try again.
+      tags:
+      - Units
+    patch:
+      operationId: EditCount
+      summary: Count (Edit)
+      description: Updates the date or line items of a count of a non-financial statistical unit.
+      parameters:
+      - name: unit_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the unit.
+      - name: count_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the count.
+      - name: If-Match
+        in: header
+        required: true
+        schema:
+          type: string
+        description: ETag of the Entity. The value should match the current ETag header value from the unit count GET request or it should be * for an unconditional update.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCount'
+            example:
+              date: '2018-05-10T12:00:00Z'
+              line_items:
+              - elements:
+                - id: 2
+                  value: '46'
+                line_number: 1
+                unit_value: 50
+        description: Count fields to update.
+      responses:
+        '200':
+          description: Returned when the operation successfully updated the specified count entity.
+        '400':
+          description: Returned when one or more invalid request parameters were provided.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Units-unit_id-Counts-count_id-Patch400ApplicationJsonResponse'
+              example:
+              - message: The value 'xxx' is not valid for Int32.
+                error_name: BadRequest
+                error_code: 400
+                raw_message: The value 'xxx' is not valid for Int32.
+        '404':
+          description: Returned when the requested unit is not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Units-unit_id-Counts-count_id-Patch404ApplicationJsonResponse'
+              example:
+              - message: The entity could not be found.
+                error_name: NotFound
+                error_code: 404
+                raw_message: The entity could not be found.
+        '412':
+          description: Returned when the client provides an invalid entity tag in the If-Match header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Units-unit_id-Counts-count_id-Patch412ApplicationJsonResponse'
+              example:
+              - message: This record was modified by another user. Please try again.
+                error_name: Concurrency
+                error_code: 412
+                raw_message: This record was modified by another user. Please try again.
+      tags:
+      - Units
+    get:
+      operationId: GetCount
+      summary: Count (Get)
+      description: Gets a specific count of a non-financial statistical unit.
+      parameters:
+      - name: unit_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the unit.
+      - name: count_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the count.
+      - name: include_line_items
+        in: query
+        required: false
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a count entity.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Count'
+              example:
+                id: 65
+                date: '2018-05-10T12:00:00Z'
+                line_items:
+                - id: 98
+                  elements:
+                  - id: 2
+                    value: '3'
+                  line_number: 1
+                  unit_value: 40.523
+        '400':
+          description: Returned when one or more invalid request parameters were provided.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Units-unit_id-Counts-count_id-Get400ApplicationJsonResponse'
+              example:
+              - message: The value 'xxx' is not valid for Int32.
+                error_name: BadRequest
+                error_code: 400
+                raw_message: The value 'xxx' is not valid for Int32.
+        '404':
+          description: Returned when the requested unit is not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Units-unit_id-Counts-count_id-Get404ApplicationJsonResponse'
+              example:
+              - message: The entity could not be found.
+                error_name: NotFound
+                error_code: 404
+                raw_message: The entity could not be found.
+      tags:
+      - Units
+  /v1/units/{unit_id}/counts/{count_id}/lineitems:
+    get:
+      operationId: SearchLineItems
+      summary: Line items (Search)
+      description: Searches for line items of a particular count of a non-financial statistical unit.
+      parameters:
+      - name: unit_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the unit.
+      - name: count_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the count.
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of line item entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LineItemCollection'
+              example:
+                count: 5
+                value:
+                - id: 65
+                  elements:
+                  - id: 4
+                    value: '514'
+                  line_number: 1
+                  unit_value: 36.9
+        '400':
+          description: Returned when one or more invalid request parameters were provided.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Units-unit_id-Counts-count_id-LineitemsGet400ApplicationJsonResponse'
+              example:
+              - message: The value 'xxx' is not valid for Int32.
+                error_name: BadRequest
+                error_code: 400
+                raw_message: The value 'xxx' is not valid for Int32.
+        '404':
+          description: Returned when the requested unit is not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Units-unit_id-Counts-count_id-LineitemsGet404ApplicationJsonResponse'
+              example:
+              - message: The entity could not be found.
+                error_name: NotFound
+                error_code: 404
+                raw_message: The entity could not be found.
+      tags:
+      - Units
+components:
+  schemas:
+    V1Units-unit_id-Delete412ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    Element:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+      additionalProperties: false
+    V1Units-unit_id-Counts-count_id-Patch400ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    V1Units-unit_id-CountsGet404ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    V1Units-unit_id-Counts-count_id-Delete412ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    V1Units-unit_id-Counts-count_id-Get400ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    V1UnitsPost400ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    CreateLineItem:
+      type: object
+      properties:
+        elements:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ElementValue'
+        line_number:
+          type: integer
+          format: int32
+        unit_value:
+          type:
+          - number
+          - 'null'
+          format: double
+      additionalProperties: false
+    V1Units-unit_id-Counts-count_id-LineitemsGet400ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    V1Units-unit_id-Patch400ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    ElementValue:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        value:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    V1Units-unit_id-Patch404ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    V1Units-unit_id-CountsPost404ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    CreateUnit:
+      type: object
+      properties:
+        cumulative:
+          type: boolean
+        description:
+          type:
+          - string
+          - 'null'
+        elements:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Element'
+        integer:
+          type: boolean
+        name:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    V1Units-unit_id-Counts-count_id-Patch404ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    Unit:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        cumulative:
+          type: boolean
+        description:
+          type:
+          - string
+          - 'null'
+        elements:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Element'
+        inactive:
+          type: boolean
+        integer:
+          type: boolean
+        name:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    V1Units-unit_id-Counts-count_id-Get404ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    LineItemCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/LineItem'
+      additionalProperties: false
+    Count:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        date:
+          type: string
+          format: date-time
+        line_items:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/LineItem'
+      additionalProperties: false
+    V1Units-unit_id-Counts-count_id-Patch412ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    UpdateCount:
+      type: object
+      properties:
+        date:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        line_items:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CreateLineItem'
+      additionalProperties: false
+    UnitCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Unit'
+      additionalProperties: false
+    CreateCount:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date-time
+        line_items:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CreateLineItem'
+      additionalProperties: false
+    CountCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Count'
+      additionalProperties: false
+    V1UnitsGet400ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    ServiceError:
+      type: object
+      properties:
+        message:
+          type:
+          - string
+          - 'null'
+          description: The message of the service error with any string arguments replaced.
+        error_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the service error.
+        error_code:
+          type: integer
+          description: Code number of the service error.
+          format: int32
+        raw_message:
+          type:
+          - string
+          - 'null'
+          description: 'The raw message of the service error. This message may contain string replacement arguments (ie: {0}, {1}, etc) that map to the ''error_args'' property and will be replaced when you get the full message from the ''message'' property.'
+        error_args:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: A list of arguments to be replaced in the raw message. Useful for when the message needs to be localized.
+      additionalProperties: false
+      description: Base service error contract.
+    V1Units-unit_id-Delete404ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    V1Units-unit_id-Get404ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    V1Units-unit_id-Patch412ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    V1Units-unit_id-CountsPost400ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    V1Units-unit_id-Counts-count_id-Delete404ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    UpdateUnit:
+      type: object
+      properties:
+        description:
+          type:
+          - string
+          - 'null'
+        name:
+          type:
+          - string
+          - 'null'
+        isActive:
+          type:
+          - boolean
+          - 'null'
+      additionalProperties: false
+    LineItem:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        elements:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ElementValue'
+        line_number:
+          type: integer
+          format: int32
+        unit_value:
+          type: number
+          format: double
+      additionalProperties: false
+    V1Units-unit_id-Counts-count_id-LineitemsGet404ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    PostResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+      additionalProperties: false
+    V1Units-unit_id-CountsGet400ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

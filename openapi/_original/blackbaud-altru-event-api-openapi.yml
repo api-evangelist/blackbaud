@@ -1,0 +1,4316 @@
+# x-archived-from: blackbaud-altru-event-api-openapi.yml
+# x-archived-on: 2026-10-16
+openapi: 3.0.1
+info:
+  title: 'Blackbaud SKY API: Altru Event'
+  description: Altru Event SKY API
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/alt-evtmg
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations,
+      examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/alt-evtmg
+paths:
+  /appeals/{event_id}:
+    patch:
+      operationId: EditEventAppeal
+      summary: Edit an event appeal
+      description: Operation for editing event appeals.
+      parameters:
+      - name: event_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The event id.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditEventAppeal'
+            example:
+              appeals:
+              - appeal_id: 71426f0e-690b-48cb-8255-eb19b56388b0
+                user_has_access: false
+              appuser_base_currency_id: 3e8dfa3d-36dc-4d23-b4ed-38c53ed96faa
+              event_base_currency_id: dd9ff3f2-cf84-4e69-9524-e0289643ea25
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully edits the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to edit the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+    get:
+      operationId: GetEventAppeal
+      summary: Get an event appeal
+      description: Operation for editing event appeals.
+      parameters:
+      - name: event_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The event id.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the specified resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventAppeal'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to get the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  /event/{event_id}/registrationoptions:
+    get:
+      operationId: ListEventRegistrationOptions
+      summary: List event registration options
+      description: Displays the registration options for the given event.
+      parameters:
+      - name: event_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The event id.
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Limits the number of records to return.
+      - name: session_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: A unique key provided by user for paging results. The same key will be returned in a successful response.
+      - name: infinity_session
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Values for cookies related to the Infinity load balancer session.
+      - name: more_rows_range_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Key for accessing cached results on subsequent calls to this data list.
+      - name: start_row_index
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Number of rows to skip,get result after these rows.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of result entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventRegistrationOptionListCollection'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to view the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+  /eventprices/{event_id}:
+    get:
+      operationId: ListEventPrices
+      summary: List event prices
+      description: Lists all event price lists.
+      parameters:
+      - name: event_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The event id.
+      - name: include_inactive
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: include inactive
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Limits the number of records to return.
+      - name: session_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: A unique key provided by user for paging results. The same key will be returned in a successful response.
+      - name: infinity_session
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Values for cookies related to the Infinity load balancer session.
+      - name: more_rows_range_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Key for accessing cached results on subsequent calls to this data list.
+      - name: start_row_index
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Number of rows to skip,get result after these rows.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of result entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventPriceListCollection'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to view the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+  /events:
+    post:
+      operationId: CreateEvent
+      summary: Create an event
+      description: Operation for adding an event record.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewEvent'
+            example:
+              name: Alumni Dinner
+              description: Fall alumni dinner
+              start_date: '2019-04-18T12:00:00Z'
+              start_time:
+                hour: 3
+                minute: 30
+              end_date: ''
+              end_time:
+                hour: 5
+                minute: 30
+              capacity: 100
+              main_event_id: ''
+              event_location_id: ''
+              event_location_contact_id: ''
+              copy_from_event_id: ''
+              copy_tasks: false
+              copy_invitations: false
+              copy_invitees: false
+              copy_designations: false
+              copy_expenses: false
+              copy_prices: false
+              copy_attributes: false
+              attribute_defined: false
+              sites:
+              - id: a62483d4-cb71-46ae-9f06-da0644d0629f
+                site_id: bc624727-32bd-47d7-ab30-81ed12dc3d6c
+              site_required: false
+              copy_preferences: false
+              event_category: ''
+              appeal_id: ''
+              add_quick_compare: false
+              event_location_room: ''
+              copy_job_occurrences: false
+              auction: false
+              hide_from_calendar: false
+              designations_on_fees: false
+              copy_public_description: false
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully creates the resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to create the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  /events/search:
+    get:
+      operationId: SearchEvents
+      summary: Search for events
+      description: Search screen for event records.
+      parameters:
+      - name: name
+        in: query
+        required: false
+        schema:
+          type: string
+        description: filter on the fundraising purpose name field.
+      - name: location
+        in: query
+        required: false
+        schema:
+          type: string
+        description: filter on the event location name.
+      - name: main_event_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: main event id
+      - name: apply_appuser_filter
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: hidden applyappuserfilter
+      - name: must_have_seat_layout
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: hidden musthaveseatlayout
+      - name: exclude_event_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: exclude event id
+      - name: include_inactive
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: include inactive
+      - name: main_event
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: only include main events
+      - name: siteid
+        in: query
+        required: false
+        schema:
+          type: string
+        description: site
+      - name: exact_match_only
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: exact match only
+      - name: room
+        in: query
+        required: false
+        schema:
+          type: string
+        description: filter on the event location room/unit.
+      - name: lookup_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: lookup id
+      - name: single_events_only
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: only include single events
+      - name: base_currency_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: base currency
+      - name: cms_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: cms id
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Limits the number of records to return.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of result entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventSearchCollection'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to view the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+  /events/{event_id}:
+    delete:
+      operationId: DeleteEvent
+      summary: Delete an event
+      description: Removes an event from the system.
+      parameters:
+      - name: event_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The event id
+      responses:
+        '200':
+          description: Returned when the operation successfully deletes the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to delete the resource.
+    patch:
+      operationId: EditEvent
+      summary: Edit an event
+      description: Operation for editing an event record.
+      parameters:
+      - name: event_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The event id.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditEvent'
+            example:
+              name: ''
+              description: ''
+              start_date: ''
+              start_time: ''
+              end_date: ''
+              end_time: ''
+              capacity: 0
+              main_event_id: ''
+              event_location_id: ''
+              event_location_contact_id: ''
+              sites:
+              - id: ''
+                site_id: ''
+              site_required: false
+              event_category: ''
+              quick_compare_event_id: ''
+              event_location_room: ''
+              auction: false
+              event_auction_has_items: false
+              designations_on_fees: false
+              event_has_registrants: false
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully edits the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to edit the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+    get:
+      operationId: GetEvent
+      summary: Get an event
+      description: Operation for editing an event record.
+      parameters:
+      - name: event_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The event id.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the specified resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to get the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  /events/{event_id}/appeals:
+    get:
+      operationId: ListEventAppeals
+      summary: List event appeals
+      description: Displays the appeals for the given event.
+      parameters:
+      - name: event_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The event id.
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Limits the number of records to return.
+      - name: session_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: A unique key provided by user for paging results. The same key will be returned in a successful response.
+      - name: infinity_session
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Values for cookies related to the Infinity load balancer session.
+      - name: more_rows_range_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Key for accessing cached results on subsequent calls to this data list.
+      - name: start_row_index
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Number of rows to skip,get result after these rows.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of result entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventAppealListCollection'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to view the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+  /events/{event_id}/registrants:
+    get:
+      operationId: ListEventRegistrants
+      summary: List event registrants
+      description: Displays the registrants for the given event.
+      parameters:
+      - name: event_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The event id.
+      - name: registration_type
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - Preregistration
+          - Invitation
+          - Walk-in
+        description: type
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - Will not attend
+          - Registered
+          - Canceled
+          - No reply
+          - Declined
+        description: status
+      - name: attended
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - (Unspecified)
+          - 'Yes'
+          - No-show
+          - 'No'
+        description: attended
+      - name: constituent_name
+        in: query
+        required: false
+        schema:
+          type: string
+        description: registrant
+      - name: include_subevents
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: include sub-events
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Limits the number of records to return.
+      - name: session_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: A unique key provided by user for paging results. The same key will be returned in a successful response.
+      - name: infinity_session
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Values for cookies related to the Infinity load balancer session.
+      - name: more_rows_range_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Key for accessing cached results on subsequent calls to this data list.
+      - name: start_row_index
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Number of rows to skip,get result after these rows.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of result entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventRegistrantListCollection'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to view the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+  /events/{event_id}/view:
+    get:
+      operationId: ViewEvent
+      summary: View an event
+      description: Displays summary inoperationation for an event.
+      parameters:
+      - name: event_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The event id.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the specified resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventView'
+  /locations:
+    post:
+      operationId: LocationAdd
+      summary: Location add
+      description: Operation for adding an event location record.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewEventLocation'
+            example:
+              name: Blackbaud, Inc
+              max_capacity: 50
+              address_block: 65 Fairchild Street
+              city: Charleston
+              post_code: '29492'
+              phone_number: '8004439441'
+              country: United States
+              state: SC
+              rooms:
+              - id: a62483d4-cb71-46ae-9f06-da0644d0629f
+                name: '401'
+                capacity: 2
+                in_use: false
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully creates the resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to create the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  /locations/list:
+    get:
+      operationId: LocationLists
+      summary: Location lists
+      description: Displays a list of event locations.
+      parameters:
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Limits the number of records to return.
+      - name: session_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: A unique key provided by user for paging results. The same key will be returned in a successful response.
+      - name: infinity_session
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Values for cookies related to the Infinity load balancer session.
+      - name: more_rows_range_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Key for accessing cached results on subsequent calls to this data list.
+      - name: start_row_index
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Number of rows to skip,get result after these rows.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of result entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventLocationListCollection'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to view the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+  /locations/search:
+    get:
+      operationId: LocationSearch
+      summary: Location search
+      description: Search screen for event location records.
+      parameters:
+      - name: name
+        in: query
+        required: false
+        schema:
+          type: string
+        description: name
+      - name: address_block
+        in: query
+        required: false
+        schema:
+          type: string
+        description: address
+      - name: city
+        in: query
+        required: false
+        schema:
+          type: string
+        description: city
+      - name: state
+        in: query
+        required: false
+        schema:
+          type: string
+        description: state SimpleDataListID=7fa91401-596c-4f7c-936d-6e41683121d7.
+      - name: post_code
+        in: query
+        required: false
+        schema:
+          type: string
+        description: zip/postal code
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Limits the number of records to return.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of result entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventLocationSearchCollection'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to view the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+  /locations/{event_location_id}:
+    patch:
+      operationId: EditEventLocation
+      summary: Edit an event location
+      description: Operation for editing an event location record.
+      parameters:
+      - name: event_location_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The event location id.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditEventLocation'
+            example:
+              name: Blackbaud, Inc
+              max_capicity: 50
+              address_block: 65 Fairchild Street
+              city: Charleston
+              post_code: '29492'
+              phone_number: '8004439441'
+              country: United States
+              state: South Carolina
+              rooms:
+              - id: a62483d4-cb71-46ae-9f06-da0644d0629f
+                name: '401'
+                capacity: 2
+                in_use: false
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully edits the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to edit the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+    get:
+      operationId: GetEventLocation
+      summary: Get an event location
+      description: Operation for editing an event location record.
+      parameters:
+      - name: event_location_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The event location id.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the specified resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventLocation'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to get the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+    delete:
+      operationId: LocationDelete
+      summary: Location delete
+      description: Deletes an event location from the system.
+      parameters:
+      - name: event_location_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The event location id
+      responses:
+        '200':
+          description: Returned when the operation successfully deletes the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to delete the resource.
+  /micrositeevents/{event_id}/view:
+    get:
+      operationId: ViewMicrositeEvent
+      summary: View a microsite event
+      description: Displays microsite details for an event.
+      parameters:
+      - name: event_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The event id.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the specified resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MicrositeEventView'
+  /registrantcheckin/{registrant_id}:
+    patch:
+      operationId: EditRegistrantAttendedStatus
+      summary: Edit a registrant attended status
+      description: Updates the attended status to attended for a registrant.
+      parameters:
+      - name: registrant_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The registrant id
+      responses:
+        '200':
+          description: Returned when the operation successfully deletes the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to delete the resource.
+  /registrants:
+    post:
+      operationId: CreateEventRegistrant
+      summary: Create an event registrant
+      description: Operation used for adding a registrant record along with guests and registrations.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewEventRegistrant'
+            example:
+              event_id: 0caf136c-12ee-4125-9df0-0ba180967086
+              constituent_id: 4b581e1b-4d22-4cc9-aef2-e52e9fd85de7
+              date_purchased: '2025-08-25T12:00:00Z'
+              waive_benefits: false
+              single_event_registrations:
+              - single_event_registration_id: 168bac7c-9e78-440d-ac55-61d221f4c571
+                singleeventregistrationeventprice: cf1fe3f6-ec00-4ca7-9d32-11d6b1564c83
+                quantity: '1'
+                amount: '42'
+                receipt_amount: '31'
+                registrationcount: '1'
+              registrant_mappings:
+              - event_id: 0caf136c-12ee-4125-9df0-0ba180967086
+                event_price_id: cf1fe3f6-ec00-4ca7-9d32-11d6b1564c83
+                registrations_collection_id: 168bac7c-9e78-440d-ac55-61d221f4c571
+                registrant_waive_benefits:
+                - event_id: 0caf136c-12ee-4125-9df0-0ba180967086
+                  waive_benefits: false
+                guest_constituent_id: 4b581e1b-4d22-4cc9-aef2-e52e9fd85de7
+                waive_registration_fee: false
+                has_notifications: false
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully creates the resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to create the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  /registrants/search:
+    get:
+      operationId: SearchEventRegistrants
+      summary: Search for event registrants
+      description: Search screen for event registrant records.
+      parameters:
+      - name: event_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: eventid
+      - name: exclude_guests
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: excludeguests
+      - name: full_name
+        in: query
+        required: false
+        schema:
+          type: string
+        description: full name
+      - name: key_name
+        in: query
+        required: false
+        schema:
+          type: string
+        description: last/org name
+      - name: first_name
+        in: query
+        required: false
+        schema:
+          type: string
+        description: first name
+      - name: lookup_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: lookup id
+      - name: include_unknown_guest
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: include unnamed guests
+      - name: include_will_not_attend
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: include registrants that will not attend
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Limits the number of records to return.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of result entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventRegistrantSearchCollection'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to view the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+  /registrants/{registrant_id}:
+    delete:
+      operationId: DeleteEventRegistrant
+      summary: Delete an event registrant
+      description: Removes a registrant from the given event.
+      parameters:
+      - name: registrant_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The registrant id
+      responses:
+        '200':
+          description: Returned when the operation successfully deletes the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to delete the resource.
+    patch:
+      operationId: EditEventRegistrant
+      summary: Edit an event registrant
+      description: Operation used for editing a registrant record.
+      parameters:
+      - name: registrant_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The registrant id.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditEventRegistrant'
+            example:
+              constituent_name: Julie Bach
+              attended: false
+              event_seating_note: ''
+              will_not_attend: false
+              cancelled: false
+              walk_in: false
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully edits the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to edit the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+    get:
+      operationId: GetEventRegistrant
+      summary: Get an event registrant
+      description: Operation used for editing a registrant record.
+      parameters:
+      - name: registrant_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The registrant id.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the specified resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventRegistrant'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to get the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  /registrationoptions:
+    post:
+      operationId: CreateEventRegistrationOption
+      summary: Create an event registration option
+      description: Operation for adding a registration option record.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewEventRegistrationOption'
+            example:
+              event_id: 36da7826-7f00-42d7-9727-89480dea1303
+              event_registration_type: Family
+              amount: 0
+              cost: 0
+              receipt_amount: 0
+              benefit:
+              - id: ef6996cf-b4f9-4277-bbcd-fed81f633fb8
+                benefit_id: c5a9bdd9-b386-4ef3-88a9-be560b795fc2
+                quantity: 0
+                unit_value: 0
+                total_value: 0
+                details: benefit details
+                base_currency_id: 7ad9254e-fe38-45ef-bc32-f61eb6caabd9
+                event_base_currency_total_value: 0
+              name: ''
+              registration_count: 0
+              event_registration_types:
+              - id: e2ddc822-d5d4-499c-9bca-2f3e20fb3992
+                description: event registration for sponsor
+                registration_count: 0
+                active: false
+              base_currency_id: 7ad9254e-fe38-45ef-bc32-f61eb6caabd9
+              event_base_currency_decimal_digits: 0
+              event_base_currency_rounding_type_code: 0
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully creates the resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to create the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  /registrationoptions/{event_price_id}:
+    delete:
+      operationId: DeleteEventRegistrationOption
+      summary: Delete an event registration option
+      description: Removes a registration option from the given event.
+      parameters:
+      - name: event_price_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The event price id
+      responses:
+        '200':
+          description: Returned when the operation successfully deletes the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to delete the resource.
+    patch:
+      operationId: EditEventRegistrationOption
+      summary: Edit an event registration option
+      description: Operation for editing a registration option.
+      parameters:
+      - name: event_price_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The event price id.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditEventRegistrationOption'
+            example:
+              event_registration_type: ''
+              amount: 20
+              cost: 20
+              receipt_amount: 20
+              benefit:
+              - id: dd9ff3f2-cf84-4e69-9524-e0289643ea25
+                benefit_id: c8b4dbb2-a55b-42de-a5c3-dac089e23f62
+                quantity: 1
+                unit_value: 20
+                total_value: 20
+                details: benefit details
+                base_currency_id: 36da7826-7f00-42d7-9727-89480dea1303
+                event_base_currency_total_value: 20
+              name: ''
+              registration_count: 100
+              base_currency_id: 6abe6c7e-fedc-473d-abe8-505807c94e0e
+              event_base_currency_decimal_digits: 2
+              event_base_currency_rounding_type_code: 1
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully edits the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to edit the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+    get:
+      operationId: GetEventRegistrationOption
+      summary: Get an event registration option
+      description: Operation for editing a registration option.
+      parameters:
+      - name: event_price_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The event price id.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the specified resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventRegistrationOption'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to get the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  /registrationtypes:
+    post:
+      operationId: CreateEventRegistrationType
+      summary: Create an event registration type
+      description: Operation for adding an event registration type record.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewEventRegistrationType'
+            example:
+              description: Premium
+              registration_count: 100
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully creates the resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to create the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  /registrationtypes/search:
+    get:
+      operationId: SearchEventRegistrationTypes
+      summary: Search for event registration types
+      description: A search list of event registration types
+      parameters:
+      - name: description
+        in: query
+        required: false
+        schema:
+          type: string
+        description: description
+      - name: include_inactive
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: include inactive
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Limits the number of records to return.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of result entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventRegistrationTypeSearchCollection'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to view the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+  /registrationtypes/{event_registration_type_id}:
+    delete:
+      operationId: DeleteEventRegistrationType
+      summary: Delete an event registration type
+      description: Deletes an event registration record.
+      parameters:
+      - name: event_registration_type_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The event registration type id
+      responses:
+        '200':
+          description: Returned when the operation successfully deletes the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to delete the resource.
+    patch:
+      operationId: EditEventRegistrationType
+      summary: Edit an event registration type
+      description: Operation for editing an event registration type.
+      parameters:
+      - name: event_registration_type_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The event registration type id.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditEventRegistrationType'
+            example:
+              description: Premium
+              registration_count: 100
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully edits the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to edit the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+    get:
+      operationId: GetEventRegistrationType
+      summary: Get an event registration type
+      description: Operation for editing an event registration type.
+      parameters:
+      - name: event_registration_type_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The event registration type id.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the specified resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventRegistrationType'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to get the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+components:
+  schemas:
+    Delete:
+      type: object
+      additionalProperties: false
+      description: DeleteEvent
+      x-display-name: Event Delete
+      x-display-id: Event Delete
+    PostResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The newly created ID.
+      additionalProperties: false
+      description: Defines the shape of a post response object.
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when
+            dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]).
+            When this member is not present, its value is assumed to be "about:blank".
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence
+            of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231],
+            Section 3.4).
+        status:
+          type: integer
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the
+            problem.
+          format: int32
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type: string
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further
+            information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: false
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-display-name: Problem details
+      x-display-id: ProblemDetails
+    EditEvent:
+      type: object
+      properties:
+        name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The name.
+        description:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The description.
+        start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        start_time:
+          $ref: '#/components/schemas/HourMinute'
+        end_date:
+          type: string
+          description: 'The end date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        end_time:
+          $ref: '#/components/schemas/HourMinute'
+        capacity:
+          type: integer
+          description: The capacity.
+          format: int32
+        main_event_id:
+          type: string
+          description: The main event.
+        event_location_id:
+          type: string
+          description: The location.
+        event_location_contact_id:
+          type: string
+          description: The contact.
+        sites:
+          type: array
+          items:
+            $ref: '#/components/schemas/EditEventSites'
+          description: Sites.
+        site_required:
+          type: boolean
+          description: Indicates whether site required. Read-only in the SOAP API.
+        event_category:
+          type: string
+          description: The category. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/eventcategorycode/entries
+        quick_compare_event_id:
+          type: string
+          description: The quick comparison event.
+        event_location_room:
+          type: string
+          description: The room/unit. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/5f5a58fe-1594-4004-b0fd-7eb92fb7cf52?parameters=event_location_id,{event_location_id}.
+        auction:
+          type: boolean
+          description: Indicates whether event is an auction. Read-only in the SOAP API.
+        event_auction_has_items:
+          type: boolean
+          description: Indicates whether event has items associated. Read-only in the SOAP API.
+        designations_on_fees:
+          type: boolean
+          description: Indicates whether determines whether or not event allows designations on fees..
+        event_has_registrants:
+          type: boolean
+          description: Indicates whether event has registrants. Read-only in the SOAP API.
+      additionalProperties: false
+      description: EditEvent
+      example:
+        name: ''
+        description: ''
+        start_date: ''
+        start_time: ''
+        end_date: ''
+        end_time: ''
+        capacity: 0
+        main_event_id: ''
+        event_location_id: ''
+        event_location_contact_id: ''
+        sites:
+        - id: ''
+          site_id: ''
+        site_required: false
+        event_category: ''
+        quick_compare_event_id: ''
+        event_location_room: ''
+        auction: false
+        event_auction_has_items: false
+        designations_on_fees: false
+        event_has_registrants: false
+      x-display-name: Event Edit Form 3
+      x-display-id: Event Edit Form 3
+    HourMinute:
+      type: object
+      properties:
+        hour:
+          type: integer
+          description: The hour.
+          format: int32
+        minute:
+          type: integer
+          description: The minute.
+          format: int32
+      description: HourMinute
+      x-display-name: Hour Minute
+      x-display-id: Hour Minute
+    EditEventSites:
+      required:
+      - site_id
+      type: object
+      properties:
+        id:
+          type: string
+          description: id
+        site_id:
+          type: string
+          description: site
+      description: EditEventSites
+      x-display-name: sites
+      x-display-id: sites
+    EditEventAppeal:
+      type: object
+      properties:
+        appeals:
+          type: array
+          items:
+            $ref: '#/components/schemas/EditEventAppealAppeals'
+          description: Appeals.
+        appuser_base_currency_id:
+          type: string
+          description: The current app user base currency ID. Read-only in the SOAP API.
+        event_base_currency_id:
+          type: string
+          description: The event base currency ID. Read-only in the SOAP API.
+      additionalProperties: false
+      description: EditEventAppeal
+      example:
+        appeals:
+        - appeal_id: 71426f0e-690b-48cb-8255-eb19b56388b0
+          user_has_access: false
+        appuser_base_currency_id: 3e8dfa3d-36dc-4d23-b4ed-38c53ed96faa
+        event_base_currency_id: dd9ff3f2-cf84-4e69-9524-e0289643ea25
+      x-display-name: Event Appeals Edit Form
+      x-display-id: Event Appeals Edit Form
+    EditEventAppealAppeals:
+      required:
+      - appeal_id
+      type: object
+      properties:
+        appeal_id:
+          type: string
+          description: appeal
+        user_has_access:
+          type: boolean
+          description: userhasaccess
+      description: EditEventAppealAppeals
+      x-display-name: appeals
+      x-display-id: appeals
+    EditEventLocation:
+      type: object
+      properties:
+        name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The name.
+        capacity:
+          type: integer
+          description: The capacity.
+          format: int32
+        address_block:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: The address.
+        city:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: The city.
+        post_code:
+          maxLength: 12
+          minLength: 0
+          type: string
+          description: The zip.
+        phone_number:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The phone number.
+        country:
+          type: string
+          description: The country. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/c9649672-353d-42e8-8c25-4d34bbabfbba.
+        state:
+          type: string
+          description: The state. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/7fa91401-596c-4f7c-936d-6e41683121d7?parameters=countryid,{countryid}.
+        rooms:
+          type: array
+          items:
+            $ref: '#/components/schemas/EditEventLocationRooms'
+          description: Rooms.
+      additionalProperties: false
+      description: EditEventLocation
+      example:
+        name: Blackbaud, Inc
+        max_capicity: 50
+        address_block: 65 Fairchild Street
+        city: Charleston
+        post_code: '29492'
+        phone_number: '8004439441'
+        country: United States
+        state: South Carolina
+        rooms:
+        - id: a62483d4-cb71-46ae-9f06-da0644d0629f
+          name: '401'
+          capacity: 2
+          in_use: false
+      x-display-name: Event Location Edit Form
+      x-display-id: Event Location Edit Form
+    EditEventLocationRooms:
+      type: object
+      properties:
+        id:
+          type: string
+          description: id
+        name:
+          type: string
+          description: room/unit name
+        capacity:
+          type: integer
+          description: capacity
+        in_use:
+          type: boolean
+          description: in use
+      description: EditEventLocationRooms
+      x-display-name: rooms
+      x-display-id: rooms
+    EditEventRegistrant:
+      type: object
+      properties:
+        constituent_name:
+          maxLength: 700
+          minLength: 0
+          type: string
+          description: The registrant. Read-only in the SOAP API.
+        attended:
+          type: boolean
+          description: Indicates whether attended.
+        event_seating_note:
+          maxLength: 250
+          minLength: 0
+          type: string
+          description: The seating note.
+        will_not_attend:
+          type: boolean
+          description: Indicates whether will not attend. Read-only in the SOAP API.
+        cancelled:
+          type: boolean
+          description: Indicates whether cancelled. Read-only in the SOAP API.
+        walk_in:
+          type: boolean
+          description: Indicates whether walk in. Read-only in the SOAP API.
+      additionalProperties: false
+      description: EditEventRegistrant
+      example:
+        constituent_name: Julie Bach
+        attended: false
+        event_seating_note: ''
+        will_not_attend: false
+        cancelled: false
+        walk_in: false
+      x-display-name: Registrant Edit Form
+      x-display-id: Registrant Edit Form
+    EditEventRegistrationOption:
+      type: object
+      properties:
+        event_registration_type:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The registration type. Read-only in the SOAP API.
+        amount:
+          type: number
+          description: The registration fee.
+          format: double
+        cost:
+          type: number
+          description: The cost.
+          format: double
+        receipt_amount:
+          type: number
+          description: The receipt amount.
+          format: double
+        benefit:
+          type: array
+          items:
+            $ref: '#/components/schemas/EditEventRegistrationOptionBenefit'
+          description: Benefit.
+        name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The name.
+        registration_count:
+          type: integer
+          description: The registration count.
+          format: int32
+        base_currency_id:
+          type: string
+          description: The base currency ID. Read-only in the SOAP API.
+        event_base_currency_decimal_digits:
+          type: integer
+          description: The event base currency decimal digits. Read-only in the SOAP API.
+          format: int32
+        event_base_currency_rounding_type_code:
+          type: integer
+          description: The event base currency rounding type code. Read-only in the SOAP API.
+          format: int32
+      additionalProperties: false
+      description: EditEventRegistrationOption
+      example:
+        event_registration_type: ''
+        amount: 20
+        cost: 20
+        receipt_amount: 20
+        benefit:
+        - id: dd9ff3f2-cf84-4e69-9524-e0289643ea25
+          benefit_id: c8b4dbb2-a55b-42de-a5c3-dac089e23f62
+          quantity: 1
+          unit_value: 20
+          total_value: 20
+          details: benefit details
+          base_currency_id: 36da7826-7f00-42d7-9727-89480dea1303
+          event_base_currency_total_value: 20
+        name: ''
+        registration_count: 100
+        base_currency_id: 6abe6c7e-fedc-473d-abe8-505807c94e0e
+        event_base_currency_decimal_digits: 2
+        event_base_currency_rounding_type_code: 1
+      x-display-name: Registration Option Edit Form 2
+      x-display-id: Registration Option Edit Form 2
+    EditEventRegistrationOptionBenefit:
+      required:
+      - benefit_id
+      type: object
+      properties:
+        id:
+          type: string
+          description: id
+        benefit_id:
+          type: string
+          description: benefit
+        quantity:
+          type: integer
+          description: quantity
+        unit_value:
+          type: number
+          description: unit value
+        total_value:
+          type: number
+          description: total value
+        details:
+          type: string
+          description: details
+        base_currency_id:
+          type: string
+          description: base currency id
+        event_base_currency_total_value:
+          type: number
+          description: event currency total value
+      description: EditEventRegistrationOptionBenefit
+      x-display-name: benefit
+      x-display-id: benefit
+    EditEventRegistrationType:
+      type: object
+      properties:
+        description:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The description.
+        registration_count:
+          type: integer
+          description: The registration count.
+          format: int32
+      additionalProperties: false
+      description: EditEventRegistrationType
+      example:
+        description: Premium
+        registration_count: 100
+      x-display-name: Event Registration Type Edit Form
+      x-display-id: Event Registration Type Edit Form
+    Event:
+      required:
+      - name
+      - start_date
+      type: object
+      properties:
+        name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The name.
+        description:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The description.
+        start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        start_time:
+          $ref: '#/components/schemas/HourMinute'
+        end_date:
+          type: string
+          description: 'The end date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        end_time:
+          $ref: '#/components/schemas/HourMinute'
+        capacity:
+          type: integer
+          description: The capacity.
+          format: int32
+        main_event_id:
+          type: string
+          description: The main event.
+        event_location_id:
+          type: string
+          description: The location.
+        event_location_contact_id:
+          type: string
+          description: The contact.
+        sites:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventSites'
+          description: Sites.
+        site_required:
+          type: boolean
+          description: Indicates whether site required. Read-only in the SOAP API.
+        event_category:
+          type: string
+          description: The category. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/eventcategorycode/entries
+        quick_compare_event_id:
+          type: string
+          description: The quick comparison event.
+        event_location_room:
+          type: string
+          description: The room/unit. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/5f5a58fe-1594-4004-b0fd-7eb92fb7cf52?parameters=event_location_id,{event_location_id}.
+        auction:
+          type: boolean
+          description: Indicates whether event is an auction. Read-only in the SOAP API.
+        event_auction_has_items:
+          type: boolean
+          description: Indicates whether event has items associated. Read-only in the SOAP API.
+        designations_on_fees:
+          type: boolean
+          description: Indicates whether determines whether or not event allows designations on fees..
+        event_has_registrants:
+          type: boolean
+          description: Indicates whether event has registrants. Read-only in the SOAP API.
+      additionalProperties: false
+      description: GetEvent
+      x-display-name: Event Edit Form 3
+      x-display-id: Event Edit Form 3
+    EventSites:
+      required:
+      - site_id
+      type: object
+      properties:
+        id:
+          type: string
+          description: id
+        site_id:
+          type: string
+          description: site
+      description: EventSites
+      x-display-name: sites
+      x-display-id: sites
+    EventAppeal:
+      type: object
+      properties:
+        appeals:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventAppealAppeals'
+          description: Appeals.
+        appuser_base_currency_id:
+          type: string
+          description: The current app user base currency ID. Read-only in the SOAP API.
+        event_base_currency_id:
+          type: string
+          description: The event base currency ID. Read-only in the SOAP API.
+      additionalProperties: false
+      description: GetEventAppeal
+      x-display-name: Event Appeals Edit Form
+      x-display-id: Event Appeals Edit Form
+    EventAppealAppeals:
+      required:
+      - appeal_id
+      type: object
+      properties:
+        appeal_id:
+          type: string
+          description: appeal
+        user_has_access:
+          type: boolean
+          description: userhasaccess
+      description: EventAppealAppeals
+      x-display-name: appeals
+      x-display-id: appeals
+    EventAppealListSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID.
+        appeal_id:
+          type: string
+          description: The appeal ID.
+        name:
+          type: string
+          description: The appeal.
+        start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        end_date:
+          type: string
+          description: 'The end date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        goal:
+          type: number
+          description: The goal.
+          format: double
+        base_currency_id:
+          type: string
+          description: The base currency.
+      additionalProperties: false
+      description: ListEventAppeals
+      x-display-name: Event Appeal List
+      x-display-id: Event Appeal List
+    EventAppealListCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items available for retrieval into the collection after applying any request parameters.
+          format: int32
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventAppealListSummary'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+        infinity_session:
+          type: string
+          description: Values for cookies related to the Infinity load balancer session.
+          format: string
+        session_key:
+          type: string
+          description: Session key for paging provided by user in request query parameter.
+          format: string
+        total_available_rows:
+          type: integer
+          description: The number of total rows available.
+          format: int32
+        more_rows_range_key:
+          type: string
+          description: Key for accessing cached results on subsequent calls to this data list.
+          format: string
+        data_no_longer_available:
+          type: boolean
+          description: Indicates data is no longer available in the context of this session.
+          format: boolean
+      additionalProperties: false
+      description: A collection of items. Data lists can contain paginated results.
+    EventLocation:
+      required:
+      - name
+      - country
+      type: object
+      properties:
+        name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The name.
+        capacity:
+          type: integer
+          description: The capacity.
+          format: int32
+        address_block:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: The address.
+        city:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: The city.
+        post_code:
+          maxLength: 12
+          minLength: 0
+          type: string
+          description: The zip.
+        phone_number:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The phone number.
+        country:
+          type: string
+          description: The country. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/c9649672-353d-42e8-8c25-4d34bbabfbba.
+        state:
+          type: string
+          description: The state. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/7fa91401-596c-4f7c-936d-6e41683121d7?parameters=countryid,{countryid}.
+        rooms:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventLocationRooms'
+          description: Rooms.
+      additionalProperties: false
+      description: GetEventLocation
+      x-display-name: Event Location Edit Form
+      x-display-id: Event Location Edit Form
+    EventLocationRooms:
+      type: object
+      properties:
+        id:
+          type: string
+          description: id
+        name:
+          type: string
+          description: room/unit name
+        capacity:
+          type: integer
+          description: capacity
+        in_use:
+          type: boolean
+          description: in use
+      description: EventLocationRooms
+      x-display-name: rooms
+      x-display-id: rooms
+    EventLocationListSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID.
+        name:
+          type: string
+          description: The name.
+        phone_number:
+          type: string
+          description: The phone number.
+        capacity:
+          type: integer
+          description: The capacity.
+          format: int32
+        address:
+          type: string
+          description: The address.
+        city:
+          type: string
+          description: The city.
+        state:
+          type: string
+          description: The state.
+        post_code:
+          type: string
+          description: The zip/postal code.
+        number_of_rooms:
+          type: integer
+          description: The number of rooms/units.
+          format: int32
+      additionalProperties: false
+      description: LocationLists
+      x-display-name: Event Location List
+      x-display-id: Event Location List
+    EventLocationListCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items available for retrieval into the collection after applying any request parameters.
+          format: int32
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventLocationListSummary'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+        infinity_session:
+          type: string
+          description: Values for cookies related to the Infinity load balancer session.
+          format: string
+        session_key:
+          type: string
+          description: Session key for paging provided by user in request query parameter.
+          format: string
+        total_available_rows:
+          type: integer
+          description: The number of total rows available.
+          format: int32
+        more_rows_range_key:
+          type: string
+          description: Key for accessing cached results on subsequent calls to this data list.
+          format: string
+        data_no_longer_available:
+          type: boolean
+          description: Indicates data is no longer available in the context of this session.
+          format: boolean
+      additionalProperties: false
+      description: A collection of items. Data lists can contain paginated results.
+    EventLocationSearchSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID.
+        name:
+          type: string
+          description: The name.
+        phone:
+          type: string
+          description: The phone number.
+        address:
+          type: string
+          description: The address.
+        capacity:
+          type: integer
+          description: The capacity.
+          format: int32
+      additionalProperties: false
+      description: LocationSearch
+      x-display-name: Event Location Search
+      x-display-id: Event Location Search
+    EventLocationSearchCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items available for retrieval into the collection after applying any request parameters.
+          format: int32
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventLocationSearchSummary'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+      additionalProperties: false
+      description: A collection of items. Data lists can contain paginated results.
+    EventPriceListSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID.
+        price_type:
+          type: string
+          description: The price type.
+        face_price:
+          type: number
+          description: The face price.
+          format: double
+        price_type_code_id:
+          type: string
+          description: The price type code ID.
+      additionalProperties: false
+      description: ListEventPrices
+      x-display-name: Event Price List
+      x-display-id: Event Price List
+    EventPriceListCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items available for retrieval into the collection after applying any request parameters.
+          format: int32
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventPriceListSummary'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+        infinity_session:
+          type: string
+          description: Values for cookies related to the Infinity load balancer session.
+          format: string
+        session_key:
+          type: string
+          description: Session key for paging provided by user in request query parameter.
+          format: string
+        total_available_rows:
+          type: integer
+          description: The number of total rows available.
+          format: int32
+        more_rows_range_key:
+          type: string
+          description: Key for accessing cached results on subsequent calls to this data list.
+          format: string
+        data_no_longer_available:
+          type: boolean
+          description: Indicates data is no longer available in the context of this session.
+          format: boolean
+      additionalProperties: false
+      description: A collection of items. Data lists can contain paginated results.
+    EventRegistrant:
+      type: object
+      properties:
+        constituent_name:
+          maxLength: 700
+          minLength: 0
+          type: string
+          description: The registrant. Read-only in the SOAP API.
+        attended:
+          type: boolean
+          description: Indicates whether attended.
+        event_seating_note:
+          maxLength: 250
+          minLength: 0
+          type: string
+          description: The seating note.
+        will_not_attend:
+          type: boolean
+          description: Indicates whether will not attend. Read-only in the SOAP API.
+        cancelled:
+          type: boolean
+          description: Indicates whether cancelled. Read-only in the SOAP API.
+        walk_in:
+          type: boolean
+          description: Indicates whether walk in. Read-only in the SOAP API.
+      additionalProperties: false
+      description: GetEventRegistrant
+      x-display-name: Registrant Edit Form
+      x-display-id: Registrant Edit Form
+    EventRegistrantListSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID.
+        registrant_name:
+          type: string
+          description: The registrant.
+        status:
+          type: string
+          description: The status.
+        balance:
+          type: number
+          description: The balance.
+          format: double
+        host_name:
+          type: string
+          description: The host.
+        attended:
+          type: boolean
+          description: Indicates whether attended.
+        cancelled:
+          type: boolean
+          description: Indicates whether registrant has canceled.
+        online_registrant:
+          type: boolean
+          description: Indicates whether onlineregistrant.
+        will_not_attend:
+          type: boolean
+          description: Indicates whether willnotattend.
+        guest:
+          type: boolean
+          description: Indicates whether isguest.
+        unknown_guest:
+          type: boolean
+          description: Indicates whether isunknownguest.
+        date_added:
+          type: string
+          description: 'The date registered. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        added_by:
+          type: string
+          description: The added by.
+        schedule_conflict_exists:
+          type: string
+          description: The event conflict.
+        event_name:
+          type: string
+          description: The event.
+        level_and_name:
+          type: string
+          description: The [not used].
+        base_currency_id:
+          type: string
+          description: The currency ID.
+        registration_type:
+          type: string
+          description: The type.
+        attended_string:
+          type: string
+          description: The attended.
+        registration_type_code:
+          type: integer
+          description: The registration type code.
+          format: int32
+        declined:
+          type: boolean
+          description: Indicates whether declined.
+        constituent_id:
+          type: string
+          description: The constituentid.
+        user_marked_attendance:
+          type: boolean
+          description: Indicates whether usermarkedattendance.
+        view_form_id:
+          type: string
+          description: The view form ID.
+      additionalProperties: false
+      description: ListEventRegistrants
+      x-display-name: Event Registrant List 3
+      x-display-id: Event Registrant List 3
+    EventRegistrantListCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items available for retrieval into the collection after applying any request parameters.
+          format: int32
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventRegistrantListSummary'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+        infinity_session:
+          type: string
+          description: Values for cookies related to the Infinity load balancer session.
+          format: string
+        session_key:
+          type: string
+          description: Session key for paging provided by user in request query parameter.
+          format: string
+        total_available_rows:
+          type: integer
+          description: The number of total rows available.
+          format: int32
+        more_rows_range_key:
+          type: string
+          description: Key for accessing cached results on subsequent calls to this data list.
+          format: string
+        data_no_longer_available:
+          type: boolean
+          description: Indicates data is no longer available in the context of this session.
+          format: boolean
+      additionalProperties: false
+      description: A collection of items. Data lists can contain paginated results.
+    EventRegistrantSearchSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID.
+        registrant:
+          type: string
+          description: The registrant.
+        host:
+          type: string
+          description: The host.
+        attended:
+          type: boolean
+          description: Indicates whether attended.
+        number_of_guests:
+          type: integer
+          description: The number of guests.
+          format: int32
+        lookup_id:
+          type: string
+          description: The lookup ID.
+      additionalProperties: false
+      description: SearchEventRegistrants
+      x-display-name: Registrant Search
+      x-display-id: Registrant Search
+    EventRegistrantSearchCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items available for retrieval into the collection after applying any request parameters.
+          format: int32
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventRegistrantSearchSummary'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+      additionalProperties: false
+      description: A collection of items. Data lists can contain paginated results.
+    EventRegistrationOption:
+      required:
+      - amount
+      - name
+      - registration_count
+      type: object
+      properties:
+        event_registration_type:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The registration type. Read-only in the SOAP API.
+        amount:
+          type: number
+          description: The registration fee.
+          format: double
+        cost:
+          type: number
+          description: The cost.
+          format: double
+        receipt_amount:
+          type: number
+          description: The receipt amount.
+          format: double
+        benefit:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventRegistrationOptionBenefit'
+          description: Benefit.
+        name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The name.
+        registration_count:
+          type: integer
+          description: The registration count.
+          format: int32
+        base_currency_id:
+          type: string
+          description: The base currency ID. Read-only in the SOAP API.
+        event_base_currency_decimal_digits:
+          type: integer
+          description: The event base currency decimal digits. Read-only in the SOAP API.
+          format: int32
+        event_base_currency_rounding_type_code:
+          type: integer
+          description: The event base currency rounding type code. Read-only in the SOAP API.
+          format: int32
+      additionalProperties: false
+      description: GetEventRegistrationOption
+      x-display-name: Registration Option Edit Form 2
+      x-display-id: Registration Option Edit Form 2
+    EventRegistrationOptionBenefit:
+      required:
+      - benefit_id
+      type: object
+      properties:
+        id:
+          type: string
+          description: id
+        benefit_id:
+          type: string
+          description: benefit
+        quantity:
+          type: integer
+          description: quantity
+        unit_value:
+          type: number
+          description: unit value
+        total_value:
+          type: number
+          description: total value
+        details:
+          type: string
+          description: details
+        base_currency_id:
+          type: string
+          description: base currency id
+        event_base_currency_total_value:
+          type: number
+          description: event currency total value
+      description: EventRegistrationOptionBenefit
+      x-display-name: benefit
+      x-display-id: benefit
+    EventRegistrationOptionListSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID.
+        registration_type:
+          type: string
+          description: The registration type.
+        registration_fee:
+          type: number
+          description: The registration fee.
+          format: double
+        receipt_amount:
+          type: number
+          description: The receipt amount.
+          format: double
+        no._of_registrations:
+          type: integer
+          description: The registration count.
+          format: int32
+        benefits:
+          type: string
+          description: The benefits.
+        name:
+          type: string
+          description: The name.
+        event_base_currency_id:
+          type: string
+          description: The event base currency ID.
+      additionalProperties: false
+      description: ListEventRegistrationOptions
+      x-display-name: Registration Option List
+      x-display-id: Registration Option List
+    EventRegistrationOptionListCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items available for retrieval into the collection after applying any request parameters.
+          format: int32
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventRegistrationOptionListSummary'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+        infinity_session:
+          type: string
+          description: Values for cookies related to the Infinity load balancer session.
+          format: string
+        session_key:
+          type: string
+          description: Session key for paging provided by user in request query parameter.
+          format: string
+        total_available_rows:
+          type: integer
+          description: The number of total rows available.
+          format: int32
+        more_rows_range_key:
+          type: string
+          description: Key for accessing cached results on subsequent calls to this data list.
+          format: string
+        data_no_longer_available:
+          type: boolean
+          description: Indicates data is no longer available in the context of this session.
+          format: boolean
+      additionalProperties: false
+      description: A collection of items. Data lists can contain paginated results.
+    EventRegistrationType:
+      required:
+      - description
+      - registration_count
+      type: object
+      properties:
+        description:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The description.
+        registration_count:
+          type: integer
+          description: The registration count.
+          format: int32
+      additionalProperties: false
+      description: GetEventRegistrationType
+      x-display-name: Event Registration Type Edit Form
+      x-display-id: Event Registration Type Edit Form
+    EventRegistrationTypeSearchSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID.
+        description:
+          type: string
+          description: The description.
+        active:
+          type: boolean
+          description: Indicates whether active.
+      additionalProperties: false
+      description: SearchEventRegistrationTypes
+      x-display-name: Search Event Registration Type
+      x-display-id: Search Event Registration Type
+    EventRegistrationTypeSearchCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items available for retrieval into the collection after applying any request parameters.
+          format: int32
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventRegistrationTypeSearchSummary'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+      additionalProperties: false
+      description: A collection of items. Data lists can contain paginated results.
+    EventSearchSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID.
+        name:
+          type: string
+          description: The name.
+        start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        end_date:
+          type: string
+          description: 'The end date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        location:
+          type: string
+          description: The location.
+        contact:
+          type: string
+          description: The contact.
+        site:
+          type: string
+          description: The site.
+        room:
+          type: string
+          description: The room/unit.
+        lookup_id:
+          type: string
+          description: The lookup ID.
+        cms_id:
+          type: integer
+          description: The cms ID.
+          format: int32
+      additionalProperties: false
+      description: SearchEvents
+      x-display-name: Event Search
+      x-display-id: Event Search
+    EventSearchCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items available for retrieval into the collection after applying any request parameters.
+          format: int32
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventSearchSummary'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+      additionalProperties: false
+      description: A collection of items. Data lists can contain paginated results.
+    EventView:
+      type: object
+      properties:
+        name:
+          maxLength: 205
+          minLength: 0
+          type: string
+          description: The name.
+        start_date:
+          type: string
+          description: 'The event date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        end_date:
+          type: string
+          description: 'The event date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        capacity:
+          type: integer
+          description: The event capacity.
+          format: int32
+        will_attend_count:
+          type: integer
+          description: The will attend.
+          format: int32
+        will_not_attend_count:
+          type: integer
+          description: The will not attend.
+          format: int32
+        attended_count:
+          type: integer
+          description: The attended.
+          format: int32
+        percent_of_capacity:
+          type: number
+          description: The percent of capacity.
+          format: double
+        location:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The location.
+        location_room:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The room/unit.
+        location_contact:
+          maxLength: 700
+          minLength: 0
+          type: string
+          description: The contact.
+        event_location_contact_id:
+          type: string
+          description: The eventlocationcontactid.
+        supporting_events_count:
+          type: integer
+          description: The supportingeventscount.
+          format: int32
+        main_event_name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The main event.
+        budgeted_expense:
+          type: number
+          description: The expense budget.
+          format: double
+        actual_expense:
+          type: number
+          description: The agreed expenses.
+          format: double
+        percent_of_budget:
+          type: number
+          description: The percent of budget.
+          format: double
+        active:
+          type: boolean
+          description: Indicates whether isactive.
+        site:
+          type: string
+          description: The site.
+        coordinator:
+          maxLength: 700
+          minLength: 0
+          type: string
+          description: The coordinator.
+        coordinator_id:
+          type: string
+          description: The coordinator ID.
+        category:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The category.
+        gift_aid_qualification_status:
+          maxLength: 25
+          minLength: 0
+          type: string
+          description: The gift aid status.
+        has_coordinators:
+          type: boolean
+          description: Indicates whether indicates that the event has the coordinator management option turned on (does not
+            imply the existence of a coordinator record..
+        lookup_id:
+          maxLength: 36
+          minLength: 0
+          type: string
+          description: The lookup ID.
+        budgeted_expense_subevents:
+          type: number
+          description: The expense budget.
+          format: double
+        actual_expense_subevents:
+          type: number
+          description: The agreed expenses.
+          format: double
+        percent_of_budget_subevents:
+          type: number
+          description: The percent of budget.
+          format: double
+        capacity_subevents:
+          type: integer
+          description: The event capacity.
+          format: int32
+        will_attend_count_subevents:
+          type: integer
+          description: The will attend.
+          format: int32
+        will_not_attend_count_subevents:
+          type: integer
+          description: The will not attend.
+          format: int32
+        attended_count_subevents:
+          type: integer
+          description: The attended.
+          format: int32
+        percent_of_capacity_subevents:
+          type: number
+          description: The percent of capacity.
+          format: double
+        multi_level:
+          type: boolean
+          description: Indicates whether is multi-level event.
+        amount_paid:
+          type: number
+          description: The amount paid.
+          format: double
+        amount_paid_subevents:
+          type: number
+          description: The amount paid.
+          format: double
+        base_currency_id:
+          type: string
+          description: The base currency. Read-only in the SOAP API.
+        start_time:
+          $ref: '#/components/schemas/HourMinute'
+        end_time:
+          $ref: '#/components/schemas/HourMinute'
+        has_expenses:
+          type: boolean
+          description: Indicates whether hasexpenses.
+        sub_event_has_expenses:
+          type: boolean
+          description: Indicates whether subeventhasexpenses.
+        has_registrants_and_options:
+          type: boolean
+          description: Indicates whether hasregistrantsandoptions.
+        sub_event_has_registrants_and_options:
+          type: boolean
+          description: Indicates whether subeventhasregistrantsandoptions.
+      additionalProperties: false
+      description: ViewEvent
+      x-display-name: Event Summary View Form 3
+      x-display-id: Event Summary View Form 3
+    MicrositeEventView:
+      type: object
+      properties:
+        name:
+          maxLength: 512
+          minLength: 0
+          type: string
+          description: The event.
+        url:
+          type: string
+          description: The url.
+        active:
+          type: boolean
+          description: Indicates whether active.
+        online:
+          type: boolean
+          description: Indicates whether approved for website.
+        capacity:
+          type: integer
+          description: The capacity.
+          format: int32
+        available_capacity:
+          type: integer
+          description: The available capacity.
+          format: int32
+        start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        end_date:
+          type: string
+          description: 'The end date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        expired:
+          type: boolean
+          description: Indicates whether is expired.
+        live:
+          type: boolean
+          description: Indicates whether live on website.
+        sales_method_set:
+          type: boolean
+          description: Indicates whether is sales method set?.
+        on_sale_date_time:
+          type: string
+          description: 'The on-sale period. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        off_sale_date_time:
+          type: string
+          description: 'The off-sale date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        event_type:
+          type: string
+          description: The event type code. Available values are <i>special event</i>, <i>preregistered event</i>
+        on_sale:
+          type: boolean
+          description: Indicates whether is on sale.
+      additionalProperties: false
+      description: ViewMicrositeEvent
+      x-display-name: Microsite Event View
+      x-display-id: Microsite Event View
+    NewEvent:
+      required:
+      - name
+      - start_date
+      type: object
+      properties:
+        name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The name.
+        description:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The description.
+        start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        start_time:
+          $ref: '#/components/schemas/HourMinute'
+        end_date:
+          type: string
+          description: 'The end date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        end_time:
+          $ref: '#/components/schemas/HourMinute'
+        capacity:
+          type: integer
+          description: The capacity.
+          format: int32
+        main_event_id:
+          type: string
+          description: The main event.
+        event_location_id:
+          type: string
+          description: The location.
+        event_location_contact_id:
+          type: string
+          description: The contact.
+        copy_from_event_id:
+          type: string
+          description: The copy from.
+        copy_tasks:
+          type: boolean
+          description: Indicates whether when selected, tasks in the source event will be copied to the new event..
+        copy_invitations:
+          type: boolean
+          description: Indicates whether when selected, invitations in the source event will be copied to the new event..
+        copy_invitees:
+          type: boolean
+          description: Indicates whether when selected, invitees in the source event will be copied to the new event..
+        copy_designations:
+          type: boolean
+          description: Indicates whether when selected, designations in the source event will be copied to the new event..
+        copy_expenses:
+          type: boolean
+          description: Indicates whether when selected, expenses in the source event will be copied to the new event..
+        copy_prices:
+          type: boolean
+          description: Indicates whether when selected, registration options in the source event will be copied to the new
+            event..
+        copy_attributes:
+          type: boolean
+          description: Indicates whether when selected, attributes in the source event will be copied to the new event..
+        attribute_defined:
+          type: boolean
+          description: Indicates whether determines if event attributes are defined inorder to display copyattributes..
+        sites:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewEventSites'
+          description: Sites.
+        site_required:
+          type: boolean
+          description: Indicates whether site required. Read-only in the SOAP API.
+        copy_preferences:
+          type: boolean
+          description: Indicates whether when selected, event preference groups in the source event will be copied to the
+            new event..
+        event_category:
+          type: string
+          description: The category. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/eventcategorycode/entries
+        appeal_id:
+          type: string
+          description: The appeal.
+        copy_team_structure:
+          type: boolean
+          description: Indicates whether when selected, teams in the appeal linked to the source event will be copied to the
+            new event..
+        copy_team_fundraisers:
+          type: boolean
+          description: Indicates whether when selected, team members in the appeal linked to the source event will be copied
+            to the new event..
+        copy_lodging_options:
+          type: boolean
+          description: Indicates whether when selected, event lodging options in the source event will be copied to the new
+            event..
+        add_quick_compare:
+          type: boolean
+          description: Indicates whether when selected, make the original event the quick compare event of the copy..
+        event_location_room:
+          type: string
+          description: The room/unit. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/5f5a58fe-1594-4004-b0fd-7eb92fb7cf52?parameters=event_location_id,{event_location_id}.
+        copy_job_occurrences:
+          type: boolean
+          description: Indicates whether when selected, job occurrences in the source event will be copied to the new event..
+        auction:
+          type: boolean
+          description: Indicates whether flag used to add extra metadata if the event is an auction..
+        hide_from_calendar:
+          type: boolean
+          description: Indicates whether determines whether or not to hide this event from the events calendar..
+        designations_on_fees:
+          type: boolean
+          description: Indicates whether determines whether or not event allows designations on fees..
+        copy_public_description:
+          type: boolean
+          description: Indicates whether when selected, the web forms description on source event will be copied to the new
+            event..
+      additionalProperties: false
+      description: CreateEvent
+      example:
+        name: Alumni Dinner
+        description: Fall alumni dinner
+        start_date: '2019-04-18T12:00:00Z'
+        start_time:
+          hour: 3
+          minute: 30
+        end_date: ''
+        end_time:
+          hour: 5
+          minute: 30
+        capacity: 100
+        main_event_id: ''
+        event_location_id: ''
+        event_location_contact_id: ''
+        copy_from_event_id: ''
+        copy_tasks: false
+        copy_invitations: false
+        copy_invitees: false
+        copy_designations: false
+        copy_expenses: false
+        copy_prices: false
+        copy_attributes: false
+        attribute_defined: false
+        sites:
+        - id: a62483d4-cb71-46ae-9f06-da0644d0629f
+          site_id: bc624727-32bd-47d7-ab30-81ed12dc3d6c
+        site_required: false
+        copy_preferences: false
+        event_category: ''
+        appeal_id: ''
+        add_quick_compare: false
+        event_location_room: ''
+        copy_job_occurrences: false
+        auction: false
+        hide_from_calendar: false
+        designations_on_fees: false
+        copy_public_description: false
+      x-display-name: Event Add Form
+      x-display-id: Event Add Form
+    NewEventSites:
+      required:
+      - site_id
+      type: object
+      properties:
+        id:
+          type: string
+          description: id
+        site_id:
+          type: string
+          description: site
+      description: NewEventSites
+      x-display-name: sites
+      x-display-id: sites
+    NewEventLocation:
+      required:
+      - name
+      - country
+      type: object
+      properties:
+        name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The name.
+        capacity:
+          type: integer
+          description: The capacity.
+          format: int32
+        address_block:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: The address.
+        city:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: The city.
+        post_code:
+          maxLength: 12
+          minLength: 0
+          type: string
+          description: The zip.
+        phone_number:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The phone number.
+        country:
+          type: string
+          description: The country. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/c9649672-353d-42e8-8c25-4d34bbabfbba.
+        state:
+          type: string
+          description: The state. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/7fa91401-596c-4f7c-936d-6e41683121d7?parameters=countryid,{countryid}.
+        rooms:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewEventLocationRooms'
+          description: Rooms.
+      additionalProperties: false
+      description: LocationAdd
+      example:
+        name: Blackbaud, Inc
+        max_capacity: 50
+        address_block: 65 Fairchild Street
+        city: Charleston
+        post_code: '29492'
+        phone_number: '8004439441'
+        country: United States
+        state: SC
+        rooms:
+        - id: a62483d4-cb71-46ae-9f06-da0644d0629f
+          name: '401'
+          capacity: 2
+          in_use: false
+      x-display-name: Event Location Add Form
+      x-display-id: Event Location Add Form
+    NewEventLocationRooms:
+      type: object
+      properties:
+        id:
+          type: string
+          description: id
+        name:
+          type: string
+          description: room/unit name
+        capacity:
+          type: integer
+          description: capacity
+      description: NewEventLocationRooms
+      x-display-name: rooms
+      x-display-id: rooms
+    NewEventRegistrant:
+      required:
+      - event_id
+      - constituent_id
+      type: object
+      properties:
+        event_id:
+          type: string
+          description: The event ID.
+        eventname:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The event. Read-only in the SOAP API.
+        main_event_id:
+          type: string
+          description: The maineventid. Read-only in the SOAP API.
+        main_event_name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The main event. Read-only in the SOAP API.
+        constituent_id:
+          type: string
+          description: The registrant.
+        date_purchased:
+          type: string
+          description: 'The date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        package_registrations:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewEventRegistrantPackageRegistrations'
+          description: Package registrations.
+        packages_prices:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewEventRegistrantPackagesPrices'
+          description: Packages prices.
+        single_event_registrations:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewEventRegistrantSingleEventRegistrations'
+          description: Single event registrations.
+        multi_component_events_with_prices:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewEventRegistrantMultiComponentEventsWithPrices'
+          description: Multi component events with prices.
+        multi_component_event_price_benefits:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewEventRegistrantMultiComponentEventPriceBenefits'
+          description: Multi component event price benefits.
+        multi_component_event_preference_groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewEventRegistrantMultiComponentEventPreferenceGroups'
+          description: Multi component event preference groups.
+        multi_component_event_appeals:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewEventRegistrantMultiComponentEventAppeals'
+          description: Multi component event appeals.
+        waive_benefits:
+          type: boolean
+          description: Indicates whether waive benefits.
+        registrant_mappings:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewEventRegistrantRegistrantMappings'
+          description: Registrant mappings.
+        constituent_record_type_id:
+          type: string
+          description: The constituent record type ID. Read-only in the SOAP API.
+        multi_component_event_schedules:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewEventRegistrantMultiComponentEventSchedules'
+          description: Multi component event schedules.
+        single_event_list:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewEventRegistrantSingleEventList'
+          description: Single event list.
+        eventcurrency:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewEventRegistrantEventcurrency'
+          description: Eventcurrency.
+        registration_type_code:
+          type: string
+          description: The registration type. Available values are <i>preregistration</i>, <i>walk-in registration</i>
+        event_has_started:
+          type: boolean
+          description: Indicates whether event has started. Read-only in the SOAP API.
+      additionalProperties: false
+      description: CreateEventRegistrant
+      example:
+        event_id: 0caf136c-12ee-4125-9df0-0ba180967086
+        constituent_id: 4b581e1b-4d22-4cc9-aef2-e52e9fd85de7
+        date_purchased: '2025-08-25T12:00:00Z'
+        waive_benefits: false
+        single_event_registrations:
+        - single_event_registration_id: 168bac7c-9e78-440d-ac55-61d221f4c571
+          singleeventregistrationeventprice: cf1fe3f6-ec00-4ca7-9d32-11d6b1564c83
+          quantity: '1'
+          amount: '42'
+          receipt_amount: '31'
+          registrationcount: '1'
+        registrant_mappings:
+        - event_id: 0caf136c-12ee-4125-9df0-0ba180967086
+          event_price_id: cf1fe3f6-ec00-4ca7-9d32-11d6b1564c83
+          registrations_collection_id: 168bac7c-9e78-440d-ac55-61d221f4c571
+          registrant_waive_benefits:
+          - event_id: 0caf136c-12ee-4125-9df0-0ba180967086
+            waive_benefits: false
+          guest_constituent_id: 4b581e1b-4d22-4cc9-aef2-e52e9fd85de7
+          waive_registration_fee: false
+          has_notifications: false
+      x-display-name: Registrant Unified Add Form
+      x-display-id: Registrant Unified Add Form
+    NewEventRegistrantPackageRegistrations:
+      required:
+      - packageregistrationpackage
+      - quantity
+      type: object
+      properties:
+        package_registration_id:
+          type: string
+          description: package registration id
+        packageregistrationpackage:
+          type: string
+          description: The package. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/05ea588e-c0ac-4089-92b2-7680f6a3e471?parameters=main_event_id,{main_event_id}.
+        quantity:
+          type: integer
+          description: quantity
+        amount:
+          type: number
+          description: registration fee
+        receipt_amount:
+          type: number
+          description: receipt amount
+        registrationcount:
+          type: integer
+          description: registration count
+        package_registrant_registrations:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewEventRegistrantPackageregistrationsPackageRegistrantRegistrations'
+          description: Package registrant registrations.
+      description: NewEventRegistrantPackageRegistrations
+      x-display-name: package_registrations
+      x-display-id: package_registrations
+    NewEventRegistrantPackageregistrationsPackageRegistrantRegistrations:
+      type: object
+      properties:
+        packageeventpriceid:
+          type: string
+          description: event price id
+        amount:
+          type: number
+          description: amount
+        receipt_amount:
+          type: number
+          description: receipt amount
+      description: NewEventRegistrantPackageregistrationsPackageRegistrantRegistrations
+      x-display-name: package_registrant_registrations
+      x-display-id: package_registrant_registrations
+    NewEventRegistrantPackagesPrices:
+      type: object
+      properties:
+        id:
+          type: string
+          description: id
+        name:
+          type: string
+          description: name
+        event_price_id:
+          type: string
+          description: eventpriceid
+        event_price_event_id:
+          type: string
+          description: eventpriceeventid
+        eventname:
+          type: string
+          description: eventname
+        event_registration_type_id:
+          type: string
+          description: eventregistrationtypeid
+        event_registration_type_description:
+          type: string
+          description: eventregistrationtypedescription
+        amount:
+          type: number
+          description: amount
+        receipt_amount:
+          type: number
+          description: receiptamount
+        cost:
+          type: number
+          description: cost
+        registrationcount:
+          type: integer
+          description: registrationcount
+        show_package:
+          type: boolean
+          description: showpackage
+      description: NewEventRegistrantPackagesPrices
+      x-display-name: packages_prices
+      x-display-id: packages_prices
+    NewEventRegistrantSingleEventRegistrations:
+      required:
+      - singleeventregistrationevent
+      - singleeventregistrationeventprice
+      - quantity
+      type: object
+      properties:
+        single_event_registration_id:
+          type: string
+          description: single event registration id
+        singleeventregistrationevent:
+          type: string
+          description: The event. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/7c63d7a2-02a4-4472-ab69-14d46c5400f3?parameters=main_event_id,{main_event_id}.
+        singleeventregistrationeventprice:
+          type: string
+          description: The registration option. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/3be79f65-49fc-49da-9765-3a34dd269011?parameters=event_id,{single_event_registration_event_id}.
+        quantity:
+          type: integer
+          description: quantity
+        amount:
+          type: number
+          description: registration fee
+        receipt_amount:
+          type: number
+          description: receipt amount
+        registrationcount:
+          type: integer
+          description: registration count
+      description: NewEventRegistrantSingleEventRegistrations
+      x-display-name: single_event_registrations
+      x-display-id: single_event_registrations
+    NewEventRegistrantMultiComponentEventsWithPrices:
+      type: object
+      properties:
+        id:
+          type: string
+          description: id
+        eventname:
+          type: string
+          description: eventname
+        event_price_id:
+          type: string
+          description: eventpriceid
+        event_price_name:
+          type: string
+          description: eventpricename
+        event_registration_type_id:
+          type: string
+          description: eventregistrationtypeid
+        event_registration_type_description:
+          type: string
+          description: eventregistrationtypedescription
+        event_price_amount:
+          type: number
+          description: eventpriceamount
+        event_price_receipt_amount:
+          type: number
+          description: eventpricereceiptamount
+        event_price_cost:
+          type: number
+          description: eventpricecost
+        event_price_registration_count:
+          type: integer
+          description: eventpriceregistrationcount
+        show_event:
+          type: boolean
+          description: showevent
+        registration_type_active:
+          type: boolean
+          description: registrationtypeactive
+      description: NewEventRegistrantMultiComponentEventsWithPrices
+      x-display-name: multi_component_events_with_prices
+      x-display-id: multi_component_events_with_prices
+    NewEventRegistrantMultiComponentEventPriceBenefits:
+      type: object
+      properties:
+        event_price_benefit_id:
+          type: string
+          description: eventpricebenefitid
+        benefit_id:
+          type: string
+          description: benefitid
+        benefit_name:
+          type: string
+          description: benefitname
+        benefit_total_value:
+          type: number
+          description: benefittotalvalue
+        benefit_description:
+          type: string
+          description: benefitdescription
+        event_price_benefit_details:
+          type: string
+          description: eventpricebenefitdetails
+        event_price_id:
+          type: string
+          description: eventpriceid
+      description: NewEventRegistrantMultiComponentEventPriceBenefits
+      x-display-name: multi_component_event_price_benefits
+      x-display-id: multi_component_event_price_benefits
+    NewEventRegistrantMultiComponentEventPreferenceGroups:
+      type: object
+      properties:
+        event_preference_group_id:
+          type: string
+          description: eventpreferencegroupid
+        event_preference_group_event_id:
+          type: string
+          description: eventpreferencegroupeventid
+        event_preference_group_event_name:
+          type: string
+          description: eventpreferencegroupeventname
+        event_preference_group_name:
+          type: string
+          description: eventpreferencegroupname
+      description: NewEventRegistrantMultiComponentEventPreferenceGroups
+      x-display-name: multi_component_event_preference_groups
+      x-display-id: multi_component_event_preference_groups
+    NewEventRegistrantMultiComponentEventAppeals:
+      type: object
+      properties:
+        event_id:
+          type: string
+          description: eventid
+        appeal_id:
+          type: string
+          description: appealid
+      description: NewEventRegistrantMultiComponentEventAppeals
+      x-display-name: multi_component_event_appeals
+      x-display-id: multi_component_event_appeals
+    NewEventRegistrantRegistrantMappings:
+      type: object
+      properties:
+        registrant_package_id:
+          type: string
+          description: registrantpackageid
+        registration_package_id:
+          type: string
+          description: registrationpackageid
+        event_id:
+          type: string
+          description: eventid
+        event_price_id:
+          type: string
+          description: eventpriceid
+        registrations_collection_id:
+          type: string
+          description: registrationscollectionid
+        registrant_registration_maps:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewEventRegistrantRegistrantmappingsRegistrantRegistrationMaps'
+          description: Registrant registration maps.
+        registrant_waive_benefits:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewEventRegistrantRegistrantmappingsRegistrantWaiveBenefits'
+          description: Registrant waive benefits.
+        name:
+          type: string
+          description: event/package
+        guest_constituent_id:
+          type: string
+          description: guest
+        waive_registration_fee:
+          type: boolean
+          description: waive registration fee
+        has_notifications:
+          type: boolean
+          description: has notifications
+        team_fundraising:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewEventRegistrantRegistrantmappingsTeamFundraising'
+          description: Team fundraising.
+        preferences:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewEventRegistrantRegistrantmappingsPreferences'
+          description: Preferences.
+      description: NewEventRegistrantRegistrantMappings
+      x-display-name: registrant_mappings
+      x-display-id: registrant_mappings
+    NewEventRegistrantRegistrantmappingsRegistrantRegistrationMaps:
+      type: object
+      properties:
+        event_id:
+          type: string
+          description: eventid
+        registrantregistrationmapid:
+          type: string
+          description: registrantregistrationmapid
+      description: NewEventRegistrantRegistrantmappingsRegistrantRegistrationMaps
+      x-display-name: registrant_registration_maps
+      x-display-id: registrant_registration_maps
+    NewEventRegistrantRegistrantmappingsRegistrantWaiveBenefits:
+      type: object
+      properties:
+        event_id:
+          type: string
+          description: eventid
+        waive_benefits:
+          type: boolean
+          description: waivebenefits
+      description: NewEventRegistrantRegistrantmappingsRegistrantWaiveBenefits
+      x-display-name: registrant_waive_benefits
+      x-display-id: registrant_waive_benefits
+    NewEventRegistrantRegistrantmappingsTeamFundraising:
+      type: object
+      properties:
+        event_id:
+          type: string
+          description: eventid
+        teamfundraisergoal:
+          type: number
+          description: goal
+        teamfundraisingteams:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewEventRegistrantRegistrantmappingsTeamfundraisingTeamfundraisingteams'
+          description: Teamfundraisingteams.
+        teamfundraisercurrencyid:
+          type: string
+          description: teamfundraisercurrencyid
+      description: NewEventRegistrantRegistrantmappingsTeamFundraising
+      x-display-name: team_fundraising
+      x-display-id: team_fundraising
+    NewEventRegistrantRegistrantmappingsPreferences:
+      required:
+      - event_preference_group_id
+      type: object
+      properties:
+        event_preference_group_id:
+          type: string
+          description: preference type
+        eventpreference:
+          type: string
+          description: The choice. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/98c86e0a-3e53-47f6-9088-52677fc1053f?parameters=event_preference_group_id,{event_preference_group_id}.
+      description: NewEventRegistrantRegistrantmappingsPreferences
+      x-display-name: preferences
+      x-display-id: preferences
+    NewEventRegistrantRegistrantmappingsTeamfundraisingTeamfundraisingteams:
+      type: object
+      properties:
+        teamfundraisingteammemberid:
+          type: string
+          description: teamfundraisingteammemberid
+        teamfundraisingteamid:
+          type: string
+          description: team
+        isteamcaptain:
+          type: boolean
+          description: team captain
+      description: NewEventRegistrantRegistrantmappingsTeamfundraisingTeamfundraisingteams
+      x-display-name: teamfundraisingteams
+      x-display-id: teamfundraisingteams
+    NewEventRegistrantMultiComponentEventSchedules:
+      type: object
+      properties:
+        id:
+          type: string
+          description: id
+        name:
+          type: string
+          description: name
+        start_date:
+          type: string
+          description: startdate
+          format: date
+        start_time:
+          $ref: '#/components/schemas/HourMinute'
+        end_date:
+          type: string
+          description: enddate
+          format: date
+        end_time:
+          $ref: '#/components/schemas/HourMinute'
+      description: NewEventRegistrantMultiComponentEventSchedules
+      x-display-name: multi_component_event_schedules
+      x-display-id: multi_component_event_schedules
+    NewEventRegistrantSingleEventList:
+      type: object
+      properties:
+        id:
+          type: string
+          description: id
+      description: NewEventRegistrantSingleEventList
+      x-display-name: single_event_list
+      x-display-id: single_event_list
+    NewEventRegistrantEventcurrency:
+      type: object
+      properties:
+        event_currency_event_id:
+          type: string
+          description: eventcurrencyeventid
+        base_currency_id:
+          type: string
+          description: basecurrencyid
+        team_fundraising_base_currency_id:
+          type: string
+          description: teamfundraisingbasecurrencyid
+      description: NewEventRegistrantEventcurrency
+      x-display-name: eventcurrency
+      x-display-id: eventcurrency
+    NewEventRegistrationOption:
+      required:
+      - event_id
+      - event_registration_type
+      - amount
+      - name
+      - registration_count
+      type: object
+      properties:
+        event_id:
+          type: string
+          description: The event ID.
+        event_registration_type:
+          type: string
+          description: The registration type. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/5c69fd15-969c-4034-a040-49ab3fea8cd5?parameters=include_inactive,{0}.
+        amount:
+          type: number
+          description: The registration fee.
+          format: double
+        cost:
+          type: number
+          description: The cost.
+          format: double
+        receipt_amount:
+          type: number
+          description: The receipt amount.
+          format: double
+        benefit:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewEventRegistrationOptionBenefit'
+          description: Benefit.
+        name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The name.
+        registration_count:
+          type: integer
+          description: The registration count.
+          format: int32
+        event_registration_types:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewEventRegistrationOptionEventRegistrationTypes'
+          description: Event registration types.
+        base_currency_id:
+          type: string
+          description: The base currency ID. Read-only in the SOAP API.
+        event_base_currency_decimal_digits:
+          type: integer
+          description: The event base currency decimal digits. Read-only in the SOAP API.
+          format: int32
+        event_base_currency_rounding_type_code:
+          type: integer
+          description: The event base currency rounding type code. Read-only in the SOAP API.
+          format: int32
+      additionalProperties: false
+      description: CreateEventRegistrationOption
+      example:
+        event_id: 36da7826-7f00-42d7-9727-89480dea1303
+        event_registration_type: Family
+        amount: 0
+        cost: 0
+        receipt_amount: 0
+        benefit:
+        - id: ef6996cf-b4f9-4277-bbcd-fed81f633fb8
+          benefit_id: c5a9bdd9-b386-4ef3-88a9-be560b795fc2
+          quantity: 0
+          unit_value: 0
+          total_value: 0
+          details: benefit details
+          base_currency_id: 7ad9254e-fe38-45ef-bc32-f61eb6caabd9
+          event_base_currency_total_value: 0
+        name: ''
+        registration_count: 0
+        event_registration_types:
+        - id: e2ddc822-d5d4-499c-9bca-2f3e20fb3992
+          description: event registration for sponsor
+          registration_count: 0
+          active: false
+        base_currency_id: 7ad9254e-fe38-45ef-bc32-f61eb6caabd9
+        event_base_currency_decimal_digits: 0
+        event_base_currency_rounding_type_code: 0
+      x-display-name: Registration Option Add Form 2
+      x-display-id: Registration Option Add Form 2
+    NewEventRegistrationOptionBenefit:
+      required:
+      - benefit_id
+      type: object
+      properties:
+        id:
+          type: string
+          description: id
+        benefit_id:
+          type: string
+          description: benefit
+        quantity:
+          type: integer
+          description: quantity
+        unit_value:
+          type: number
+          description: unit value
+        total_value:
+          type: number
+          description: total value
+        details:
+          type: string
+          description: details
+        base_currency_id:
+          type: string
+          description: base currency id
+        event_base_currency_total_value:
+          type: number
+          description: event currency total value
+      description: NewEventRegistrationOptionBenefit
+      x-display-name: benefit
+      x-display-id: benefit
+    NewEventRegistrationOptionEventRegistrationTypes:
+      type: object
+      properties:
+        id:
+          type: string
+          description: id
+        description:
+          type: string
+          description: description
+        registration_count:
+          type: integer
+          description: registration count
+        active:
+          type: boolean
+          description: active
+      description: NewEventRegistrationOptionEventRegistrationTypes
+      x-display-name: event_registration_types
+      x-display-id: event_registration_types
+    NewEventRegistrationType:
+      required:
+      - description
+      - registration_count
+      type: object
+      properties:
+        description:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The description.
+        registration_count:
+          type: integer
+          description: The registration count.
+          format: int32
+      additionalProperties: false
+      description: CreateEventRegistrationType
+      example:
+        description: Premium
+        registration_count: 100
+      x-display-name: Event Registration Type Add Form
+      x-display-id: Event Registration Type Add Form
+    Registrationtypes-event_registration_type_id-DeleteRequest:
+      type: string
+      x-apim-inline: true
+    Registrationtypes-event_registration_type_id-GetRequest:
+      type: string
+      x-apim-inline: true
+    Registrationtypes-event_registration_type_id-PatchRequest:
+      type: string
+      x-apim-inline: true
+    Locations-event_location_id-DeleteRequest:
+      type: string
+      x-apim-inline: true
+    Locations-event_location_id-GetRequest:
+      type: string
+      x-apim-inline: true
+    Locations-event_location_id-PatchRequest:
+      type: string
+      x-apim-inline: true
+    LocationsSearchGetRequest:
+      type: string
+      x-apim-inline: true
+    LocationsSearchGetRequest-1:
+      type: string
+      x-apim-inline: true
+    LocationsSearchGetRequest-2:
+      type: string
+      x-apim-inline: true
+    LocationsSearchGetRequest-3:
+      type: string
+      x-apim-inline: true
+    LocationsSearchGetRequest-4:
+      type: string
+      x-apim-inline: true
+    LocationsSearchGetRequest-5:
+      type: integer
+      x-apim-inline: true
+    Events-event_id-ViewGetRequest:
+      type: string
+      x-apim-inline: true
+    Events-event_id-GetRequest:
+      type: string
+      x-apim-inline: true
+    Events-event_id-DeleteRequest:
+      type: string
+      x-apim-inline: true
+    Events-event_id-PatchRequest:
+      type: string
+      x-apim-inline: true
+    Appeals-event_id-GetRequest:
+      type: string
+      x-apim-inline: true
+    Appeals-event_id-PatchRequest:
+      type: string
+      x-apim-inline: true
+    Registrants-registrant_id-GetRequest:
+      type: string
+      x-apim-inline: true
+    Registrants-registrant_id-DeleteRequest:
+      type: string
+      x-apim-inline: true
+    Registrants-registrant_id-PatchRequest:
+      type: string
+      x-apim-inline: true
+    Registrationoptions-event_price_id-GetRequest:
+      type: string
+      x-apim-inline: true
+    Registrationoptions-event_price_id-DeleteRequest:
+      type: string
+      x-apim-inline: true
+    Registrationoptions-event_price_id-PatchRequest:
+      type: string
+      x-apim-inline: true
+    Micrositeevents-event_id-ViewGetRequest:
+      type: string
+      x-apim-inline: true
+    Registrantcheckin-registrant_id-PatchRequest:
+      type: string
+      x-apim-inline: true
+    Events-event_id-AppealsGetRequest:
+      type: string
+      x-apim-inline: true
+    Events-event_id-AppealsGetRequest-1:
+      type: integer
+      x-apim-inline: true
+    Events-event_id-AppealsGetRequest-2:
+      type: string
+      x-apim-inline: true
+    Events-event_id-AppealsGetRequest-3:
+      type: string
+      x-apim-inline: true
+    Events-event_id-AppealsGetRequest-4:
+      type: string
+      x-apim-inline: true
+    Events-event_id-AppealsGetRequest-5:
+      type: integer
+      x-apim-inline: true
+    Eventprices-event_id-GetRequest:
+      type: string
+      x-apim-inline: true
+    Eventprices-event_id-GetRequest-1:
+      type: boolean
+      x-apim-inline: true
+    Eventprices-event_id-GetRequest-2:
+      type: integer
+      x-apim-inline: true
+    Eventprices-event_id-GetRequest-3:
+      type: string
+      x-apim-inline: true
+    Eventprices-event_id-GetRequest-4:
+      type: string
+      x-apim-inline: true
+    Eventprices-event_id-GetRequest-5:
+      type: string
+      x-apim-inline: true
+    Eventprices-event_id-GetRequest-6:
+      type: integer
+      x-apim-inline: true
+    Events-event_id-RegistrantsGetRequest:
+      type: string
+      x-apim-inline: true
+    Events-event_id-RegistrantsGetRequest-1:
+      enum:
+      - Preregistration
+      - Invitation
+      - Walk-in
+      type: string
+      x-apim-inline: true
+    Events-event_id-RegistrantsGetRequest-2:
+      enum:
+      - Will not attend
+      - Registered
+      - Canceled
+      - No reply
+      - Declined
+      type: string
+      x-apim-inline: true
+    Events-event_id-RegistrantsGetRequest-3:
+      enum:
+      - (Unspecified)
+      - 'Yes'
+      - No-show
+      - 'No'
+      type: string
+      x-apim-inline: true
+    Events-event_id-RegistrantsGetRequest-4:
+      type: string
+      x-apim-inline: true
+    Events-event_id-RegistrantsGetRequest-5:
+      type: boolean
+      x-apim-inline: true
+    Events-event_id-RegistrantsGetRequest-6:
+      type: integer
+      x-apim-inline: true
+    Events-event_id-RegistrantsGetRequest-7:
+      type: string
+      x-apim-inline: true
+    Events-event_id-RegistrantsGetRequest-8:
+      type: string
+      x-apim-inline: true
+    Events-event_id-RegistrantsGetRequest-9:
+      type: string
+      x-apim-inline: true
+    Events-event_id-RegistrantsGetRequest-10:
+      type: integer
+      x-apim-inline: true
+    Event-event_id-RegistrationoptionsGetRequest:
+      type: string
+      x-apim-inline: true
+    Event-event_id-RegistrationoptionsGetRequest-1:
+      type: integer
+      x-apim-inline: true
+    Event-event_id-RegistrationoptionsGetRequest-2:
+      type: string
+      x-apim-inline: true
+    Event-event_id-RegistrationoptionsGetRequest-3:
+      type: string
+      x-apim-inline: true
+    Event-event_id-RegistrationoptionsGetRequest-4:
+      type: string
+      x-apim-inline: true
+    Event-event_id-RegistrationoptionsGetRequest-5:
+      type: integer
+      x-apim-inline: true
+    RegistrantsSearchGetRequest:
+      type: string
+      x-apim-inline: true
+    RegistrantsSearchGetRequest-1:
+      type: boolean
+      x-apim-inline: true
+    RegistrantsSearchGetRequest-2:
+      type: string
+      x-apim-inline: true
+    RegistrantsSearchGetRequest-3:
+      type: string
+      x-apim-inline: true
+    RegistrantsSearchGetRequest-4:
+      type: string
+      x-apim-inline: true
+    RegistrantsSearchGetRequest-5:
+      type: string
+      x-apim-inline: true
+    RegistrantsSearchGetRequest-6:
+      type: boolean
+      x-apim-inline: true
+    RegistrantsSearchGetRequest-7:
+      type: boolean
+      x-apim-inline: true
+    RegistrantsSearchGetRequest-8:
+      type: integer
+      x-apim-inline: true
+    RegistrationtypesSearchGetRequest:
+      type: string
+      x-apim-inline: true
+    RegistrationtypesSearchGetRequest-1:
+      type: boolean
+      x-apim-inline: true
+    RegistrationtypesSearchGetRequest-2:
+      type: integer
+      x-apim-inline: true
+    EventsSearchGetRequest:
+      type: string
+      x-apim-inline: true
+    EventsSearchGetRequest-1:
+      type: string
+      x-apim-inline: true
+    EventsSearchGetRequest-2:
+      type: string
+      x-apim-inline: true
+    EventsSearchGetRequest-3:
+      type: boolean
+      x-apim-inline: true
+    EventsSearchGetRequest-4:
+      type: boolean
+      x-apim-inline: true
+    EventsSearchGetRequest-5:
+      type: string
+      x-apim-inline: true
+    EventsSearchGetRequest-6:
+      type: boolean
+      x-apim-inline: true
+    EventsSearchGetRequest-7:
+      type: boolean
+      x-apim-inline: true
+    EventsSearchGetRequest-8:
+      type: string
+      x-apim-inline: true
+    EventsSearchGetRequest-9:
+      type: boolean
+      x-apim-inline: true
+    EventsSearchGetRequest-10:
+      type: string
+      x-apim-inline: true
+    EventsSearchGetRequest-11:
+      type: string
+      x-apim-inline: true
+    EventsSearchGetRequest-12:
+      type: boolean
+      x-apim-inline: true
+    EventsSearchGetRequest-13:
+      type: string
+      x-apim-inline: true
+    EventsSearchGetRequest-14:
+      type: string
+      x-apim-inline: true
+    EventsSearchGetRequest-15:
+      type: integer
+      x-apim-inline: true
+    LocationsListGetRequest:
+      type: integer
+      x-apim-inline: true
+    LocationsListGetRequest-1:
+      type: string
+      x-apim-inline: true
+    LocationsListGetRequest-2:
+      type: string
+      x-apim-inline: true
+    LocationsListGetRequest-3:
+      type: string
+      x-apim-inline: true
+    LocationsListGetRequest-4:
+      type: integer
+      x-apim-inline: true
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []

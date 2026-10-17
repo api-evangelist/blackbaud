@@ -1,0 +1,586 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Constituent Relationships API'
+  description: This API manages constituent information and related entities such as addresses, phones, emails, and notes.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/56b76470069a0509c8f1c5b3
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/constituent/v1
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Relationships
+paths:
+  /relationships:
+    post:
+      operationId: CreateConstituentRelationship
+      summary: Relationship (Create)
+      description: 'Creates a relationship for a constituent.
+
+        If the relationship is with another constituent, a reciprocal relationship is created for that constituent. The identifier of the reciprocal relationship is in the `reciprocal_relationship_id` property.'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RelationshipAdd'
+            example:
+              comment: Dr. Yang coaches basketball for the Y every year.
+              constituent_id: '280'
+              end:
+                d: 19
+                m: 4
+                y: 2011
+              is_organization_contact: false
+              is_primary_business: false
+              is_spouse: false
+              position: Basketball Coach
+              reciprocal_type: Member
+              relation_id: '461'
+              start:
+                d: 9
+                m: 6
+                y: 1990
+              type: Club
+        description: An object that represents the relationship to create.
+      responses:
+        '200':
+          description: Returned when the operation successfully creates a relationship. The response body contains the ID of the new relationship.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse'
+              example:
+                id: '1281'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+        '403':
+          description: Returned when the user does not have permission to create the relationship.
+        '404':
+          description: Returned when the specified constituent is not found.
+      tags:
+      - Relationships
+    get:
+      operationId: ListConstituentRelationshipsAllConstituents
+      summary: Relationship list (All constituents)
+      description: 'Returns a paginated list of relationships.
+
+
+        The default sorting behavior is to list relationships in ascending order based on when they were created.
+
+
+        However, the last_modified parameter overrides the default sorting behavior to list relationships in ascending order based on when they were last modified. The last_modified parameter also adds the sort_token parameter to the next_link URL to ensure that relationships are stably sorted and that order persists when changes occur while working through a paginated list.
+
+
+        If the last_modified and date_added parameters are both specified, the sorting behavior is to list relationships based on when they were last modified.'
+      parameters:
+      - name: date_added
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Represents a filter for results created on or after the specified date. Adds the sort_token parameter to the next_link URL to ensure that relationships are stably sorted. The filter respects time offsets from UTC per the ISO-8601 format: 2016-05-05T17:59:31.1600745-04:00.'
+      - name: last_modified
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Represents a filter for results modified on or after the specified date. Adds the sort_token parameter to the next_link URL to ensure that relationships are stably sorted. The filter respects time offsets from UTC per the ISO-8601 format: 2016-05-05T17:59:31.1600745-04:00.'
+      - name: sort_token
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Represents a token filter to provide the next stable-sorted list of relationships and to ensure that the order persists even if changes occur while working through a paginated list. The token is provided on the next_link collection response property when the request specifies the sort_token filter. The last_modified, date_added, and sort parameters also add the token to the next_link URL, although the sort parameter only adds the token when it sorts by just the date_added field or just the date_modified field.
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Represents the number of records to return. The default is 500. The maximum is 5000.
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Represents the number of records to skip. For use with pagination.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a <a href="https://developer.blackbaud.com/skyapi/api/entity-reference/constituent#Collection">collection</a> of <a href="https://developer.blackbaud.com/skyapi/api/entity-reference/constituent#Relationship">relationship</a> entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiCollectionOfRelationshipRead'
+              example:
+                count: 243
+                next_link: https://api.sky.blackbaud.com/constituent/v1/relationships?offset=3&limit=3
+                value:
+                - id: '127'
+                  constituent_id: '280'
+                  date_added: '1999-08-26T13:35:58.547Z'
+                  date_modified: '2017-08-04T12:06:31.813Z'
+                  is_organization_contact: false
+                  is_primary_business: false
+                  is_spouse: true
+                  is_spouse_head_of_household: false
+                  is_constituent_head_of_household: true
+                  name: Wendy Hernandez
+                  reciprocal_relationship_id: '43'
+                  reciprocal_type: Husband
+                  relation_id: '410'
+                  start:
+                    d: 9
+                    m: 6
+                    y: 1990
+                  type: Wife
+                  first_name: Wendy
+                  last_name: Hernandez
+                - id: '112'
+                  constituent_id: '142'
+                  date_added: '1999-08-23T13:12:30.613Z'
+                  date_modified: '2004-10-08T21:22:00.613Z'
+                  is_organization_contact: false
+                  is_primary_business: true
+                  is_spouse: false
+                  is_spouse_head_of_household: false
+                  is_constituent_head_of_household: false
+                  name: Davis & Johnson Pharmaceuticals
+                  position: CEO
+                  reciprocal_relationship_id: '73'
+                  reciprocal_type: Employee
+                  relation_id: '362'
+                  start:
+                    m: 7
+                    y: 1992
+                  type: Employer
+                - id: '168'
+                  comment: Dr. Yang coaches basketball for the Y every year.
+                  constituent_id: '188'
+                  date_added: '2004-12-01T14:37:59.08Z'
+                  date_modified: '2004-12-01T14:37:59.097Z'
+                  end:
+                    d: 19
+                    m: 4
+                    y: 2011
+                  is_organization_contact: false
+                  is_primary_business: false
+                  is_spouse: false
+                  is_spouse_head_of_household: false
+                  is_constituent_head_of_household: false
+                  name: YMCA
+                  position: Basketball Coach
+                  reciprocal_relationship_id: '94'
+                  reciprocal_type: Member
+                  relation_id: '461'
+                  start:
+                    d: 9
+                    m: 6
+                    y: 1990
+                  type: Club
+        '400':
+          description: Returned when the specified request parameters are not in the appropriate format.
+        '403':
+          description: Returned when the user does not have permission to view the relationships.
+      tags:
+      - Relationships
+  /relationships/{relationship_id}:
+    delete:
+      operationId: DeleteConstituentRelationship
+      summary: Relationship (Delete)
+      description: Deletes a relationship from a constituent.
+      parameters:
+      - name: relationship_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The immutable system record ID of the relationship to delete.
+      responses:
+        '200':
+          description: Returned when the operation successfully deletes the relationship.
+        '400':
+          description: Returned when the specified relationship ID in the request URL is not in the appropriate format.
+        '403':
+          description: Returned when the user does not have permission to delete the relationship.
+      tags:
+      - Relationships
+    patch:
+      operationId: EditConstituentRelationship
+      summary: Relationship (Edit)
+      description: 'Edits a relationship for a constituent.
+
+        If a reciprocal relationship exists, it is also modified to reflect the changes. This does not include changes to the `comments` property, which is specific to each record and can be modified independently on each record.'
+      parameters:
+      - name: relationship_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The immutable system record ID of the relationship to edit.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RelationshipEdit'
+            example:
+              comment: Dr. Yang coaches basketball for the Y every year.
+              end:
+                d: 19
+                m: 4
+                y: 2011
+              is_organization_contact: true
+              is_primary_business: false
+              organization_contact_type: Social
+              position: Basketball Coach
+              reciprocal_type: Member
+              start:
+                d: 9
+                m: 6
+                y: 1990
+              type: Club
+        description: An object that represents the properties of the relationship to edit.
+      responses:
+        '200':
+          description: Returned when the operation successfully edits the relationship.
+        '400':
+          description: Returned when the specified relationship ID in the request URL or the specified request parameters are not in the appropriate format.
+        '403':
+          description: Returned when the user does not have permission to edit the relationship.
+        '404':
+          description: Returned when the specified relationship is not found.
+      tags:
+      - Relationships
+components:
+  schemas:
+    RelationshipRead:
+      description: Relationships describe connections between constituents and other individuals and organizations such as family, friends, and employers. Tracking constituent relationships can enhance fundraising efforts and interactions.
+      required:
+      - constituent_id
+      type: object
+      properties:
+        id:
+          description: The immutable system record ID of the relationship.
+          type: string
+        comment:
+          description: The comment on the relationship.
+          type: string
+        constituent_id:
+          description: The immutable system record ID of the constituent associated with the relationship.
+          type: string
+        date_added:
+          format: date-time
+          description: 'The date when the relationship was created. Includes an offset from UTC in <a href="https://tools.ietf.org/html/rfc3339">ISO-8601 format: </a><i>1969-11-21T10:29:43-04:00</i>.'
+          type: string
+          x-supports-datetime-offset: true
+        date_modified:
+          format: date-time
+          description: 'The date when the relationship was last modified. Includes an offset from UTC in <a href="https://tools.ietf.org/html/rfc3339">ISO-8601 format: </a><i>1969-11-21T10:29:43-04:00</i>.'
+          type: string
+          x-supports-datetime-offset: true
+        end:
+          $ref: '#/components/schemas/FuzzyDate'
+          description: The end date for the relationship.
+        is_organization_contact:
+          description: Indicates whether the related individual represents the organization as a contact. Only applies to relationships between organizations and individuals.
+          type: boolean
+        is_primary_business:
+          description: Indicates whether the related organization is the individual's primary business. Only applies to relationships between organizations and individuals.
+          type: boolean
+        is_spouse:
+          description: Indicates whether the related constituent is the constituent's spouse. Only applies to relationships between individuals.
+          type: boolean
+        is_spouse_head_of_household:
+          description: Indicates whether the spouse constituent is the head household. Only applies to spousal relationships between individuals.
+          type: boolean
+        is_constituent_head_of_household:
+          description: Indicates whether the constituent is the head of household. Only applies to spousal relationships between individuals.
+          type: boolean
+        name:
+          description: The name of the related constituent. If the constituent's <code>type</code> is <i>Individual</i>, this computed field indicates the full name of the constituent based on the target organization’s display name settings.
+          type: string
+        organization_contact_type:
+          description: Provides context for interactions with the related individual who represents the organization as a contact. Available values are the entries in the <a href="https://developer.sky.blackbaud.com/docs/services/56b76470069a0509c8f1c5b3/operations/ListOrganizationContactTypes"><b>Contact Types</b></a> table. Only applies to relationships between organizations and individuals.
+          type: string
+        position:
+          description: The individual's position in the organization. Only applies to relationships between organizations and individuals.
+          type: string
+        reciprocal_relationship_id:
+          description: The identifier for the reciprocal relationship record. This value is read-only and is automatically generated when the relationship is created. Changes made to this record will also be reflected on the reciprocal, with the exception of the comments property.
+          type: string
+        reciprocal_type:
+          description: Describes the constituent's relationship to the related constituent. For example, in a relationship between a male constituent and a female sibling, the reciprocal relationship type would be brother. Available values are the entries in the <a href="https://developer.sky.blackbaud.com/docs/services/56b76470069a0509c8f1c5b3/operations/ListRelationshipTypes"><b>Relationships</b></a> table.
+          type: string
+        relation_id:
+          description: The immutable system record ID of the related individual or organization.
+          type: string
+        start:
+          $ref: '#/components/schemas/FuzzyDate'
+          description: The start date for the relationship.
+        type:
+          description: The type of relation that the relationship represents. Available values are the entries in the <a href="https://developer.sky.blackbaud.com/docs/services/56b76470069a0509c8f1c5b3/operations/ListRelationshipTypes"><b>Relationships</b></a> table.
+          type: string
+        first_name:
+          description: The first name of the constituent. For individuals only.
+          type: string
+        last_name:
+          description: The last name of the constituent. For individuals only.
+          type: string
+      x-display-name: Relationship
+      x-display-id: Relationship
+    RelationshipAdd:
+      description: Relationships describe connections between constituents and other individuals and organizations such as family, friends, and employers. Tracking constituent relationships can enhance fundraising efforts and interactions.
+      required:
+      - constituent_id
+      type: object
+      properties:
+        comment:
+          description: The comment on the relationship.
+          type: string
+        constituent_id:
+          description: The immutable system record ID of the constituent associated with the relationship.
+          type: string
+        end:
+          $ref: '#/components/schemas/FuzzyDate'
+          description: The end date for the relationship.
+        is_organization_contact:
+          description: Indicates whether the related individual represents the organization as a contact. Only applies to relationships between organizations and individuals.
+          type: boolean
+        is_primary_business:
+          description: Indicates whether the related organization is the individual's primary business. Only applies to relationships between organizations and individuals.
+          type: boolean
+        is_spouse:
+          description: Indicates whether the related constituent is the constituent's spouse. Only applies to relationships between individuals.
+          type: boolean
+        is_spouse_head_of_household:
+          description: Indicates whether the spouse constituent is the head household. Only applies to spousal relationships between individuals.
+          type: boolean
+        is_constituent_head_of_household:
+          description: Indicates whether the constituent is the head of household. Only applies to spousal relationships between individuals.
+          type: boolean
+        organization_contact_type:
+          description: Provides context for interactions with the related individual who represents the organization as a contact. Available values are the entries in the <a href="https://developer.sky.blackbaud.com/docs/services/56b76470069a0509c8f1c5b3/operations/ListOrganizationContactTypes"><b>Contact Types</b></a> table. Only applies to relationships between organizations and individuals.
+          type: string
+        position:
+          description: 'The individual''s position in the organization. Only applies to relationships between organizations and individuals. Character limit: 50.'
+          maxLength: 50
+          minLength: 0
+          type: string
+        reciprocal_type:
+          description: Describes the constituent's relationship to the related constituent. For example, in a relationship between a male constituent and a female sibling, the reciprocal relationship type would be brother. Available values are the entries in the <a href="https://developer.sky.blackbaud.com/docs/services/56b76470069a0509c8f1c5b3/operations/ListRelationshipTypes"><b>Relationships</b></a> table.
+          type: string
+        relation_id:
+          description: The immutable system record ID of the related individual or organization.
+          type: string
+        relation:
+          $ref: '#/components/schemas/NonConstituentAdd'
+          description: The non-constituent individual or organization relation
+        start:
+          $ref: '#/components/schemas/FuzzyDate'
+          description: The start date for the relationship.
+        type:
+          description: The type of relation that the relationship represents. Available values are the entries in the <a href="https://developer.sky.blackbaud.com/docs/services/56b76470069a0509c8f1c5b3/operations/ListRelationshipTypes"><b>Relationships</b></a> table.
+          type: string
+        do_not_reciprocate:
+          description: When set to true, indicates that a reciprocal relationship should not be created.
+          type: boolean
+      x-hidden: true
+      x-display-name: Create relationship
+      x-display-id: CreateRelationship
+    PrimaryNameFormatEdit:
+      description: Primary name formats are elevated name formats used for the constituent's most commonly used addressee and salutation name formats.
+      type: object
+      properties:
+        configuration_id:
+          description: The name format configuration identifier. Required when custom_format is false.
+          type: string
+        custom_format:
+          description: Whether the name format uses a custom format.
+          type: boolean
+        formatted_name:
+          description: 'The name format formatted name. Required when custom_format is true. Character limit: 255.'
+          maxLength: 255
+          minLength: 0
+          type: string
+      x-hidden: true
+      x-display-name: Edit primary name format
+      x-display-id: EditPrimaryNameFormat
+    NonConstituentAdd:
+      description: Non-constituents are the individuals and organizations related to constituents.
+      required:
+      - type
+      type: object
+      properties:
+        birthdate:
+          $ref: '#/components/schemas/FuzzyDate'
+          description: The constituent's birthdate. For individuals only.
+        deceased:
+          description: Indicates whether the constituent is deceased. For individuals only.
+          type: boolean
+        deceased_date:
+          $ref: '#/components/schemas/FuzzyDate'
+          description: The date when the constituent died. For individuals only.
+        first:
+          description: 'The constituent''s first name. For individuals only. Character limit: 50.'
+          maxLength: 50
+          minLength: 0
+          type: string
+        former_name:
+          description: 'The constituent''s former name. For individuals only. Character limit: 100.'
+          maxLength: 100
+          minLength: 0
+          type: string
+        gender:
+          description: The constituent's gender. Available values are the entries in the <a href="https://developer.sky.blackbaud.com/docs/services/56b76470069a0509c8f1c5b3/operations/ListGenders"><b>Gender</b></a> table. This property defaults to <i>Unknown</i> if no value is provided. For individuals only.
+          type: string
+        last:
+          description: 'The constituent''s last name. For individuals only (required). Character limit: 100.'
+          maxLength: 100
+          minLength: 0
+          type: string
+        middle:
+          description: 'The constituent''s middle name. For individuals only. Character limit: 50.'
+          maxLength: 50
+          minLength: 0
+          type: string
+        name:
+          description: 'If the constituent''s <code>type</code> is <i>Individual</i>, this is a computed field that does not apply to add operations. If the <code>type</code> is <i>Organization</i>, this field is required and represents the organization''s name. Character limit: 60.'
+          type: string
+        preferred_name:
+          description: 'The constituent''s preferred name. For individuals only. Character limit: 50.'
+          maxLength: 50
+          minLength: 0
+          type: string
+        suffix:
+          description: The constituent's primary suffix. Available values are the entries in the <a href="https://developer.sky.blackbaud.com/docs/services/56b76470069a0509c8f1c5b3/operations/ListSuffixes"><b>Suffixes</b></a> table. For individuals only.
+          type: string
+        suffix_2:
+          description: The constituent's secondary suffix. Available values are the entries in the <a href="https://developer.sky.blackbaud.com/docs/services/56b76470069a0509c8f1c5b3/operations/ListSuffixes"><b>Suffixes</b></a> table. For individuals only.
+          type: string
+        title:
+          description: The constituent's primary title. Available values are the entries in the <a href="https://developer.sky.blackbaud.com/docs/services/56b76470069a0509c8f1c5b3/operations/ListTitles"><b>Titles</b></a> table. For individuals only.
+          type: string
+        title_2:
+          description: The constituent's secondary title. Available values are the entries in the <a href="https://developer.sky.blackbaud.com/docs/services/56b76470069a0509c8f1c5b3/operations/ListTitles"><b>Titles</b></a> table. For individuals only.
+          type: string
+        type:
+          description: The type of constituent. Available values are <i>Individual</i> and <i>Organization</i>.
+          enum:
+          - Individual
+          - Organization
+          type: string
+        primary_addressee:
+          $ref: '#/components/schemas/PrimaryNameFormatEdit'
+          description: The constituent's primary addressee. For individuals only.
+        primary_salutation:
+          $ref: '#/components/schemas/PrimaryNameFormatEdit'
+          description: The constituent's primary salutation. For individuals only.
+      x-hidden: true
+      x-display-name: Create non-constituent
+      x-display-id: CreateNon-Constituent
+    RelationshipEdit:
+      description: Relationships describe connections between constituents and other individuals and organizations such as family, friends, and employers. Tracking constituent relationships can enhance fundraising efforts and interactions.
+      type: object
+      properties:
+        comment:
+          description: The comment on the relationship.
+          type: string
+        auto_soft_credit:
+          description: Indicates whether gifts from the constituent are automatically soft credited to the related constituent. Only applies to relationships between constituents.
+          type: boolean
+        end:
+          $ref: '#/components/schemas/FuzzyDate'
+          description: The end date for the relationship.
+        is_organization_contact:
+          description: Indicates whether the related individual represents the organization as a contact. Only applies to relationships between organizations and individuals.
+          type: boolean
+        is_primary_business:
+          description: Indicates whether the related organization is the individual's primary business. Only applies to relationships between organizations and individuals.
+          type: boolean
+        is_spouse:
+          description: Indicates whether the related constituent is the constituent's spouse. Only applies to relationships between individuals.
+          type: boolean
+        is_spouse_head_of_household:
+          description: Indicates whether the spouse constituent is the head household. Only applies to spousal relationships between individuals.
+          type: boolean
+        is_constituent_head_of_household:
+          description: Indicates whether the constituent is the head of household. Only applies to spousal relationships between individuals.
+          type: boolean
+        organization_contact_type:
+          description: Provides context for interactions with the related individual who represents the organization as a contact. Available values are the entries in the <a href="https://developer.sky.blackbaud.com/docs/services/56b76470069a0509c8f1c5b3/operations/ListOrganizationContactTypes"><b>Contact Types</b></a> table. Only applies to relationships between organizations and individuals.
+          type: string
+        position:
+          description: 'The individual''s position in the organization. Only applies to relationships between organizations and individuals. Character limit: 50.'
+          maxLength: 50
+          minLength: 0
+          type: string
+        reciprocal_type:
+          description: Describes the constituent's relationship to the related constituent. For example, in a relationship between a male constituent and a female sibling, the reciprocal relationship type would be brother. Available values are the entries in the <a href="https://developer.sky.blackbaud.com/docs/services/56b76470069a0509c8f1c5b3/operations/ListRelationshipTypes"><b>Relationships</b></a> table.
+          type: string
+        start:
+          $ref: '#/components/schemas/FuzzyDate'
+          description: The start date for the relationship.
+        type:
+          description: The type of relation that the relationship represents. Available values are the entries in the <a href="https://developer.sky.blackbaud.com/docs/services/56b76470069a0509c8f1c5b3/operations/ListRelationshipTypes"><b>Relationships</b></a> table.
+          type: string
+      x-hidden: true
+      x-display-name: Edit relationship
+      x-display-id: EditRelationship
+    ApiCollectionOfRelationshipRead:
+      description: Fetching data all at once quickly becomes unmanageable. The collection entity helps by returning paginated chunks of large data sets. This entity includes helpful metadata and properties to paginate and iterate through the data.
+      type: object
+      properties:
+        count:
+          format: int32
+          description: The number of items available for retrieval into the collection after applying any request parameters. The <b>limit</b> and <b>offset</b> parameters do not affect the <b>count</b>, but to facilitate paging, they may affect the number of items in the <b>value</b> result set.
+          type: integer
+        next_link:
+          description: For paginated responses, the URI for the next page of results.
+          type: string
+        value:
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+          type: array
+          items:
+            $ref: '#/components/schemas/RelationshipRead'
+      x-hidden: true
+      x-base-type: '#/definitions/ApiCollection'
+    PostResponse:
+      description: Defines the shape of a post response object.
+      type: object
+      properties:
+        id:
+          description: The newly created ID
+          type: string
+      x-hidden: true
+    FuzzyDate:
+      description: Fuzzy dates provide a versatile date type to create partial dates such as February 9 (with no year indicated).
+      type: object
+      properties:
+        d:
+          format: int32
+          description: The day in the fuzzy date.
+          type: integer
+        m:
+          format: int32
+          description: The month in the fuzzy date.
+          type: integer
+        y:
+          format: int32
+          description: The year in the fuzzy date.
+          type: integer
+      x-display-name: Fuzzy date
+      x-display-id: FuzzyDate
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

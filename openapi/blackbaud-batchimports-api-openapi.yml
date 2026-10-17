@@ -1,0 +1,482 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Billing Management Batchimports API'
+  description: Billing Management provides APIs that expose data and functionality from the billing office.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/tms-bmapi
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/tms-bmapi
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Batchimports
+paths:
+  /v1/batchimports/charges:
+    post:
+      operationId: CreateChargeImportBatch
+      summary: Charges batch (Create)
+      description: Creates an batch import request to create a batch of charges in Billing Management
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateChargeImportBatchMessage'
+            example:
+              batch_id: My unique batch ID
+              charges:
+              - fee_type_id: 124
+                amount: 52.4
+                student_user_id: 12
+                charge_date: '2024-01-31'
+                charge_due_date: '2024-02-29'
+                batch_transaction_id: 'My unique charge ID #1'
+              - fee_type_id: 125
+                amount: 52.45
+                student_user_id: 62
+                charge_date: '2024-01-31'
+                charge_due_date: '2024-02-29'
+                batch_transaction_id: 'My unique charge ID #2'
+        description: The batch import request containing charge data
+      responses:
+        '200':
+          description: The Guid of the created batch (or existing one if the batch was already created).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdResponse'
+              example:
+                id: 11103fcc-7ec2-4d9e-a290-84136dfc50ad
+        '400':
+          description: The request was bad or malformed.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Default400ResponseTypes'
+              example:
+                type: urn:blackbaud:invalid-address-type
+                title: One or more validation errors occurred.
+                status: 400
+                detail: The type Home is not valid for this address.
+                values:
+                  type: Home
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+      tags:
+      - Batchimports
+  /v1/batchimports/credits:
+    post:
+      operationId: CreateCreditImportBatch
+      summary: Credits batch (Create) (PREVIEW)
+      description: 'Creates an batch import request to create a batch of credits in Billing Management
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCreditImportBatchMessage'
+            example:
+              batch_id: My unique batch ID
+              credits:
+              - fee_type_id: 124
+                amount: 52.4
+                student_user_id: 12
+                credit_date: '2024-01-31'
+                batch_transaction_id: 'My unique credit ID #1'
+              - fee_type_id: 125
+                amount: 52.45
+                student_user_id: 62
+                credit_date: '2024-01-31'
+                batch_transaction_id: 'My unique credit ID #2'
+        description: The batch import request containing credit data
+      responses:
+        '200':
+          description: The Guid of the created batch (or existing one if the batch was already created).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdResponse'
+              example:
+                id: 11103fcc-7ec2-4d9e-a290-84136dfc50ad
+        '400':
+          description: The request was bad or malformed.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Default400ResponseTypes'
+              example:
+                type: urn:blackbaud:invalid-address-type
+                title: One or more validation errors occurred.
+                status: 400
+                detail: The type Home is not valid for this address.
+                values:
+                  type: Home
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+      tags:
+      - Batchimports
+  /v1/batchimports/{id}:
+    get:
+      operationId: GetTransactionBatchImportSummary
+      summary: Batch summary (Get)
+      description: Gets a summary of a batch import, with its current status, mappings, processing exceptions and the number of transactions created.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The Guid of the batch
+      responses:
+        '200':
+          description: The summary of the batch import.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionBatchImportSummary'
+              example:
+                status: ProcessedWithExceptions
+                successfully_processed_record_count: 1
+                mappings:
+                - batch_transaction_id: 'Your transaction ID #1'
+                  transaction_id: 524
+                processing_exceptions:
+                - batch_transaction_id: 'Your transaction ID #2'
+                  errors:
+                  - property_name: UserId
+                    error_message: No statement recipient set for user.
+        '400':
+          description: The request was bad or malformed.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Default400ResponseTypes'
+              example:
+                type: urn:blackbaud:invalid-address-type
+                title: One or more validation errors occurred.
+                status: 400
+                detail: The type Home is not valid for this address.
+                values:
+                  type: Home
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '404':
+          description: The requested item(s) were not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: urn:blackbaud:resource-not-found
+                title: The requested resource could not be found.
+                status: 404
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+      tags:
+      - Batchimports
+components:
+  schemas:
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".
+        title:
+          type:
+          - string
+          - 'null'
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type:
+          - integer
+          - 'null'
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: {}
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+    CreatedTransactionMapping:
+      type: object
+      properties:
+        batch_transaction_id:
+          type:
+          - string
+          - 'null'
+          description: Your unique identifier for a transaction
+        transaction_id:
+          type: integer
+          description: The transaction's ID in Billing Management
+          format: int32
+      additionalProperties: false
+      description: The mapping between your transaction ID and the transaction created in Billing Management
+    IdResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the record
+          format: uuid
+      additionalProperties: false
+      description: A response containing the record's ID.
+    ImportBatchStatus:
+      title: ImportBatchStatus
+      enum:
+      - Accepted
+      - Processed
+      - Error
+      - ProcessedWithExceptions
+      type: string
+      description: Status of a transaction batch import
+    ProcessingError:
+      type: object
+      properties:
+        property_name:
+          type:
+          - string
+          - 'null'
+          description: The property associated with the error
+        error_message:
+          type:
+          - string
+          - 'null'
+          description: The reason the error occurred
+      additionalProperties: false
+      description: Error that prevented a transaction from being generated
+    CreateCreditDataMessage:
+      required:
+      - amount
+      - batch_transaction_id
+      - credit_date
+      - fee_type_id
+      - student_user_id
+      type: object
+      properties:
+        fee_type_id:
+          type: integer
+          description: The fee type ID of the credit to be created
+          format: int32
+        amount:
+          type: number
+          description: The credit amount
+          format: double
+        student_user_id:
+          type: integer
+          description: The student's user ID to create the credit for
+          format: int32
+        credit_date:
+          type: string
+          description: The date of the credit
+          format: date
+        credit_comments:
+          maxLength: 1000
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: The comments for the credit.
+        batch_transaction_id:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: 'Your unique identifier for the credit. Character limit: 100'
+      additionalProperties: false
+      description: A message containing all the information needed to create a credit
+    CreateChargeDataMessage:
+      required:
+      - amount
+      - batch_transaction_id
+      - charge_date
+      - charge_due_date
+      - fee_type_id
+      - student_user_id
+      type: object
+      properties:
+        fee_type_id:
+          type: integer
+          description: The fee type ID of the charge to be created
+          format: int32
+        amount:
+          type: number
+          description: The charge amount
+          format: double
+        student_user_id:
+          type: integer
+          description: The student's user ID to create the charge for
+          format: int32
+        charge_date:
+          type: string
+          description: The date of the charge
+          format: date
+        charge_due_date:
+          type: string
+          description: The due date of the charge
+          format: date
+        charge_comments:
+          maxLength: 1000
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: The comments for the charge.
+        batch_transaction_id:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: 'Your unique identifier for the charge. Character limit: 100'
+      additionalProperties: false
+      description: A message containing all the information needed to create a charge
+    TransactionBatchImportSummary:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/ImportBatchStatus'
+        successfully_processed_record_count:
+          type: integer
+          description: The number of records that were successfully processed
+          format: int32
+        mappings:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CreatedTransactionMapping'
+          description: The mappings between your transaction ID and the transaction created in Billing Management
+        processing_exceptions:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/TransactionProcessingExceptions'
+          description: The error(s) that occurred that prevented transaction generation
+      additionalProperties: false
+      description: The summary of the batch import request
+    TransactionProcessingExceptions:
+      type: object
+      properties:
+        batch_transaction_id:
+          type:
+          - string
+          - 'null'
+          description: Your unique identifier for a transaction. This will be empty if the error applies to the entire batch.
+        errors:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ProcessingError'
+          description: Error(s) that prevented the transaction from being generated
+      additionalProperties: false
+      description: The error(s) that occurred that prevented transaction generation
+    Default400ResponseTypes:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".<br/><br/>Available values:<table><tr><th>type</th><th>detail</th></tr><tr><td>urn:blackbaud:model-validation-error</td><td>A model validation rule was violated, such as a missing required field.</td></tr><tr><td>urn:blackbaud:validation-error</td><td>The request was invalid.</td></tr></table>
+        title:
+          type:
+          - string
+          - 'null'
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type:
+          - integer
+          - 'null'
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: {}
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-bb-error-types:
+      - urn:blackbaud:model-validation-error
+      - urn:blackbaud:validation-error
+    CreateChargeImportBatchMessage:
+      required:
+      - batch_id
+      - charges
+      type: object
+      properties:
+        batch_id:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: 'Your unique identifier for the batch. Character limit: 100'
+        charges:
+          maxItems: 100
+          type: array
+          items:
+            $ref: '#/components/schemas/CreateChargeDataMessage'
+          description: 'The charges to be created in the batch. Batch size limit: 100'
+      additionalProperties: false
+      description: A request containing all the information needed to create a batch of charges
+    CreateCreditImportBatchMessage:
+      required:
+      - batch_id
+      - credits
+      type: object
+      properties:
+        batch_id:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: 'Your unique identifier for the batch. Character limit: 100'
+        credits:
+          maxItems: 100
+          type: array
+          items:
+            $ref: '#/components/schemas/CreateCreditDataMessage'
+          description: 'The credits to be created in the batch. Batch size limit: 100'
+      additionalProperties: false
+      description: A request containing all the information needed to create a batch of credits
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

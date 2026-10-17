@@ -1,0 +1,881 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: School Schedules API'
+  description: This API is used to provide access to school information such as users, academics, admissions, athletics, content, lists, and general school info.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/school
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/school
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Schedules
+paths:
+  /v1/schedules/meetings:
+    get:
+      operationId: V1SchedulesMeetingsGet
+      summary: Schedules meetings
+      description: 'Returns a list of section meetings for a given date. When ```end_date``` is supplied a range of meetings between the given dates is returned.
+
+        ```offering_types``` can take a single or multiple values as a comma delimited ```string``` of integers, defaults to 1
+
+        ```end_date``` cannot be more than 30 days past the ```start_date```. Default date range is 30 days.
+
+
+        Academics: 1
+
+
+        Activities: 2
+
+
+        Advisory: 3
+
+
+        Athletics: 9
+
+
+        Requires at least one of the following roles in the Education Management system:
+
+
+        Academics Group Manager
+
+
+        Advisory Group Manager
+
+
+        Platform Manager
+
+
+        Activity Group Manager
+
+
+        Athletic Group Manager
+
+
+        Scheduling Manager'
+      parameters:
+      - name: start_date
+        in: query
+        required: true
+        schema:
+          type: string
+        description: 'Use <a href="https://en.wikipedia.org/wiki/ISO_8601" target="_blank">ISO-8601</a> date format: 2022-04-01.'
+      - name: end_date
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Use <a href="https://en.wikipedia.org/wiki/ISO_8601" target="_blank">ISO-8601</a> date format: 2022-04-08.'
+      - name: offering_types
+        in: query
+        required: false
+        schema:
+          type: string
+          default: '1'
+        description: Comma delimited list of integer values above. Defaults to 1.
+      - name: section_ids
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Comma delimited list of integer values for the section identifiers to return. By default the route returns all sections.
+      - name: last_modified
+        in: query
+        required: false
+        schema:
+          type: string
+        description: "Filters meetings to sections that were modified on or after the date provided. \n Use <a href=\"https://en.wikipedia.org/wiki/ISO_8601\" target=\"_blank\">ISO-8601</a> date format: 2022-04-01."
+      - name: show_time_for_current_date
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: 'false'
+        description: Set to true to calculate the ```start_time``` and ```end_time``` or meetings based on the current day instead of the meeting day. Defaults to false.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MeetingCollection'
+              example:
+                count: 1
+                value:
+                - section_id: 1
+                  section_identifier: Identifier
+                  course_title: Course Title
+                  group_name: Group Name
+                  block_id: 3
+                  block_name: Block Name
+                  room_id: 1
+                  room_name: Room Name
+                  room_number: 1
+                  room_capacity: 20
+                  room_code: Code
+                  faculty_user_id: 1
+                  faculty_name: Stark, Tony
+                  faculty_firstname: Tony
+                  faculty_lastname: Stark
+                  start_time: '1970-01-01T01:00:00Z'
+                  end_time: '1970-01-01T02:00:00Z'
+                  meeting_date: '2022-02-02T12:00:00Z'
+                  attendance_required: true
+                  attendance_taken: false
+                  num_absent: 0
+                  attendance_id: 12
+                  level_number: 1
+                  offering_type:
+                    id: 1
+                    description: Academics
+                  created_date: '1970-01-01T02:00:00Z'
+                  modified_date: '1970-01-01T02:00:00Z'
+                  last_modified_user_id: 123456
+                  teachers:
+                  - id: 1010101
+                    head: true
+                    name: Tony Stark
+                    firstname: Anthony
+                    lastname: Stark
+                    preferred_name: Tony
+                    formatted_name: Stark, Tony
+                    email: ironman@avengers.com
+                    cell_phone: 555-555-5555
+                  - id: 1010102
+                    head: false
+                    name: James Rodes
+                    firstname: James
+                    lastname: Rodes
+                    preferred_name: ''
+                    formatted_name: Rodes, James
+                    email: warmachine@avengers.com
+                    cell_phone: 555-555-5551
+      tags:
+      - Schedules
+  /v1/schedules/{student_id}/meetings:
+    get:
+      operationId: V1SchedulesByStudent_idMeetingsGet
+      summary: Schedules - Meetings for a student
+      description: 'Returns a list of meetings for a given student for a date range. When ```end_date``` is supplied, a range of meetings between the given dates is returned.
+
+        Default for ```end_date``` is 30 days past the ```start_date```.
+
+        Requires at least one of the following roles in the Education Management system and group page access should be set for one of the roles:
+
+
+        Student
+
+
+        Parent
+
+
+        Attendance Manager
+
+
+        Schedule Manager'
+      parameters:
+      - name: student_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The ID of the student
+      - name: start_date
+        in: query
+        required: true
+        schema:
+          type: string
+        description: The beginning of the date range of results to return.
+      - name: end_date
+        in: query
+        required: false
+        schema:
+          type: string
+        description: The end of the date range of results to return. Defaults to 30 days after start_date
+      - name: size
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: '3000'
+        description: The page size in number of records returned. Default is 3000. Maximum allowed is 5000.
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: '1'
+        description: The page of results to return. Defaults to 1 if not included.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentScheduleCollection'
+              example:
+                count: 1
+                value:
+                - section_id: 1
+                  section_identifier: Identifier
+                  course_title: Course Title
+                  course_code: '101'
+                  section_name: Section Name
+                  block_id: 3
+                  block_name: Block Name
+                  room_id: 1
+                  room_name: Room Name
+                  room_number: '1'
+                  room_capacity: 20
+                  room_code: Code
+                  faculty_name: Stark, Tony
+                  faculty_firstname: Tony
+                  faculty_lastname: Stark
+                  start_time: '1970-01-01T01:00:00Z'
+                  end_time: '1970-01-01T02:00:00Z'
+                  meeting_date: '2022-02-02T12:00:00Z'
+                  faculty_user_id: 1
+                  attendance_required: true
+                  offering_type:
+                    id: 1
+                    description: Academics
+                  attendance_taken: true
+                  attendance:
+                  - id: 1001
+                    attendance_of_record: true
+                    excused_type:
+                      category_description: Medical
+                      category_id: 1
+                      excuse_type_id: 101
+                      excuse_description: Doctor's note provided
+                      use_in_calculations: true
+                      excused: Present
+                      duration: FullDay
+                      attendance_type: Present
+                      school_levels:
+                      - id: 1
+                        abbreviation: US
+                        name: Upper School
+                    comment: Student was excused due to illness.
+                    reported_by:
+                      id: 501
+                      email: admin@school.edu
+                      first_name: Bruce
+                      last_name: Banner
+                      middle_name: David
+      tags:
+      - Schedules
+components:
+  schemas:
+    UserBaseRead:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID associated with a user
+          format: int32
+        email:
+          type:
+          - string
+          - 'null'
+          description: The email address of a user
+        first_name:
+          type:
+          - string
+          - 'null'
+          description: The first name of a user
+        last_name:
+          type:
+          - string
+          - 'null'
+          description: The last name of a user
+        maiden_name:
+          type:
+          - string
+          - 'null'
+          description: The maiden name of a user
+        middle_name:
+          type:
+          - string
+          - 'null'
+          description: The middle name of a user
+        preferred_name:
+          type:
+          - string
+          - 'null'
+          description: The nickname of a user
+        preferred_last_name:
+          type:
+          - string
+          - 'null'
+          description: The preferred last name of a user
+        prefix:
+          type:
+          - string
+          - 'null'
+          description: The prefix of a user
+        suffix:
+          type:
+          - string
+          - 'null'
+          description: The suffix of a user
+      additionalProperties: false
+      description: UserBaseRead Model
+    ReasonAttendanceType:
+      title: ReasonAttendanceType
+      enum:
+      - Present
+      - Absence
+      - Tardy
+      - Virtual
+      type: string
+      description: ''
+    MeetingCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items in the collection
+          format: int32
+          readOnly: true
+        next_link:
+          type:
+          - string
+          - 'null'
+          description: For paginated responses, the URI for the next page of results
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Meeting'
+          description: The set of items included in the response. This may be a subset of the items in the collection
+      additionalProperties: false
+      description: A Collection
+    Meeting:
+      type: object
+      properties:
+        section_id:
+          type: integer
+          description: The id of the section
+          format: int32
+        section_identifier:
+          type:
+          - string
+          - 'null'
+          description: The section identifier
+        course_title:
+          type:
+          - string
+          - 'null'
+          description: The title of the course
+        group_name:
+          type:
+          - string
+          - 'null'
+          description: The auto generated name of the group
+        block_id:
+          type: integer
+          description: The id of the block
+          format: int32
+        block_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the block
+        room_id:
+          type: integer
+          description: The id of the room where the meeting takes place
+          format: int32
+        room_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the room where the meeting takes place
+        room_number:
+          type: integer
+          description: The room number where the meeting takes place
+          format: int32
+        room_capacity:
+          type: integer
+          description: The room capacity
+          format: int32
+        room_code:
+          type:
+          - string
+          - 'null'
+          description: The room code
+        faculty_user_id:
+          type: integer
+          description: The user id of the faculty member
+          format: int32
+        faculty_name:
+          type:
+          - string
+          - 'null'
+          description: The combined name of the head faculty member
+        faculty_firstname:
+          type:
+          - string
+          - 'null'
+          description: The faculty member's first name
+        faculty_lastname:
+          type:
+          - string
+          - 'null'
+          description: The faculty member's last name
+        start_time:
+          type: string
+          description: The start time of the meeting
+          format: date-time
+        end_time:
+          type: string
+          description: The end time of the meeting
+          format: date-time
+        meeting_date:
+          type: string
+          description: The date the meeting takes place
+          format: date-time
+        attendance_required:
+          type: boolean
+          description: Returns true if attendance is required to be taken for this meeting. If the meeting time has passed, the value is true if the course records attendance. This field will always return false for meetings in the future.
+        attendance_taken:
+          type: boolean
+          description: Return true if attendance was taken
+        num_absent:
+          type: integer
+          description: The number of absent students for this meeting
+          format: int32
+        attendance_id:
+          type: integer
+          description: the id of the attendance record
+          format: int32
+        level_number:
+          type: integer
+          description: The level number the meeting belongs to
+          format: int32
+        offering_type:
+          $ref: '#/components/schemas/OfferingType'
+        created_date:
+          type: string
+          description: The date the section was created
+          format: date-time
+        modified_date:
+          type: string
+          description: The date the section was last modified
+          format: date-time
+        last_modified_user_id:
+          type: integer
+          description: The identifier of the user that last modified the section
+          format: int32
+        teachers:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Teacher'
+          description: The list of teachers for the meeting
+      additionalProperties: false
+      description: Meeting
+    ExcusedTypes:
+      type: object
+      properties:
+        category_description:
+          type:
+          - string
+          - 'null'
+          description: The category that the excuse associated with
+        category_id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of category that the excuse associated with
+          format: int32
+        excuse_type_id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the excuse type
+          format: int32
+        excuse_description:
+          type:
+          - string
+          - 'null'
+          description: The description of the excuse type
+        use_in_calculations:
+          type:
+          - boolean
+          - 'null'
+          description: The Use In Calculations flag
+        excused:
+          $ref: '#/components/schemas/ReasonExcused'
+        duration:
+          $ref: '#/components/schemas/ReasonDuration'
+        attendance_type:
+          $ref: '#/components/schemas/ReasonAttendanceType'
+        school_levels:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Level'
+          description: An array of valid school levels. The type is valid for all school levels if array is empty.
+      additionalProperties: false
+      description: ''
+    ReasonDuration:
+      title: ReasonDuration
+      enum:
+      - NA
+      - FullDay
+      - HalfDay
+      type: string
+      description: ''
+    StudentSchedule:
+      type: object
+      properties:
+        section_id:
+          type:
+          - integer
+          - 'null'
+          description: The Id of the section
+          format: int32
+        section_identifier:
+          type:
+          - string
+          - 'null'
+          description: The identifier of the section
+        course_title:
+          type:
+          - string
+          - 'null'
+          description: The title of the course
+        course_code:
+          type:
+          - string
+          - 'null'
+          description: The code of the course
+        section_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the section
+        block_id:
+          type:
+          - integer
+          - 'null'
+          description: The Id of the block the section is scheduled in
+          format: int32
+        block_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the block the section is scheduled in
+        room_id:
+          type:
+          - integer
+          - 'null'
+          description: The Id of the room the section takes place in
+          format: int32
+        room_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the room the section takes place in
+        room_number:
+          type:
+          - string
+          - 'null'
+          description: The number of the room the section takes place in
+        room_capacity:
+          type:
+          - integer
+          - 'null'
+          description: The capacity of the room the section takes place in
+          format: int32
+        room_code:
+          type:
+          - string
+          - 'null'
+          description: The code of the room the section takes place in
+        faculty_name:
+          type:
+          - string
+          - 'null'
+          description: The full name of the head teacher
+        faculty_firstname:
+          type:
+          - string
+          - 'null'
+          description: The first name of the head teacher
+        faculty_lastname:
+          type:
+          - string
+          - 'null'
+          description: The last name of the head teacher
+        start_time:
+          type:
+          - string
+          - 'null'
+          description: The start time of the meeting
+          format: date-time
+        end_time:
+          type:
+          - string
+          - 'null'
+          description: The end time of the meeting
+          format: date-time
+        meeting_date:
+          type:
+          - string
+          - 'null'
+          description: The date the meeting takes place
+          format: date-time
+        faculty_user_id:
+          type:
+          - integer
+          - 'null'
+          description: The user Id of the head teacher
+          format: int32
+        attendance_required:
+          type:
+          - boolean
+          - 'null'
+          description: Returns true if attendance is required
+        offering_type:
+          $ref: '#/components/schemas/OfferingType'
+        attendance_taken:
+          type: boolean
+          description: True if attendance has been take for the meeting
+        attendance:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SectionMeetingAttendance'
+          description: An object with attendance entry information for a student in a meeting of a section
+      additionalProperties: false
+      description: Schedule Item
+    Level:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of a school level
+          format: int32
+        abbreviation:
+          type:
+          - string
+          - 'null'
+          description: The abbreviation associated with a school level
+        name:
+          type:
+          - string
+          - 'null'
+          description: The label used to identify a school level
+        address:
+          $ref: '#/components/schemas/SchoolAddress'
+        school_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the School
+        school_address:
+          $ref: '#/components/schemas/SchoolAddress'
+      additionalProperties: false
+      description: An object with school level information
+    SchoolAddress:
+      type: object
+      properties:
+        address1:
+          type:
+          - string
+          - 'null'
+          description: The address line
+        address2:
+          type:
+          - string
+          - 'null'
+          description: The address line
+        address3:
+          type:
+          - string
+          - 'null'
+          description: The address line
+        city:
+          type:
+          - string
+          - 'null'
+          description: The city
+        state:
+          type:
+          - string
+          - 'null'
+          description: TThe state for the address
+        zip:
+          type:
+          - string
+          - 'null'
+          description: The postal/ZIP code for the address
+        county_province:
+          type:
+          - string
+          - 'null'
+          description: The county or province for the address
+        country:
+          type:
+          - string
+          - 'null'
+          description: The country for the address
+        phone:
+          type:
+          - string
+          - 'null'
+          description: The phone number for the address
+        fax:
+          type:
+          - string
+          - 'null'
+          description: The fax number for the address
+        website:
+          type:
+          - string
+          - 'null'
+          description: The website for the address
+      additionalProperties: false
+      description: An object with information about the address of the school level, including address fields, phone fields and website.
+    Teacher:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The user ID for the teacher
+          format: int32
+        head:
+          type:
+          - boolean
+          - 'null'
+          description: The head teacher indicator
+        name:
+          type:
+          - string
+          - 'null'
+          description: The firstname and lastname of the teacher
+        firstname:
+          type:
+          - string
+          - 'null'
+          description: The first name of the teacher
+        lastname:
+          type:
+          - string
+          - 'null'
+          description: The last name of the teacher
+        preferred_name:
+          type:
+          - string
+          - 'null'
+          description: The teachers preferred name
+        formatted_name:
+          type:
+          - string
+          - 'null'
+          description: The formatted name of the teacher.  If the teacher has a preferred name, it is used in place of the first name.
+        email:
+          type:
+          - string
+          - 'null'
+          description: The teacher's email address
+        cell_phone:
+          type:
+          - string
+          - 'null'
+          description: The teacher's cellular phone
+      additionalProperties: false
+      description: Academic Teacher Model
+    ReasonExcused:
+      title: ReasonExcused
+      enum:
+      - Present
+      - Excused
+      - Unexcused
+      type: string
+      description: ''
+    StudentScheduleCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items in the collection
+          format: int32
+          readOnly: true
+        next_link:
+          type:
+          - string
+          - 'null'
+          description: For paginated responses, the URI for the next page of results
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/StudentSchedule'
+          description: The set of items included in the response. This may be a subset of the items in the collection
+      additionalProperties: false
+      description: A Collection
+    OfferingType:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of an offering type
+          format: int32
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of an offering type
+      additionalProperties: false
+      description: An object with offering type information
+    SectionMeetingAttendance:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the student�s attendance entry
+          format: int32
+        attendance_of_record:
+          type: boolean
+          description: True if the attendance entry is counted as an attendance of record
+        excused_type:
+          $ref: '#/components/schemas/ExcusedTypes'
+        comment:
+          type:
+          - string
+          - 'null'
+          description: The comment for the attendance entry
+        reported_by:
+          $ref: '#/components/schemas/UserBaseRead'
+      additionalProperties: false
+      description: ''
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

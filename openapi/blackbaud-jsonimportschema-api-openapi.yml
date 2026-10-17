@@ -1,0 +1,52 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Import Jsonimportschema API'
+  description: Manages import jobs for Raiser's Edge NXT.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/import
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/import
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Jsonimportschema
+paths:
+  /jsonimportschema:
+    get:
+      operationId: GetJsonImportSchema
+      summary: Get JSON import schema (PREVIEW)
+      description: 'Returns the JSON schema for JSONL import files.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the JSON import schema.
+          content:
+            application/schema+json:
+              schema:
+                $ref: '#/components/schemas/JsonimportschemaGet200ApplicationSchema-jsonResponse'
+        '403':
+          description: Returned when the user does not have permission to access imports.
+      tags:
+      - Jsonimportschema
+components:
+  schemas:
+    JsonimportschemaGet200ApplicationSchema-jsonResponse:
+      x-apim-inline: true
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

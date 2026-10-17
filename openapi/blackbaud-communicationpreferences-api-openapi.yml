@@ -1,0 +1,208 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Constituent Communicationpreferences API'
+  description: This API manages constituent information and related entities such as addresses, phones, emails, and notes.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/56b76470069a0509c8f1c5b3
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/constituent/v1
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Communicationpreferences
+paths:
+  /communicationpreferences:
+    post:
+      operationId: CreateConstituentCommunicationPreference
+      summary: Communication preference (Create)
+      description: Creates a constituent communication preference. This endpoint will be deprecated in a future version of the Constituent API. Please reference the equivalent endpoint, Constituent solicit code (Post), in the Communication Preference API instead.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CommunicationPreferenceAdd'
+            example:
+              constituent_id: '280'
+              end: '1996-01-22T00:00:00Z'
+              solicit_code: Do not phone on weekends
+              start: '1986-01-22T00:00:00Z'
+        description: An object that represents the communication preference to create.
+      responses:
+        '200':
+          description: Returned when the operation successfully creates a communication preference. The response body contains the ID of the new communication preference.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse'
+              example:
+                id: '1281'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+        '403':
+          description: Returned when the user does not have permission to create the communication preference.
+        '404':
+          description: Returned when the specified constituent is not found.
+      tags:
+      - Communicationpreferences
+    get:
+      operationId: ListCommunicationPreferences
+      summary: Communication preferences
+      description: Returns a list of available communication preference types. This endpoint will be deprecated in a future version of the Constituent API. Please reference the equivalent endpoint, Solicit codes (Get), in the Communication Preference API instead.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a <a href="https://developer.blackbaud.com/skyapi/api/entity-reference/constituent#Collection">collection</a> of string communication preference types.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiCollectionOfString'
+              example:
+                count: 3
+                value:
+                - Don't call me on Thursdays
+                - Unavailable between 3-5pm on business days
+                - Only reach out through fax
+      tags:
+      - Communicationpreferences
+  /communicationpreferences/{communication_preference_id}:
+    delete:
+      operationId: DeleteConstituentCommunicationPreference
+      summary: Communication preference (Delete)
+      description: Deletes a constituent communication preference. This endpoint will be deprecated in a future version of the Constituent API. Please reference the equivalent endpoint, Constituent solicit code (Delete), in the Communication Preference API instead.
+      parameters:
+      - name: communication_preference_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The immutable system record ID of the communication preference to delete.
+      responses:
+        '200':
+          description: Returned when the operation successfully deletes the communication preference.
+        '400':
+          description: Returned when the specified communication preference ID in the request URL is not in the appropriate format.
+        '403':
+          description: Returned when the user does not have permission to delete the communication preference.
+      tags:
+      - Communicationpreferences
+    patch:
+      operationId: EditConstituentCommunicationPreference
+      summary: Communication preference (Edit)
+      description: Edits a constituent communication preference. This endpoint will be deprecated in a future version of the Constituent API. Please reference the equivalent endpoint, Constituent solicit code (Patch), in the Communication Preference API instead.
+      parameters:
+      - name: communication_preference_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The immutable system record ID of the communication preference to edit.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CommunicationPreferenceEdit'
+            example:
+              end: '2011-04-03T00:00:00Z'
+              solicit_code: Do not solicit
+              start: '1993-02-22T00:00:00Z'
+        description: An object that represents the properties of the communication preference to edit.
+      responses:
+        '200':
+          description: Returned when the operation successfully edits the communication preference.
+        '400':
+          description: Returned when the specified communication preference ID in the request URL or the specified request parameters are not in the appropriate format.
+        '403':
+          description: Returned when the user does not have permission to edit the communication preference.
+        '404':
+          description: Returned when the specified communication preference is not found.
+      tags:
+      - Communicationpreferences
+components:
+  schemas:
+    PostResponse:
+      description: Defines the shape of a post response object.
+      type: object
+      properties:
+        id:
+          description: The newly created ID
+          type: string
+      x-hidden: true
+    ApiCollectionOfString:
+      description: Fetching data all at once quickly becomes unmanageable. The collection entity helps by returning paginated chunks of large data sets. This entity includes helpful metadata and properties to paginate and iterate through the data.
+      type: object
+      properties:
+        count:
+          format: int32
+          description: The number of items available for retrieval into the collection after applying any request parameters. The <b>limit</b> and <b>offset</b> parameters do not affect the <b>count</b>, but to facilitate paging, they may affect the number of items in the <b>value</b> result set.
+          type: integer
+        next_link:
+          description: For paginated responses, the URI for the next page of results.
+          type: string
+        value:
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+          type: array
+          items:
+            type: string
+      x-hidden: true
+      x-base-type: '#/definitions/ApiCollection'
+    CommunicationPreferenceAdd:
+      description: Communication preferences provide guidance on how to contact constituents. These rules describe instructions and restrictions about when to reach out to constituents and how to tailor communications to honor their requests.
+      required:
+      - constituent_id
+      - solicit_code
+      type: object
+      properties:
+        constituent_id:
+          description: The immutable system record ID of the constituent associated with the communication preference.
+          type: string
+        end:
+          format: date-time
+          description: 'The end date of the communication preference. Uses <a href="https://tools.ietf.org/html/rfc3339">ISO-8601 format: </a><i>1969-11-21T10:29:43</i>.'
+          type: string
+          x-supports-datetime-offset: false
+        solicit_code:
+          description: Communication instructions and/or restrictions for a constituent. Available values are the entries in the <a href="https://developer.sky.blackbaud.com/docs/services/56b76470069a0509c8f1c5b3/operations/ListCommunicationPreferences"><b>Solicit Code</b></a> table.
+          type: string
+        start:
+          format: date-time
+          description: 'The start date of the communication preference. Uses <a href="https://tools.ietf.org/html/rfc3339">ISO-8601 format: </a><i>1969-11-21T10:29:43</i>.'
+          type: string
+          x-supports-datetime-offset: false
+      x-hidden: true
+      x-display-name: Create communication preference
+      x-display-id: CreateCommunicationPreference
+    CommunicationPreferenceEdit:
+      description: Communication preferences provide guidance on how to contact constituents. These rules describe instructions and restrictions about when to reach out to constituents and how to tailor communications to honor their requests.
+      type: object
+      properties:
+        end:
+          format: date-time
+          description: 'The end date of the communication preference. Uses <a href="https://tools.ietf.org/html/rfc3339">ISO-8601 format: </a><i>1969-11-21T10:29:43</i>.'
+          type: string
+          x-supports-datetime-offset: false
+        solicit_code:
+          description: Communication instructions and/or restrictions for a constituent. Available values are the entries in the <a href="https://developer.sky.blackbaud.com/docs/services/56b76470069a0509c8f1c5b3/operations/ListCommunicationPreferences"><b>Solicit Code</b></a> table. This property cannot be set to null.
+          type: string
+        start:
+          format: date-time
+          description: 'The start date of the communication preference. Uses <a href="https://tools.ietf.org/html/rfc3339">ISO-8601 format: </a><i>1969-11-21T10:29:43</i>.'
+          type: string
+          x-supports-datetime-offset: false
+      x-hidden: true
+      x-display-name: Edit communication preference
+      x-display-id: EditCommunicationPreference
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

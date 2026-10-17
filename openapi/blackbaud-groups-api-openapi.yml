@@ -1,0 +1,1000 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: CSRconnect Groups API'
+  description: This API is for YourCause CSRconnect from Blackbaud.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/csr-connect
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/csr-connect
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Groups
+paths:
+  /v1/groups/programs:
+    get:
+      operationId: ListGroupPrograms
+      summary: Get group programs (PREVIEW)
+      description: 'Returns all of the group programs configured by the client. In addition to the general details about the group program, the payload contains the following:
+
+
+        group_creators indicates which employees are allowed to create a group within the specific program. A value of "1" indicates that only super admins can create group pages and a value of "2" indicates that any employee can create a page for the program.
+
+
+        group_membership_type defines the method of "join" for all pages in the program. A value of "1" indicates that all group pages in the program are closed and require a request to join that must be approved by the group administrator. A value of "2" indicates that all group pages are open and can be freely joined without approval. A value of "3" indicates that the creator of each group determines at the time of page creation whether the group is open or closed.
+
+
+        group_members_privacy_type defines the user privacy setting for each group in the program. A value of "1" indicates that all groups are private and the group page will not show a list of members. A value of "2" indicates that all group pages are public and display a list of members. When a group page is public, each user may opt out of being shown in the member list.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      responses:
+        '400':
+          description: Returned when the specified request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request was invalid or missing required parameters.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '401':
+          description: Unauthorized
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: Authentication credentials were missing or invalid.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '403':
+          description: Forbidden
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: You do not have permission to access this resource.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '404':
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Not Found
+                status: 404
+                detail: The requested resource could not be found.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of group programs.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupProgramsResponse'
+              example:
+                group_programs:
+                - id: a3f1e2d4-bc09-4e5f-9a87-1234567890ab
+                  affiliate_id: 200
+                  name: Employee Resource Groups
+                  call_to_action: Find your community
+                  summary: Connect with colleagues who share your interests.
+                  group_creators:
+                  - 2
+                  group_membership_type: 2
+                  group_members_privacy_type: 2
+                  featured_group_ids:
+                  - 101
+                  - 102
+                  tags:
+                  - name: Region
+                    options:
+                    - North America
+                    - EMEA
+                  image_url: https://example.com/images/program.png
+                  show_disclaimer: true
+                  disclaimer_text: By joining you agree to the group guidelines.
+                  total_groups: 12
+                  total_group_members: 480
+      tags:
+      - Groups
+  /v1/groups/programs/{group_program_id}/search:
+    post:
+      operationId: SearchGroups
+      summary: Search groups (PREVIEW)
+      description: 'Searches for a group page within a specific group program. Use the group programs endpoint to obtain the group_program_id.
+
+
+        In the body of the request, provide the term, page, and limit. term is the string the API uses to search the group page name. page is the page of paginated results to pull. limit is the number of results per page, capped at 25.
+
+
+        include_virtual is optional. When true, groups with no defined location are included. The default value is false.
+
+
+        To search by location, use the optional distance_in_miles, latitude, and longitude params. Passing a latitude and longitude returns groups within a 50 mile radius by default; use distance_in_miles to change the radius.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: group_program_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The unique identifier of the group program to search within.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupSearchRequest'
+            example:
+              term: volunteers
+              page: 1
+              limit: 10
+              include_virtual: false
+              distance_in_miles: 50
+              latitude: 33.759
+              longitude: -84.387
+        description: The request body containing the search criteria.
+      responses:
+        '400':
+          description: Returned when the specified request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request was invalid or missing required parameters.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '401':
+          description: Unauthorized
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: Authentication credentials were missing or invalid.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '403':
+          description: Forbidden
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: You do not have permission to access this resource.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '404':
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Not Found
+                status: 404
+                detail: The requested resource could not be found.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '200':
+          description: Returned when the operation succeeds. The response body contains a paginated collection of groups.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupSearchResponse'
+              example:
+                page: 1
+                limit: 10
+                page_count: 3
+                total_count: 25
+                groups:
+                - group_id: 101
+                  creator_affiliate_employee_id: 5001
+                  name: Atlanta Volunteers
+                  description: A group for Atlanta-based volunteers.
+                  image_url: https://example.com/images/group.png
+                  address1: 285 Peachtree Center Ave NE
+                  city: Atlanta
+                  state: GA
+                  postal_code: '30303'
+                  latitude: 33.759
+                  longitude: -84.387
+                  membership_type: 2
+                  open: true
+                  tags: volunteer,community
+      tags:
+      - Groups
+  /v1/groups/{group_id}:
+    get:
+      operationId: GetGroupDetails
+      summary: Get group information (PREVIEW)
+      description: 'Returns an object containing all the primary details for a Groups page in CSRconnect. The group_id is the unique identifier of the group page. This ID can be obtained by searching a group program.
+
+
+        membership_type defines the method of "join" for all pages in the program. A value of "1" indicates that all group pages in the program are closed and require a request to join that must be approved by the group administrator. A value of "2" indicates that all group pages in the program are open and can be freely joined without approval. A value of "3" indicates that the creator of each group determines at the time of page creation whether the group is open or closed.
+
+
+        open indicates the membership choice when membership_type is "3". If true, the creator made the page open and any employee can join. If false, the creator made the page closed and employees must request to join. For membership_type values "1" or "2", the value reflects that closed or open setting.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: group_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The unique identifier of the group page.
+      responses:
+        '400':
+          description: Returned when the specified request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request was invalid or missing required parameters.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '401':
+          description: Unauthorized
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: Authentication credentials were missing or invalid.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '403':
+          description: Forbidden
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: You do not have permission to access this resource.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '404':
+          description: Returned when the specified group is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Not Found
+                status: 404
+                detail: The requested resource could not be found.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '200':
+          description: Returned when the operation succeeds. The response body contains the group details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupDetailsResponse'
+              example:
+                group_id: 101
+                creator_affiliate_employee_id: 5001
+                name: Atlanta Volunteers
+                description: A group for Atlanta-based volunteers.
+                image_url: https://example.com/images/group.png
+                address1: 285 Peachtree Center Ave NE
+                address2: Suite 100
+                city: Atlanta
+                state: GA
+                postal_code: '30303'
+                latitude: 33.759
+                longitude: -84.387
+                membership_type: 2
+                open: true
+                tags: volunteer,community
+                date_added: '2024-01-15T12:00:00Z'
+                group_program_id: a3f1e2d4-bc09-4e5f-9a87-1234567890ab
+                total_members: 42
+      tags:
+      - Groups
+  /v1/groups/{group_id}/join:
+    post:
+      operationId: AssignEmployeeToGroup
+      summary: Assign an employee to a group (PREVIEW)
+      description: 'Assigns an employee to a group page. In the body of the request you pass the following:
+
+
+        affiliate_employee_id is the ID of the employee you are assigning to the group page.
+
+
+        If the group program has a disclaimer and disclaimer text, accepted_disclaimer indicates that the employee has accepted that disclaimer.
+
+
+        send_me_email_notifications indicates a user decision to accept email communications from the administrator of the group page.
+
+
+        show_membership indicates a user decision to have their name shown as a member on the group page for other group members to see.
+
+
+        The response success value is false when the employee is already a member, or when the group program requires a disclaimer that was not accepted.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: group_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The unique identifier of the group to join.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JoinGroupRequest'
+            example:
+              affiliate_employee_id: 5001
+              accepted_disclaimer: true
+              send_me_email_notifications: true
+              show_membership: true
+        description: The request body containing the employee and their membership preferences.
+      responses:
+        '400':
+          description: Returned when the specified request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request was invalid or missing required parameters.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '401':
+          description: Unauthorized
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: Authentication credentials were missing or invalid.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '403':
+          description: Forbidden
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: You do not have permission to access this resource.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '404':
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Not Found
+                status: 404
+                detail: The requested resource could not be found.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '200':
+          description: Returned when the operation completes. The response body indicates whether the employee was assigned to the group.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JoinGroupResponse'
+              example:
+                success: true
+      tags:
+      - Groups
+  /v1/groups/{group_id}/members/{affiliate_employee_id}:
+    delete:
+      operationId: DeleteGroupMember
+      summary: Remove an employee from a group (PREVIEW)
+      description: 'Removes an employee from a group page.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: group_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The unique identifier of the group to remove the employee from.
+      - name: affiliate_employee_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The employee ID from the affiliate's system for the employee to remove from the group.
+      responses:
+        '400':
+          description: Returned when the specified request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request was invalid or missing required parameters.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '401':
+          description: Unauthorized
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: Authentication credentials were missing or invalid.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '403':
+          description: Forbidden
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: You do not have permission to access this resource.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '404':
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Not Found
+                status: 404
+                detail: The requested resource could not be found.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '200':
+          description: Returned when the operation completes. The response body indicates whether the employee was removed from the group.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LeaveGroupResponse'
+              example:
+                success: true
+      tags:
+      - Groups
+components:
+  schemas:
+    GroupDetailsResponse:
+      type: object
+      properties:
+        group_id:
+          type: integer
+          description: The unique identifier of the group page.
+          format: int32
+        creator_affiliate_employee_id:
+          type: integer
+          description: The affiliate employee ID of the employee who created the group.
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the group.
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the group.
+        image_url:
+          type:
+          - string
+          - 'null'
+          description: The URL of the group's image.
+        address1:
+          type:
+          - string
+          - 'null'
+          description: The first line of the group's address.
+        address2:
+          type:
+          - string
+          - 'null'
+          description: The second line of the group's address.
+        city:
+          type:
+          - string
+          - 'null'
+          description: The city of the group's address.
+        state:
+          type:
+          - string
+          - 'null'
+          description: The state or province of the group's address.
+        postal_code:
+          type:
+          - string
+          - 'null'
+          description: The postal or ZIP code of the group's address.
+        latitude:
+          type:
+          - number
+          - 'null'
+          description: The latitude of the group's location.
+          format: double
+        longitude:
+          type:
+          - number
+          - 'null'
+          description: The longitude of the group's location.
+          format: double
+        membership_type:
+          type:
+          - integer
+          - 'null'
+          description: 'The membership type for the group. Available values: 1 – closed (requires approval to join);
+
+            2 – open (freely joinable); 3 – determined per group by its creator.'
+          format: int32
+        open:
+          type: boolean
+          description: 'Indicates whether the group can be joined freely. When false,
+
+            employees must request to join and be approved by the group administrator.'
+        tags:
+          type:
+          - string
+          - 'null'
+          description: The tags associated with the group.
+        date_added:
+          type: string
+          description: The date and time the group was added to the system.
+          format: date-time
+        group_program_id:
+          type:
+          - string
+          - 'null'
+          description: The unique identifier of the group program the group belongs to.
+        total_members:
+          type: integer
+          description: The total number of members in the group.
+          format: int32
+      additionalProperties: false
+      description: Represents the primary details of a group page in CSRconnect.
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference (RFC 3986) that identifies the problem type. When dereferenced, it should provide human-readable documentation for the problem. Defaults to "about:blank" when not present.<br/><br/>Available values:<table><tr><th>type</th><th>detail</th></tr><tr><td>about:blank</td><td>Type is not defined</td></tr></table>
+        title:
+          type:
+          - string
+          - 'null'
+          description: A short, human-readable summary of the problem type.
+        status:
+          type:
+          - integer
+          - 'null'
+          description: The HTTP status code for this occurrence of the problem.
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: {}
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+    GroupSummaryResponse:
+      type: object
+      properties:
+        group_id:
+          type: integer
+          description: The unique identifier of the group page.
+          format: int32
+        creator_affiliate_employee_id:
+          type: integer
+          description: The affiliate employee ID of the employee who created the group.
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the group.
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the group.
+        image_url:
+          type:
+          - string
+          - 'null'
+          description: The URL of the group's image.
+        address1:
+          type:
+          - string
+          - 'null'
+          description: The first line of the group's address.
+        address2:
+          type:
+          - string
+          - 'null'
+          description: The second line of the group's address.
+        city:
+          type:
+          - string
+          - 'null'
+          description: The city of the group's address.
+        state:
+          type:
+          - string
+          - 'null'
+          description: The state or province of the group's address.
+        postal_code:
+          type:
+          - string
+          - 'null'
+          description: The postal or ZIP code of the group's address.
+        latitude:
+          type:
+          - number
+          - 'null'
+          description: The latitude of the group's location.
+          format: double
+        longitude:
+          type:
+          - number
+          - 'null'
+          description: The longitude of the group's location.
+          format: double
+        membership_type:
+          type:
+          - integer
+          - 'null'
+          description: 'The membership type for the group. Available values: 1 – closed (requires approval to join);
+
+            2 – open (freely joinable); 3 – determined per group by its creator.'
+          format: int32
+        open:
+          type: boolean
+          description: 'Indicates whether the group can be joined freely. When false, employees must
+
+            request to join and be approved by the group administrator.'
+        tags:
+          type:
+          - string
+          - 'null'
+          description: The tags associated with the group.
+      additionalProperties: false
+      description: Represents a group returned in a group search.
+    GroupSearchRequest:
+      required:
+      - term
+      type: object
+      properties:
+        term:
+          type:
+          - string
+          - 'null'
+          description: The term used to search for groups by name.
+        page:
+          type: integer
+          description: The number of the result's page to return.
+          format: int32
+        limit:
+          maximum: 25
+          minimum: 1
+          type: integer
+          description: The maximum number of groups to return per page. Maximum value is 25.
+          format: int32
+          default: 10
+        include_virtual:
+          type: boolean
+          description: When true, groups with no defined location are included in the results. Defaults to false.
+        distance_in_miles:
+          type:
+          - number
+          - 'null'
+          description: 'The search radius in miles when searching by location. Requires latitude and longitude, and
+
+            defaults to 50 miles when a location is provided without a radius.'
+          format: double
+        latitude:
+          maximum: 90
+          minimum: -90
+          type:
+          - number
+          - 'null'
+          description: The latitude to search from. Must be provided together with longitude.
+          format: double
+        longitude:
+          maximum: 180
+          minimum: -180
+          type:
+          - number
+          - 'null'
+          description: The longitude to search from. Must be provided together with latitude.
+          format: double
+      additionalProperties: false
+      description: Represents the request parameters for searching groups within a group program.
+    GroupProgramsResponse:
+      type: object
+      properties:
+        group_programs:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/GroupProgramResponse'
+          description: The list of group programs.
+      additionalProperties: false
+      description: Represents the response containing the group programs configured for the affiliate.
+    JoinGroupRequest:
+      required:
+      - affiliate_employee_id
+      type: object
+      properties:
+        affiliate_employee_id:
+          type: integer
+          description: The employee ID from the affiliate's system for the employee joining the group.
+          format: int32
+        accepted_disclaimer:
+          type: boolean
+          description: 'Indicates that the employee has accepted the group program''s disclaimer. Required only when the
+
+            group program has disclaimer text configured.'
+        send_me_email_notifications:
+          type: boolean
+          description: Indicates the employee's decision to accept email communications from the group administrator.
+        show_membership:
+          type: boolean
+          description: 'Indicates the employee''s decision to have their name shown as a member on the group page for
+
+            other group members to see.'
+      additionalProperties: false
+      description: Represents the request body for assigning an employee to a group.
+    GroupTagResponse:
+      type: object
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the tag.
+        options:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: The available options for the tag.
+      additionalProperties: false
+      description: Represents a tag configured for a group program.
+    JoinGroupResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: 'Indicates whether the employee was successfully assigned to the group. false
+
+            when the employee is already a member, or the group program requires a disclaimer that was not accepted.'
+      additionalProperties: false
+      description: Represents the outcome of a request to assign an employee to a group.
+    GroupSearchResponse:
+      type: object
+      properties:
+        page:
+          type: integer
+          description: The current page number of the search results.
+          format: int32
+        limit:
+          type: integer
+          description: The number of groups returned per page.
+          format: int32
+        page_count:
+          type: integer
+          description: The total number of pages in the search results.
+          format: int64
+        total_count:
+          type: integer
+          description: The total number of groups matching the search criteria.
+          format: int64
+        groups:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/GroupSummaryResponse'
+          description: The list of groups returned for the current page.
+        continuation_token:
+          type:
+          - string
+          - 'null'
+          description: 'A token to retrieve the next page of results. Currently always null as the upstream API does
+
+            not support cursor-based pagination.'
+      additionalProperties: false
+      description: Represents the paginated results of a group search within a group program.
+    GroupProgramResponse:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: The unique identifier of the group program.
+        affiliate_id:
+          type: integer
+          description: The affiliate ID the group program belongs to.
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the group program.
+        call_to_action:
+          type:
+          - string
+          - 'null'
+          description: The call to action displayed for the group program.
+        summary:
+          type:
+          - string
+          - 'null'
+          description: A short summary of the group program.
+        group_creators:
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+            format: int32
+          description: 'Identifies which employees may create a group within the program. 1 – only super admins;
+
+            2 – any employee.'
+        group_membership_type:
+          type: integer
+          description: 'The method of joining for all pages in the program. 1 – closed (requires approval); 2 – open
+
+            (freely joinable); 3 – determined per group by its creator.'
+          format: int32
+        group_members_privacy_type:
+          type: integer
+          description: 'The member privacy setting for each group in the program. 1 – private (member list hidden);
+
+            2 – public (member list visible, members may opt out).'
+          format: int32
+        featured_group_ids:
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+            format: int32
+          description: The IDs of the groups featured within the program.
+        tags:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/GroupTagResponse'
+          description: The tags configured for the group program.
+        image_url:
+          type:
+          - string
+          - 'null'
+          description: The URL of the group program's image.
+        show_disclaimer:
+          type: boolean
+          description: Indicates whether a disclaimer is shown when joining a group in this program.
+        disclaimer_text:
+          type:
+          - string
+          - 'null'
+          description: The disclaimer text shown when joining a group in this program.
+        total_groups:
+          type: integer
+          description: The total number of groups in the program.
+          format: int32
+        total_group_members:
+          type: integer
+          description: The total number of members across all groups in the program.
+          format: int32
+      additionalProperties: false
+      description: Represents a single group program.
+    LeaveGroupResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Indicates whether the employee was successfully removed from the group.
+      additionalProperties: false
+      description: Represents the outcome of a request to remove an employee from a group.
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

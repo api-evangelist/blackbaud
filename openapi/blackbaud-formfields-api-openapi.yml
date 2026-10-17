@@ -1,0 +1,529 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: GrantsConnect Formfields API'
+  description: This API provides access to read and update data within GrantsConnect.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/grants-connect
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/grants-connect
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Formfields
+paths:
+  /v1/formfields/search:
+    post:
+      operationId: SearchFormFields
+      summary: Search form fields (PREVIEW)
+      description: 'Retrieves information about form fields.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApplyFormFieldSearchFilters'
+            example:
+              id: 4001
+              program_id: 2001
+              application_id: 1001
+              name: Organization Mission
+              key: org_mission
+              field_type: TextArea
+              category: Organization Information
+              limit: 50
+              page: 1
+              date_modified: '2025-01-01T12:00:00Z'
+              include_inactive: false
+        description: Specifies the conditions of the form fields to search. If no filter is provided, the response will return all fields.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReturnPaginatedFormFieldRecords'
+              example:
+                records:
+                - id: 4001
+                  program_id: 2001
+                  application_id: 1001
+                  form_id: 3001
+                  name: Organization Mission
+                  audience_type: Applicant
+                  response_value: To serve the community
+                  key: org_mission
+                  description: Describe your organization's mission
+                  default_label: Mission
+                  field_type: TextArea
+                  category: Organization Information
+                  supports_multiple_values: false
+                  default_min: 10
+                  default_max: 500
+                  capture_extended_address_information: false
+                  allows_multi_responses: false
+                  encrypted: false
+                  masked: false
+                  supports_rich_text: true
+                  added_by_email: admin@example.com
+                  date_added: '2025-01-01T12:00:00Z'
+                  modified_by_email: admin@example.com
+                  date_modified: '2025-01-01T12:00:00Z'
+                  inactive: false
+                record_count: 1
+      tags:
+      - Formfields
+  /v1/formfields/{application_form_id}/applicantresponsetranslations:
+    post:
+      operationId: GetApplicantResponseTranslationsAsync
+      summary: Get applicant form response translations (PREVIEW)
+      description: 'Retrieves information about form fields.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: application_form_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: Specifies the application form ID to use to get applicant response translations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApplicantResponseTranslationPaginationRequest'
+            example:
+              limit: 1000
+              page: 1
+              date_modified: '2024-01-01T12:00:00Z'
+              include_inactive: false
+        description: Specifies the conditions of the form fields to search. If no filter is provided, the response will return all fields.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicantResponseTranslationPaginationReturn'
+              example:
+                records:
+                - reference_field_id: 1
+                  value: testing
+                  translated_value: testing
+                  values:
+                  - testing1
+                  - testing2
+                  translated_values:
+                  - testing1
+                  - testing2
+                record_count: 1
+      tags:
+      - Formfields
+components:
+  schemas:
+    ReturnFormFieldQueryResults:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The field response ID for the application.
+          format: int32
+        program_id:
+          type: integer
+          description: The identifier of the grant or nomination program.
+          format: int32
+        application_id:
+          type: integer
+          description: The identifier of the application.
+          format: int32
+        form_id:
+          type:
+          - integer
+          - 'null'
+          description: The identifier of the form.
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the field.
+        audience_type:
+          $ref: '#/components/schemas/FormTypeAudience'
+        response_value:
+          description: The application's form field response value.
+        key:
+          type:
+          - string
+          - 'null'
+          description: The unique key assigned to the field.
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the field.
+        default_label:
+          type:
+          - string
+          - 'null'
+          description: The default label of the field.
+        field_type:
+          $ref: '#/components/schemas/FormFieldType'
+        currency:
+          type:
+          - string
+          - 'null'
+          description: The currency accepted by the field. Currency field type only.
+        category:
+          type:
+          - string
+          - 'null'
+          description: The category assigned to the field.
+        custom_data_table_id:
+          type:
+          - integer
+          - 'null'
+          description: 'The identifier of the custom data table used by the field.
+
+            Picklist, Picklist group, Radio button, and Select box field types only.'
+          format: int32
+        picklist_guid:
+          type:
+          - string
+          - 'null'
+          description: 'The global unique identifier of the custom data table guid used by the field.
+
+            Picklist, Picklist group, Radio button, and Select box field types only.'
+          format: uuid
+          x-bb-suppressions:
+          - parameter_property_name
+        supports_multiple_values:
+          type: boolean
+          description: 'Indicates if the field supports selecting multiple values, uploading more than one file, or entering multiple responses.
+
+            Value is true or false. File upload, Picklist, Text, and Text area field types only.'
+        parent_form_field_id:
+          type:
+          - integer
+          - 'null'
+          description: The identifier of the parent field. This is only relevant to fields that use a parent custom data table.
+          format: int32
+        aggregate_type:
+          $ref: '#/components/schemas/ReferenceFieldAggregateType'
+        default_min:
+          type:
+          - number
+          - 'null'
+          description: 'The default minimum value or character count accepted by the field.
+
+            Currency, Number, Text, or Text area fields only.'
+          format: double
+        default_max:
+          type:
+          - number
+          - 'null'
+          description: 'The default maximum value or character count accepted by the field.
+
+            Currency, Number, Text, or Text area fields only.'
+          format: double
+        capture_extended_address_information:
+          type: boolean
+          description: 'Indicates if the field captures extended address information to collect Community Reinvestment Act (CRA) details.
+
+            Address fields only.'
+        collection_type:
+          $ref: '#/components/schemas/SubsetCollectionTypes'
+        format_type:
+          $ref: '#/components/schemas/ReferenceFieldFormatTypes'
+        allows_multi_responses:
+          type: boolean
+          description: 'Indicates if the field allows multiple responses.
+
+            This applies to Grant Manager fields only.
+
+            Value is true or false. Applicant fields will return false as this is not relevant to that audience.'
+        encrypted:
+          type: boolean
+          description: Indicates if the field is encrypted. Value is true or false.
+        masked:
+          type: boolean
+          description: Indicates if the field is masked. Value is true or false.
+        supports_rich_text:
+          type: boolean
+          description: 'Indicates if the field accepts rich text formatting.
+
+            Text area fields only. Value is true or false.'
+        added_by_email:
+          type:
+          - string
+          - 'null'
+          description: Email of the user who created the field response.
+          x-bb-suppressions:
+          - parameter_property_name
+        date_added:
+          type: string
+          description: Date and time the field response was created. Time zone is UTC.
+          format: date-time
+        modified_by_email:
+          type:
+          - string
+          - 'null'
+          description: Email of the user who last modified the field response.
+          x-bb-suppressions:
+          - parameter_property_name
+        date_modified:
+          type: string
+          description: 'The date and time the field was last modified.
+
+            If provided, only fields modified since the date specified will be returned. Time zone is UTC.'
+          format: date-time
+        inactive:
+          type: boolean
+          description: Indicates if the field response is inactive. Value is true or false.
+      additionalProperties: false
+      description: Detailed information about form fields.
+    ReferenceFieldFormatTypes:
+      enum:
+      - Email
+      - TwentyFourHourTime
+      - TwelveHourTime
+      - Ein
+      - HttpOptionalUrl
+      - HttpRequiredUrl
+      type: string
+      description: Specifies the format type for text based custom form field values.<p>Available values:</p><ul><li><i>Email</i></li><li><i>TwentyFourHourTime</i></li><li><i>TwelveHourTime</i></li><li><i>Ein</i></li><li><i>HttpOptionalUrl</i></li><li><i>HttpRequiredUrl</i></li></ul>
+    FormTypeAudience:
+      enum:
+      - Applicant
+      - GrantsManager
+      type: string
+      description: Specifies the intended audience for a form.<p>Available values:</p><ul><li><i>Applicant</i></li><li><i>GrantsManager</i></li></ul>
+    FormFieldType:
+      enum:
+      - Picklist
+      - Number
+      - TextArea
+      - Text
+      - Date
+      - Checkbox
+      - SelectBoxes
+      - RadioButtons
+      - FileUpload
+      - ExternalApi
+      - Table
+      - Currency
+      - FieldGroup
+      - FieldGroupOption
+      - Address
+      - PicklistGroup
+      type: string
+      description: Specifies the type of the reference field<p>Available values:</p><ul><li><i>Picklist</i></li><li><i>Number</i></li><li><i>TextArea</i></li><li><i>Text</i></li><li><i>Date</i></li><li><i>Checkbox</i></li><li><i>SelectBoxes</i></li><li><i>RadioButtons</i></li><li><i>FileUpload</i></li><li><i>ExternalApi</i></li><li><i>Table</i></li><li><i>Currency</i></li><li><i>FieldGroup</i></li><li><i>FieldGroupOption</i></li><li><i>Address</i></li><li><i>PicklistGroup</i></li></ul>
+    ApplicantResponseTranslationPaginationReturn:
+      type: object
+      properties:
+        records:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SkyApiApplicantResponseTranslationModel'
+          description: The details returned for the current page.
+        record_count:
+          type:
+          - integer
+          - 'null'
+          description: The total number of records in the search result.
+          format: int32
+      additionalProperties: false
+      description: Represents a paginated result set of picklist records.
+    ApplicantResponseTranslationPaginationRequest:
+      type: object
+      properties:
+        limit:
+          maximum: 500
+          minimum: 50
+          type: integer
+          description: Specifies the maximum number of records to return per page.
+          format: int32
+          default: 50
+        page:
+          maximum: 2147483647
+          minimum: 1
+          type: integer
+          description: Specifies the page number for pagination.
+          format: int32
+          default: 1
+        date_modified:
+          type:
+          - string
+          - 'null'
+          description: If provided, only records modified since the date and time specified will be returned. Time zone is UTC.
+          format: date-time
+        include_inactive:
+          type: boolean
+          description: Specifies if inactive records should be returned. Value is true or false.
+          default: false
+      additionalProperties: false
+      description: Basic information about the applicant responses with translations.
+    ReturnPaginatedFormFieldRecords:
+      type: object
+      properties:
+        records:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ReturnFormFieldQueryResults'
+          description: The details returned for the current page.
+        record_count:
+          type:
+          - integer
+          - 'null'
+          description: The total number of records in the search result.
+          format: int32
+      additionalProperties: false
+      description: Returns a paginated view of form fields.
+    SkyApiApplicantResponseTranslationModel:
+      type: object
+      properties:
+        reference_field_id:
+          type: integer
+          description: The identifier of the field that the translation is for.
+          format: int32
+        value:
+          type:
+          - string
+          - 'null'
+          description: The raw response the applicant provided for the field.
+        translated_value:
+          type:
+          - string
+          - 'null'
+          description: The translated response for the field. This will be populated for single response fields.
+        values:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: The raw responses the applicant provided for the field. This will be populated for multi response fields.
+        translated_values:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: The translated responses for the field. This will be populated for multi response fields, such as checkboxes.
+      additionalProperties: false
+      description: Basic information about the applicant responses with translations.
+    ApplyFormFieldSearchFilters:
+      type: object
+      properties:
+        id:
+          maximum: 2147483647
+          minimum: 1
+          type:
+          - integer
+          - 'null'
+          description: If provided, results will filter on the field response ID for the application.
+          format: int32
+        program_id:
+          maximum: 2147483647
+          minimum: 1
+          type:
+          - integer
+          - 'null'
+          description: 'If provided, results will filter on the identifier of the grant or nomination program.
+
+            Only fields in custom forms assigned to the program will be returned.'
+          format: int32
+        application_id:
+          maximum: 2147483647
+          minimum: 1
+          type:
+          - integer
+          - 'null'
+          description: If provided, results will filter on the identifier of the application.
+          format: int32
+        name:
+          maxLength: 1000
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: If provided, results will filter on the name of the field.
+        key:
+          maxLength: 500
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: If provided, results will filter on the unique key assigned to the field.
+        field_type:
+          $ref: '#/components/schemas/FormFieldType'
+        category:
+          maxLength: 500
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: If provided, results will filter on the category assigned to the field.
+        limit:
+          maximum: 500
+          minimum: 50
+          type: integer
+          description: Specifies the maximum number of records to return per page.
+          format: int32
+          default: 50
+        page:
+          maximum: 2147483647
+          minimum: 1
+          type: integer
+          description: Specifies the page number for pagination.
+          format: int32
+          default: 1
+        date_modified:
+          type:
+          - string
+          - 'null'
+          description: If provided, only records modified since the date and time specified will be returned. Time zone is UTC.
+          format: date-time
+        include_inactive:
+          type: boolean
+          description: Specifies if inactive records should be returned. Value is true or false.
+          default: false
+      additionalProperties: false
+      description: Filters to apply to the search. Specify conditions of the form fields to return detailed information.
+    ReferenceFieldAggregateType:
+      enum:
+      - Sum
+      - Max
+      - Min
+      - Count
+      - Average
+      type: string
+      description: Specifies the types of aggregate operations that can be performed on a reference field.<p>Available values:</p><ul><li><i>Sum</i></li><li><i>Max</i></li><li><i>Min</i></li><li><i>Count</i></li><li><i>Average</i></li></ul>
+    SubsetCollectionTypes:
+      enum:
+      - Number
+      - Percent
+      - YesOrNo
+      type: string
+      description: Specifies the types of subset collections that a reference field may be be contained in<p>Available values:</p><ul><li><i>Number</i></li><li><i>Percent</i></li><li><i>YesOrNo</i></li></ul>
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

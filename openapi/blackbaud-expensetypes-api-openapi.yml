@@ -1,0 +1,148 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Event Expensetypes API'
+  description: This API manages event information and related entities such as participant.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/event
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/event
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Expensetypes
+paths:
+  /v1/expensetypes:
+    get:
+      operationId: GetEventExpenseTypes
+      summary: Get expense types (PREVIEW)
+      description: 'Returns a collection of expense types.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: include_inactive
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: Represents whether to include inactive entries.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of expense types.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExpenseTypeCollection'
+              example:
+                count: 3
+                value:
+                - id: '1'
+                  name: Expense1
+                  is_inactive: false
+                - id: '2'
+                  name: Expense2
+                  is_inactive: false
+                - id: '3'
+                  name: Expense3
+                  is_inactive: true
+        '403':
+          description: Returned when the user does not have rights to view the expense type record.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1ExpensetypesGet403ApplicationJsonResponse'
+              example:
+              - message: The user does not have the necessary permissions for this task.
+                error_name: Forbidden
+                error_code: 403
+                raw_message: The user does not have the necessary permissions for this task.
+      tags:
+      - Expensetypes
+components:
+  schemas:
+    ExpenseType:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: The ID of the expense type.
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the expense type.
+        is_inactive:
+          type: boolean
+          description: Whether the expense type is inactive. True if inactive.
+      additionalProperties: false
+      description: Expense type is the custom type for the event expense.
+    ServiceError:
+      type: object
+      properties:
+        message:
+          type:
+          - string
+          - 'null'
+          description: The description of the error.
+        error_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the error.
+        error_code:
+          type: integer
+          description: The number associated with the error.
+          format: int32
+        raw_message:
+          type:
+          - string
+          - 'null'
+          description: The description of the error which can include argument placeholders.
+        error_args:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: The argument data for the placeholders.
+      additionalProperties: false
+      description: Explains the reason for an error.
+    V1ExpensetypesGet403ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    ExpenseTypeCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The total number of items in the collection before limit/offset.
+          format: int32
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ExpenseType'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+      additionalProperties: false
+      description: A collection of expense types.
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

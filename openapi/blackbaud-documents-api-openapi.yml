@@ -1,0 +1,145 @@
+openapi: 3.2.0
+info:
+  title: Blackbaud Documents API
+  version: '1.0'
+  x-refined-note:
+  - x-apievangelist-provenance differs across the merged source definitions and was not carried
+  description: 'Operations tagged Documents across 4 of this provider''s published API definitions: blackbaud-constituent-api-openapi.yml, blackbaud-fundraising-api-openapi.yml, blackbaud-gift-api-openapi.yml, blackbaud-opportunity-api-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.sky.blackbaud.com/constituent/v1
+- url: https://api.sky.blackbaud.com/fundraising/v1
+- url: https://api.sky.blackbaud.com/gift/v1
+- url: https://api.sky.blackbaud.com/opportunity/v1
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Documents
+paths:
+  /documents:
+    post:
+      operationId: CreateDocument
+      summary: Document (Create)
+      description: 'Creates a document upload location and unique document identifier for physical attachments.
+
+
+        Maximum file size is 100MB.'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewDocumentInfo'
+            example:
+              file_name: businesscard.jpg
+              upload_thumbnail: true
+        description: An object that represents the document to upload.
+      responses:
+        '200':
+          description: Returned when the operation successfully posts a document. The response body contains the <a href="https://developer.blackbaud.com/skyapi/api/entity-reference/constituent#FileDefinition">properties</a> of the posted document.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FileDefinition'
+              example:
+                file_id: e8ce3494-d961-4eef-9938-acf0a2d9a831
+                file_upload_request:
+                  headers:
+                  - name: x-ms-blob-type
+                    value: BlockBlob
+                  - name: x-ms-version
+                    value: '2015-12-11'
+                  method: PUT
+                  url: http://prodsarnxdocmn002blkbrdo.blob.core.windows.net/blackbauddocumentsvc/tenants/a486g1de-73f5-4a81-a4b1-ff353509fbde/documents/4DF6B36A-3058-4FA9-ACA5-4BCD08E67ACF/businesscard.jpg?sv=2015-05-17&sr=b&sig=HI0UTKNjiCVB6AtGHBVuCdhgnETbRPYegwb7%2FQyjI%2FU%3D&se=2015-10-15T18%3A25%3A30Z&sp=rw
+                thumbnail_id: 5b181d20-9b5f-44ab-8e63-46d14424dfe5
+                thumbnail_upload_request:
+                  headers:
+                  - name: x-ms-blob-type
+                    value: BlockBlob
+                  - name: x-ms-version
+                    value: '2015-12-11'
+                  method: PUT
+                  url: http://prodsarnxdocmn002blkbrdo.blob.core.windows.net/blackbauddocumentsvc/tenants/a486g1de-73f5-4a81-a4b1-ff353509fbde/documents/4DF6B36A-3058-4FA9-ACA5-4BCD08E67ACF/thumbnail_businesscard.jpg?sv=2015-05-17&sr=b&sig=HI0UTKNjiCVB6AtGHBVuCdhgnETbRPYegwb7%2FQyjI%2FU%3D&se=2015-10-15T18%3A25%3A30Z&sp=rw
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+        '403':
+          description: Returned when the user does not have permission to upload the document.
+      tags:
+      - Documents
+    servers:
+    - url: https://api.sky.blackbaud.com/constituent/v1
+components:
+  schemas:
+    FileDefinition:
+      description: Contains metadata for uploading a document and unique document identifier for physical attachments.
+      type: object
+      properties:
+        file_id:
+          description: The identifier of the file.
+          type: string
+        file_upload_request:
+          $ref: '#/components/schemas/RequestMetaData'
+          description: The metadata for the request for uploading the file.
+        thumbnail_id:
+          description: The identifier of the thumbnail.
+          type: string
+        thumbnail_upload_request:
+          $ref: '#/components/schemas/RequestMetaData'
+          description: The metadata for the request for uploading the thumbnail.
+      x-display-name: File definition
+      x-display-id: FileDefinition
+    NewDocumentInfo:
+      description: Cultivation activities often result in physical collateral such as images, PDFs, or Word files. The New Document entity allows you to upload these files to maintain a holistic view of target constituents.
+      type: object
+      properties:
+        file_name:
+          description: The file name. For physical attachments only.
+          type: string
+        upload_thumbnail:
+          description: Indicates that a thumbnail needs to be created.
+          type: boolean
+      x-display-name: New document info
+      x-display-id: NewDocumentInfo
+    RequestMetaData:
+      description: The RequestMetadata entity specifies metadata for requests to upload physical attachments, including the URL for files, headers and the HTTP method to use.
+      type: object
+      properties:
+        headers:
+          description: The headers to supply when making the request.
+          type: array
+          items:
+            $ref: '#/components/schemas/Header'
+        method:
+          description: The http method to use for the request.
+          type: string
+        url:
+          description: The url to use for the request.
+          type: string
+      x-display-name: Request meta data
+      x-display-id: RequestMetaData
+    Header:
+      description: Request header used for uploading the physical attachment.
+      type: object
+      properties:
+        name:
+          description: The name for the header.
+          type: string
+        value:
+          description: The value for the header.
+          type: string
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+x-refined-from:
+- blackbaud-constituent-api-openapi.yml
+- blackbaud-fundraising-api-openapi.yml
+- blackbaud-gift-api-openapi.yml
+- blackbaud-opportunity-api-openapi.yml

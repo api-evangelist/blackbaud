@@ -1,0 +1,814 @@
+openapi: 3.2.0
+info:
+  title: Blackbaud Solicitcodes API
+  version: '1.0'
+  x-refined-note:
+  - x-apievangelist-provenance differs across the merged source definitions and was not carried
+  description: 'Operations tagged Solicitcodes across 5 of this provider''s published API definitions: blackbaud-altru-constituent-api-openapi.yml, blackbaud-altru-marketing-api-openapi.yml, blackbaud-communication-preference-api-openapi.yml, blackbaud-crm-constituent-api-openapi.yml, blackbaud-crm-marketing-api-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.sky.blackbaud.com/alt-conmg
+- url: https://api.sky.blackbaud.com/alt-mktmg
+- url: https://api.sky.blackbaud.com/commpref
+- url: https://api.sky.blackbaud.com/crm-conmg
+- url: https://api.sky.blackbaud.com/crm-mktmg
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Solicitcodes
+paths:
+  /solicitcodes:
+    post:
+      operationId: CreateConstituentSolicitCode
+      summary: Create a constituent solicit code
+      description: Assign a solicit code to a constituent
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewConstituentSolicitCode'
+            example:
+              constituent_id: 17818cc6-b622-4b30-8d2a-098c5ba4bd0b
+              solicit_code: Do not mail
+              start_date: ''
+              end_date: ''
+              comments: ''
+              consent_preference: No response
+              source_evidence: ''
+              source_file: ''
+              privacy_policy: ''
+              supporting_information: ''
+              consent_statement: ''
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully creates the resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to create the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Solicitcodes
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-conmg
+  /solicitcodes/{constituent_solicit_code_id}:
+    delete:
+      operationId: DeleteConstituentSolicitCode
+      summary: Delete a constituent solicit code
+      description: This record operation is used to delete the constituent solicit code.
+      parameters:
+      - name: constituent_solicit_code_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The constituent solicit code id
+      responses:
+        '200':
+          description: Returned when the operation successfully deletes the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to delete the resource.
+      tags:
+      - Solicitcodes
+    patch:
+      operationId: EditConstituentSolicitCode
+      summary: Edit a constituent solicit code
+      parameters:
+      - name: constituent_solicit_code_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The constituent solicit code id.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditConstituentSolicitCode'
+            example:
+              solicit_code: Do not phone
+              start_date: ''
+              end_date: ''
+              comments: ''
+              consent_preference: No response
+              source_evidence: ''
+              source_file: ''
+              privacy_policy: ''
+              supporting_information: ''
+              consent_statement: ''
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully edits the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to edit the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Solicitcodes
+    get:
+      operationId: GetConstituentSolicitCode
+      summary: Get a constituent solicit code
+      description: Edit a constituent solicit code
+      parameters:
+      - name: constituent_solicit_code_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The constituent solicit code id.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the specified resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConstituentSolicitCode'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to get the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Solicitcodes
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-conmg
+  /solicitcodes/list:
+    get:
+      operationId: ListMarketingSolicitCodes
+      summary: List marketing solicit codes
+      description: Solicit code list
+      parameters:
+      - name: include_inactive
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: include inactive
+      - name: site_filter_mode
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - All sites
+          - My site
+          - My site's branch
+          - Selected sites
+        description: sites
+      - name: sites_selected
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Format - XML. sites selected
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Limits the number of records to return.
+      - name: session_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: A unique key provided by user for paging results. The same key will be returned in a successful response.
+      - name: infinity_session
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Values for cookies related to the Infinity load balancer session.
+      - name: more_rows_range_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Key for accessing cached results on subsequent calls to this data list.
+      - name: start_row_index
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Number of rows to skip,get result after these rows.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of result entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MarketingSolicitCodeListCollection'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to view the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+      tags:
+      - Solicitcodes
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-mktmg
+  /solicitcodes/search:
+    get:
+      operationId: SearchMarketingSolicitCodes
+      summary: Search for marketing solicit codes
+      description: Search for a solict codes.
+      parameters:
+      - name: description
+        in: query
+        required: false
+        schema:
+          type: string
+        description: name
+      - name: site_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: site
+      - name: include_inactive
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: include inactive
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Limits the number of records to return.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of result entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MarketingSolicitCodeSearchCollection'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to view the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+      tags:
+      - Solicitcodes
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-mktmg
+  /v1/solicitcodes:
+    get:
+      operationId: ListSolicitCodes
+      summary: Solicit codes
+      description: Returns a list of available solicit code types.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a <a href="https://developer.blackbaud.com/skyapi/api/entity-reference/communication-preference#SolicitCodeCollection">collection</a> of <a href="https://developer.blackbaud.com/skyapi/api/entity-reference/communication-preference#SolicitCode">solicit codes</a>.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SolicitCodeCollection'
+              example:
+                count: 3
+                value:
+                - description: Don't call me on Thursdays
+                - description: Unavailable between 3-5pm on business days
+                - description: Only reach out through fax
+      tags:
+      - Solicitcodes
+    servers:
+    - url: https://api.sky.blackbaud.com/commpref
+components:
+  schemas:
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type: integer
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type: string
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: false
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-display-name: Problem details
+      x-display-id: ProblemDetails
+    ConstituentSolicitCode:
+      required:
+      - solicit_code
+      type: object
+      properties:
+        solicit_code:
+          type: string
+          description: The solicit code. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/ea7286bd-d27b-4028-b507-4bdb92580499?parameters=feature_id,{c5b90f15-b76b-48e3-bf4f-b55c8717d36e}&parameters=feature_type,{1}.
+        start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        end_date:
+          type: string
+          description: 'The end date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        comments:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The comments.
+      additionalProperties: false
+      description: GetConstituentSolicitCode
+      x-display-name: Constituent Solicit Code Edit Form
+      x-display-id: Constituent Solicit Code Edit Form
+    NewConstituentSolicitCode:
+      required:
+      - constituent_id
+      - solicit_code
+      type: object
+      properties:
+        constituent_id:
+          type: string
+          description: The constituent ID.
+        solicit_code:
+          type: string
+          description: The solicit code. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/ea7286bd-d27b-4028-b507-4bdb92580499?parameters=feature_id,{b6a5f4eb-adf7-4fa4-a3e0-8cd96e58d8c2}&parameters=feature_type,{1}.
+        start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        end_date:
+          type: string
+          description: 'The end date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        comments:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The comments.
+      additionalProperties: false
+      description: CreateConstituentSolicitCode
+      example:
+        constituent_id: 17818cc6-b622-4b30-8d2a-098c5ba4bd0b
+        solicit_code: Do not mail
+        start_date: ''
+        end_date: ''
+        comments: ''
+        consent_preference: No response
+        source_evidence: ''
+        source_file: ''
+        privacy_policy: ''
+        supporting_information: ''
+        consent_statement: ''
+      x-display-name: Constituent Solicit Code Add Form
+      x-display-id: Constituent Solicit Code Add Form
+    EditConstituentSolicitCode:
+      type: object
+      properties:
+        solicit_code:
+          type: string
+          description: The solicit code. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/ea7286bd-d27b-4028-b507-4bdb92580499?parameters=feature_id,{c5b90f15-b76b-48e3-bf4f-b55c8717d36e}&parameters=feature_type,{1}.
+        start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        end_date:
+          type: string
+          description: 'The end date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        comments:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The comments.
+      additionalProperties: false
+      description: EditConstituentSolicitCode
+      example:
+        solicit_code: Do not phone
+        start_date: ''
+        end_date: ''
+        comments: ''
+        consent_preference: No response
+        source_evidence: ''
+        source_file: ''
+        privacy_policy: ''
+        supporting_information: ''
+        consent_statement: ''
+      x-display-name: Constituent Solicit Code Edit Form
+      x-display-id: Constituent Solicit Code Edit Form
+    PostResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The newly created ID.
+      additionalProperties: false
+      description: Defines the shape of a post response object.
+    MarketingSolicitCodeSearchCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items available for retrieval into the collection after applying any request parameters.
+          format: int32
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/MarketingSolicitCodeSearchSummary'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+      additionalProperties: false
+      description: A collection of items. Data lists can contain paginated results.
+    MarketingSolicitCodeListSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID.
+        description:
+          type: string
+          description: The name.
+        site:
+          type: string
+          description: The site.
+        default_exclusion:
+          type: boolean
+          description: Indicates whether default exclusion.
+        active:
+          type: boolean
+          description: Indicates whether active.
+        exclusion:
+          type: string
+          description: The type.
+        enable_edit:
+          type: boolean
+          description: Indicates whether enable edit.
+        exclusion_code:
+          type: integer
+          description: The exclusion code.
+          format: int32
+      additionalProperties: false
+      description: ListMarketingSolicitCodes
+      x-display-name: Solicit Codes
+      x-display-id: Solicit Codes
+    MarketingSolicitCodeSearchSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID.
+        description:
+          type: string
+          description: The name.
+        site:
+          type: string
+          description: The site.
+      additionalProperties: false
+      description: SearchMarketingSolicitCodes
+      x-display-name: Solicit Code Search
+      x-display-id: Solicit Code Search
+    MarketingSolicitCodeListCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items available for retrieval into the collection after applying any request parameters.
+          format: int32
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/MarketingSolicitCodeListSummary'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+        infinity_session:
+          type: string
+          description: Values for cookies related to the Infinity load balancer session.
+          format: string
+        session_key:
+          type: string
+          description: Session key for paging provided by user in request query parameter.
+          format: string
+        total_available_rows:
+          type: integer
+          description: The number of total rows available.
+          format: int32
+        more_rows_range_key:
+          type: string
+          description: Key for accessing cached results on subsequent calls to this data list.
+          format: string
+        data_no_longer_available:
+          type: boolean
+          description: Indicates data is no longer available in the context of this session.
+          format: boolean
+      additionalProperties: false
+      description: A collection of items. Data lists can contain paginated results.
+    SolicitCodeCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of solicit codes in the list.
+          format: int32
+          readOnly: true
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SolicitCode'
+          description: The set of solicit codes included in the response.
+      additionalProperties: false
+      description: A collection of solicit codes.
+    SolicitCode:
+      type: object
+      properties:
+        description:
+          type:
+          - string
+          - 'null'
+          description: The name of the solicit code.
+      additionalProperties: false
+      description: Represents the solicit code entity.
+    ConstituentSolicitCode_2:
+      required:
+      - solicit_code
+      type: object
+      properties:
+        solicit_code:
+          type: string
+          description: The solicit code. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/ea7286bd-d27b-4028-b507-4bdb92580499?parameters=feature_id,{c5b90f15-b76b-48e3-bf4f-b55c8717d36e}&parameters=feature_type,{1}.
+        start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        end_date:
+          type: string
+          description: 'The end date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        comments:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The comments.
+        consent_preference:
+          type: string
+          description: The preference. Available values are <i>no response</i>, <i>opt-out</i>, <i>opt-in</i>
+        source_evidence:
+          type: string
+          description: The source. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/dataprotectionevidencesourcecode/entries
+        source_file:
+          maxLength: 260
+          minLength: 0
+          type: string
+          description: The source file.
+        privacy_policy:
+          maxLength: 260
+          minLength: 0
+          type: string
+          description: The privacy policy.
+        supporting_information:
+          type: string
+          description: The supporting information.
+        consent_statement:
+          type: string
+          description: The consent statement.
+      additionalProperties: false
+      description: GetConstituentSolicitCode
+      x-display-name: Constituent Solicit Code Edit Form
+      x-display-id: Constituent Solicit Code Edit Form
+    NewConstituentSolicitCode_2:
+      required:
+      - constituent_id
+      - solicit_code
+      type: object
+      properties:
+        constituent_id:
+          type: string
+          description: The constituent ID.
+        solicit_code:
+          type: string
+          description: The solicit code. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/ea7286bd-d27b-4028-b507-4bdb92580499?parameters=feature_id,{b6a5f4eb-adf7-4fa4-a3e0-8cd96e58d8c2}&parameters=feature_type,{1}.
+        start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        end_date:
+          type: string
+          description: 'The end date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        comments:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The comments.
+        consent_preference:
+          type: string
+          description: The preference. Available values are <i>no response</i>, <i>opt-out</i>, <i>opt-in</i>
+        source_evidence:
+          type: string
+          description: The source. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/dataprotectionevidencesourcecode/entries
+        source_file:
+          maxLength: 260
+          minLength: 0
+          type: string
+          description: The source file.
+        privacy_policy:
+          maxLength: 260
+          minLength: 0
+          type: string
+          description: The privacy policy.
+        supporting_information:
+          type: string
+          description: The supporting information.
+        consent_statement:
+          type: string
+          description: The consent statement.
+      additionalProperties: false
+      description: CreateConstituentSolicitCode
+      example:
+        constituent_id: 17818cc6-b622-4b30-8d2a-098c5ba4bd0b
+        solicit_code: Do not mail
+        start_date: ''
+        end_date: ''
+        comments: ''
+        consent_preference: No response
+        source_evidence: ''
+        source_file: ''
+        privacy_policy: ''
+        supporting_information: ''
+        consent_statement: ''
+      x-display-name: Constituent Solicit Code Add Form
+      x-display-id: Constituent Solicit Code Add Form
+    EditConstituentSolicitCode_2:
+      type: object
+      properties:
+        solicit_code:
+          type: string
+          description: The solicit code. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/ea7286bd-d27b-4028-b507-4bdb92580499?parameters=feature_id,{c5b90f15-b76b-48e3-bf4f-b55c8717d36e}&parameters=feature_type,{1}.
+        start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        end_date:
+          type: string
+          description: 'The end date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        comments:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The comments.
+        consent_preference:
+          type: string
+          description: The preference. Available values are <i>no response</i>, <i>opt-out</i>, <i>opt-in</i>
+        source_evidence:
+          type: string
+          description: The source. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/dataprotectionevidencesourcecode/entries
+        source_file:
+          maxLength: 260
+          minLength: 0
+          type: string
+          description: The source file.
+        privacy_policy:
+          maxLength: 260
+          minLength: 0
+          type: string
+          description: The privacy policy.
+        supporting_information:
+          type: string
+          description: The supporting information.
+        consent_statement:
+          type: string
+          description: The consent statement.
+      additionalProperties: false
+      description: EditConstituentSolicitCode
+      example:
+        solicit_code: Do not phone
+        start_date: ''
+        end_date: ''
+        comments: ''
+        consent_preference: No response
+        source_evidence: ''
+        source_file: ''
+        privacy_policy: ''
+        supporting_information: ''
+        consent_statement: ''
+      x-display-name: Constituent Solicit Code Edit Form
+      x-display-id: Constituent Solicit Code Edit Form
+    MarketingSolicitCodeListSummary_2:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID.
+        description:
+          type: string
+          description: The name.
+        site:
+          type: string
+          description: The site.
+        default_exclusion:
+          type: boolean
+          description: Indicates whether default exclusion.
+        active:
+          type: boolean
+          description: Indicates whether active.
+        exclusion:
+          type: string
+          description: The type.
+        enable_edit:
+          type: boolean
+          description: Indicates whether enable edit.
+        exclusion_code:
+          type: integer
+          description: The exclusion code.
+          format: int32
+        consent:
+          type: string
+          description: The consent. Available values are <i>none</i>, <i>eu consent</i>, <i>advanced consent</i>
+        solicit_code_channel:
+          type: string
+          description: The channel. Available values are <i>none</i>, <i>email</i>, <i>mail</i>, <i>phone</i>, <i>sms</i>, <i>social media</i>, <i>data screening</i>, <i>data sharing</i>
+        site_id:
+          type: string
+          description: The siteid.
+      additionalProperties: false
+      description: ListMarketingSolicitCodes
+      x-display-name: Solicit Codes
+      x-display-id: Solicit Codes
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+x-refined-from:
+- blackbaud-altru-constituent-api-openapi.yml
+- blackbaud-altru-marketing-api-openapi.yml
+- blackbaud-communication-preference-api-openapi.yml
+- blackbaud-crm-constituent-api-openapi.yml
+- blackbaud-crm-marketing-api-openapi.yml

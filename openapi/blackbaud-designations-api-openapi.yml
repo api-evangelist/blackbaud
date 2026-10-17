@@ -1,0 +1,633 @@
+openapi: 3.2.0
+info:
+  title: Blackbaud Designations API
+  version: '1.0'
+  x-refined-note:
+  - x-apievangelist-provenance differs across the merged source definitions and was not carried
+  description: 'Operations tagged Designations across 2 of this provider''s published API definitions: blackbaud-altru-fundraising-api-openapi.yml, blackbaud-crm-fundraising-api-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.sky.blackbaud.com/alt-fndmg
+- url: https://api.sky.blackbaud.com/crm-fndmg
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Designations
+paths:
+  /designations/hierarchies/list:
+    get:
+      operationId: ListDesignationHierarchies
+      summary: List designation hierarchies
+      description: Returns all of the designation hierarchies.
+      parameters:
+      - name: combined_search
+        in: query
+        required: false
+        schema:
+          type: string
+        description: search for
+      - name: designation_level_type
+        in: query
+        required: false
+        schema:
+          type: string
+        description: type SimpleDataListID=5135618a-3055-4e02-ab1e-a2c091ad05e5.
+      - name: active_only
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: only show active designations
+      - name: sort_field
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - Purpose
+          - Designation lookup ID
+          - Public designation name
+          - Type
+          - Revenue designation
+          - Is active
+        description: sort by
+      - name: sort_dir
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - Ascending
+          - Descending
+        description: sort direction
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Limits the number of records to return.
+      - name: session_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: A unique key provided by user for paging results. The same key will be returned in a successful response.
+      - name: infinity_session
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Values for cookies related to the Infinity load balancer session.
+      - name: more_rows_range_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Key for accessing cached results on subsequent calls to this data list.
+      - name: start_row_index
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Number of rows to skip,get result after these rows.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of result entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DesignationHierarchyListCollection'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to view the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+      tags:
+      - Designations
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-fndmg
+  /designations/list:
+    get:
+      operationId: ListDesignations
+      summary: List designations
+      description: List of all designations.
+      parameters:
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Limits the number of records to return.
+      - name: session_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: A unique key provided by user for paging results. The same key will be returned in a successful response.
+      - name: infinity_session
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Values for cookies related to the Infinity load balancer session.
+      - name: more_rows_range_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Key for accessing cached results on subsequent calls to this data list.
+      - name: start_row_index
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Number of rows to skip,get result after these rows.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of result entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DesignationListCollection'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to view the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+      tags:
+      - Designations
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-fndmg
+  /designations/search:
+    get:
+      operationId: SearchDesignations
+      summary: Search for designations
+      description: Designation Search.
+      parameters:
+      - name: description
+        in: query
+        required: false
+        schema:
+          type: string
+        description: description
+      - name: include_inactive
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: include inactive
+      - name: site_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: site
+      - name: designation_name
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Designation name search filter.
+      - name: user_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Lookup ID search filter.
+      - name: vanity_name
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Public name search filter.
+      - name: combined_search
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Combined search across lookup ID, designation, and public name.
+      - name: include_all_designations
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: Include all designations, not just revenue designations.
+      - name: vse_category
+        in: query
+        required: false
+        schema:
+          type: string
+        description: VSE category filter.
+      - name: vse_subcategory
+        in: query
+        required: false
+        schema:
+          type: string
+        description: VSE subcategory filter.
+      - name: designation_report_code_1
+        in: query
+        required: false
+        schema:
+          type: string
+        description: First designation report code filter.
+      - name: designation_report_code_2
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Second designation report code filter.
+      - name: designation_use
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Designation use code filter.
+      - name: designation_level_type
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Purpose type filter.
+      - name: designation_level_category
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Purpose category filter.
+      - name: purpose_report_code_1
+        in: query
+        required: false
+        schema:
+          type: string
+        description: First purpose report code filter.
+      - name: purpose_report_code_2
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Second purpose report code filter.
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Limits the number of records to return.
+      - name: infinity_session
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Values for cookies related to the Infinity load balancer session.
+      - name: session_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: A unique key provided by user for paging results. The same key will be returned in a successful response.
+      - name: more_rows_range_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Key for accessing cached results on subsequent calls to this search list.
+      - name: start_row_index
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Number of rows to skip, get result after these rows.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of result entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DesignationSearchCollection'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to read the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Designations
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-fndmg
+components:
+  schemas:
+    DesignationListCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items available for retrieval into the collection after applying any request parameters.
+          format: int32
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/DesignationListSummary'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+        infinity_session:
+          type: string
+          description: Values for cookies related to the Infinity load balancer session.
+          format: string
+        session_key:
+          type: string
+          description: Session key for paging provided by user in request query parameter.
+          format: string
+        total_available_rows:
+          type: integer
+          description: The number of total rows available.
+          format: int32
+        more_rows_range_key:
+          type: string
+          description: Key for accessing cached results on subsequent calls to this data list.
+          format: string
+        data_no_longer_available:
+          type: boolean
+          description: Indicates data is no longer available in the context of this session.
+          format: boolean
+      additionalProperties: false
+      description: A collection of items. Data lists can contain paginated results.
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type: integer
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type: string
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: false
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-display-name: Problem details
+      x-display-id: ProblemDetails
+    DesignationHierarchyListCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items available for retrieval into the collection after applying any request parameters.
+          format: int32
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/DesignationHierarchyListSummary'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+        infinity_session:
+          type: string
+          description: Values for cookies related to the Infinity load balancer session.
+          format: string
+        session_key:
+          type: string
+          description: Session key for paging provided by user in request query parameter.
+          format: string
+        total_available_rows:
+          type: integer
+          description: The number of total rows available.
+          format: int32
+        more_rows_range_key:
+          type: string
+          description: Key for accessing cached results on subsequent calls to this data list.
+          format: string
+        data_no_longer_available:
+          type: boolean
+          description: Indicates data is no longer available in the context of this session.
+          format: boolean
+      additionalProperties: false
+      description: A collection of items. Data lists can contain paginated results.
+    DesignationListSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The designation ID.
+        designation_level_1_id:
+          type: string
+          description: The designation level 1 ID.
+        designation_level_2_id:
+          type: string
+          description: The designation level 2 ID.
+        designation_level_3_id:
+          type: string
+          description: The designation level 3 ID.
+        designation_level_4_id:
+          type: string
+          description: The designation level 4 ID.
+        designation_level_5_id:
+          type: string
+          description: The designation level 5 ID.
+        active:
+          type: boolean
+          description: Indicates whether is active.
+        vanity_name:
+          type: string
+          description: The public name.
+        user_id:
+          type: string
+          description: The lookup ID.
+      additionalProperties: false
+      description: ListDesignations
+      x-display-name: Designations Data List
+      x-display-id: Designations Data List
+    DesignationHierarchyListSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID.
+        designation_level_id:
+          type: string
+          description: The designation level ID.
+        designation_level_name:
+          type: string
+          description: The purpose.
+        designation_level_type:
+          type: string
+          description: The designation level type.
+        active:
+          type: boolean
+          description: Indicates whether is active?.
+        parent_id:
+          type: string
+          description: The parent ID.
+        level:
+          type: integer
+          description: The level.
+          format: int32
+        designation_level_type_hierarchy_item_id:
+          type: string
+          description: The hierarchy item ID.
+        hierarchy_child_count:
+          type: integer
+          description: The hierarchy item child count.
+          format: int32
+        purpose_type:
+          type: string
+          description: The type.
+        revenue_designation:
+          type: boolean
+          description: Indicates whether revenue designation.
+        vanity_name:
+          type: string
+          description: The public designation name.
+        user_id:
+          type: string
+          description: The designation lookup ID.
+        path_name:
+          type: string
+          description: The designation.
+      additionalProperties: false
+      description: ListDesignationHierarchies
+      x-display-name: Designation Hierarchies List
+      x-display-id: Designation Hierarchies List
+    DesignationSearchCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items available for retrieval into the collection after applying any request parameters.
+          format: int32
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/DesignationSearchSummary'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+        infinity_session:
+          type: string
+          description: Values for cookies related to the Infinity load balancer session.
+          format: string
+        session_key:
+          type: string
+          description: Session key for paging provided by user in request query parameter.
+          format: string
+        total_available_rows:
+          type: integer
+          description: The number of total rows available.
+          format: int32
+        more_rows_range_key:
+          type: string
+          description: Key for accessing cached results on subsequent calls to this data list.
+          format: string
+        data_no_longer_available:
+          type: boolean
+          description: Indicates data is no longer available in the context of this session.
+          format: boolean
+      additionalProperties: false
+      description: A collection of items. Data lists can contain paginated results.
+    DesignationSearchSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: id
+        designation_level_id:
+          type: string
+          description: designation level
+        description:
+          type: string
+          description: description
+        designation_level_type:
+          type: string
+          description: designation level type
+        user_id:
+          type: string
+          description: user id
+        vanity_name:
+          type: string
+          description: vanity name
+        site_id:
+          type: string
+          description: site
+        designation:
+          type: string
+          description: The designation name.
+        active:
+          type: boolean
+          description: Indicates whether the designation is active.
+        vse_category:
+          type: string
+          description: The VSE category.
+        alternate_lookup_ids:
+          type: string
+          description: The alternate lookup IDs.
+        vse_subcategory:
+          type: string
+          description: The VSE subcategory.
+        revenue_designation:
+          type: boolean
+          description: Indicates whether the designation is a revenue designation.
+        designation_report_code_1:
+          type: string
+          description: The first designation report code.
+        designation_report_code_2:
+          type: string
+          description: The second designation report code.
+        designation_use_code:
+          type: string
+          description: The designation use code.
+        designation_level_category_code:
+          type: string
+          description: The designation level category code.
+        site:
+          type: string
+          description: The site name.
+        purpose_report_code_1:
+          type: string
+          description: The first purpose report code.
+        purpose_report_code_2:
+          type: string
+          description: The second purpose report code.
+      additionalProperties: false
+      description: SearchDesignations
+      x-display-name: Designation Search
+      x-display-id: Designation Search
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+x-refined-from:
+- blackbaud-altru-fundraising-api-openapi.yml
+- blackbaud-crm-fundraising-api-openapi.yml

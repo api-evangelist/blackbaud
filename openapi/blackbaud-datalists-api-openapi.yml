@@ -1,0 +1,164 @@
+openapi: 3.2.0
+info:
+  title: Blackbaud Datalists API
+  version: '1.0'
+  x-refined-note:
+  - x-apievangelist-provenance differs across the merged source definitions and was not carried
+  description: 'Operations tagged Datalists across 2 of this provider''s published API definitions: blackbaud-altru-administration-api-openapi.yml, blackbaud-crm-administration-api-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.sky.blackbaud.com/alt-adnmg
+- url: https://api.sky.blackbaud.com/crm-adnmg
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Datalists
+paths:
+  /datalists/{data_list_id}:
+    get:
+      operationId: LoadDataList
+      summary: Load a data list
+      description: Loads an Infinity data list identified by its GUID. The caller supplies the data list ID in the path. Arbitrary additional query-string parameters are passed through as data list filter fields, using the raw Infinity field name and value (no per-field configuration or type conversion). Columns are returned under their raw Infinity field names. Optional context_record_id scopes record-bound lists. Paging is controlled with limit/session_key/start_row_index/more_rows_range_key/infinity_session.
+      parameters:
+      - name: data_list_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The GUID of the Infinity data list to load.
+      - name: context_record_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Optional record GUID for record-scoped data lists.
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Maximum number of rows to return.
+      - name: session_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Pagination session key from a prior response.
+      - name: start_row_index
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Zero-based start row for get-more-rows paging.
+      - name: more_rows_range_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Range key from a prior response for get-more-rows paging.
+      - name: infinity_session
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Opaque Infinity session/affinity token from a prior response.
+      responses:
+        '200':
+          description: Data list loaded successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Datalists-data_list_id-Get200ApplicationJsonResponse'
+              example:
+                count: 0
+                value:
+                - {}
+                total_available_rows: 0
+                session_key: string
+                more_rows_range_key: string
+                infinity_session: string
+                data_no_longer_available: true
+        '400':
+          description: Bad request (e.g. data_list_id is not a valid GUID).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: string
+                title: string
+                status: 0
+                detail: string
+                instance: string
+                trace_id: string
+                span_id: string
+      tags:
+      - Datalists
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-adnmg
+components:
+  schemas:
+    Datalists-data_list_id-Get200ApplicationJsonResponse:
+      type: object
+      properties:
+        count:
+          type: integer
+        value:
+          type: array
+          items:
+            type: object
+        total_available_rows:
+          type: integer
+        session_key:
+          type: string
+        more_rows_range_key:
+          type: string
+        infinity_session:
+          type: string
+        data_no_longer_available:
+          type: boolean
+      x-apim-inline: true
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type: integer
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type: string
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: false
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-display-name: Problem details
+      x-display-id: ProblemDetails
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+x-refined-from:
+- blackbaud-altru-administration-api-openapi.yml
+- blackbaud-crm-administration-api-openapi.yml

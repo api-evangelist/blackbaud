@@ -1,0 +1,1438 @@
+openapi: 3.2.0
+info:
+  title: Blackbaud Types API
+  version: '1.0'
+  x-refined-note:
+  - x-apievangelist-provenance differs across the merged source definitions and was not carried
+  description: 'Operations tagged Types across 3 of this provider''s published API definitions: blackbaud-billing-management-api-openapi.yml, blackbaud-enrollment-management-api-openapi.yml, blackbaud-school-api-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.sky.blackbaud.com/tms-bmapi
+- url: https://api.sky.blackbaud.com/afe-edems
+- url: https://api.sky.blackbaud.com/school
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Types
+paths:
+  /v1/types/fees:
+    get:
+      operationId: GetFeeTypes
+      summary: Fee types (Get)
+      description: Returns information about the fee types that are allowed for batch imports.
+      responses:
+        '200':
+          description: The available fee types.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeeTypeDataEnumerableResponse'
+              example:
+                items:
+                - id: 524
+                  description: Lunch Fee
+      tags:
+      - Types
+    servers:
+    - url: https://api.sky.blackbaud.com/tms-bmapi
+  /v1/types/candidatestatuses:
+    get:
+      operationId: V1TypesCandidatestatusesGet
+      summary: Candidate status type list (Get)
+      description: 'Returns a collection of admission statuses.
+
+
+        Requires one of the following roles in the Education Management system:
+
+
+        Admissions Manager
+
+
+        Admissions Staff
+
+
+        Platform Manager
+
+
+        SKY API Data Sync'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CandidateStatusReadCollection'
+              example:
+                count: 1
+                value:
+                - id: 1
+                  description: Applied
+                  next_status:
+                    id: 2
+                    description: Under Review
+      tags:
+      - Types
+    servers:
+    - url: https://api.sky.blackbaud.com/afe-edems
+  /v1/types/checklistTypes:
+    get:
+      operationId: V1TypesChecklistTypesGet
+      summary: Candidate checklist type list (Get)
+      description: 'Returns a collection of checklist types.
+
+
+        Requires the following role in the Education Management system:
+
+
+        Admissions Manager
+
+
+        Admissions Staff'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChecklistTypeReadCollection'
+              example:
+                count: 1
+                value:
+                - id: 1
+                  name: Standard Candidate Checklist
+                  is_inactive: false
+                  is_archived: false
+      tags:
+      - Types
+    servers:
+    - url: https://api.sky.blackbaud.com/afe-edems
+  /v1/types/checklistTypes/{checklist_type_id}:
+    get:
+      operationId: V1TypesChecklistTypesByChecklist_type_idGet
+      summary: Candidate checklist type (Get)
+      description: 'Returns a checklist and the steps defined for the checklist.
+
+
+        Requires the following role in the Education Management system:
+
+
+        Admissions Manager
+
+
+        Admissions Staff'
+      parameters:
+      - name: checklist_type_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The ID of the checklist type
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChecklistTypeWithStepsRead'
+              example:
+                id: 1
+                name: Standard Candidate Checklist
+                is_inactive: false
+                is_archived: false
+                steps:
+                - id: 1
+                  name: Math recommendation
+                  type: Recommendation
+                  milestone: Application
+                  due_date_default: '2015-08-31T12:00:00Z'
+                  publishing_options:
+                    use_options: true
+                    name: Math Teacher Appraisal
+                    description: Feedback on the maths
+                    link: www.example.com/recs
+                    file: www.example.com/recs/sample.doc
+      tags:
+      - Types
+    servers:
+    - url: https://api.sky.blackbaud.com/afe-edems
+  /v1/types/checkliststatuses:
+    get:
+      operationId: V1TypesCheckliststatusesGet
+      summary: Candidate checklist status type list (Get)
+      description: 'Returns a collection of admissions checklist statuses.
+
+
+        Requires the following role in the Education Management system:
+
+
+        Admissions Manager
+
+
+        Admissions Staff
+
+
+        Platform Manager
+
+
+        SKY API Data Sync'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChecklistStatusReadCollection'
+              example:
+                count: 1
+                value:
+                - id: 1
+                  description: Waiting
+                  ordinal: 1
+      tags:
+      - Types
+    servers:
+    - url: https://api.sky.blackbaud.com/afe-edems
+  /v1/types/interesttypes:
+    get:
+      operationId: V1TypesInteresttypesGet
+      summary: Interest type list (Get)
+      description: Returns the types of interests defined for use.
+      parameters:
+      - name: category
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: The ID of an interest category to limit results to the specified category. Interest categories are returned by Types table values.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InterestTypeCollection'
+              example:
+                count: 1
+                value:
+                - id: 528
+                  description: Cross Country Running
+                  is_active: false
+                  is_admissions: false
+                  category:
+                    id: 76
+                    description: Athletics
+      tags:
+      - Types
+    servers:
+    - url: https://api.sky.blackbaud.com/afe-edems
+  /v1/types/studentchecklisttypes:
+    get:
+      operationId: V1TypesStudentchecklisttypesGet
+      summary: Student checklist type list (Get)
+      description: 'Returns the student checklists defined in the system.
+
+
+        Requires the following role in the Education Management system:
+
+
+        Admissions Manager
+
+
+        Admissions Staff'
+      parameters:
+      - name: school_year
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Set to the ID or label of a school year to limit results to that year. Defaults to current admissions year.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentChecklistTypeWithStepsCollection'
+              example:
+                count: 1
+                value:
+                - id: 1
+                  name: Re-enrollment
+                  is_inactive: false
+                  is_archived: false
+                  school_year:
+                    id: 1
+                    description: 2024 - 2025
+                  steps:
+                  - id: 1
+                    name: Name
+                    type: Type
+                    description: Description
+                    is_inactive: false
+                    is_required: true
+                    link: Link
+                    link_text: LinkText
+                    file: File
+      tags:
+      - Types
+    servers:
+    - url: https://api.sky.blackbaud.com/afe-edems
+  /v1/types/studentchecklisttypes/{student_checklist_type_id}:
+    get:
+      operationId: V1TypesStudentchecklisttypesByStudent_checklist_type_idGet
+      summary: Student checklist type (Get)
+      description: 'Returns a student checklist for the checklist.
+
+
+        Requires the following role in the Education Management system:
+
+
+        Admissions Manager
+
+
+        Admissions Staff'
+      parameters:
+      - name: student_checklist_type_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The ID of the student checklist type
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentChecklistTypeWithSteps'
+              example:
+                id: 1
+                name: Re-enrollment
+                is_inactive: false
+                is_archived: false
+                school_year:
+                  id: 1
+                  description: 2024 - 2025
+                steps:
+                - id: 1
+                  name: Name
+                  type: Type
+                  description: Description
+                  is_inactive: false
+                  is_required: true
+                  link: Link
+                  link_text: LinkText
+                  file: File
+      tags:
+      - Types
+    servers:
+    - url: https://api.sky.blackbaud.com/afe-edems
+  /v1/types/attendancetypes:
+    get:
+      operationId: V1TypesAttendancetypesGet
+      summary: Types attendance types
+      description: 'Returns a collection of attendance types.
+
+
+        Requires the following role in the Education Management system:
+
+
+        SKY API Basic'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AttendanceTypes'
+              example:
+                present: 1
+                absence: 2
+                tardy: 3
+      tags:
+      - Types
+    servers:
+    - url: https://api.sky.blackbaud.com/school
+  /v1/types/countries:
+    get:
+      operationId: V1TypesCountriesGet
+      summary: Types countries
+      description: 'Returns all countries that are valid for use with addresses as well as the states or provinces for the countries.
+
+
+        Requires the following role in the Education Management system:
+
+
+        All school'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1TypesCountriesGet200ApplicationJsonResponse'
+              example:
+              - country: United States
+                code: US
+                use_state: true
+                use_province: false
+                states:
+                - name: Lilliput
+                  abbreviation: LP
+                provinces:
+                - name: Lilliput
+                  abbreviation: LP
+      tags:
+      - Types
+    servers:
+    - url: https://api.sky.blackbaud.com/school
+  /v1/types/excusedtypes:
+    get:
+      operationId: V1TypesExcusedtypesGet
+      summary: Types excused types
+      description: 'Returns a collection of excused types.
+
+
+        Requires the following role in the Education Management system:
+
+
+        SKY API Basic
+
+
+        Any Manager Role'
+      parameters:
+      - name: school_level
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Provide the ID of a school level to limit results to excuse types valid for that school level.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExcusedTypesCollection'
+              example:
+                count: 2
+                value:
+                - category_description: Excused Absenses
+                  category_id: 55049
+                  excuse_type_id: 1094
+                  excuse_description: College Tour
+                  use_in_calculations: true
+                  excused: Excused
+                  duration: FullDay
+                  attendance_type: Absence
+                  school_levels:
+                  - id: 1
+                    abbreviation: US
+                    name: Upper School
+                - category_description: Unexcused Absenses
+                  category_id: 54999
+                  excuse_type_id: 18544
+                  excuse_description: AWOL
+                  use_in_calculations: true
+                  excused: Unexcused
+                  duration: FullDay
+                  attendance_type: Absence
+                  school_levels:
+                  - id: 1
+                    abbreviation: US
+                    name: Upper School
+      tags:
+      - Types
+    servers:
+    - url: https://api.sky.blackbaud.com/school
+  /v1/types/excusedurationtypes:
+    get:
+      operationId: V1TypesExcusedurationtypesGet
+      summary: Types excuse duration types
+      description: 'Returns a collection of excuse duration types.
+
+
+        Requires the following role in the Education Management system:
+
+
+        SKY API Basic'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExcuseDurationTypes'
+              example:
+                na: 0
+                full_day: 1
+                half_day: 2
+      tags:
+      - Types
+    servers:
+    - url: https://api.sky.blackbaud.com/school
+  /v1/types/tables:
+    get:
+      operationId: V1TypesTablesGet
+      summary: Types table types
+      description: 'Returns a collection of table types.
+
+
+        System tables will have an ID that is a negative number (Example: -100)
+
+        User defined tables will have an ID that is a positive number (Example: 100)'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TableCollection'
+              example:
+                count: 4
+                value:
+                - id: -200
+                  name: Condition
+                - id: -201
+                  name: Allergy
+                - id: 1
+                  name: T-Shirt Size
+                - id: 2
+                  name: Citizenship
+      tags:
+      - Types
+    servers:
+    - url: https://api.sky.blackbaud.com/school
+  /v1/types/tablevalues:
+    get:
+      operationId: V1TypesTablevaluesGet
+      summary: Types table values
+      description: 'Returns a collection of table values.
+
+
+        Either ```tableId``` or ```tableName``` parameter is required, but not both. For example, If a ```tableId``` is provided, then any value provided for ```tableName``` will be ignored.
+
+        In the case that the calling user does not have permissions to view the data being requested no results will be returned.'
+      parameters:
+      - name: tableId
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: '0'
+        description: The ID of the table type. The tableId is returned by <a href="https://developer.sky.blackbaud.com/docs/services/school/operations/V1TypesTablesGet">Types table types</a> or from the settings area for the table within Blackbaud Education Management.
+      - name: tableName
+        in: query
+        required: false
+        schema:
+          type: string
+        description: The name of the table type. The name is returned by <a href="https://developer.sky.blackbaud.com/docs/services/school/operations/V1TypesTablesGet">Types table types</a> or from the settings area for the table within Blackbaud Education Management.
+      - name: includeInactive
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: 'false'
+        description: If set to true, returns inactive items for the table. Defaults to false.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TableValueCollection'
+              example:
+                count: 3
+                value:
+                - id: 1
+                  name: Male
+                  abbreviation: M
+                  active: true
+                - id: 2
+                  name: Female
+                  abbreviation: F
+                  active: true
+                - id: 3
+                  name: Non-binary
+                  abbreviation: NB
+                  active: true
+      tags:
+      - Types
+    post:
+      operationId: V1TypesTablevaluesPost
+      summary: Types table values create
+      description: 'Add a new table value to a table type.
+
+
+        Allowed table types: Allergy, Condition, Admission'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddTableValuesRequest'
+            example:
+              table: Allergy
+              table_values:
+              - description: Peanut butter
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddTableValuesResponse'
+              example:
+                table_value_ids:
+                - 0
+      tags:
+      - Types
+    servers:
+    - url: https://api.sky.blackbaud.com/school
+components:
+  schemas:
+    FeeTypeDataEnumerableResponse:
+      type: object
+      properties:
+        items:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/FeeTypeData'
+          description: An array of <typeparamref name="T" />T
+      additionalProperties: false
+      description: A response containing an array of <typeparamref name="T">T</typeparamref>
+    FeeTypeData:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The fee type's ID
+          format: int32
+        description:
+          type:
+          - string
+          - 'null'
+          description: The fee type's description
+      additionalProperties: false
+      description: The fee type information
+    StudentChecklistTypeWithSteps:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the checklist
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the checklist
+        is_inactive:
+          type:
+          - boolean
+          - 'null'
+          description: True if checklist is inactive
+        is_archived:
+          type:
+          - boolean
+          - 'null'
+          description: True if checklist is archived
+        school_year:
+          $ref: '#/components/schemas/TableValueBase'
+        steps:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/StudentChecklistStepType'
+          description: list of student checklist type step
+      additionalProperties: false
+      description: Student Checklist type with steps
+    StudentChecklistStepType:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the checklist step
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the checklist step
+        type:
+          type:
+          - string
+          - 'null'
+          description: The type of the checklist step
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the checklist step
+        due_date:
+          type:
+          - string
+          - 'null'
+          description: The date the checklist step is due by default
+          format: date-time
+        is_inactive:
+          type:
+          - boolean
+          - 'null'
+          description: True if checklist step is inactive
+        is_required:
+          type:
+          - boolean
+          - 'null'
+          description: True if checklist step is required
+        link:
+          type:
+          - string
+          - 'null'
+          description: The link of the checklist step
+        link_text:
+          type:
+          - string
+          - 'null'
+          description: The text for the link
+        file:
+          type:
+          - string
+          - 'null'
+          description: The file to publish for the checklist step
+      additionalProperties: false
+      description: Student Checklist type step
+    ChecklistStatusRead:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the admissions status
+          format: int32
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the admissions status
+        ordinal:
+          type:
+          - integer
+          - 'null'
+          description: The order number of the checklist
+          format: int32
+      additionalProperties: false
+      description: Admissions Checklist Status
+    ChecklistStatusReadCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items in the collection
+          format: int32
+          readOnly: true
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ChecklistStatusRead'
+          description: The set of items included in the response. This may be a subset of the items in the collection
+      additionalProperties: false
+      description: A Collection
+    TableValueBase:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the table value
+          format: int32
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the table value
+      additionalProperties: false
+      description: 'Table value base model. Used for table entry fields (i.e. dropdown controls) to provide both ID and Description information for the selected value. General system tables can be retrieved by School API endpoints: GET Types table types and GET Types table values.'
+    InterestTypeCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items in the collection
+          format: int32
+          readOnly: true
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/InterestType'
+          description: The set of items included in the response. This may be a subset of the items in the collection
+      additionalProperties: false
+      description: A Collection
+    ChecklistStepRead:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the Checklist Step
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the Checklist Step
+        type:
+          type:
+          - string
+          - 'null'
+          description: The type of checklist step
+        milestone:
+          type:
+          - string
+          - 'null'
+          description: The milestone the step is part of
+        due_date_default:
+          type:
+          - string
+          - 'null'
+          description: The date the checklist step is due by default
+          format: date-time
+        is_required:
+          type:
+          - boolean
+          - 'null'
+          description: True if checklist step is required
+        publishing_options:
+          $ref: '#/components/schemas/ChecklistStepPublishingOptionsRead'
+      additionalProperties: false
+      description: Admissions Checklist Step
+    StudentChecklistTypeWithStepsCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items in the collection
+          format: int32
+          readOnly: true
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/StudentChecklistTypeWithSteps'
+          description: The set of items included in the response. This may be a subset of the items in the collection
+      additionalProperties: false
+      description: A Collection
+    CandidateStatusBase:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the candidate status type
+          format: int32
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the candidate status type
+      additionalProperties: false
+      description: Candidate status type base model
+    CandidateStatusReadCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items in the collection
+          format: int32
+          readOnly: true
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CandidateStatusRead'
+          description: The set of items included in the response. This may be a subset of the items in the collection
+      additionalProperties: false
+      description: A Collection
+    InterestType:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the interest type table value.
+          format: int32
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the type.
+        is_active:
+          type: boolean
+          description: True if interest is active and can be assigned to a candidate.
+        is_admissions:
+          type: boolean
+          description: True if interest is used in admissions.
+        category:
+          $ref: '#/components/schemas/TableValueBase'
+      additionalProperties: false
+      description: An object with interest information
+    CandidateStatusRead:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the candidate status type
+          format: int32
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the candidate status type
+        next_status:
+          $ref: '#/components/schemas/CandidateStatusBase'
+      additionalProperties: false
+      description: Candidate statuses
+    ChecklistTypeReadCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items in the collection
+          format: int32
+          readOnly: true
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ChecklistTypeRead'
+          description: The set of items included in the response. This may be a subset of the items in the collection
+      additionalProperties: false
+      description: A Collection
+    ChecklistTypeRead:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the Checklist Type
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the Checklist Type
+        is_inactive:
+          type:
+          - boolean
+          - 'null'
+          description: True if the Checklist Type is inactive and is no longer assigned to candidates.
+        is_archived:
+          type:
+          - boolean
+          - 'null'
+          description: True if the Checklist Type is archived
+      additionalProperties: false
+      description: Admissions Checklist Type
+    ChecklistStepPublishingOptionsRead:
+      type: object
+      properties:
+        use_options:
+          type:
+          - boolean
+          - 'null'
+          description: True if publishing options are in use
+        name:
+          type:
+          - string
+          - 'null'
+          description: The published name of the checklist step
+        description:
+          type:
+          - string
+          - 'null'
+          description: The published description of the checklist step
+        link:
+          type:
+          - string
+          - 'null'
+          description: The published link of the checklist step
+        file:
+          type:
+          - string
+          - 'null'
+          description: The file to publish for the checklist step
+      additionalProperties: false
+      description: Admissions Checklist Step Publishing Options
+    ChecklistTypeWithStepsRead:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the Checklist Type
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the Checklist Type
+        is_inactive:
+          type:
+          - boolean
+          - 'null'
+          description: True if the Checklist Type is inactive and is no longer assigned to candidates.
+        is_archived:
+          type:
+          - boolean
+          - 'null'
+          description: True if the Checklist Type is archived
+        steps:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ChecklistStepRead'
+          description: An array of checklist steps
+      additionalProperties: false
+      description: Admissions Checklist Type with Steps
+    Table:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ''
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: ''
+      additionalProperties: false
+      description: ''
+    AttendanceTypes:
+      type: object
+      properties:
+        present:
+          type: integer
+          description: Individual was present
+          format: int32
+          readOnly: true
+        absence:
+          type: integer
+          description: Individual was absent
+          format: int32
+          readOnly: true
+        tardy:
+          type: integer
+          description: Individual was tardy
+          format: int32
+          readOnly: true
+      additionalProperties: false
+      description: ''
+    CountryModel:
+      type: object
+      properties:
+        country:
+          type:
+          - string
+          - 'null'
+          description: The name of the country
+        code:
+          type:
+          - string
+          - 'null'
+          description: The two-character country code
+        use_state:
+          type: boolean
+          description: True if the country uses the state field. Only true for United States.
+        use_province:
+          type: boolean
+          description: True if the country uses the province field. Countries with an array of provinces will only accept those values.
+        states:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ProvinceModel'
+          description: An array of states valid for The United States
+        provinces:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ProvinceModel'
+          description: An array of provinces valid for the country. If blank, then any value is allowed.
+      additionalProperties: false
+      description: An object with country information
+    TableCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items in the collection
+          format: int32
+          readOnly: true
+        next_link:
+          type:
+          - string
+          - 'null'
+          description: For paginated responses, the URI for the next page of results
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Table'
+          description: The set of items included in the response. This may be a subset of the items in the collection
+      additionalProperties: false
+      description: A Collection
+    V1TypesCountriesGet200ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/CountryModel'
+      x-apim-inline: true
+    TableValue:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ''
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: ''
+        abbreviation:
+          type:
+          - string
+          - 'null'
+          description: ''
+        active:
+          type: boolean
+          description: ''
+      additionalProperties: false
+      description: ''
+    AddTableValuesResponse:
+      type: object
+      properties:
+        table_value_ids:
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+            format: int32
+          description: Array of table values IDs
+      additionalProperties: false
+      description: Response object on adding table values
+    ExcuseDurationTypes:
+      type: object
+      properties:
+        na:
+          type: integer
+          description: Not Applicable
+          format: int32
+          readOnly: true
+        full_day:
+          type: integer
+          description: Individual was excused for the full day
+          format: int32
+          readOnly: true
+        half_day:
+          type: integer
+          description: Individual was excused for a half day
+          format: int32
+          readOnly: true
+      additionalProperties: false
+      description: ''
+    AddTableValuesRequest:
+      required:
+      - table
+      - table_values
+      type: object
+      properties:
+        table:
+          minLength: 1
+          type: string
+          description: The ID or description of the table type
+        table_values:
+          type: array
+          items:
+            $ref: '#/components/schemas/TableValueAdd'
+          description: An array of table values to add to the table
+      additionalProperties: false
+      description: Request object for adding table values
+    ReasonAttendanceType:
+      title: ReasonAttendanceType
+      enum:
+      - Present
+      - Absence
+      - Tardy
+      - Virtual
+      type: string
+      description: ''
+    ReasonExcused:
+      title: ReasonExcused
+      enum:
+      - Present
+      - Excused
+      - Unexcused
+      type: string
+      description: ''
+    ExcusedTypes:
+      type: object
+      properties:
+        category_description:
+          type:
+          - string
+          - 'null'
+          description: The category that the excuse associated with
+        category_id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of category that the excuse associated with
+          format: int32
+        excuse_type_id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the excuse type
+          format: int32
+        excuse_description:
+          type:
+          - string
+          - 'null'
+          description: The description of the excuse type
+        use_in_calculations:
+          type:
+          - boolean
+          - 'null'
+          description: The Use In Calculations flag
+        excused:
+          $ref: '#/components/schemas/ReasonExcused'
+        duration:
+          $ref: '#/components/schemas/ReasonDuration'
+        attendance_type:
+          $ref: '#/components/schemas/ReasonAttendanceType'
+        school_levels:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Level'
+          description: An array of valid school levels. The type is valid for all school levels if array is empty.
+      additionalProperties: false
+      description: ''
+    ReasonDuration:
+      title: ReasonDuration
+      enum:
+      - NA
+      - FullDay
+      - HalfDay
+      type: string
+      description: ''
+    ExcusedTypesCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items in the collection
+          format: int32
+          readOnly: true
+        next_link:
+          type:
+          - string
+          - 'null'
+          description: For paginated responses, the URI for the next page of results
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ExcusedTypes'
+          description: The set of items included in the response. This may be a subset of the items in the collection
+      additionalProperties: false
+      description: A Collection
+    TableValueCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items in the collection
+          format: int32
+          readOnly: true
+        next_link:
+          type:
+          - string
+          - 'null'
+          description: For paginated responses, the URI for the next page of results
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/TableValue'
+          description: The set of items included in the response. This may be a subset of the items in the collection
+      additionalProperties: false
+      description: A Collection
+    Level:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of a school level
+          format: int32
+        abbreviation:
+          type:
+          - string
+          - 'null'
+          description: The abbreviation associated with a school level
+        name:
+          type:
+          - string
+          - 'null'
+          description: The label used to identify a school level
+        address:
+          $ref: '#/components/schemas/SchoolAddress'
+        school_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the School
+        school_address:
+          $ref: '#/components/schemas/SchoolAddress'
+      additionalProperties: false
+      description: An object with school level information
+    TableValueAdd:
+      required:
+      - description
+      type: object
+      properties:
+        description:
+          minLength: 1
+          type: string
+          description: The description of the table value
+        abbreviation:
+          type:
+          - string
+          - 'null'
+          description: The abbreviation of the table value. Maximum length is 6 characters
+      additionalProperties: false
+      description: An object with table value information
+    SchoolAddress:
+      type: object
+      properties:
+        address1:
+          type:
+          - string
+          - 'null'
+          description: The address line
+        address2:
+          type:
+          - string
+          - 'null'
+          description: The address line
+        address3:
+          type:
+          - string
+          - 'null'
+          description: The address line
+        city:
+          type:
+          - string
+          - 'null'
+          description: The city
+        state:
+          type:
+          - string
+          - 'null'
+          description: TThe state for the address
+        zip:
+          type:
+          - string
+          - 'null'
+          description: The postal/ZIP code for the address
+        county_province:
+          type:
+          - string
+          - 'null'
+          description: The county or province for the address
+        country:
+          type:
+          - string
+          - 'null'
+          description: The country for the address
+        phone:
+          type:
+          - string
+          - 'null'
+          description: The phone number for the address
+        fax:
+          type:
+          - string
+          - 'null'
+          description: The fax number for the address
+        website:
+          type:
+          - string
+          - 'null'
+          description: The website for the address
+      additionalProperties: false
+      description: An object with information about the address of the school level, including address fields, phone fields and website.
+    ProvinceModel:
+      type: object
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the entry
+        abbreviation:
+          type:
+          - string
+          - 'null'
+          description: The abbreviation of the entry
+      additionalProperties: false
+      description: An object with state and province information
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+x-refined-from:
+- blackbaud-billing-management-api-openapi.yml
+- blackbaud-enrollment-management-api-openapi.yml
+- blackbaud-school-api-openapi.yml

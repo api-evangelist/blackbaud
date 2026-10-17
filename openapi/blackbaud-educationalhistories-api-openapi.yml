@@ -1,0 +1,1432 @@
+openapi: 3.2.0
+info:
+  title: Blackbaud Educationalhistories API
+  version: '1.0'
+  x-refined-note:
+  - x-apievangelist-provenance differs across the merged source definitions and was not carried
+  description: 'Operations tagged Educationalhistories across 2 of this provider''s published API definitions: blackbaud-altru-constituent-api-openapi.yml, blackbaud-crm-constituent-api-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.sky.blackbaud.com/alt-conmg
+- url: https://api.sky.blackbaud.com/crm-conmg
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Educationalhistories
+paths:
+  /educationalhistories:
+    post:
+      operationId: CreateEducation
+      summary: Create an education
+      description: Adds a new educational history record to an existing constituent.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewEducation'
+            example:
+              constituent_id: ''
+              primary_record: false
+              educational_institution_id: ''
+              academic_catalog_program: ''
+              educational_program: ''
+              constituency_status: Unknown
+              date_graduated: ''
+              date_left: ''
+              educational_history_level: ''
+              educational_history_reason: ''
+              academic_catalog_degree: ''
+              educational_degree: ''
+              educational_award: ''
+              start_date: ''
+              class_year: 0
+              preferred_class_year: 0
+              educational_source: ''
+              educational_source_date: ''
+              comment: ''
+              affiliated_additional_information:
+              - id: ''
+                academiccatalogcollege: ''
+                academiccatalogdivision: ''
+                academiccatalogdepartment: ''
+                academiccatalogsubdepartment: ''
+                academiccatalogdegreetype: ''
+              unaffiliated_additional_information:
+              - id: ''
+                educational_college: ''
+                educational_division: ''
+                educational_department: ''
+                educational_sub_department: ''
+                educational_degree_type: ''
+              affiliated: false
+              use_academic_catalog: false
+              educational_history_status: ''
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully creates the resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to create the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Educationalhistories
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-conmg
+  /educationalhistories/search:
+    get:
+      operationId: SearchEducations
+      summary: Search for educations
+      description: This search list provides the ability to search for educational history records.
+      parameters:
+      - name: full_name_educational_institution
+        in: query
+        required: false
+        schema:
+          type: string
+        description: full name educational institution
+      - name: key_name
+        in: query
+        required: false
+        schema:
+          type: string
+        description: last/org name
+      - name: first_name
+        in: query
+        required: false
+        schema:
+          type: string
+        description: first name
+      - name: lookup_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: lookup id
+      - name: exact_match_only
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: match all criteria exactly
+      - name: check_nick_name
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: check nickname
+      - name: check_aliases
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: check aliases
+      - name: check_alternate_lookup_ids
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: check alternate lookup ids
+      - name: educational_institution
+        in: query
+        required: false
+        schema:
+          type: string
+        description: educational institution SimpleDataListID=0e239b5a-8c99-4e1e-9c10-06adce4b6500.
+      - name: academic_catalog_program
+        in: query
+        required: false
+        schema:
+          type: string
+        description: academic catalog program SimpleDataListID=d411c16b-8bcf-4fc8-a747-754e1e89e9bc.
+      - name: educational_program
+        in: query
+        required: false
+        schema:
+          type: string
+        description: educational program This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/EDUCATIONALPROGRAMCODE/entries
+      - name: constituency_status
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - All statuses
+          - Unknown
+          - Currently attending
+          - Incomplete
+          - Graduated
+        description: status
+      - name: educational_history_status
+        in: query
+        required: false
+        schema:
+          type: string
+        description: status SimpleDataListID=086c5bfb-1a80-46cf-a2f5-05ef51120891.
+      - name: academic_catalog_degree
+        in: query
+        required: false
+        schema:
+          type: string
+        description: academic catalog degree SimpleDataListID=73c67942-07ad-412e-8596-a042e5e68002.
+      - name: educational_degree
+        in: query
+        required: false
+        schema:
+          type: string
+        description: educational degree This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/EDUCATIONALDEGREECODE/entries
+      - name: class_of
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: class year
+      - name: primary_only
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: only search primary records
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Limits the number of records to return.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of result entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EducationSearchCollection'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to view the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+      tags:
+      - Educationalhistories
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-conmg
+  /educationalhistories/{educational_history_id}:
+    delete:
+      operationId: DeleteEducation
+      summary: Delete an education
+      description: This deletion handles only the basic deletion rules for an educational history (currently none).
+      parameters:
+      - name: educational_history_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The educational history id
+      responses:
+        '200':
+          description: Returned when the operation successfully deletes the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to delete the resource.
+      tags:
+      - Educationalhistories
+    patch:
+      operationId: EditEducation
+      summary: Edit an education
+      description: Edits educational history.
+      parameters:
+      - name: educational_history_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The educational history id.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditEducation'
+            example:
+              primary_record: false
+              educational_institution_id: 6d31a4d0-57fb-454e-9ce9-f09049327153
+              academic_catalog_program: ''
+              educational_program: FullCourse
+              constituency_status: Unknown
+              date_graduated:
+                year: 2015
+                month: 6
+                day: 17
+              date_left:
+                year: 2017
+                month: 4
+                day: 19
+              academic_catalog_degree: ''
+              educational_degree: MBA
+              educational_award: ''
+              start_date:
+                year: 2014
+                month: 4
+                day: 13
+              class_year: 0
+              preferred_class_year: 0
+              educational_source: ''
+              educational_source_date:
+                year: 0
+                month: 0
+                day: 0
+              comment: ''
+              affiliated: false
+              educational_history_level: ''
+              educational_history_reason: ''
+              use_academic_catalog: false
+              educational_history_status: 00000000-0000-0000-0000-000000000004
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully edits the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to edit the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Educationalhistories
+    get:
+      operationId: GetEducation
+      summary: Get an education
+      description: Edits educational history.
+      parameters:
+      - name: educational_history_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The educational history id.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the specified resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Education'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to get the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Educationalhistories
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-conmg
+components:
+  schemas:
+    EditEducationAffiliatedAdditionalInformation:
+      type: object
+      properties:
+        id:
+          type: string
+          description: id
+        academiccatalogcollege:
+          type: string
+          description: The college/school. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/70f445a9-9efd-436e-a724-4be727219dd5?parameters=academiccatalogdegreeid,{academiccatalogdegreeid}.
+        academiccatalogdivision:
+          type: string
+          description: The division. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/6d688d29-3846-4285-8bf7-2e24c29acef1?parameters=academiccatalogcollegeid,{academiccatalogcollegeid}.
+        academiccatalogdepartment:
+          type: string
+          description: The department. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/1093fae2-baf1-4488-9332-74d9193741ca?parameters=academiccatalogcollegeid,{academiccatalogcollegeid}&parameters=academiccatalogdivisionid,{academiccatalogdivisionid}.
+        academiccatalogsubdepartment:
+          type: string
+          description: The sub department. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/b1da0663-f912-4533-abc2-de27bcbe8b10?parameters=academiccatalogdepartmentid,{academiccatalogdepartmentid}.
+        academiccatalogdegreetype:
+          type: string
+          description: The degree type. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/02026401-2351-4e56-832c-299c9426c649?parameters=academiccatalogdepartmentid,{academiccatalogdepartmentid}&parameters=academiccatalogsubdepartmentid,{academiccatalogsubdepartmentid}.
+      description: EditEducationAffiliatedAdditionalInformation
+      x-display-name: affiliated_additional_information
+      x-display-id: affiliated_additional_information
+    NewEducationUnaffiliatedAdditionalInformation:
+      type: object
+      properties:
+        id:
+          type: string
+          description: id
+        educational_college:
+          type: string
+          description: The college/school. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/educationalcollegecode/entries
+        educational_division:
+          type: string
+          description: The division. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/educationaldivisioncode/entries
+        educational_department:
+          type: string
+          description: The department. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/educationaldepartmentcode/entries
+        educational_sub_department:
+          type: string
+          description: The sub department. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/educationalsubdepartmentcode/entries
+        educational_degree_type:
+          type: string
+          description: The degree type. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/educationaldegreetypecode/entries
+      description: NewEducationUnaffiliatedAdditionalInformation
+      x-display-name: unaffiliated_additional_information
+      x-display-id: unaffiliated_additional_information
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type: integer
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type: string
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: false
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-display-name: Problem details
+      x-display-id: ProblemDetails
+    EducationSearchCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items available for retrieval into the collection after applying any request parameters.
+          format: int32
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/EducationSearchSummary'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+      additionalProperties: false
+      description: A collection of items. Data lists can contain paginated results.
+    EducationAffiliatedAdditionalInformation:
+      type: object
+      properties:
+        id:
+          type: string
+          description: id
+        academiccatalogcollege:
+          type: string
+          description: The college/school. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/70f445a9-9efd-436e-a724-4be727219dd5?parameters=academiccatalogdegreeid,{academiccatalogdegreeid}.
+        academiccatalogdivision:
+          type: string
+          description: The division. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/6d688d29-3846-4285-8bf7-2e24c29acef1?parameters=academiccatalogcollegeid,{academiccatalogcollegeid}.
+        academiccatalogdepartment:
+          type: string
+          description: The department. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/1093fae2-baf1-4488-9332-74d9193741ca?parameters=academiccatalogcollegeid,{academiccatalogcollegeid}&parameters=academiccatalogdivisionid,{academiccatalogdivisionid}.
+        academiccatalogsubdepartment:
+          type: string
+          description: The sub department. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/b1da0663-f912-4533-abc2-de27bcbe8b10?parameters=academiccatalogdepartmentid,{academiccatalogdepartmentid}.
+        academiccatalogdegreetype:
+          type: string
+          description: The degree type. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/02026401-2351-4e56-832c-299c9426c649?parameters=academiccatalogdepartmentid,{academiccatalogdepartmentid}&parameters=academiccatalogsubdepartmentid,{academiccatalogsubdepartmentid}.
+      description: EducationAffiliatedAdditionalInformation
+      x-display-name: affiliated_additional_information
+      x-display-id: affiliated_additional_information
+    NewEducation:
+      required:
+      - constituent_id
+      - educational_institution_id
+      - educational_history_status
+      type: object
+      properties:
+        constituent_id:
+          type: string
+          description: The constituent ID.
+        primary_record:
+          type: boolean
+          description: Indicates whether primary education information.
+        educational_institution_id:
+          type: string
+          description: The educational institution.
+        academic_catalog_program:
+          type: string
+          description: The program. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/d411c16b-8bcf-4fc8-a747-754e1e89e9bc?parameters=educational_institution_id,{educational_institution_id}.
+        educational_program:
+          type: string
+          description: The program. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/educationalprogramcode/entries
+        constituency_status:
+          type: string
+          description: The status. Available values are <i>unknown</i>, <i>currently attending</i>, <i>incomplete</i>, <i>graduated</i>
+        date_graduated:
+          $ref: '#/components/schemas/FuzzyDate'
+        date_left:
+          $ref: '#/components/schemas/FuzzyDate'
+        educational_history_level:
+          type: string
+          description: The level. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/educationalhistorylevelcode/entries
+        educational_history_reason:
+          type: string
+          description: The reason. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/educationalhistoryreasoncode/entries
+        academic_catalog_degree:
+          type: string
+          description: The degree. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/73c67942-07ad-412e-8596-a042e5e68002?parameters=academiccatalogprogramid,{academiccatalogprogramid}.
+        educational_degree:
+          type: string
+          description: The degree. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/educationaldegreecode/entries
+        educational_award:
+          type: string
+          description: The honor awarded. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/educationalawardcode/entries
+        start_date:
+          $ref: '#/components/schemas/FuzzyDate'
+        class_year:
+          type: integer
+          description: The class of.
+          format: int32
+        preferred_class_year:
+          type: integer
+          description: The preferred class of.
+          format: int32
+        educational_source:
+          type: string
+          description: The information source. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/educationalsourcecode/entries
+        educational_source_date:
+          $ref: '#/components/schemas/FuzzyDate'
+        comment:
+          maxLength: 500
+          minLength: 0
+          type: string
+          description: The comments.
+        affiliated_additional_information:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewEducationAffiliatedAdditionalInformation'
+          description: Affiliated additional information.
+        unaffiliated_additional_information:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewEducationUnaffiliatedAdditionalInformation'
+          description: Unaffiliated additional information.
+        affiliated:
+          type: boolean
+          description: Indicates whether affiliated.
+        use_academic_catalog:
+          type: boolean
+          description: Indicates whether use academic catalog. Read-only in the SOAP API.
+        educational_history_status:
+          type: string
+          description: The status. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/086c5bfb-1a80-46cf-a2f5-05ef51120891.
+      additionalProperties: false
+      description: CreateEducation
+      example:
+        constituent_id: ''
+        primary_record: false
+        educational_institution_id: ''
+        academic_catalog_program: ''
+        educational_program: ''
+        constituency_status: Unknown
+        date_graduated: ''
+        date_left: ''
+        educational_history_level: ''
+        educational_history_reason: ''
+        academic_catalog_degree: ''
+        educational_degree: ''
+        educational_award: ''
+        start_date: ''
+        class_year: 0
+        preferred_class_year: 0
+        educational_source: ''
+        educational_source_date: ''
+        comment: ''
+        affiliated_additional_information:
+        - id: ''
+          academiccatalogcollege: ''
+          academiccatalogdivision: ''
+          academiccatalogdepartment: ''
+          academiccatalogsubdepartment: ''
+          academiccatalogdegreetype: ''
+        unaffiliated_additional_information:
+        - id: ''
+          educational_college: ''
+          educational_division: ''
+          educational_department: ''
+          educational_sub_department: ''
+          educational_degree_type: ''
+        affiliated: false
+        use_academic_catalog: false
+        educational_history_status: ''
+      x-display-name: Educational History Add Form 2
+      x-display-id: Educational History Add Form 2
+    NewEducationAffiliatedAdditionalInformation:
+      type: object
+      properties:
+        id:
+          type: string
+          description: id
+        academiccatalogcollege:
+          type: string
+          description: The college/school. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/70f445a9-9efd-436e-a724-4be727219dd5?parameters=academiccatalogdegreeid,{academiccatalogdegreeid}.
+        academiccatalogdivision:
+          type: string
+          description: The division. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/6d688d29-3846-4285-8bf7-2e24c29acef1?parameters=academiccatalogcollegeid,{academiccatalogcollegeid}.
+        academiccatalogdepartment:
+          type: string
+          description: The department. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/1093fae2-baf1-4488-9332-74d9193741ca?parameters=academiccatalogcollegeid,{academiccatalogcollegeid}&parameters=academiccatalogdivisionid,{academiccatalogdivisionid}.
+        academiccatalogsubdepartment:
+          type: string
+          description: The sub department. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/b1da0663-f912-4533-abc2-de27bcbe8b10?parameters=academiccatalogdepartmentid,{academiccatalogdepartmentid}.
+        academiccatalogdegreetype:
+          type: string
+          description: The degree type. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/02026401-2351-4e56-832c-299c9426c649?parameters=academiccatalogdepartmentid,{academiccatalogdepartmentid}&parameters=academiccatalogsubdepartmentid,{academiccatalogsubdepartmentid}.
+      description: NewEducationAffiliatedAdditionalInformation
+      x-display-name: affiliated_additional_information
+      x-display-id: affiliated_additional_information
+    EditEducation:
+      type: object
+      properties:
+        primary_record:
+          type: boolean
+          description: Indicates whether primary education information.
+        educational_institution_id:
+          type: string
+          description: The educational institution.
+        academic_catalog_program:
+          type: string
+          description: The program. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/d411c16b-8bcf-4fc8-a747-754e1e89e9bc?parameters=educational_institution_id,{educational_institution_id}.
+        educational_program:
+          type: string
+          description: The program. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/educationalprogramcode/entries
+        constituency_status:
+          type: string
+          description: The status. Available values are <i>unknown</i>, <i>currently attending</i>, <i>incomplete</i>, <i>graduated</i>
+        date_graduated:
+          $ref: '#/components/schemas/FuzzyDate'
+        date_left:
+          $ref: '#/components/schemas/FuzzyDate'
+        academic_catalog_degree:
+          type: string
+          description: The degree. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/73c67942-07ad-412e-8596-a042e5e68002?parameters=academiccatalogprogramid,{academiccatalogprogramid}.
+        educational_degree:
+          type: string
+          description: The degree. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/educationaldegreecode/entries
+        educational_award:
+          type: string
+          description: The honor awarded. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/educationalawardcode/entries
+        start_date:
+          $ref: '#/components/schemas/FuzzyDate'
+        class_year:
+          type: integer
+          description: The class of.
+          format: int32
+        preferred_class_year:
+          type: integer
+          description: The preferred class of.
+          format: int32
+        educational_source:
+          type: string
+          description: The information source. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/educationalsourcecode/entries
+        educational_source_date:
+          $ref: '#/components/schemas/FuzzyDate'
+        comment:
+          maxLength: 500
+          minLength: 0
+          type: string
+          description: The comments.
+        affiliated_additional_information:
+          type: array
+          items:
+            $ref: '#/components/schemas/EditEducationAffiliatedAdditionalInformation'
+          description: Affiliated additional information.
+        unaffiliated_additional_information:
+          type: array
+          items:
+            $ref: '#/components/schemas/EditEducationUnaffiliatedAdditionalInformation'
+          description: Unaffiliated additional information.
+        affiliated:
+          type: boolean
+          description: Indicates whether affiliated.
+        educational_history_level:
+          type: string
+          description: The level. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/educationalhistorylevelcode/entries
+        educational_history_reason:
+          type: string
+          description: The reason. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/educationalhistoryreasoncode/entries
+        use_academic_catalog:
+          type: boolean
+          description: Indicates whether use academic catalog. Read-only in the SOAP API.
+        educational_history_status:
+          type: string
+          description: The status. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/086c5bfb-1a80-46cf-a2f5-05ef51120891.
+      additionalProperties: false
+      description: EditEducation
+      example:
+        primary_record: false
+        educational_institution_id: 6d31a4d0-57fb-454e-9ce9-f09049327153
+        academic_catalog_program: ''
+        educational_program: FullCourse
+        constituency_status: Unknown
+        date_graduated:
+          year: 2015
+          month: 6
+          day: 17
+        date_left:
+          year: 2017
+          month: 4
+          day: 19
+        academic_catalog_degree: ''
+        educational_degree: MBA
+        educational_award: ''
+        start_date:
+          year: 2014
+          month: 4
+          day: 13
+        class_year: 0
+        preferred_class_year: 0
+        educational_source: ''
+        educational_source_date:
+          year: 0
+          month: 0
+          day: 0
+        comment: ''
+        affiliated: false
+        educational_history_level: ''
+        educational_history_reason: ''
+        use_academic_catalog: false
+        educational_history_status: 00000000-0000-0000-0000-000000000004
+      x-display-name: Educational History Edit Form 2
+      x-display-id: Educational History Edit Form 2
+    EducationSearchSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID.
+        full_name_educational_institution:
+          type: string
+          description: The full name\educational institution.
+        constituent_name:
+          type: string
+          description: The constituent name.
+        constituent_lookup_id:
+          type: string
+          description: The constituent lookup ID.
+        constituent_address:
+          type: string
+          description: The constituent address.
+        constituent_city:
+          type: string
+          description: The constituent city.
+        constituent_state:
+          type: string
+          description: The constituent state.
+        constituent_post_code:
+          type: string
+          description: The constituent zip/postal code.
+        educational_institution:
+          type: string
+          description: The educational institution.
+        program:
+          type: string
+          description: The program.
+        degree:
+          type: string
+          description: The degree.
+        status:
+          type: string
+          description: The status.
+        class_year:
+          type: string
+          description: The class year.
+        educational_history_status:
+          type: string
+          description: The status.
+      additionalProperties: false
+      description: SearchEducations
+      x-display-name: Educational History Search
+      x-display-id: Educational History Search
+    Education:
+      required:
+      - educational_institution_id
+      - constituency_status
+      - educational_history_status
+      type: object
+      properties:
+        primary_record:
+          type: boolean
+          description: Indicates whether primary education information.
+        educational_institution_id:
+          type: string
+          description: The educational institution.
+        academic_catalog_program:
+          type: string
+          description: The program. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/d411c16b-8bcf-4fc8-a747-754e1e89e9bc?parameters=educational_institution_id,{educational_institution_id}.
+        educational_program:
+          type: string
+          description: The program. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/educationalprogramcode/entries
+        constituency_status:
+          type: string
+          description: The status. Available values are <i>unknown</i>, <i>currently attending</i>, <i>incomplete</i>, <i>graduated</i>
+        date_graduated:
+          $ref: '#/components/schemas/FuzzyDate'
+        date_left:
+          $ref: '#/components/schemas/FuzzyDate'
+        academic_catalog_degree:
+          type: string
+          description: The degree. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/73c67942-07ad-412e-8596-a042e5e68002?parameters=academiccatalogprogramid,{academiccatalogprogramid}.
+        educational_degree:
+          type: string
+          description: The degree. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/educationaldegreecode/entries
+        educational_award:
+          type: string
+          description: The honor awarded. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/educationalawardcode/entries
+        start_date:
+          $ref: '#/components/schemas/FuzzyDate'
+        class_year:
+          type: integer
+          description: The class of.
+          format: int32
+        preferred_class_year:
+          type: integer
+          description: The preferred class of.
+          format: int32
+        educational_source:
+          type: string
+          description: The information source. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/educationalsourcecode/entries
+        educational_source_date:
+          $ref: '#/components/schemas/FuzzyDate'
+        comment:
+          maxLength: 500
+          minLength: 0
+          type: string
+          description: The comments.
+        affiliated_additional_information:
+          type: array
+          items:
+            $ref: '#/components/schemas/EducationAffiliatedAdditionalInformation'
+          description: Affiliated additional information.
+        unaffiliated_additional_information:
+          type: array
+          items:
+            $ref: '#/components/schemas/EducationUnaffiliatedAdditionalInformation'
+          description: Unaffiliated additional information.
+        affiliated:
+          type: boolean
+          description: Indicates whether affiliated.
+        educational_history_level:
+          type: string
+          description: The level. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/educationalhistorylevelcode/entries
+        educational_history_reason:
+          type: string
+          description: The reason. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/educationalhistoryreasoncode/entries
+        use_academic_catalog:
+          type: boolean
+          description: Indicates whether use academic catalog. Read-only in the SOAP API.
+        educational_history_status:
+          type: string
+          description: The status. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/086c5bfb-1a80-46cf-a2f5-05ef51120891.
+      additionalProperties: false
+      description: GetEducation
+      x-display-name: Educational History Edit Form 2
+      x-display-id: Educational History Edit Form 2
+    EducationUnaffiliatedAdditionalInformation:
+      type: object
+      properties:
+        id:
+          type: string
+          description: id
+        educational_college:
+          type: string
+          description: The college/school. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/educationalcollegecode/entries
+        educational_division:
+          type: string
+          description: The division. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/educationaldivisioncode/entries
+        educational_department:
+          type: string
+          description: The department. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/educationaldepartmentcode/entries
+        educational_sub_department:
+          type: string
+          description: The sub department. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/educationalsubdepartmentcode/entries
+        educational_degree_type:
+          type: string
+          description: The degree type. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/educationaldegreetypecode/entries
+      description: EducationUnaffiliatedAdditionalInformation
+      x-display-name: unaffiliated_additional_information
+      x-display-id: unaffiliated_additional_information
+    FuzzyDate:
+      type: object
+      properties:
+        year:
+          type: integer
+          description: The year.
+          format: int32
+        month:
+          type: integer
+          description: The month.
+          format: int32
+        day:
+          type: integer
+          description: The day.
+          format: int32
+      description: FuzzyDate
+      example:
+        year: 2024
+        month: 4
+        day: 13
+      x-display-name: Month Day
+      x-display-id: Month Day
+    PostResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The newly created ID.
+      additionalProperties: false
+      description: Defines the shape of a post response object.
+    EditEducationUnaffiliatedAdditionalInformation:
+      type: object
+      properties:
+        id:
+          type: string
+          description: id
+        educational_college:
+          type: string
+          description: The college/school. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/educationalcollegecode/entries
+        educational_division:
+          type: string
+          description: The division. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/educationaldivisioncode/entries
+        educational_department:
+          type: string
+          description: The department. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/educationaldepartmentcode/entries
+        educational_sub_department:
+          type: string
+          description: The sub department. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/educationalsubdepartmentcode/entries
+        educational_degree_type:
+          type: string
+          description: The degree type. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/educationaldegreetypecode/entries
+      description: EditEducationUnaffiliatedAdditionalInformation
+      x-display-name: unaffiliated_additional_information
+      x-display-id: unaffiliated_additional_information
+    EditEducationAffiliatedAdditionalInformation_2:
+      type: object
+      properties:
+        id:
+          type: string
+          description: id
+        academiccatalogcollege:
+          type: string
+          description: The college/school. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/70f445a9-9efd-436e-a724-4be727219dd5?parameters=academiccatalogdegreeid,{academiccatalogdegreeid}.
+        academiccatalogdivision:
+          type: string
+          description: The division. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/6d688d29-3846-4285-8bf7-2e24c29acef1?parameters=academiccatalogcollegeid,{academiccatalogcollegeid}.
+        academiccatalogdepartment:
+          type: string
+          description: The department. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/1093fae2-baf1-4488-9332-74d9193741ca?parameters=academiccatalogcollegeid,{academiccatalogcollegeid}&parameters=academiccatalogdivisionid,{academiccatalogdivisionid}.
+        academiccatalogsubdepartment:
+          type: string
+          description: The sub department. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/b1da0663-f912-4533-abc2-de27bcbe8b10?parameters=academiccatalogdepartmentid,{academiccatalogdepartmentid}.
+        academiccatalogdegreetype:
+          type: string
+          description: The degree type. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/02026401-2351-4e56-832c-299c9426c649?parameters=academiccatalogdepartmentid,{academiccatalogdepartmentid}&parameters=academiccatalogsubdepartmentid,{academiccatalogsubdepartmentid}.
+      description: EditEducationAffiliatedAdditionalInformation
+      x-display-name: affiliated_additional_information
+      x-display-id: affiliated_additional_information
+    NewEducationUnaffiliatedAdditionalInformation_2:
+      type: object
+      properties:
+        id:
+          type: string
+          description: id
+        educational_college:
+          type: string
+          description: The college/school. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/educationalcollegecode/entries
+        educational_division:
+          type: string
+          description: The division. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/educationaldivisioncode/entries
+        educational_department:
+          type: string
+          description: The department. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/educationaldepartmentcode/entries
+        educational_sub_department:
+          type: string
+          description: The sub department. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/educationalsubdepartmentcode/entries
+        educational_degree_type:
+          type: string
+          description: The degree type. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/educationaldegreetypecode/entries
+      description: NewEducationUnaffiliatedAdditionalInformation
+      x-display-name: unaffiliated_additional_information
+      x-display-id: unaffiliated_additional_information
+    EducationAffiliatedAdditionalInformation_2:
+      type: object
+      properties:
+        id:
+          type: string
+          description: id
+        academiccatalogcollege:
+          type: string
+          description: The college/school. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/70f445a9-9efd-436e-a724-4be727219dd5?parameters=academiccatalogdegreeid,{academiccatalogdegreeid}.
+        academiccatalogdivision:
+          type: string
+          description: The division. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/6d688d29-3846-4285-8bf7-2e24c29acef1?parameters=academiccatalogcollegeid,{academiccatalogcollegeid}.
+        academiccatalogdepartment:
+          type: string
+          description: The department. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/1093fae2-baf1-4488-9332-74d9193741ca?parameters=academiccatalogcollegeid,{academiccatalogcollegeid}&parameters=academiccatalogdivisionid,{academiccatalogdivisionid}.
+        academiccatalogsubdepartment:
+          type: string
+          description: The sub department. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/b1da0663-f912-4533-abc2-de27bcbe8b10?parameters=academiccatalogdepartmentid,{academiccatalogdepartmentid}.
+        academiccatalogdegreetype:
+          type: string
+          description: The degree type. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/02026401-2351-4e56-832c-299c9426c649?parameters=academiccatalogdepartmentid,{academiccatalogdepartmentid}&parameters=academiccatalogsubdepartmentid,{academiccatalogsubdepartmentid}.
+      description: EducationAffiliatedAdditionalInformation
+      x-display-name: affiliated_additional_information
+      x-display-id: affiliated_additional_information
+    NewEducation_2:
+      required:
+      - constituent_id
+      - educational_institution_id
+      - educational_history_status
+      type: object
+      properties:
+        constituent_id:
+          type: string
+          description: The constituent ID.
+        primary_record:
+          type: boolean
+          description: Indicates whether primary education information.
+        educational_institution_id:
+          type: string
+          description: The educational institution.
+        academic_catalog_program:
+          type: string
+          description: The program. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/d411c16b-8bcf-4fc8-a747-754e1e89e9bc?parameters=educational_institution_id,{educational_institution_id}.
+        educational_program:
+          type: string
+          description: The program. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/educationalprogramcode/entries
+        constituency_status:
+          type: string
+          description: The status. Available values are <i>unknown</i>, <i>currently attending</i>, <i>incomplete</i>, <i>graduated</i>
+        date_graduated:
+          $ref: '#/components/schemas/FuzzyDate'
+        date_left:
+          $ref: '#/components/schemas/FuzzyDate'
+        educational_history_level:
+          type: string
+          description: The level. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/educationalhistorylevelcode/entries
+        educational_history_reason:
+          type: string
+          description: The reason. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/educationalhistoryreasoncode/entries
+        academic_catalog_degree:
+          type: string
+          description: The degree. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/73c67942-07ad-412e-8596-a042e5e68002?parameters=academiccatalogprogramid,{academiccatalogprogramid}.
+        educational_degree:
+          type: string
+          description: The degree. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/educationaldegreecode/entries
+        educational_award:
+          type: string
+          description: The honor awarded. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/educationalawardcode/entries
+        start_date:
+          $ref: '#/components/schemas/FuzzyDate'
+        class_year:
+          type: integer
+          description: The class of.
+          format: int32
+        preferred_class_year:
+          type: integer
+          description: The preferred class of.
+          format: int32
+        educational_source:
+          type: string
+          description: The information source. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/educationalsourcecode/entries
+        educational_source_date:
+          $ref: '#/components/schemas/FuzzyDate'
+        comment:
+          maxLength: 500
+          minLength: 0
+          type: string
+          description: The comments.
+        affiliated_additional_information:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewEducationAffiliatedAdditionalInformation_2'
+          description: Affiliated additional information.
+        unaffiliated_additional_information:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewEducationUnaffiliatedAdditionalInformation_2'
+          description: Unaffiliated additional information.
+        affiliated:
+          type: boolean
+          description: Indicates whether affiliated.
+        use_academic_catalog:
+          type: boolean
+          description: Indicates whether use academic catalog. Read-only in the SOAP API.
+        educational_history_status:
+          type: string
+          description: The status. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/086c5bfb-1a80-46cf-a2f5-05ef51120891.
+      additionalProperties: false
+      description: CreateEducation
+      example:
+        constituent_id: ''
+        primary_record: false
+        educational_institution_id: ''
+        academic_catalog_program: ''
+        educational_program: ''
+        constituency_status: Unknown
+        date_graduated: ''
+        date_left: ''
+        educational_history_level: ''
+        educational_history_reason: ''
+        academic_catalog_degree: ''
+        educational_degree: ''
+        educational_award: ''
+        start_date: ''
+        class_year: 0
+        preferred_class_year: 0
+        educational_source: ''
+        educational_source_date: ''
+        comment: ''
+        affiliated_additional_information:
+        - id: ''
+          academiccatalogcollege: ''
+          academiccatalogdivision: ''
+          academiccatalogdepartment: ''
+          academiccatalogsubdepartment: ''
+          academiccatalogdegreetype: ''
+        unaffiliated_additional_information:
+        - id: ''
+          educational_college: ''
+          educational_division: ''
+          educational_department: ''
+          educational_sub_department: ''
+          educational_degree_type: ''
+        affiliated: false
+        use_academic_catalog: false
+        educational_history_status: ''
+      x-display-name: Educational History Add Form 2
+      x-display-id: Educational History Add Form 2
+    NewEducationAffiliatedAdditionalInformation_2:
+      type: object
+      properties:
+        id:
+          type: string
+          description: id
+        academiccatalogcollege:
+          type: string
+          description: The college/school. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/70f445a9-9efd-436e-a724-4be727219dd5?parameters=academiccatalogdegreeid,{academiccatalogdegreeid}.
+        academiccatalogdivision:
+          type: string
+          description: The division. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/6d688d29-3846-4285-8bf7-2e24c29acef1?parameters=academiccatalogcollegeid,{academiccatalogcollegeid}.
+        academiccatalogdepartment:
+          type: string
+          description: The department. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/1093fae2-baf1-4488-9332-74d9193741ca?parameters=academiccatalogcollegeid,{academiccatalogcollegeid}&parameters=academiccatalogdivisionid,{academiccatalogdivisionid}.
+        academiccatalogsubdepartment:
+          type: string
+          description: The sub department. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/b1da0663-f912-4533-abc2-de27bcbe8b10?parameters=academiccatalogdepartmentid,{academiccatalogdepartmentid}.
+        academiccatalogdegreetype:
+          type: string
+          description: The degree type. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/02026401-2351-4e56-832c-299c9426c649?parameters=academiccatalogdepartmentid,{academiccatalogdepartmentid}&parameters=academiccatalogsubdepartmentid,{academiccatalogsubdepartmentid}.
+      description: NewEducationAffiliatedAdditionalInformation
+      x-display-name: affiliated_additional_information
+      x-display-id: affiliated_additional_information
+    EditEducation_2:
+      type: object
+      properties:
+        primary_record:
+          type: boolean
+          description: Indicates whether primary education information.
+        educational_institution_id:
+          type: string
+          description: The educational institution.
+        academic_catalog_program:
+          type: string
+          description: The program. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/d411c16b-8bcf-4fc8-a747-754e1e89e9bc?parameters=educational_institution_id,{educational_institution_id}.
+        educational_program:
+          type: string
+          description: The program. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/educationalprogramcode/entries
+        constituency_status:
+          type: string
+          description: The status. Available values are <i>unknown</i>, <i>currently attending</i>, <i>incomplete</i>, <i>graduated</i>
+        date_graduated:
+          $ref: '#/components/schemas/FuzzyDate'
+        date_left:
+          $ref: '#/components/schemas/FuzzyDate'
+        academic_catalog_degree:
+          type: string
+          description: The degree. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/73c67942-07ad-412e-8596-a042e5e68002?parameters=academiccatalogprogramid,{academiccatalogprogramid}.
+        educational_degree:
+          type: string
+          description: The degree. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/educationaldegreecode/entries
+        educational_award:
+          type: string
+          description: The honor awarded. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/educationalawardcode/entries
+        start_date:
+          $ref: '#/components/schemas/FuzzyDate'
+        class_year:
+          type: integer
+          description: The class of.
+          format: int32
+        preferred_class_year:
+          type: integer
+          description: The preferred class of.
+          format: int32
+        educational_source:
+          type: string
+          description: The information source. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/educationalsourcecode/entries
+        educational_source_date:
+          $ref: '#/components/schemas/FuzzyDate'
+        comment:
+          maxLength: 500
+          minLength: 0
+          type: string
+          description: The comments.
+        affiliated_additional_information:
+          type: array
+          items:
+            $ref: '#/components/schemas/EditEducationAffiliatedAdditionalInformation_2'
+          description: Affiliated additional information.
+        unaffiliated_additional_information:
+          type: array
+          items:
+            $ref: '#/components/schemas/EditEducationUnaffiliatedAdditionalInformation_2'
+          description: Unaffiliated additional information.
+        affiliated:
+          type: boolean
+          description: Indicates whether affiliated.
+        educational_history_level:
+          type: string
+          description: The level. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/educationalhistorylevelcode/entries
+        educational_history_reason:
+          type: string
+          description: The reason. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/educationalhistoryreasoncode/entries
+        use_academic_catalog:
+          type: boolean
+          description: Indicates whether use academic catalog. Read-only in the SOAP API.
+        educational_history_status:
+          type: string
+          description: The status. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/086c5bfb-1a80-46cf-a2f5-05ef51120891.
+      additionalProperties: false
+      description: EditEducation
+      example:
+        primary_record: false
+        educational_institution_id: 6d31a4d0-57fb-454e-9ce9-f09049327153
+        academic_catalog_program: ''
+        educational_program: FullCourse
+        constituency_status: Unknown
+        date_graduated:
+          year: 2015
+          month: 6
+          day: 17
+        date_left:
+          year: 2017
+          month: 4
+          day: 19
+        academic_catalog_degree: ''
+        educational_degree: MBA
+        educational_award: ''
+        start_date:
+          year: 2014
+          month: 4
+          day: 13
+        class_year: 0
+        preferred_class_year: 0
+        educational_source: ''
+        educational_source_date:
+          year: 0
+          month: 0
+          day: 0
+        comment: ''
+        affiliated: false
+        educational_history_level: ''
+        educational_history_reason: ''
+        use_academic_catalog: false
+        educational_history_status: 00000000-0000-0000-0000-000000000004
+      x-display-name: Educational History Edit Form 2
+      x-display-id: Educational History Edit Form 2
+    Education_2:
+      required:
+      - educational_institution_id
+      - constituency_status
+      - educational_history_status
+      type: object
+      properties:
+        primary_record:
+          type: boolean
+          description: Indicates whether primary education information.
+        educational_institution_id:
+          type: string
+          description: The educational institution.
+        academic_catalog_program:
+          type: string
+          description: The program. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/d411c16b-8bcf-4fc8-a747-754e1e89e9bc?parameters=educational_institution_id,{educational_institution_id}.
+        educational_program:
+          type: string
+          description: The program. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/educationalprogramcode/entries
+        constituency_status:
+          type: string
+          description: The status. Available values are <i>unknown</i>, <i>currently attending</i>, <i>incomplete</i>, <i>graduated</i>
+        date_graduated:
+          $ref: '#/components/schemas/FuzzyDate'
+        date_left:
+          $ref: '#/components/schemas/FuzzyDate'
+        academic_catalog_degree:
+          type: string
+          description: The degree. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/73c67942-07ad-412e-8596-a042e5e68002?parameters=academiccatalogprogramid,{academiccatalogprogramid}.
+        educational_degree:
+          type: string
+          description: The degree. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/educationaldegreecode/entries
+        educational_award:
+          type: string
+          description: The honor awarded. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/educationalawardcode/entries
+        start_date:
+          $ref: '#/components/schemas/FuzzyDate'
+        class_year:
+          type: integer
+          description: The class of.
+          format: int32
+        preferred_class_year:
+          type: integer
+          description: The preferred class of.
+          format: int32
+        educational_source:
+          type: string
+          description: The information source. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/educationalsourcecode/entries
+        educational_source_date:
+          $ref: '#/components/schemas/FuzzyDate'
+        comment:
+          maxLength: 500
+          minLength: 0
+          type: string
+          description: The comments.
+        affiliated_additional_information:
+          type: array
+          items:
+            $ref: '#/components/schemas/EducationAffiliatedAdditionalInformation_2'
+          description: Affiliated additional information.
+        unaffiliated_additional_information:
+          type: array
+          items:
+            $ref: '#/components/schemas/EducationUnaffiliatedAdditionalInformation_2'
+          description: Unaffiliated additional information.
+        affiliated:
+          type: boolean
+          description: Indicates whether affiliated.
+        educational_history_level:
+          type: string
+          description: The level. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/educationalhistorylevelcode/entries
+        educational_history_reason:
+          type: string
+          description: The reason. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/educationalhistoryreasoncode/entries
+        use_academic_catalog:
+          type: boolean
+          description: Indicates whether use academic catalog. Read-only in the SOAP API.
+        educational_history_status:
+          type: string
+          description: The status. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/086c5bfb-1a80-46cf-a2f5-05ef51120891.
+      additionalProperties: false
+      description: GetEducation
+      x-display-name: Educational History Edit Form 2
+      x-display-id: Educational History Edit Form 2
+    EducationUnaffiliatedAdditionalInformation_2:
+      type: object
+      properties:
+        id:
+          type: string
+          description: id
+        educational_college:
+          type: string
+          description: The college/school. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/educationalcollegecode/entries
+        educational_division:
+          type: string
+          description: The division. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/educationaldivisioncode/entries
+        educational_department:
+          type: string
+          description: The department. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/educationaldepartmentcode/entries
+        educational_sub_department:
+          type: string
+          description: The sub department. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/educationalsubdepartmentcode/entries
+        educational_degree_type:
+          type: string
+          description: The degree type. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/educationaldegreetypecode/entries
+      description: EducationUnaffiliatedAdditionalInformation
+      x-display-name: unaffiliated_additional_information
+      x-display-id: unaffiliated_additional_information
+    EditEducationUnaffiliatedAdditionalInformation_2:
+      type: object
+      properties:
+        id:
+          type: string
+          description: id
+        educational_college:
+          type: string
+          description: The college/school. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/educationalcollegecode/entries
+        educational_division:
+          type: string
+          description: The division. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/educationaldivisioncode/entries
+        educational_department:
+          type: string
+          description: The department. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/educationaldepartmentcode/entries
+        educational_sub_department:
+          type: string
+          description: The sub department. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/educationalsubdepartmentcode/entries
+        educational_degree_type:
+          type: string
+          description: The degree type. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/educationaldegreetypecode/entries
+      description: EditEducationUnaffiliatedAdditionalInformation
+      x-display-name: unaffiliated_additional_information
+      x-display-id: unaffiliated_additional_information
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+x-refined-from:
+- blackbaud-altru-constituent-api-openapi.yml
+- blackbaud-crm-constituent-api-openapi.yml

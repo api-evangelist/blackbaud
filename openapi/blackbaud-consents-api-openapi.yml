@@ -1,0 +1,111 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Communication Preference Consents API'
+  description: This API manages constituent communication preference information and related entities such as constituent consent.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/communication-preference
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/commpref
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Consents
+paths:
+  /v1/consents/{consent_id}:
+    delete:
+      operationId: DeleteConstituentConsent
+      summary: Constituent consent
+      description: Deletes a constituent consent record.
+      parameters:
+      - name: consent_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The immutable system record ID of the consent record to delete.
+      responses:
+        '200':
+          description: Returned when the operation successfully deletes the constituent consent record.
+        '400':
+          description: Returned when the specified consent_id in the request URL is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Consents-consent_id-Delete400ApplicationJsonResponse'
+              example:
+              - message: The request body is not in the appropriate format.
+                error_name: BadRequest
+                error_code: 400
+                raw_message: The request body is not in the appropriate format.
+        '403':
+          description: Returned when the user does not have rights to delete a consent record.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Consents-consent_id-Delete403ApplicationJsonResponse'
+              example:
+              - message: The user does not have permission to create a record.
+                error_name: Forbidden
+                error_code: 403
+                raw_message: The user does not have permission to create a record.
+      tags:
+      - Consents
+components:
+  schemas:
+    ServiceError:
+      type: object
+      properties:
+        message:
+          type:
+          - string
+          - 'null'
+          description: The message of the service error with any string arguments replaced.
+        error_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the service error.
+        error_code:
+          type: integer
+          description: Code number of the service error.
+          format: int32
+        raw_message:
+          type:
+          - string
+          - 'null'
+          description: 'The raw message of the service error. This message may contain string replacement arguments (ie: {0}, {1}, etc) that map to the ''error_args'' property and will be replaced when you get the full message from the ''message'' property.'
+        error_args:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: A list of arguments to be replaced in the raw message. Useful for when the message needs to be localized.
+      additionalProperties: false
+      description: Base service error contract.
+    V1Consents-consent_id-Delete403ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    V1Consents-consent_id-Delete400ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

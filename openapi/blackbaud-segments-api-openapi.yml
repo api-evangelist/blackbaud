@@ -1,0 +1,994 @@
+openapi: 3.2.0
+info:
+  title: Blackbaud Segments API
+  version: '1.0'
+  x-refined-note:
+  - x-apievangelist-provenance differs across the merged source definitions and was not carried
+  description: 'Operations tagged Segments across 2 of this provider''s published API definitions: blackbaud-altru-marketing-api-openapi.yml, blackbaud-crm-marketing-api-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.sky.blackbaud.com/alt-mktmg
+- url: https://api.sky.blackbaud.com/crm-mktmg
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Segments
+paths:
+  /segments:
+    post:
+      operationId: CreateMarketingSegment
+      summary: Create a marketing segment
+      description: Adds a segment.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewMarketingSegment'
+            example:
+              query_view_catalog: ''
+              name: ''
+              description: ''
+              site_id: ''
+              site_required: false
+              segment_category: ''
+              code: ''
+              code_value: ''
+              smart_queries_exist: false
+              selections:
+              - selection_id: ''
+              groups:
+              - segment_group_id: ''
+                sequence: 0
+              segment_type_code: 0
+              segment_part_definition_id: ''
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully creates the resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to create the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Segments
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-mktmg
+  /segments/recordsources:
+    get:
+      operationId: ListMarketingSegments
+      summary: List marketing segments
+      description: Displays a list of all possible record sources available for use in segmentations and lists.
+      parameters:
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Limits the number of records to return.
+      - name: session_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: A unique key provided by user for paging results. The same key will be returned in a successful response.
+      - name: infinity_session
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Values for cookies related to the Infinity load balancer session.
+      - name: more_rows_range_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Key for accessing cached results on subsequent calls to this data list.
+      - name: start_row_index
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Number of rows to skip,get result after these rows.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of result entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MarketingSegmentListCollection'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to view the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+      tags:
+      - Segments
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-mktmg
+  /segments/{segment_id}:
+    delete:
+      operationId: DeleteMarketingSegment
+      summary: Delete a marketing segment
+      description: Removes a segment from the system.
+      parameters:
+      - name: segment_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The segment id
+      responses:
+        '200':
+          description: Returned when the operation successfully deletes the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to delete the resource.
+      tags:
+      - Segments
+    patch:
+      operationId: EditMarketingSegment
+      summary: Edit a marketing segment
+      description: Operation used for editing a segment.
+      parameters:
+      - name: segment_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The segment id.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditMarketingSegment'
+            example:
+              name: ''
+              description: ''
+              site_id: ''
+              site_required: false
+              segment_category: ''
+              code: ''
+              segment_part_definition_id: ''
+              code_value: ''
+              query_view_catalog: ''
+              selections:
+              - selection_id: ''
+                name: ''
+                description: ''
+                record_type: ''
+                record_type_id: ''
+                query_view_id: ''
+                query_id: ''
+                query_type: Other
+                can_edit: false
+                user_granted_rights: false
+              groups:
+              - segment_group_id: ''
+                name: ''
+                sequence: 0
+              smart_queries_exist: false
+              in_use: false
+              date_changed: ''
+              allow_code_update: false
+              form_id: ''
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully edits the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to edit the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Segments
+    get:
+      operationId: GetMarketingSegment
+      summary: Get a marketing segment
+      description: Operation used for editing a segment.
+      parameters:
+      - name: segment_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The segment id.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the specified resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MarketingSegment'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to get the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Segments
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-mktmg
+components:
+  schemas:
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type: integer
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type: string
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: false
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-display-name: Problem details
+      x-display-id: ProblemDetails
+    MarketingSegment:
+      required:
+      - name
+      - query_view_catalog
+      type: object
+      properties:
+        name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The name.
+        description:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The description.
+        site_id:
+          type: string
+          description: The site.
+        site_required:
+          type: boolean
+          description: Indicates whether site required?. Read-only in the SOAP API.
+        segment_category:
+          type: string
+          description: The category. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/mktsegmentcategorycode/entries
+        code:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: The code.
+        segment_part_definition_id:
+          type: string
+          description: The segment part definition ID. Read-only in the SOAP API.
+        code_value:
+          type: string
+          description: The code value ID. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/78b8b763-9ba2-4bff-ba83-563edff889d8?parameters=part_definition_id,{segment_part_definition_id}&parameters=only_special_character_formats,{0}&parameters=valid_values_only,{1}.
+        query_view_catalog:
+          type: string
+          description: The record source. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/a8477659-6ee9-4b49-861e-41711df69c9b.
+        selections:
+          type: array
+          items:
+            $ref: '#/components/schemas/MarketingSegmentSelections'
+          description: Selections.
+        groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/MarketingSegmentGroups'
+          description: Groups.
+        smart_queries_exist:
+          type: boolean
+          description: Indicates whether smart queries exist. Read-only in the SOAP API.
+        in_use:
+          type: boolean
+          description: Indicates whether is in use. Read-only in the SOAP API.
+        date_changed:
+          type: string
+          description: 'The date changed. Read-only in the SOAP API. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        allow_code_update:
+          type: boolean
+          description: Indicates whether allows the client to indicate that the form is being launched in such a way that the segment's code cannot be updated without causing concurrency problems..
+        form_id:
+          type: string
+          description: The form ID. Read-only in the SOAP API.
+      additionalProperties: false
+      description: GetMarketingSegment
+      x-display-name: Constituent Segment Edit Form 2
+      x-display-id: Constituent Segment Edit Form 2
+    EditMarketingSegmentSelections:
+      type: object
+      properties:
+        selection_id:
+          type: string
+          description: selectionid
+        name:
+          type: string
+          description: name
+        description:
+          type: string
+          description: description
+        record_type:
+          type: string
+          description: recordtype
+        record_type_id:
+          type: string
+          description: recordtypeid
+        query_view_id:
+          type: string
+          description: queryviewid
+        query_id:
+          type: string
+          description: queryid
+        query_type:
+          type: string
+          description: The querytype. Read-only in the SOAP API. Available values are <i>other</i>, <i>ad-hoc</i>, <i>smart</i>
+        can_edit:
+          type: boolean
+          description: canedit
+        user_granted_rights:
+          type: boolean
+          description: usergrantedrights
+      description: EditMarketingSegmentSelections
+      x-display-name: selections
+      x-display-id: selections
+    MarketingSegmentListSummary:
+      type: object
+      properties:
+        query_view_catalog_id:
+          type: string
+          description: The queryviewcatalogid.
+        name:
+          type: string
+          description: The name.
+        code:
+          type: string
+          description: The code.
+        type:
+          type: string
+          description: The type.
+        description:
+          type: string
+          description: The description.
+        person_field_mappings_defined:
+          type: boolean
+          description: Indicates whether person field mappings defined.
+        gift_field_mappings_defined:
+          type: boolean
+          description: Indicates whether gift field mappings defined.
+        appeal_field_mappings_defined:
+          type: boolean
+          description: Indicates whether appeal field mappings defined.
+        duplicate_criteria_defined:
+          type: boolean
+          description: Indicates whether duplicate criteria defined.
+        duplicate_id:
+          type: string
+          description: The duplicateid.
+        smart_queries_exist:
+          type: boolean
+          description: Indicates whether smartqueriesexist.
+        consolidated_id:
+          type: string
+          description: The consolidatedid.
+        source_analysis_rule_id:
+          type: string
+          description: The source analysis rule ID.
+      additionalProperties: false
+      description: ListMarketingSegments
+      x-display-name: Record Source List
+      x-display-id: Record Source List
+    MarketingSegmentSelections:
+      type: object
+      properties:
+        selection_id:
+          type: string
+          description: selectionid
+        name:
+          type: string
+          description: name
+        description:
+          type: string
+          description: description
+        record_type:
+          type: string
+          description: recordtype
+        record_type_id:
+          type: string
+          description: recordtypeid
+        query_view_id:
+          type: string
+          description: queryviewid
+        query_id:
+          type: string
+          description: queryid
+        query_type:
+          type: string
+          description: The querytype. Read-only in the SOAP API. Available values are <i>other</i>, <i>ad-hoc</i>, <i>smart</i>
+        can_edit:
+          type: boolean
+          description: canedit
+        user_granted_rights:
+          type: boolean
+          description: usergrantedrights
+      description: MarketingSegmentSelections
+      x-display-name: selections
+      x-display-id: selections
+    EditMarketingSegment:
+      type: object
+      properties:
+        name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The name.
+        description:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The description.
+        site_id:
+          type: string
+          description: The site.
+        site_required:
+          type: boolean
+          description: Indicates whether site required?. Read-only in the SOAP API.
+        segment_category:
+          type: string
+          description: The category. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/mktsegmentcategorycode/entries
+        code:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: The code.
+        segment_part_definition_id:
+          type: string
+          description: The segment part definition ID. Read-only in the SOAP API.
+        code_value:
+          type: string
+          description: The code value ID. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/78b8b763-9ba2-4bff-ba83-563edff889d8?parameters=part_definition_id,{segment_part_definition_id}&parameters=only_special_character_formats,{0}&parameters=valid_values_only,{1}.
+        query_view_catalog:
+          type: string
+          description: The record source. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/a8477659-6ee9-4b49-861e-41711df69c9b.
+        selections:
+          type: array
+          items:
+            $ref: '#/components/schemas/EditMarketingSegmentSelections'
+          description: Selections.
+        groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/EditMarketingSegmentGroups'
+          description: Groups.
+        smart_queries_exist:
+          type: boolean
+          description: Indicates whether smart queries exist. Read-only in the SOAP API.
+        in_use:
+          type: boolean
+          description: Indicates whether is in use. Read-only in the SOAP API.
+        date_changed:
+          type: string
+          description: 'The date changed. Read-only in the SOAP API. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        allow_code_update:
+          type: boolean
+          description: Indicates whether allows the client to indicate that the form is being launched in such a way that the segment's code cannot be updated without causing concurrency problems..
+        form_id:
+          type: string
+          description: The form ID. Read-only in the SOAP API.
+      additionalProperties: false
+      description: EditMarketingSegment
+      example:
+        name: ''
+        description: ''
+        site_id: ''
+        site_required: false
+        segment_category: ''
+        code: ''
+        segment_part_definition_id: ''
+        code_value: ''
+        query_view_catalog: ''
+        selections:
+        - selection_id: ''
+          name: ''
+          description: ''
+          record_type: ''
+          record_type_id: ''
+          query_view_id: ''
+          query_id: ''
+          query_type: Other
+          can_edit: false
+          user_granted_rights: false
+        groups:
+        - segment_group_id: ''
+          name: ''
+          sequence: 0
+        smart_queries_exist: false
+        in_use: false
+        date_changed: ''
+        allow_code_update: false
+        form_id: ''
+      x-display-name: Constituent Segment Edit Form 2
+      x-display-id: Constituent Segment Edit Form 2
+    MarketingSegmentListCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items available for retrieval into the collection after applying any request parameters.
+          format: int32
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/MarketingSegmentListSummary'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+        infinity_session:
+          type: string
+          description: Values for cookies related to the Infinity load balancer session.
+          format: string
+        session_key:
+          type: string
+          description: Session key for paging provided by user in request query parameter.
+          format: string
+        total_available_rows:
+          type: integer
+          description: The number of total rows available.
+          format: int32
+        more_rows_range_key:
+          type: string
+          description: Key for accessing cached results on subsequent calls to this data list.
+          format: string
+        data_no_longer_available:
+          type: boolean
+          description: Indicates data is no longer available in the context of this session.
+          format: boolean
+      additionalProperties: false
+      description: A collection of items. Data lists can contain paginated results.
+    MarketingSegmentGroups:
+      type: object
+      properties:
+        segment_group_id:
+          type: string
+          description: segmentgroupid
+        name:
+          type: string
+          description: name
+        sequence:
+          type: integer
+          description: sequence
+      description: MarketingSegmentGroups
+      x-display-name: groups
+      x-display-id: groups
+    NewMarketingSegmentGroups:
+      type: object
+      properties:
+        segment_group_id:
+          type: string
+          description: segmentgroupid
+        sequence:
+          type: integer
+          description: sequence
+      description: NewMarketingSegmentGroups
+      x-display-name: groups
+      x-display-id: groups
+    NewMarketingSegment:
+      required:
+      - query_view_catalog
+      - name
+      type: object
+      properties:
+        query_view_catalog:
+          type: string
+          description: The record source. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/a8477659-6ee9-4b49-861e-41711df69c9b.
+        name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The name.
+        description:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The description.
+        site_id:
+          type: string
+          description: The site.
+        site_required:
+          type: boolean
+          description: Indicates whether site required?. Read-only in the SOAP API.
+        segment_category:
+          type: string
+          description: The category. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/mktsegmentcategorycode/entries
+        code:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: The code.
+        code_value:
+          type: string
+          description: The code value ID. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/78b8b763-9ba2-4bff-ba83-563edff889d8?parameters=part_definition_id,{segment_part_definition_id}&parameters=only_special_character_formats,{0}&parameters=valid_values_only,{1}.
+        smart_queries_exist:
+          type: boolean
+          description: Indicates whether smart queries exist. Read-only in the SOAP API.
+        selections:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewMarketingSegmentSelections'
+          description: Selections.
+        groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewMarketingSegmentGroups'
+          description: Groups.
+        segment_type_code:
+          type: integer
+          description: The segment type code.
+          format: int32
+        segment_part_definition_id:
+          type: string
+          description: The segment part definition ID. Read-only in the SOAP API.
+      additionalProperties: false
+      description: CreateMarketingSegment
+      example:
+        query_view_catalog: ''
+        name: ''
+        description: ''
+        site_id: ''
+        site_required: false
+        segment_category: ''
+        code: ''
+        code_value: ''
+        smart_queries_exist: false
+        selections:
+        - selection_id: ''
+        groups:
+        - segment_group_id: ''
+          sequence: 0
+        segment_type_code: 0
+        segment_part_definition_id: ''
+      x-display-name: Constituent Segment Add Form
+      x-display-id: Constituent Segment Add Form
+    PostResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The newly created ID.
+      additionalProperties: false
+      description: Defines the shape of a post response object.
+    NewMarketingSegmentSelections:
+      type: object
+      properties:
+        selection_id:
+          type: string
+          description: selectionid
+      description: NewMarketingSegmentSelections
+      x-display-name: selections
+      x-display-id: selections
+    EditMarketingSegmentGroups:
+      type: object
+      properties:
+        segment_group_id:
+          type: string
+          description: segmentgroupid
+        name:
+          type: string
+          description: name
+        sequence:
+          type: integer
+          description: sequence
+      description: EditMarketingSegmentGroups
+      x-display-name: groups
+      x-display-id: groups
+    MarketingSegment_2:
+      required:
+      - name
+      - query_view_catalog
+      type: object
+      properties:
+        name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The name.
+        description:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The description.
+        site_id:
+          type: string
+          description: The site.
+        site_required:
+          type: boolean
+          description: Indicates whether site required?. Read-only in the SOAP API.
+        segment_category:
+          type: string
+          description: The category. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/mktsegmentcategorycode/entries
+        code:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: The code.
+        segment_part_definition_id:
+          type: string
+          description: The segment part definition ID. Read-only in the SOAP API.
+        code_value:
+          type: string
+          description: The code value ID. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/78b8b763-9ba2-4bff-ba83-563edff889d8?parameters=part_definition_id,{segment_part_definition_id}&parameters=only_special_character_formats,{0}&parameters=valid_values_only,{1}.
+        query_view_catalog:
+          type: string
+          description: The record source. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/a8477659-6ee9-4b49-861e-41711df69c9b.
+        selections:
+          type: array
+          items:
+            $ref: '#/components/schemas/MarketingSegmentSelections'
+          description: Selections.
+        groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/MarketingSegmentGroups'
+          description: Groups.
+        smart_queries_exist:
+          type: boolean
+          description: Indicates whether smart queries exist. Read-only in the SOAP API.
+        in_use:
+          type: boolean
+          description: Indicates whether is in use. Read-only in the SOAP API.
+        date_changed:
+          type: string
+          description: 'The date changed. Read-only in the SOAP API. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        allow_code_update:
+          type: boolean
+          description: Indicates whether allows the client to indicate that the form is being launched in such a way that the segment's code cannot be updated without causing concurrency problems..
+        form_id:
+          type: string
+          description: The form ID. Read-only in the SOAP API.
+      additionalProperties: false
+      description: GetMarketingSegment
+      x-display-name: Constituent Segment Edit Form 2
+      x-display-id: Constituent Segment Edit Form 2
+    EditMarketingSegment_2:
+      type: object
+      properties:
+        name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The name.
+        description:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The description.
+        site_id:
+          type: string
+          description: The site.
+        site_required:
+          type: boolean
+          description: Indicates whether site required?. Read-only in the SOAP API.
+        segment_category:
+          type: string
+          description: The category. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/mktsegmentcategorycode/entries
+        code:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: The code.
+        segment_part_definition_id:
+          type: string
+          description: The segment part definition ID. Read-only in the SOAP API.
+        code_value:
+          type: string
+          description: The code value ID. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/78b8b763-9ba2-4bff-ba83-563edff889d8?parameters=part_definition_id,{segment_part_definition_id}&parameters=only_special_character_formats,{0}&parameters=valid_values_only,{1}.
+        query_view_catalog:
+          type: string
+          description: The record source. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/a8477659-6ee9-4b49-861e-41711df69c9b.
+        selections:
+          type: array
+          items:
+            $ref: '#/components/schemas/EditMarketingSegmentSelections'
+          description: Selections.
+        groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/EditMarketingSegmentGroups'
+          description: Groups.
+        smart_queries_exist:
+          type: boolean
+          description: Indicates whether smart queries exist. Read-only in the SOAP API.
+        in_use:
+          type: boolean
+          description: Indicates whether is in use. Read-only in the SOAP API.
+        date_changed:
+          type: string
+          description: 'The date changed. Read-only in the SOAP API. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        allow_code_update:
+          type: boolean
+          description: Indicates whether allows the client to indicate that the form is being launched in such a way that the segment's code cannot be updated without causing concurrency problems..
+        form_id:
+          type: string
+          description: The form ID. Read-only in the SOAP API.
+      additionalProperties: false
+      description: EditMarketingSegment
+      example:
+        name: ''
+        description: ''
+        site_id: ''
+        site_required: false
+        segment_category: ''
+        code: ''
+        segment_part_definition_id: ''
+        code_value: ''
+        query_view_catalog: ''
+        selections:
+        - selection_id: ''
+          name: ''
+          description: ''
+          record_type: ''
+          record_type_id: ''
+          query_view_id: ''
+          query_id: ''
+          query_type: Other
+          can_edit: false
+          user_granted_rights: false
+        groups:
+        - segment_group_id: ''
+          name: ''
+          sequence: 0
+        smart_queries_exist: false
+        in_use: false
+        date_changed: ''
+        allow_code_update: false
+        form_id: ''
+      x-display-name: Constituent Segment Edit Form 2
+      x-display-id: Constituent Segment Edit Form 2
+    NewMarketingSegment_2:
+      required:
+      - query_view_catalog
+      - name
+      type: object
+      properties:
+        query_view_catalog:
+          type: string
+          description: The record source. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/a8477659-6ee9-4b49-861e-41711df69c9b.
+        name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The name.
+        description:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The description.
+        site_id:
+          type: string
+          description: The site.
+        site_required:
+          type: boolean
+          description: Indicates whether site required?. Read-only in the SOAP API.
+        segment_category:
+          type: string
+          description: The category. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/mktsegmentcategorycode/entries
+        code:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: The code.
+        code_value:
+          type: string
+          description: The code value ID. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/78b8b763-9ba2-4bff-ba83-563edff889d8?parameters=part_definition_id,{segment_part_definition_id}&parameters=only_special_character_formats,{0}&parameters=valid_values_only,{1}.
+        smart_queries_exist:
+          type: boolean
+          description: Indicates whether smart queries exist. Read-only in the SOAP API.
+        selections:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewMarketingSegmentSelections'
+          description: Selections.
+        groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewMarketingSegmentGroups'
+          description: Groups.
+        segment_type_code:
+          type: integer
+          description: The segment type code.
+          format: int32
+        segment_part_definition_id:
+          type: string
+          description: The segment part definition ID. Read-only in the SOAP API.
+      additionalProperties: false
+      description: CreateMarketingSegment
+      example:
+        query_view_catalog: ''
+        name: ''
+        description: ''
+        site_id: ''
+        site_required: false
+        segment_category: ''
+        code: ''
+        code_value: ''
+        smart_queries_exist: false
+        selections:
+        - selection_id: ''
+        groups:
+        - segment_group_id: ''
+          sequence: 0
+        segment_type_code: 0
+        segment_part_definition_id: ''
+      x-display-name: Constituent Segment Add Form
+      x-display-id: Constituent Segment Add Form
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+x-refined-from:
+- blackbaud-altru-marketing-api-openapi.yml
+- blackbaud-crm-marketing-api-openapi.yml

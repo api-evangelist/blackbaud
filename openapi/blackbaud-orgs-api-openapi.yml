@@ -1,0 +1,227 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: OneRoster Orgs API'
+  description: OneRoster v1.1 API. For details on the OneRoster Version 1.1 Specification, click here. The Authorization page provides steps to setup and test these endpoints.
+  version: v1p1
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/afe-rostr
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/afe-rostr/ims/oneroster
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Orgs
+paths:
+  /orgs:
+    get:
+      operationId: getAllOrgs
+      summary: Orgs all
+      description: Returns a collection of organizations.
+      responses:
+        '200':
+          description: OK - It was possible to read the collection.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrgsOutputModel'
+              example:
+                orgs:
+                - name: Upper School
+                  type: school
+                  identifier: US
+                  children:
+                  - sourcedId: org-dpt-222-456
+                    href: https://api.sky.blackbaud.com/afe-rostr/ims/oneroster/v1p1/orgs/org-dpt-222-456
+                    type: department
+                  sourcedId: org-sch-222-3456
+                  status: active
+                  dateLastModified: '2023-01-10T09:15:00Z'
+                  metadata:
+                    address1: 1234 Elm Street
+                    address2: Building 101
+                    address3: Main Campus
+                    city: Manchester
+                    state: NH
+                    postCode: 03101-1001
+                    gradeRange: 09, 10, 11, 12
+                - name: US History
+                  type: department
+                  identifier: US History
+                  sourcedId: org_sch-222-7654
+                  status: active
+                  dateLastModified: '2023-01-10T09:15:00Z'
+      tags:
+      - Orgs
+  /orgs/{id}:
+    get:
+      operationId: getOrg
+      summary: Org by id
+      description: Returns a specific org.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: sourcedId for the org
+      responses:
+        '200':
+          description: OK - It was possible to read the resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrgOutputModel'
+              example:
+                org:
+                  name: Upper School
+                  type: school
+                  identifier: US
+                  children:
+                  - sourcedId: org-dpt-222-456
+                    href: https://api.sky.blackbaud.com/afe-rostr/ims/oneroster/v1p1/orgs/org-dpt-222-456
+                    type: department
+                  sourcedId: org-sch-222-3456
+                  status: active
+                  dateLastModified: '2023-01-10T09:15:00Z'
+                  metadata:
+                    address1: 1234 Elm Street
+                    address2: Building 101
+                    address3: Main Campus
+                    city: Manchester
+                    state: NH
+                    postCode: 03101-1001
+                    gradeRange: 09, 10, 11, 12
+      tags:
+      - Orgs
+components:
+  schemas:
+    OrgOutputModel:
+      type: object
+      properties:
+        org:
+          $ref: '#/components/schemas/OrgModel'
+        statusInfoSet:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/StatusInfoModel'
+      additionalProperties: false
+    StatusInfoModel:
+      type: object
+      properties:
+        imsx_codeMajor:
+          type:
+          - string
+          - 'null'
+        imsx_severity:
+          type:
+          - string
+          - 'null'
+        imsx_messageRefIdentifier:
+          type:
+          - string
+          - 'null'
+        imsx_operationRefIdentifier:
+          type:
+          - string
+          - 'null'
+        imsx_description:
+          type:
+          - string
+          - 'null'
+        imsx_codeMinor:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    OrgModel:
+      type: object
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+        type:
+          type:
+          - string
+          - 'null'
+        identifier:
+          type:
+          - string
+          - 'null'
+        parent:
+          $ref: '#/components/schemas/GuidRefModel'
+        children:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/GuidRefModel'
+        sourcedId:
+          type:
+          - string
+          - 'null'
+        status:
+          type:
+          - string
+          - 'null'
+        dateLastModified:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        metadata:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: string
+      additionalProperties: false
+    GuidRefModel:
+      type: object
+      properties:
+        sourcedId:
+          type:
+          - string
+          - 'null'
+        href:
+          type:
+          - string
+          - 'null'
+        type:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    OrgsOutputModel:
+      type: object
+      properties:
+        orgs:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/OrgModel'
+        statusInfoSet:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/StatusInfoModel'
+      additionalProperties: false
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

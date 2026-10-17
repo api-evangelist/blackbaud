@@ -1,0 +1,829 @@
+openapi: 3.2.0
+info:
+  title: Blackbaud Fundraisingpurposes API
+  version: '1.0'
+  x-refined-note:
+  - x-apievangelist-provenance differs across the merged source definitions and was not carried
+  description: 'Operations tagged Fundraisingpurposes across 2 of this provider''s published API definitions: blackbaud-altru-fundraising-api-openapi.yml, blackbaud-crm-fundraising-api-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.sky.blackbaud.com/alt-fndmg
+- url: https://api.sky.blackbaud.com/crm-fndmg
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Fundraisingpurposes
+paths:
+  /fundraisingpurposes:
+    post:
+      operationId: CreateFundraisingPurpose
+      summary: Create a fundraising purpose
+      description: Operation for adding a fundraising purpose record.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewFundraisingPurpose'
+            example:
+              name: 2018 Annual Fund
+              description: 2018 annual campaign fund
+              designation_level_type: Fund
+              designation_level_category: Annual
+              stewardship_package_process: ''
+              administrator_id: ''
+              lookup_id: 2018ANNUAL
+              designation_report_code_1: ''
+              designation_report_code_2: ''
+              site_id: ''
+              site_required: false
+              vanity_name: ''
+              time_period: Annually
+              endowed: false
+              fully_funded: false
+              income_to_principal: false
+              income_to_principal_percent: 0
+              statement_wording: ''
+              endowment_min_amount: 0
+              endowment_target_date: ''
+              endowment_min_amount_date_met: ''
+              base_currency_id: ''
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully creates the resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to create the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Fundraisingpurposes
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-fndmg
+  /fundraisingpurposes/search:
+    get:
+      operationId: SearchFundraisingPurposes
+      summary: Search for fundraising purposes
+      description: Search screen for finding fundraising purpose records.
+      parameters:
+      - name: name
+        in: query
+        required: false
+        schema:
+          type: string
+        description: name
+      - name: designation_level_category
+        in: query
+        required: false
+        schema:
+          type: string
+        description: category This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/DESIGNATIONLEVELCATEGORYCODE/entries
+      - name: exact_match_only
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: match all criteria exactly
+      - name: type
+        in: query
+        required: false
+        schema:
+          type: string
+        description: type SimpleDataListID=5135618a-3055-4e02-ab1e-a2c091ad05e5.
+      - name: user_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: lookup id
+      - name: site_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: site
+      - name: hierarchy
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: is hierarchy
+      - name: for_financial_info_batch
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: for financial information batch
+      - name: combined_search
+        in: query
+        required: false
+        schema:
+          type: string
+        description: search for
+      - name: vanity_name
+        in: query
+        required: false
+        schema:
+          type: string
+        description: public name
+      - name: only_show_unused_purposes
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: only include purposes that are not used in the following branch
+      - name: unused_in_designation_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: branch
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Limits the number of records to return.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of result entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FundraisingPurposeSearchCollection'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to view the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+      tags:
+      - Fundraisingpurposes
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-fndmg
+  /fundraisingpurposes/{fundraising_purpose_id}:
+    delete:
+      operationId: DeleteFundraisingPurpose
+      summary: Delete a fundraising purpose
+      description: This delete method handles the basic deletion rules for a fundraising purpose.
+      parameters:
+      - name: fundraising_purpose_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The fundraising purpose id
+      responses:
+        '200':
+          description: Returned when the operation successfully deletes the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to delete the resource.
+      tags:
+      - Fundraisingpurposes
+    patch:
+      operationId: EditFundraisingPurpose
+      summary: Edit a fundraising purpose
+      description: Operation used for editing a fundraising purpose.
+      parameters:
+      - name: fundraising_purpose_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The fundraising purpose id.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditFundraisingPurpose'
+            example:
+              name: 2018 Annual Fund
+              description: 2018 annual campaign fund
+              designation_level_name: ''
+              has_administrator: false
+              designation_level_category: ''
+              stewardship_package_process: ''
+              administrator_id: ''
+              lookup_id: ''
+              designation_report_code_1: ''
+              designation_report_code_2: ''
+              site_id: ''
+              site_required: false
+              vanity_name: ''
+              time_period: Annually
+              endowed: false
+              fully_funded: false
+              income_to_principal: false
+              income_to_principal_percent: 0
+              statement_wording: ''
+              endowment_min_amount: 0
+              endowment_target_date: ''
+              endowment_min_amount_date_met: ''
+              base_currency_id: ''
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully edits the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to edit the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Fundraisingpurposes
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-fndmg
+components:
+  schemas:
+    EditFundraisingPurpose:
+      type: object
+      properties:
+        name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The name.
+        description:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The description.
+        designation_level_name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The designation level name. Read-only in the SOAP API.
+        has_administrator:
+          type: boolean
+          description: Indicates whether has administrator. Read-only in the SOAP API.
+        designation_level_category:
+          type: string
+          description: The category. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/designationlevelcategorycode/entries
+        stewardship_package_process:
+          type: string
+          description: The stewardship package. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/0b31b2ce-e673-4feb-8aa7-3d55e2f7dc7e.
+        administrator_id:
+          type: string
+          description: The administrator.
+        lookup_id:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The lookup ID.
+        designation_report_code_1:
+          type: string
+          description: The report code 1. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/designationreport1code/entries
+        designation_report_code_2:
+          type: string
+          description: The report code 2. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/designationreport2code/entries
+        site_id:
+          type: string
+          description: The site.
+        site_required:
+          type: boolean
+          description: Indicates whether site required. Read-only in the SOAP API.
+        vanity_name:
+          maxLength: 512
+          minLength: 0
+          type: string
+          description: The public name.
+        time_period:
+          type: string
+          description: The frequency. Available values are <i>annually</i>, <i>quarterly</i>, <i>monthly</i>
+        endowed:
+          type: boolean
+          description: Indicates whether endowed.
+        fully_funded:
+          type: boolean
+          description: Indicates whether fully funded.
+        income_to_principal:
+          type: boolean
+          description: Indicates whether income to principal.
+        income_to_principal_percent:
+          type: number
+          description: The income to principal %.
+          format: double
+        statement_wording:
+          maxLength: 1024
+          minLength: 0
+          type: string
+          description: The statement wording.
+        endowment_min_amount:
+          type: number
+          description: The minimum amount for endowment.
+          format: double
+        endowment_target_date:
+          type: string
+          description: 'The target date for endowment. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        endowment_min_amount_date_met:
+          type: string
+          description: 'The date minimum amount met. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        base_currency_id:
+          type: string
+          description: The base currency. Read-only in the SOAP API.
+      additionalProperties: false
+      description: EditFundraisingPurpose
+      example:
+        name: 2018 Annual Fund
+        description: 2018 annual campaign fund
+        designation_level_name: ''
+        has_administrator: false
+        designation_level_category: ''
+        stewardship_package_process: ''
+        administrator_id: ''
+        lookup_id: ''
+        designation_report_code_1: ''
+        designation_report_code_2: ''
+        site_id: ''
+        site_required: false
+        vanity_name: ''
+        time_period: Annually
+        endowed: false
+        fully_funded: false
+        income_to_principal: false
+        income_to_principal_percent: 0
+        statement_wording: ''
+        endowment_min_amount: 0
+        endowment_target_date: ''
+        endowment_min_amount_date_met: ''
+        base_currency_id: ''
+      x-display-name: Fundraising Purpose Edit Form 3
+      x-display-id: Fundraising Purpose Edit Form 3
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type: integer
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type: string
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: false
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-display-name: Problem details
+      x-display-id: ProblemDetails
+    FundraisingPurposeSearchCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items available for retrieval into the collection after applying any request parameters.
+          format: int32
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/FundraisingPurposeSearchSummary'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+      additionalProperties: false
+      description: A collection of items. Data lists can contain paginated results.
+    FundraisingPurposeSearchSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID.
+        name:
+          type: string
+          description: The name.
+        type:
+          type: string
+          description: The type.
+        category:
+          type: string
+          description: The category.
+        user_id:
+          type: string
+          description: The lookup ID.
+        designation_report_code_1_id:
+          type: string
+          description: The report code 1.
+        designation_report_code_2_id:
+          type: string
+          description: The report code 2.
+        site:
+          type: string
+          description: The site.
+        vanity_name:
+          type: string
+          description: The public name.
+      additionalProperties: false
+      description: SearchFundraisingPurposes
+      x-display-name: Fundraising Purpose Search
+      x-display-id: Fundraising Purpose Search
+    PostResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The newly created ID.
+      additionalProperties: false
+      description: Defines the shape of a post response object.
+    NewFundraisingPurpose:
+      required:
+      - name
+      - designation_level_type
+      - lookup_id
+      type: object
+      properties:
+        name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The name.
+        description:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The description.
+        designation_level_type:
+          type: string
+          description: The type. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/5135618a-3055-4e02-ab1e-a2c091ad05e5.
+        designation_level_category:
+          type: string
+          description: The category. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/designationlevelcategorycode/entries
+        stewardship_package_process:
+          type: string
+          description: The stewardship package. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/0b31b2ce-e673-4feb-8aa7-3d55e2f7dc7e.
+        administrator_id:
+          type: string
+          description: The administrator.
+        lookup_id:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The lookup ID.
+        designation_report_code_1:
+          type: string
+          description: The report code 1. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/designationreport1code/entries
+        designation_report_code_2:
+          type: string
+          description: The report code 2. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/designationreport2code/entries
+        site_id:
+          type: string
+          description: The site.
+        site_required:
+          type: boolean
+          description: Indicates whether site required. Read-only in the SOAP API.
+        vanity_name:
+          maxLength: 512
+          minLength: 0
+          type: string
+          description: The public name.
+        time_period:
+          type: string
+          description: The frequency. Available values are <i>annually</i>, <i>quarterly</i>, <i>monthly</i>
+        endowed:
+          type: boolean
+          description: Indicates whether endowed.
+        fully_funded:
+          type: boolean
+          description: Indicates whether fully funded.
+        income_to_principal:
+          type: boolean
+          description: Indicates whether income to principal.
+        income_to_principal_percent:
+          type: number
+          description: The income to principal %.
+          format: double
+        statement_wording:
+          maxLength: 1024
+          minLength: 0
+          type: string
+          description: The statement wording.
+        endowment_min_amount:
+          type: number
+          description: The minimum amount for endowment.
+          format: double
+        endowment_target_date:
+          type: string
+          description: 'The target date for endowment. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        endowment_min_amount_date_met:
+          type: string
+          description: 'The date minimum amount met. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        base_currency_id:
+          type: string
+          description: The base currency. Read-only in the SOAP API.
+      additionalProperties: false
+      description: CreateFundraisingPurpose
+      example:
+        name: 2018 Annual Fund
+        description: 2018 annual campaign fund
+        designation_level_type: Fund
+        designation_level_category: Annual
+        stewardship_package_process: ''
+        administrator_id: ''
+        lookup_id: 2018ANNUAL
+        designation_report_code_1: ''
+        designation_report_code_2: ''
+        site_id: ''
+        site_required: false
+        vanity_name: ''
+        time_period: Annually
+        endowed: false
+        fully_funded: false
+        income_to_principal: false
+        income_to_principal_percent: 0
+        statement_wording: ''
+        endowment_min_amount: 0
+        endowment_target_date: ''
+        endowment_min_amount_date_met: ''
+        base_currency_id: ''
+      x-display-name: Fundraising Purpose Add Form
+      x-display-id: Fundraising Purpose Add Form
+    EditFundraisingPurpose_2:
+      type: object
+      properties:
+        name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The name.
+        description:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The description.
+        designation_level_name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The designation level name. Read-only in the SOAP API.
+        has_administrator:
+          type: boolean
+          description: Indicates whether has administrator. Read-only in the SOAP API.
+        designation_level_category:
+          type: string
+          description: The category. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/designationlevelcategorycode/entries
+        stewardship_package_process:
+          type: string
+          description: The stewardship package. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/0b31b2ce-e673-4feb-8aa7-3d55e2f7dc7e.
+        administrator_id:
+          type: string
+          description: The administrator.
+        lookup_id:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The lookup ID.
+        designation_report_code_1:
+          type: string
+          description: The report code 1. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/designationreport1code/entries
+        designation_report_code_2:
+          type: string
+          description: The report code 2. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/designationreport2code/entries
+        site_id:
+          type: string
+          description: The site.
+        site_required:
+          type: boolean
+          description: Indicates whether site required. Read-only in the SOAP API.
+        vanity_name:
+          maxLength: 512
+          minLength: 0
+          type: string
+          description: The public name.
+        time_period:
+          type: string
+          description: The frequency. Available values are <i>annually</i>, <i>quarterly</i>, <i>monthly</i>
+        endowed:
+          type: boolean
+          description: Indicates whether endowed.
+        fully_funded:
+          type: boolean
+          description: Indicates whether fully funded.
+        income_to_principal:
+          type: boolean
+          description: Indicates whether income to principal.
+        income_to_principal_percent:
+          type: number
+          description: The income to principal %.
+          format: double
+        statement_wording:
+          maxLength: 1024
+          minLength: 0
+          type: string
+          description: The statement wording.
+        endowment_min_amount:
+          type: number
+          description: The minimum amount for endowment.
+          format: double
+        endowment_target_date:
+          type: string
+          description: 'The target date for endowment. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        endowment_min_amount_date_met:
+          type: string
+          description: 'The date minimum amount met. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        base_currency_id:
+          type: string
+          description: The base currency. Read-only in the SOAP API.
+      additionalProperties: false
+      description: EditFundraisingPurpose
+      example:
+        name: 2018 Annual Fund
+        description: 2018 annual campaign fund
+        designation_level_name: ''
+        has_administrator: false
+        designation_level_category: ''
+        stewardship_package_process: ''
+        administrator_id: ''
+        lookup_id: ''
+        designation_report_code_1: ''
+        designation_report_code_2: ''
+        site_id: ''
+        site_required: false
+        vanity_name: ''
+        time_period: Annually
+        endowed: false
+        fully_funded: false
+        income_to_principal: false
+        income_to_principal_percent: 0
+        statement_wording: ''
+        endowment_min_amount: 0
+        endowment_target_date: ''
+        endowment_min_amount_date_met: ''
+        base_currency_id: ''
+      x-display-name: Fundraising Purpose Edit Form 3
+      x-display-id: Fundraising Purpose Edit Form 3
+    NewFundraisingPurpose_2:
+      required:
+      - name
+      - designation_level_type
+      - lookup_id
+      type: object
+      properties:
+        name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The name.
+        description:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The description.
+        designation_level_type:
+          type: string
+          description: The type. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/5135618a-3055-4e02-ab1e-a2c091ad05e5.
+        designation_level_category:
+          type: string
+          description: The category. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/designationlevelcategorycode/entries
+        stewardship_package_process:
+          type: string
+          description: The stewardship package. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/0b31b2ce-e673-4feb-8aa7-3d55e2f7dc7e.
+        administrator_id:
+          type: string
+          description: The administrator.
+        lookup_id:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The lookup ID.
+        designation_report_code_1:
+          type: string
+          description: The report code 1. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/designationreport1code/entries
+        designation_report_code_2:
+          type: string
+          description: The report code 2. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/designationreport2code/entries
+        site_id:
+          type: string
+          description: The site.
+        site_required:
+          type: boolean
+          description: Indicates whether site required. Read-only in the SOAP API.
+        vanity_name:
+          maxLength: 512
+          minLength: 0
+          type: string
+          description: The public name.
+        time_period:
+          type: string
+          description: The frequency. Available values are <i>annually</i>, <i>quarterly</i>, <i>monthly</i>
+        endowed:
+          type: boolean
+          description: Indicates whether endowed.
+        fully_funded:
+          type: boolean
+          description: Indicates whether fully funded.
+        income_to_principal:
+          type: boolean
+          description: Indicates whether income to principal.
+        income_to_principal_percent:
+          type: number
+          description: The income to principal %.
+          format: double
+        statement_wording:
+          maxLength: 1024
+          minLength: 0
+          type: string
+          description: The statement wording.
+        endowment_min_amount:
+          type: number
+          description: The minimum amount for endowment.
+          format: double
+        endowment_target_date:
+          type: string
+          description: 'The target date for endowment. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        endowment_min_amount_date_met:
+          type: string
+          description: 'The date minimum amount met. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        base_currency_id:
+          type: string
+          description: The base currency. Read-only in the SOAP API.
+      additionalProperties: false
+      description: CreateFundraisingPurpose
+      example:
+        name: 2018 Annual Fund
+        description: 2018 annual campaign fund
+        designation_level_type: Fund
+        designation_level_category: Annual
+        stewardship_package_process: ''
+        administrator_id: ''
+        lookup_id: 2018ANNUAL
+        designation_report_code_1: ''
+        designation_report_code_2: ''
+        site_id: ''
+        site_required: false
+        vanity_name: ''
+        time_period: Annually
+        endowed: false
+        fully_funded: false
+        income_to_principal: false
+        income_to_principal_percent: 0
+        statement_wording: ''
+        endowment_min_amount: 0
+        endowment_target_date: ''
+        endowment_min_amount_date_met: ''
+        base_currency_id: ''
+      x-display-name: Fundraising Purpose Add Form
+      x-display-id: Fundraising Purpose Add Form
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+x-refined-from:
+- blackbaud-altru-fundraising-api-openapi.yml
+- blackbaud-crm-fundraising-api-openapi.yml

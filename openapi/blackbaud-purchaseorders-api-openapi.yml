@@ -1,0 +1,1745 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Accounts Payable Purchaseorders API'
+  description: This API is used to manage accounts payable, including vendors and invoices.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/57a342f1d7dcde1c28a749fe
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/accountspayable/v1
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Purchaseorders
+paths:
+  /purchaseorders:
+    post:
+      operationId: CreatePurchaseOrder
+      summary: Purchase Order (Create)
+      description: Creates a new purchasee order.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePurchaseOrder'
+            example:
+              order_number: 8675309
+              order_date: '2018-09-05T12:00:00Z'
+              type: Regular
+              order_status: UnprintedPurchaseOrder
+              vendor_id: 42
+              terms: Net 10
+              ship_to_address_id: 17
+              department: 01 Facilities
+              buyer: Benton AU
+              ship_via: Truck
+              fob: Transit
+              ordered_by: Alex W.
+              order_from_contact_id: 32
+              attention: Thomas O.
+              comments: A po comment.
+              expiration_date: '2018-09-05T02:35:54Z'
+              custom_fields:
+              - field_name: Purchase order text field
+                value: my text value
+                comments: custom field comments
+                type: Text
+                is_required: false
+                date: '2018-09-05T12:00:00Z'
+              line_items:
+              - type: Regular
+                product_id: 1
+                vendor_part_number: L -1001
+                description: Laptop Computer
+                quantity_ordered: 1
+                unit_of_measure: Each
+                unit_cost: 300
+                extended_cost: 300
+                post_status: NotYetPosted
+                post_date: '2018-08-30T12:00:00Z'
+                comments: a comment
+                notes: a note
+                deliver_to: Alex W
+                requested_by: Benton AU
+                department: 01 Facilities
+                distributions:
+                - distribution_id: 0
+                  distribution_splits:
+                  - distribution_split_id: 0
+                    ui_project_id: '1100'
+                    transaction_code_values:
+                    - name: Jurisdiction
+                      value: None
+                      id: 1
+                      inactive: false
+                    - name: Spendable ?
+                      value: Spendable
+                      id: 2
+                      inactive: false
+                    amount: 100
+                    percent: 100
+                    account_class: Unrestricted Net Assets
+                  amount: 100
+                  description: Debit distribution
+                  account_number: 01-5000-00
+                  type_code: Debit
+                  custom_fields: []
+                - distribution_id: 0
+                  distribution_splits:
+                  - distribution_split_id: 0
+                    ui_project_id: '1100'
+                    transaction_code_values:
+                    - name: Jurisdiction
+                      value: None
+                      id: 1
+                      inactive: false
+                    - name: Spendable?
+                      value: Spendable
+                      id: 2
+                      inactive: false
+                    amount: 100
+                    percent: 100
+                    account_class: Unrestricted Net Assets
+                  amount: 100
+                  description: Credit distribution
+                  account_number: 01-2000-00
+                  type_code: Credit
+                  custom_fields: []
+                interfund_set: '00'
+        description: The purchase order to create
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the ID of the created purchase number.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Int32CreatedResult'
+              example:
+                record_id: 843
+        '400':
+          description: Returned when the request is not in the correct format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DomainErrorMessage'
+              example:
+                Error: Failed to save {record}
+                Details:
+                - The total percent distributed must equal 100%.
+        '403':
+          description: Returned when the user does not have permission to create an purchase order.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                Error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Purchaseorders
+    get:
+      operationId: ListPurchaseOrders
+      summary: Purchase order (List)
+      description: Returns a list of purchase order summaries.
+      parameters:
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Represents the number of records to skip.
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Represents the number of records to return.
+      - name: search_text
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Text to match.
+
+          Can match vendor_name or order_number.
+
+          A blank search will match all purchase orders.'
+      - name: type
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - Template
+          - Blanket
+          - Regular
+        description: Type of purchase order.
+      - name: from_date
+        in: query
+        required: false
+        schema:
+          type: string
+        description: The minimum order date to include records.
+      - name: to_date
+        in: query
+        required: false
+        schema:
+          type: string
+        description: The maximum order date to include records.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains a list of purchase orders.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PurchaseOrderSummaryApiCollection'
+              example:
+                count: 245
+                value:
+                - purchase_order_id: 24
+                  order_number: 12345678901
+                  order_date: '2025-01-01T12:00:00Z'
+                  type: Template
+                  order_total: 74.98
+                  receipted_total: 0
+                  order_status: ClosedOrder
+                  vendor_name: A+ Office Supplies
+                  vendor_id: 31
+                  terms: Due on Receipt
+                  date_added: '2015-12-01T10:58:37Z'
+                  added_by: BentonAu
+                  date_modified: '2018-08-08T03:10:44Z'
+                  modified_by: Stacy
+                - purchase_order_id: 1044
+                  order_number: 129
+                  order_date: '2018-08-16T12:00:00Z'
+                  type: Template
+                  order_total: 0
+                  receipted_total: 0
+                  order_status: UnprintedPurchaseOrder
+                  vendor_name: Test vendor 2015
+                  vendor_id: 71
+                  terms: ''
+                  date_added: '2016-01-13T12:27:43Z'
+                  added_by: Mike
+                  date_modified: '2018-08-16T02:13:10Z'
+                  modified_by: Nancy
+        '400':
+          description: Returned when the request is not in the correct format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DomainErrorMessage'
+              example:
+                Error: Invalid Request
+                Details:
+                - The value 'fake' is not valid for transaction_status.
+        '403':
+          description: Returned when the user does not have permission to view purchase orders.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                Error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Purchaseorders
+  /purchaseorders/customfields:
+    get:
+      operationId: ListPurchaseOrderCustomFieldsOptions
+      summary: Purchase Order custom field options (List)
+      description: Returns a list of custom field options.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the list of custom fields.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomFieldOptionsPagedResponse'
+              example:
+                count: 24
+                results:
+                - custom_field_id: 8
+                  name: Paid
+                  type: Boolean
+                  is_required: false
+                - custom_field_id: 46
+                  name: Demo Custom Field 2
+                  type: Table
+                  is_required: false
+                  table_values:
+                  - d1 - Demo 1
+                  - d2 - Demo 2
+                - custom_field_id: 47
+                  name: Cheese Invoice Vendor Name
+                  type: Table
+                  is_required: false
+                  table_values:
+                  - MARY - Mary Rowe
+                  - MARTY - Marty Rowe
+                  - ANDREW - Andrew Rowe
+                  - CONNOR - Connor Rowe
+                - custom_field_id: 9
+                  name: 'WI/Invoice #'
+                  type: Number
+                  is_required: false
+      tags:
+      - Purchaseorders
+  /purchaseorders/{purchase_order_id}:
+    get:
+      operationId: GetPurchaseOrder
+      summary: Purchase Order (Get)
+      description: Returns the specified purchase order.
+      parameters:
+      - name: purchase_order_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The identifier of the purchase order to retrieve.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the specified purchase order.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PurchaseOrderDetail'
+              example:
+                ship_to_address: Administration Building
+                department: 07 - Technology Services
+                buyer: Chris Gentry (Tech Dpt)
+                ship_via: UPS
+                fob: Shipping
+                ordered_by: Alex W.
+                ordered_from_contact_id: 27
+                attention: Chris Gentry (Tech Dpt)
+                comments: comments
+                custom_fields:
+                - field_name: PO Text Attribute
+                  value: A note
+                  comments: '123'
+                  type: Text
+                  is_required: false
+                  date: '2018-09-08T12:00:00Z'
+                - field_name: PO Number Attribute
+                  value: '123'
+                  comments: '456'
+                  type: Number
+                  is_required: false
+                  date: '2018-09-08T12:00:00Z'
+                purchase_order_id: 10
+                order_number: 102
+                order_date: '2012-07-01T12:00:00Z'
+                type: Regular
+                order_total: 4839.75
+                receipted_total: 4839.75
+                order_status: UnprintedPurchaseOrder
+                vendor_name: Computer Services, Inc.
+                vendor_id: 17
+                terms: 1.5 /10 Net 30
+                date_added: '2012-10-12T12:26:20Z'
+                added_by: Supervisor
+                date_modified: '2012-10-12T01:12:01Z'
+                modified_by: Supervisor
+        '404':
+          description: Returned when the specified purchase order could not be found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                Error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+        '403':
+          description: Returned when the user does not have permission to view purchase orders.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                Error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Purchaseorders
+  /purchaseorders/{purchase_order_id}/lineitems:
+    post:
+      operationId: CreateLineItems
+      summary: Line item (Create)
+      description: Adds line items to an existing purchase order.
+      parameters:
+      - name: purchase_order_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The identifier of the purchase order on which to create line items.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Purchaseorders-purchase_order_id-LineitemsPostRequest-1'
+            example:
+            - type: Regular
+              product_id: 1
+              vendor_part_number: L-1001
+              description: Laptop Computer
+              quantity_ordered: 1
+              unit_of_measure: Each
+              unit_cost: 300
+              extended_cost: 300
+              post_status: NotYetPosted
+              post_date: '2018-08-30T12:00:00Z'
+              comments: a comment
+              notes: a note
+              deliver_to: Alex W
+              requested_by: Benton AU
+              department: 01 Facilities
+              distributions:
+              - distribution_id: 0
+                distribution_splits:
+                - distribution_split_id: 0
+                  ui_project_id: '1100'
+                  transaction_code_values:
+                  - name: Jurisdiction
+                    value: None
+                    id: 1
+                    inactive: false
+                  - name: Spendable?
+                    value: Spendable
+                    id: 2
+                    inactive: false
+                  amount: 100
+                  percent: 100
+                  account_class: Unrestricted Net Assets
+                amount: 100
+                description: Debit distribution
+                account_number: 01-5000-00
+                type_code: Debit
+                custom_fields: []
+              - distribution_id: 0
+                distribution_splits:
+                - distribution_split_id: 0
+                  ui_project_id: '1100'
+                  transaction_code_values:
+                  - name: Jurisdiction
+                    value: None
+                    id: 1
+                    inactive: false
+                  - name: Spendable ?
+                    value: Spendable
+                    id: 2
+                    inactive: false
+                  amount: 100
+                  percent: 100
+                  account_class: Unrestricted Net Assets
+                amount: 100
+                description: Credit distribution
+                account_number: 01-2000-00
+                type_code: Credit
+                custom_fields: []
+              interfund_set: '00'
+        description: Line items to add to the purchase order.
+      responses:
+        '200':
+          description: Returned when the operation is successful.
+        '400':
+          description: Returned when the request is not in the correct format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DomainErrorMessage'
+              example:
+                Error: Failed to save {record}
+                Details:
+                - The total percent distributed must equal 100%.
+        '403':
+          description: Returned when the user does not have permission to create an purchase order.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                Error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Purchaseorders
+    get:
+      operationId: ListLineItemsSinglePurchaseOrder
+      summary: Line Items (List)
+      description: Returns a list of line items.
+      parameters:
+      - name: purchase_order_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The identifier of purchase order containing the line items being returned.
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Represents the number of records to skip.
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Represents the number of records to return.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the list of line items.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LineItemSummaryApiCollection'
+              example:
+                count: 5
+                value:
+                - line_item_id: 21
+                  line_number: 1
+                  type: Regular
+                  product_id: 31
+                  vendor_part_number: L-1000
+                  description: Laptop Computer
+                  product_code: Laptop
+                  quantity_ordered: 5
+                  quantity_received: 5
+                  quantity_cancelled: 0
+                  quantity_rejected: 0
+                  unit_of_measure: Each
+                  unit_cost: 599.99
+                  extended_cost: 2999.95
+                  post_status: Posted
+                  post_date: '2012-07-01T12:00:00Z'
+                  comments: ''
+                  status: FullyReceipted
+                  date_added: '2012-10-12T12:26:21Z'
+                  added_by: Supervisor
+                  date_modified: '2012-10-22T02:47:53Z'
+                  modified_by: Supervisor
+                - line_item_id: 22
+                  line_number: 2
+                  type: Regular
+                  product_id: 32
+                  vendor_part_number: WKM-1000
+                  description: Wireless Keyboard/Mouse
+                  product_code: WKM
+                  quantity_ordered: 5
+                  quantity_received: 5
+                  quantity_cancelled: 0
+                  quantity_rejected: 0
+                  unit_of_measure: Each
+                  unit_cost: 59.99
+                  extended_cost: 299.95
+                  post_status: Posted
+                  post_date: '2012-07-01T12:00:00Z'
+                  comments: ''
+                  status: FullyReceipted
+                  date_added: '2012-10-12T12:26:21Z'
+                  added_by: Supervisor
+                  date_modified: '2012-10-20T08:16:30Z'
+                  modified_by: Supervisor
+        '400':
+          description: Returned when the request is not in the correct format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DomainErrorMessage'
+              example:
+                Error: Invalid Request
+                Details:
+                - The value 'fake' is not valid for transaction_status.
+        '403':
+          description: Returned when the user does not have permission to view line items.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                Error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Purchaseorders
+  /purchaseorders/{purchase_order_id}/lineitems/{line_item_id}:
+    get:
+      operationId: GetLineItem
+      summary: Line item (Get)
+      description: Returns the specified line item with distribution information.
+      parameters:
+      - name: purchase_order_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The identifier of the purchase order on which the line item exists.
+      - name: line_item_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The identifier of the line item to retrieve.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the specified line item.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LineItemDetail'
+              example:
+                purchase_order_id: 10
+                order_number: 102
+                vendor_id: 17
+                vendor_name: Computer Services, Inc.
+                distributions:
+                - distribution_id: 72020
+                  distribution_splits:
+                  - distribution_split_id: 92911
+                    ui_project_id: '1100'
+                    transaction_code_values:
+                    - name: Grants
+                      value: None
+                      id: 1
+                      inactive: false
+                    - name: Spendable /Non-Spendable
+                      value: Spendable
+                      id: 2
+                      inactive: false
+                    - name: Performance
+                      value: ''
+                      id: 3
+                      inactive: false
+                    - name: The Raiser's Edge
+                      value: ''
+                      id: 4
+                      inactive: false
+                    - name: ''
+                      value: ''
+                      id: 0
+                      inactive: false
+                    amount: 2999.95
+                    percent: 100
+                    account_class: Unrestricted Net Assets
+                  amount: 2999.95
+                  description: ''
+                  account_number: 01-1540-00
+                  type_code: Debit
+                  custom_fields: []
+                - distribution_id: 72021
+                  distribution_splits:
+                  - distribution_split_id: 92933
+                    ui_project_id: ''
+                    transaction_code_values:
+                    - name: Grants
+                      value: None
+                      id: 1
+                      inactive: false
+                    - name: Spendable/Non-Spendable
+                      value: Spendable
+                      id: 2
+                      inactive: false
+                    - name: Performance
+                      value: ''
+                      id: 3
+                      inactive: false
+                    - name: The Raiser's Edge
+                      value: ''
+                      id: 4
+                      inactive: false
+                    - name: ''
+                      value: ''
+                      id: 0
+                      inactive: false
+                    amount: 2999.95
+                    percent: 100
+                    account_class: Unrestricted Net Assets
+                  amount: 2999.95
+                  description: ''
+                  account_number: 01-2020-00
+                  type_code: Credit
+                  custom_fields: []
+                line_item_id: 21
+                line_number: 1
+                type: Regular
+                product_id: 31
+                vendor_part_number: L -1000
+                description: Laptop Computer
+                product_code: Laptop
+                quantity_ordered: 5
+                quantity_received: 5
+                quantity_cancelled: 0
+                quantity_rejected: 0
+                unit_of_measure: Each
+                unit_cost: 599.99
+                extended_cost: 2999.95
+                post_status: Posted
+                post_date: '2012-07-01T12:00:00Z'
+                comments: ''
+                status: FullyReceipted
+                deliver_to: Chris Gentry (Tech Dpt)
+                department: 07 - Technology Services
+                date_added: '2012-10-12T12:26:21Z'
+                added_by: Supervisor
+                date_modified: '2012-10-22T02:47:53Z'
+                modified_by: Supervisor
+        '404':
+          description: Returned when the specified purchase order or line item could not be found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                Error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+        '403':
+          description: Returned when the user does not have permission to view line items.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                Error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Purchaseorders
+components:
+  schemas:
+    PurchaseOrderSummaryApiCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/PurchaseOrderSummary'
+      additionalProperties: false
+      description: Collection Response
+    DomainErrorMessage:
+      type: object
+      properties:
+        Error:
+          type:
+          - string
+          - 'null'
+        Details:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+        ErrorPath:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    CustomFieldDataType:
+      title: CustomFieldDataType
+      enum:
+      - Text
+      - Number
+      - DateTime
+      - Currency
+      - Boolean
+      - Table
+      - FuzzyDate
+      type: string
+    LineItemType:
+      title: LineItemType
+      enum:
+      - Regular
+      - Miscellaneous
+      - Comment
+      type: string
+      description: Line item possible enummarated types.
+    BasicErrorMessage:
+      type: object
+      properties:
+        Error:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    CreateLineItem:
+      required:
+      - distributions
+      - extended_cost
+      - post_status
+      - quantity_ordered
+      - type
+      - unit_cost
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/LineItemType'
+        product_id:
+          type:
+          - integer
+          - 'null'
+          description: The product identifier of the line item.
+          format: int32
+        vendor_part_number:
+          type:
+          - string
+          - 'null'
+          description: The vendor part number of the line item.
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the line item.
+        quantity_ordered:
+          type: number
+          description: The quantity ordered of the line item.
+          format: decimal
+        unit_of_measure:
+          type:
+          - string
+          - 'null'
+          description: The unit of measure of the line item.
+        unit_cost:
+          type: number
+          description: The unit of cost of the line item.
+          format: decimal
+        extended_cost:
+          type: number
+          description: The extended cost of the line item.
+          format: decimal
+        post_status:
+          $ref: '#/components/schemas/PostStatus'
+        post_date:
+          type:
+          - string
+          - 'null'
+          description: 'The post date of the line item.
+
+            Is required for line items with the status NotYetPosted'
+          format: date-time
+        comments:
+          type:
+          - string
+          - 'null'
+          description: The comments of the line item.
+        notes:
+          type:
+          - string
+          - 'null'
+          description: The notes of the line item.
+        deliver_to:
+          type:
+          - string
+          - 'null'
+          description: The staff member to deliver to for the line item.
+        requested_by:
+          type:
+          - string
+          - 'null'
+          description: The staff member that requested the line item.
+        department:
+          type:
+          - string
+          - 'null'
+          description: The department of the line item.
+        distributions:
+          type: array
+          items:
+            $ref: '#/components/schemas/CreateDistribution'
+          description: The distributions of the line item.
+        interfund_set:
+          type:
+          - string
+          - 'null'
+          description: The interfund set for this line item's distributions.
+      additionalProperties: false
+      description: Line item summary
+    PurchaseOrderStatus:
+      title: PurchaseOrderStatus
+      enum:
+      - UnprintedPurchaseOrder
+      - OpenPurchaseOrder
+      - UprintedChangeOrder
+      - ReprintOrder
+      - CanceledOrder
+      - UnprintedCancellationNotice
+      - ClosedOrder
+      - DeletedOrder
+      type: string
+      description: A collection of possible enum values for a purchase order's status.
+    Int32CreatedResult:
+      type: object
+      properties:
+        record_id:
+          type: integer
+          format: int32
+      additionalProperties: false
+    PurchaseOrderSummary:
+      type: object
+      properties:
+        purchase_order_id:
+          type: integer
+          description: The purchase order's identifier.
+          format: int32
+        order_number:
+          type:
+          - integer
+          - 'null'
+          description: The order number of the purchase order.
+          format: int64
+        order_date:
+          type:
+          - string
+          - 'null'
+          description: The date of the purchase order.
+          format: date-time
+        type:
+          $ref: '#/components/schemas/PurchaseOrderType'
+        order_total:
+          type: number
+          description: The total of the purchase order.
+          format: decimal
+        receipted_total:
+          type: number
+          description: The receipted total of the purchase order.
+          format: decimal
+        order_status:
+          $ref: '#/components/schemas/PurchaseOrderStatus'
+        vendor_name:
+          type:
+          - string
+          - 'null'
+          description: The vendor name assocaited with the purchase order.
+        vendor_id:
+          type: integer
+          description: The vendor id of the purchase order.
+          format: int32
+        terms:
+          type:
+          - string
+          - 'null'
+          description: The term of the purchase order.
+        date_added:
+          type:
+          - string
+          - 'null'
+          description: The created date of the purchase order.
+          format: date-time
+        added_by:
+          type:
+          - string
+          - 'null'
+          description: The creator of the purchase order.
+        date_modified:
+          type:
+          - string
+          - 'null'
+          description: The modified date of the purchase order.
+          format: date-time
+        modified_by:
+          type:
+          - string
+          - 'null'
+          description: The modifier of the purchase order.
+      additionalProperties: false
+    DistributionSplit:
+      required:
+      - transaction_code_values
+      type: object
+      properties:
+        distribution_split_id:
+          type: integer
+          description: The distribution split identifier.
+          format: int32
+        ui_project_id:
+          type:
+          - string
+          - 'null'
+          description: The user-visible identifier of the project.
+        transaction_code_values:
+          type: array
+          items:
+            $ref: '#/components/schemas/TransactionCodeValue'
+          description: The distribution transaction code values. The values should be in the same order as the codes defined in the database.
+        amount:
+          type:
+          - number
+          - 'null'
+          description: The distribution journal entry amount. Only one of Amount or Percent can be specified.
+          format: decimal
+        percent:
+          type:
+          - number
+          - 'null'
+          description: The distribution journal entry amount percentage. Only one of Amount or Percent can be specified.
+          format: decimal
+        account_class:
+          type:
+          - string
+          - 'null'
+          description: The account class for this distribution split.
+      additionalProperties: false
+      description: Journal Entry Distribution.
+    TransactionCodeValue:
+      required:
+      - id
+      - value
+      type: object
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+          description: The transaction code name.
+        value:
+          type: string
+          description: The transaction code value.
+        id:
+          type: integer
+          description: The transaction code value id.
+          format: int32
+        inactive:
+          type: boolean
+          description: Indicate if record is inactive or not.
+      additionalProperties: false
+      description: Transaction code value
+    PurchaseOrderDetail:
+      type: object
+      properties:
+        ship_to_address:
+          type:
+          - string
+          - 'null'
+          description: The ship to address of the purchase order.
+        department:
+          type:
+          - string
+          - 'null'
+          description: The department of the purchase order.
+        buyer:
+          type:
+          - string
+          - 'null'
+          description: The buyer of the purchase order.
+        ship_via:
+          type:
+          - string
+          - 'null'
+          description: The shipping method of the purchase order.
+        fob:
+          type:
+          - string
+          - 'null'
+          description: The freight on board of the purchase order.
+        ordered_by:
+          type:
+          - string
+          - 'null'
+          description: The orderer of the purchase order.
+        ordered_from_contact_id:
+          type: integer
+          description: The contact identifier for the orderer of the purchase order.
+          format: int32
+        attention:
+          type:
+          - string
+          - 'null'
+          description: The staff member for attention of the purchase order.
+        comments:
+          type:
+          - string
+          - 'null'
+          description: The comments of the purchase order.
+        custom_fields:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CustomField'
+          description: The custom fields of the purchase order.
+        purchase_order_id:
+          type: integer
+          description: The purchase order's identifier.
+          format: int32
+        order_number:
+          type:
+          - integer
+          - 'null'
+          description: The order number of the purchase order.
+          format: int64
+        order_date:
+          type:
+          - string
+          - 'null'
+          description: The date of the purchase order.
+          format: date-time
+        type:
+          $ref: '#/components/schemas/PurchaseOrderType'
+        order_total:
+          type: number
+          description: The total of the purchase order.
+          format: decimal
+        receipted_total:
+          type: number
+          description: The receipted total of the purchase order.
+          format: decimal
+        order_status:
+          $ref: '#/components/schemas/PurchaseOrderStatus'
+        vendor_name:
+          type:
+          - string
+          - 'null'
+          description: The vendor name assocaited with the purchase order.
+        vendor_id:
+          type: integer
+          description: The vendor id of the purchase order.
+          format: int32
+        terms:
+          type:
+          - string
+          - 'null'
+          description: The term of the purchase order.
+        date_added:
+          type:
+          - string
+          - 'null'
+          description: The created date of the purchase order.
+          format: date-time
+        added_by:
+          type:
+          - string
+          - 'null'
+          description: The creator of the purchase order.
+        date_modified:
+          type:
+          - string
+          - 'null'
+          description: The modified date of the purchase order.
+          format: date-time
+        modified_by:
+          type:
+          - string
+          - 'null'
+          description: The modifier of the purchase order.
+      additionalProperties: false
+      description: Purchase order detail
+    CustomFieldOptions:
+      type: object
+      properties:
+        custom_field_id:
+          type: integer
+          description: The identifier of the custom field.
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the custom field.
+        type:
+          $ref: '#/components/schemas/CustomFieldDataType'
+        is_required:
+          type: boolean
+          description: Required status of the custom field.
+        table_values:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: List of table values.
+      additionalProperties: false
+      description: Custom field options
+    DistributionTypeCode:
+      title: DistributionTypeCode
+      enum:
+      - Debit
+      - Credit
+      type: string
+      description: The type code for the distribution, debit or credit
+    LineItemStatus:
+      title: LineItemStatus
+      enum:
+      - NotReceipted
+      - PartiallyReceipted
+      - FullyReceipted
+      type: string
+      description: The status of a line item.
+    LineItemDetail:
+      type: object
+      properties:
+        purchase_order_id:
+          type:
+          - integer
+          - 'null'
+          description: The purchase order identifier of the line item.
+          format: int32
+        order_number:
+          type:
+          - integer
+          - 'null'
+          description: The purchase order number of the line item.
+          format: int64
+        vendor_id:
+          type:
+          - integer
+          - 'null'
+          description: The vendor identifier of the line item.
+          format: int32
+        vendor_name:
+          type:
+          - string
+          - 'null'
+          description: The vendor name of the line item.
+        distributions:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Distribution'
+          description: The distributions of the line item.
+        line_item_id:
+          type: integer
+          description: The identifier of the line item.
+          format: int32
+        line_number:
+          type:
+          - integer
+          - 'null'
+          description: The number of the line item.
+          format: int32
+        type:
+          $ref: '#/components/schemas/LineItemType'
+        product_id:
+          type:
+          - integer
+          - 'null'
+          description: The prodcut identifier of the line item.
+          format: int32
+        vendor_part_number:
+          type:
+          - string
+          - 'null'
+          description: The vendor part number of the line item.
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the line item.
+        product_code:
+          type:
+          - string
+          - 'null'
+          description: The product code of the line item.
+        quantity_ordered:
+          type:
+          - number
+          - 'null'
+          description: The quantity ordered of the line item.
+          format: decimal
+        quantity_received:
+          type:
+          - number
+          - 'null'
+          description: The quantity received of the line item.
+          format: decimal
+        quantity_cancelled:
+          type:
+          - number
+          - 'null'
+          description: The quantity cancelled of the line item.
+          format: decimal
+        quantity_rejected:
+          type:
+          - number
+          - 'null'
+          description: The quantity rejected of the line item.
+          format: decimal
+        unit_of_measure:
+          type:
+          - string
+          - 'null'
+          description: The unit of measure of the line item.
+        unit_cost:
+          type:
+          - number
+          - 'null'
+          description: The unit of cost of the line item.
+          format: decimal
+        extended_cost:
+          type:
+          - number
+          - 'null'
+          description: The extended cost of the line item.
+          format: decimal
+        post_status:
+          $ref: '#/components/schemas/PostStatus'
+        post_date:
+          type:
+          - string
+          - 'null'
+          description: The post date of the line item.
+          format: date-time
+        comments:
+          type:
+          - string
+          - 'null'
+          description: The comments of the line item.
+        status:
+          $ref: '#/components/schemas/LineItemStatus'
+        deliver_to:
+          type:
+          - string
+          - 'null'
+          description: The staff member to deliver to for the line item.
+        department:
+          type:
+          - string
+          - 'null'
+          description: The department of the line item.
+        date_added:
+          type:
+          - string
+          - 'null'
+          description: The date the line item was added.
+          format: date-time
+        added_by:
+          type:
+          - string
+          - 'null'
+          description: The creator of the line item.
+        date_modified:
+          type:
+          - string
+          - 'null'
+          description: The date the line item was modified.
+          format: date-time
+        modified_by:
+          type:
+          - string
+          - 'null'
+          description: The modifier of the line item.
+      additionalProperties: false
+      description: Line item detail
+    PurchaseOrderType:
+      title: PurchaseOrderType
+      enum:
+      - Template
+      - Blanket
+      - Regular
+      type: string
+      description: A collection of enum values possible for a purchase order's type.
+    CustomFieldOptionsPagedResponse:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+        results:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CustomFieldOptions'
+      additionalProperties: false
+      description: Paged Response
+    LineItemSummary:
+      type: object
+      properties:
+        line_item_id:
+          type: integer
+          description: The identifier of the line item.
+          format: int32
+        line_number:
+          type:
+          - integer
+          - 'null'
+          description: The number of the line item.
+          format: int32
+        type:
+          $ref: '#/components/schemas/LineItemType'
+        product_id:
+          type:
+          - integer
+          - 'null'
+          description: The prodcut identifier of the line item.
+          format: int32
+        vendor_part_number:
+          type:
+          - string
+          - 'null'
+          description: The vendor part number of the line item.
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the line item.
+        product_code:
+          type:
+          - string
+          - 'null'
+          description: The product code of the line item.
+        quantity_ordered:
+          type:
+          - number
+          - 'null'
+          description: The quantity ordered of the line item.
+          format: decimal
+        quantity_received:
+          type:
+          - number
+          - 'null'
+          description: The quantity received of the line item.
+          format: decimal
+        quantity_cancelled:
+          type:
+          - number
+          - 'null'
+          description: The quantity cancelled of the line item.
+          format: decimal
+        quantity_rejected:
+          type:
+          - number
+          - 'null'
+          description: The quantity rejected of the line item.
+          format: decimal
+        unit_of_measure:
+          type:
+          - string
+          - 'null'
+          description: The unit of measure of the line item.
+        unit_cost:
+          type:
+          - number
+          - 'null'
+          description: The unit of cost of the line item.
+          format: decimal
+        extended_cost:
+          type:
+          - number
+          - 'null'
+          description: The extended cost of the line item.
+          format: decimal
+        post_status:
+          $ref: '#/components/schemas/PostStatus'
+        post_date:
+          type:
+          - string
+          - 'null'
+          description: The post date of the line item.
+          format: date-time
+        comments:
+          type:
+          - string
+          - 'null'
+          description: The comments of the line item.
+        status:
+          $ref: '#/components/schemas/LineItemStatus'
+        deliver_to:
+          type:
+          - string
+          - 'null'
+          description: The staff member to deliver to for the line item.
+        department:
+          type:
+          - string
+          - 'null'
+          description: The department of the line item.
+        date_added:
+          type:
+          - string
+          - 'null'
+          description: The date the line item was added.
+          format: date-time
+        added_by:
+          type:
+          - string
+          - 'null'
+          description: The creator of the line item.
+        date_modified:
+          type:
+          - string
+          - 'null'
+          description: The date the line item was modified.
+          format: date-time
+        modified_by:
+          type:
+          - string
+          - 'null'
+          description: The modifier of the line item.
+      additionalProperties: false
+      description: Line item summary
+    CreateCustomField:
+      required:
+      - field_name
+      - value
+      type: object
+      properties:
+        field_name:
+          minLength: 1
+          type: string
+          description: The name of the custom field.
+        value:
+          type: string
+          description: The value for this custom field.
+        comments:
+          type:
+          - string
+          - 'null'
+          description: The description for this custom field.
+        date:
+          type:
+          - string
+          - 'null'
+          description: The date on this custom field.
+          format: date-time
+      additionalProperties: false
+      description: The create contract for custom fields.
+    CreatePurchaseOrder:
+      required:
+      - order_from_contact_id
+      - ship_via
+      - terms
+      - type
+      - vendor_id
+      type: object
+      properties:
+        order_number:
+          type:
+          - integer
+          - 'null'
+          description: 'The order number of the purchase order.
+
+            Is required unless business rules state otherwise.'
+          format: int64
+        order_date:
+          type:
+          - string
+          - 'null'
+          description: 'The date of the purchase order.
+
+            Is required for Blanket and Regular purchase orders.'
+          format: date-time
+        type:
+          $ref: '#/components/schemas/PurchaseOrderType'
+        order_status:
+          $ref: '#/components/schemas/PurchaseOrderStatus'
+        vendor_id:
+          type: integer
+          description: The vendor id of the purchase order.
+          format: int32
+        terms:
+          minLength: 1
+          type: string
+          description: The term of the purchase order.
+        ship_to_address_id:
+          type:
+          - integer
+          - 'null'
+          description: The identifier of the ship to address of the purchase order.
+          format: int32
+        department:
+          type:
+          - string
+          - 'null'
+          description: The department of the purchase order.
+        buyer:
+          type:
+          - string
+          - 'null'
+          description: The buyer of the purchase order.
+        ship_via:
+          minLength: 1
+          type: string
+          description: The shipping method of the purchase order.
+        fob:
+          type:
+          - string
+          - 'null'
+          description: The freight on board of the purchase order.
+        ordered_by:
+          type:
+          - string
+          - 'null'
+          description: The orderer of the purchase order.
+        order_from_contact_id:
+          type: integer
+          description: The vendor contact identifier for the orderer of the purchase order.
+          format: int32
+        attention:
+          type:
+          - string
+          - 'null'
+          description: The staff member for attention of the purchase order.
+        comments:
+          type:
+          - string
+          - 'null'
+          description: The comments of the purchase order.
+        expiration_date:
+          type:
+          - string
+          - 'null'
+          description: 'The expiration date of the purchase order.
+
+            Is required for Blanket purchase orders.'
+          format: date-time
+        custom_fields:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CustomField'
+          description: The custom fields of the purchase order.
+        line_items:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CreateLineItem'
+          description: The line items of the purchase order.
+      additionalProperties: false
+      description: Contract for creating a purchase order.
+    CreateDistribution:
+      required:
+      - distribution_splits
+      type: object
+      properties:
+        distribution_id:
+          type: integer
+          description: The distribution identifier.
+          format: int32
+        distribution_splits:
+          type: array
+          items:
+            $ref: '#/components/schemas/DistributionSplit'
+          description: The distribution split.
+        amount:
+          type: number
+          description: The distribution amount.
+          format: decimal
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description for this distribution.
+        account_number:
+          type:
+          - string
+          - 'null'
+          description: The account number for this distribution.
+        type_code:
+          $ref: '#/components/schemas/DistributionTypeCode'
+        custom_fields:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CreateCustomField'
+          description: The custom fields of the distribution.
+      additionalProperties: false
+      description: Contract for creating distribution.
+    Purchaseorders-purchase_order_id-LineitemsPostRequest-1:
+      type: array
+      items:
+        $ref: '#/components/schemas/CreateLineItem'
+      x-apim-inline: true
+    CustomField:
+      type: object
+      properties:
+        field_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the custom field.
+        value:
+          type:
+          - string
+          - 'null'
+          description: The value of the custom field.
+        comments:
+          type:
+          - string
+          - 'null'
+          description: The description of the custom field.
+        type:
+          $ref: '#/components/schemas/CustomFieldDataType'
+        is_required:
+          type: boolean
+          description: Required status of the custom field.
+        date:
+          type:
+          - string
+          - 'null'
+          description: The date on this custom field.
+          format: date-time
+      additionalProperties: false
+      description: Custom field definition.
+    LineItemSummaryApiCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/LineItemSummary'
+      additionalProperties: false
+      description: Collection Response
+    Distribution:
+      required:
+      - distribution_splits
+      type: object
+      properties:
+        distribution_id:
+          type: integer
+          description: The distribution identifier.
+          format: int32
+        distribution_splits:
+          type: array
+          items:
+            $ref: '#/components/schemas/DistributionSplit'
+          description: The distribution split.
+        amount:
+          type: number
+          description: The distribution amount.
+          format: decimal
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description for this distribution.
+        account_number:
+          type:
+          - string
+          - 'null'
+          description: The account number for this distribution.
+        type_code:
+          $ref: '#/components/schemas/DistributionTypeCode'
+        custom_fields:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CustomField'
+          description: The custom fields of the distribution.
+      additionalProperties: false
+      description: Distribution.
+    PostStatus:
+      title: PostStatus
+      enum:
+      - DoNotPost
+      - NotYetPosted
+      - Posted
+      type: string
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

@@ -1,0 +1,1049 @@
+openapi: 3.2.0
+info:
+  title: Blackbaud Adhocqueries API
+  version: '1.0'
+  x-refined-note:
+  - x-apievangelist-provenance differs across the merged source definitions and was not carried
+  description: 'Operations tagged Adhocqueries across 2 of this provider''s published API definitions: blackbaud-altru-analysis-api-openapi.yml, blackbaud-crm-analysis-api-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.sky.blackbaud.com/alt-anamg
+- url: https://api.sky.blackbaud.com/crm-anamg
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Adhocqueries
+paths:
+  /adhocqueries:
+    post:
+      operationId: SaveAdHocQuery
+      summary: Save an ad-hoc query
+      description: Creates or updates a saved ad-hoc query. Omit `id` to create a new query; supply an existing `id` to update it in place. `name`, `query_view_id`, and at least one `select_fields` entry are required; `filter_fields`, `sort_fields`, and `group_filter_fields` refine the definition, and the folder/site/category/data-form IDs and the boolean flags are all optional. Returns the created or updated `adhoc_query_id` together with owner and audit metadata. A 400 indicates an invalid request.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SaveAdHocQueryRequest'
+        description: The ad-hoc query definition to create (omit `id`) or update (supply an existing `id`).
+      responses:
+        '200':
+          description: The query was saved. Returns the created or updated `adhoc_query_id` plus owner and audit metadata.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SaveAdHocQueryResponse'
+              example:
+                adhoc_query_id: 7235395b-bc88-4515-90c3-de1c83767d87
+                owner: System Administrator
+                owner_id: 9c1e6d2a-0b3f-4c8d-9e2a-7f5b1c4d3e2f
+                others_can_modify: false
+                added_by_id: 9c1e6d2a-0b3f-4c8d-9e2a-7f5b1c4d3e2f
+                added_by_user_name: administrator
+                changed_by_id: 9c1e6d2a-0b3f-4c8d-9e2a-7f5b1c4d3e2f
+                changed_by_user_name: administrator
+                date_added: '2026-07-29T02:32:05Z'
+                date_changed: '2026-07-29T02:35:11Z'
+                id_set_register_id: 1b2c3d4e-5f6a-7b8c-9d0e-1f2a3b4c5d6e
+        '400':
+          description: Returned when the request is invalid — for example when `name`, `query_view_id`, or `select_fields` is missing.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to create or modify the ad-hoc query.
+      tags:
+      - Adhocqueries
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-anamg
+  /adhocqueries/executions:
+    post:
+      operationId: CreateAdHocQueryExecution
+      summary: Execute an ad-hoc query
+      description: 'Runs an ad-hoc query. Provide `adhoc_query_id` to run a saved query, or `query_view_id` plus `select_fields` to run an inline (transient) query — supply exactly one of the two modes. Synchronous by default: returns 200 with `status` = `ready` and the result set. Set `execute_async` = true to run deferred: returns 200 with `status` = `deferred`, a `deferred_result_key`, and an `infinity_session` — poll GetAdHocQueryExecution (passing both back) to fetch the result. A 400 indicates an invalid request.'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdHocQueryExecutionRequest'
+            example:
+              query_view_id: ee8a7483-c483-4214-9646-4bb62ec29ab7
+              select_fields:
+              - object_name: V_QUERY_CONSTITUENT
+                column_name: NAME
+              - object_name: V_QUERY_CONSTITUENT
+                column_name: LOOKUPID
+              filter_fields:
+              - object_name: V_QUERY_CONSTITUENT
+                column_name: KEYNAME
+                filter_operator: IsEqualTo
+                values:
+                - Smith
+              sort_fields:
+              - field_name: V_QUERY_CONSTITUENT.NAME
+                sort_order: Ascending
+              max_records: 500
+              start: 0
+              limit: 50
+        description: The saved- or inline-mode query definition to execute.
+      responses:
+        '200':
+          description: Always returned (HTTP 200). `status` is `ready` with the result set when the query completes inline, or `deferred` with a `deferred_result_key` to poll GetAdHocQueryExecution when the query is queued.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdHocQueryExecutionResponse'
+        '400':
+          description: Returned when the request is invalid — for example when neither or both query modes are supplied.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to read the requested data.
+        '404':
+          description: Returned when the specified saved query is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Adhocqueries
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-anamg
+  /adhocqueries/executions/{id}:
+    delete:
+      operationId: DeleteAdHocQueryExecution
+      summary: Cancel a deferred ad-hoc query execution
+      description: Requests best-effort cancellation of a deferred ad-hoc query execution using the `deferred_result_key` returned by CreateAdHocQueryExecution. Pass `infinity_session` as a query parameter so the cancel reaches the same server instance running the query. Always returns 200 with `status` = `cancellation_requested`; cancellation is best-effort (a no-op if the query already finished or the key is unknown), so poll GetAdHocQueryExecution to observe `query_was_cancelled`.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The `deferred_result_key` returned by CreateAdHocQueryExecution when the query was deferred.
+      - name: infinity_session
+        in: query
+        required: false
+        schema:
+          type: string
+        description: The `infinity_session` value returned by CreateAdHocQueryExecution. Forwards the load-balancer affinity cookie so the cancel reaches the same server instance running the query.
+      responses:
+        '200':
+          description: Cancellation was requested (best-effort). `status` is `cancellation_requested`.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteAdHocQueryExecutionResponse'
+              example:
+                status: cancellation_requested
+        '400':
+          description: Returned when the deferred_result_key is missing or malformed.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user is not authorized to cancel the query execution.
+      tags:
+      - Adhocqueries
+    get:
+      operationId: GetAdHocQueryExecution
+      summary: Get a deferred ad-hoc query execution result
+      description: 'Fetches the result of a deferred ad-hoc query execution using the `deferred_result_key` and `infinity_session` returned by CreateAdHocQueryExecution. Pass `infinity_session` as a query parameter so the poll reaches the same server session that holds the result. While the key is valid this returns 200: `status` is `ready` with the full result set once the query finishes, or `running` while it is still executing (poll again with the same key and session).'
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The `deferred_result_key` returned by CreateAdHocQueryExecution when the query was deferred.
+      - name: infinity_session
+        in: query
+        required: false
+        schema:
+          type: string
+        description: The `infinity_session` value returned by CreateAdHocQueryExecution. Forwards the load-balancer affinity cookie so the poll reaches the same server session that holds the deferred result.
+      responses:
+        '200':
+          description: Returned while the key is valid. `status` is `ready` (result set included) or `running` (still executing — poll again).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdHocQueryExecutionResponse'
+        '400':
+          description: Returned when the deferred_result_key is missing or malformed.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to read the requested data.
+      tags:
+      - Adhocqueries
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-anamg
+  /adhocqueries/id/{query_name}:
+    get:
+      operationId: GetAdHocQueryId
+      summary: Get ad-hoc query ID by name
+      description: Gets the query ID for the given query name.
+      parameters:
+      - name: query_name
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The name of the query.
+      responses:
+        '200':
+          description: Returned when the operation succeeds.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetAdHocQueryId'
+              example:
+                id: c1da9d41-ffa3-4db7-82c6-76e32a38390f
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to create the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+      tags:
+      - Adhocqueries
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-anamg
+  /adhocqueries/{query_id}:
+    get:
+      operationId: ListAdHocQueryEntries
+      summary: List ad-hoc query entries
+      description: Gets the results for the given query ID.
+      parameters:
+      - name: query_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The ID of the query.
+      - name: search_text
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Query results by search text.
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: The maximum number of rows returned.
+      - name: start
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Number of rows to skip, get result after these rows.
+      responses:
+        '200':
+          description: Returned when the operation succeeds.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdHocQueryReadCollection'
+              example:
+                count: 2
+                value:
+                - record_type_id: c7a473e6-d28b-4225-8d05-7d32b1a819df
+                  query_name: ConstituentList
+                  fields:
+                  - NAME
+                  - AGE
+                  - FIRSTNAME
+                  - BIRTHDATE
+                  - QUERYRECID
+                  field_names:
+                  - Name
+                  - Age
+                  - First name
+                  - Birth date
+                  - QUERYRECID
+                  row_count: '100'
+                  rows:
+                  - - Aida Mante
+                    - '0'
+                    - Aida
+                    - '00000000'
+                    - 6655e1f5-852f-4fca-84c8-cc17f299b6a7
+                  - - Aida Toy
+                    - '0'
+                    - Aida
+                    - '00000000'
+                    - 505eb6c4-4af8-4306-b12d-00f72d0f22ed
+                  had_more_results: 'true'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to create the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+      tags:
+      - Adhocqueries
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-anamg
+components:
+  schemas:
+    SaveAdHocQueryRequest:
+      required:
+      - name
+      - query_view_id
+      - select_fields
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: ID of an existing saved query to update. Omit (or leave null) to create a new query; supply the existing ID to update it in place.
+          format: uuid
+        name:
+          minLength: 1
+          type: string
+          description: Display name of the query. Required.
+        description:
+          type:
+          - string
+          - 'null'
+          description: Optional free-text description of the query.
+        query_view_id:
+          type: string
+          description: ID of the query view the query runs against. Required. Stable across environments, so safe to embed in caller code.
+          format: uuid
+        select_fields:
+          minItems: 1
+          type: array
+          items:
+            $ref: '#/components/schemas/AdHocQuerySelectField'
+          description: Output (Select) fields. Required (at least one).
+        filter_fields:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/AdHocQueryFilterField'
+          description: Filter fields (WHERE-clause predicates).
+        sort_fields:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/AdHocQuerySortField'
+          description: Sort fields (ORDER BY).
+        group_filter_fields:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/AdHocQueryGroupFilterField'
+          description: Group-filter fields (HAVING-clause predicates over aggregates).
+        folder_id:
+          type:
+          - string
+          - 'null'
+          description: Folder to file the saved query under.
+          format: uuid
+        site_id:
+          type:
+          - string
+          - 'null'
+          description: Site to scope the saved query to.
+          format: uuid
+        category_id:
+          type:
+          - string
+          - 'null'
+          description: Category to file the saved query under.
+          format: uuid
+        default_data_form_id:
+          type:
+          - string
+          - 'null'
+          description: Default data form to open results in.
+          format: uuid
+        others_can_modify:
+          type:
+          - boolean
+          - 'null'
+          description: When true, other users may modify this saved query.
+        mobilize:
+          type:
+          - boolean
+          - 'null'
+          description: When true, the query is available on mobile. Omitting this field leaves mobile availability unchanged on update; on create, an omitted value defaults to false.
+        is_favorite:
+          type:
+          - boolean
+          - 'null'
+          description: When true, adds the query to the caller's favorites. False or omitted removes it from favorites; favorite status is reasserted on every save, so it must be resent on every update to persist.
+        suppress_duplicate_rows:
+          type:
+          - boolean
+          - 'null'
+          description: Suppress duplicate full rows in the query's output.
+        run_security_level:
+          type:
+          - string
+          - 'null'
+          description: Run-permission security level. AppFx security-level enum name, passed through verbatim (e.g. "SelectedRoles"). Pair with permissioned_run_roles.
+        edit_security_level:
+          type:
+          - string
+          - 'null'
+          description: Edit-permission security level. AppFx security-level enum name, passed through verbatim (e.g. "SelectedRoles"). Pair with permissioned_edit_roles.
+        permissioned_run_roles:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/AdHocQueryPermissionedRole'
+          description: System roles granted or denied Run permission. Used when run_security_level restricts run access to selected roles.
+        permissioned_edit_roles:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/AdHocQueryPermissionedRole'
+          description: System roles granted or denied Edit permission. Used when edit_security_level restricts edit access to selected roles.
+        id_set_info:
+          $ref: '#/components/schemas/AdHocQueryIdSetInfo'
+      additionalProperties: false
+      description: Request to create or update an ad-hoc query. Omit ID to create a new query; supply an existing ID to update it. name, query_view_id, and at least one select_fields entry are required.
+      x-display-name: Save ad-hoc query request
+      x-display-id: SaveAdHocQueryRequest
+    AdHocQueryExecutionRequest:
+      type: object
+      properties:
+        adhoc_query_id:
+          type:
+          - string
+          - 'null'
+          description: ID of a saved query to execute (saved mode). Mutually exclusive with query_view_id. When supplied, the field collections are loaded from the saved definition and any inline select_fields are ignored.
+          format: uuid
+        query_view_id:
+          type:
+          - string
+          - 'null'
+          description: ID of the query view to execute against (inline mode). Mutually exclusive with adhoc_query_id. Stable across environments, so safe to embed in caller code.
+          format: uuid
+        select_fields:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/AdHocQuerySelectField'
+          description: Output (Select) fields. Required (at least one) for inline execution; ignored in saved mode.
+        filter_fields:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/AdHocQueryFilterField'
+          description: Filter fields (WHERE-clause predicates). Inline mode only.
+        sort_fields:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/AdHocQuerySortField'
+          description: Sort fields (ORDER BY). Inline mode only.
+        group_filter_fields:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/AdHocQueryGroupFilterField'
+          description: Group-filter fields (HAVING-clause predicates over aggregates). Inline mode only.
+        do_return_data:
+          type:
+          - boolean
+          - 'null'
+          description: When false, only the generated SQL and field metadata are returned — no rows. Defaults to true. The generated SQL is surfaced on the response sql field.
+        bypass_record_count:
+          type:
+          - boolean
+          - 'null'
+          description: When true, the total record count is not computed for result sets larger than the page — faster, but row_count comes back null. Defaults to false.
+        include_security_sql:
+          type:
+          - boolean
+          - 'null'
+          description: When true, the individual record-access security SQL clauses are returned alongside the result (on the sql field). Defaults to false.
+        suppress_duplicate_rows:
+          type:
+          - boolean
+          - 'null'
+          description: Suppress duplicate full rows in the output. Only collapses identical rows — does not collapse a one-to-many row expansion.
+        suppress_primary_key_field:
+          type:
+          - boolean
+          - 'null'
+          description: When true, the synthetic QUERYRECID primary-key column is omitted from output. Defaults to false (the key is included).
+        max_records:
+          type:
+          - integer
+          - 'null'
+          description: Cap on rows returned. A server-side ceiling is applied separately.
+          format: int32
+        start:
+          type:
+          - integer
+          - 'null'
+          description: Paging offset (zero-based). When set with limit, returns a slice.
+          format: int32
+        limit:
+          type:
+          - integer
+          - 'null'
+          description: Paging page size. Pairs with start.
+          format: int32
+        context_record_id:
+          type:
+          - string
+          - 'null'
+          description: Context record ID for query views that require one (table-valued-function views).
+        search_text:
+          type:
+          - string
+          - 'null'
+          description: Free-text search applied across the query's output fields.
+        execute_async:
+          type:
+          - boolean
+          - 'null'
+          description: 'When true, run asynchronously (deferred): the response returns immediately with status `deferred`, a deferred_result_key, and an infinity_session instead of blocking for the result. Poll GetAdHocQueryExecution — and optionally cancel via DeleteAdHocQueryExecution — passing both values back. Defaults to false (synchronous: the result set is returned inline with status `ready`).'
+      additionalProperties: false
+      description: 'Request to execute an ad-hoc query. Supply exactly one mode: adhoc_query_id to run a saved query, or query_view_id plus select_fields to run an inline (transient) query. Synchronous by default; set execute_async to run deferred and poll for the result.'
+      x-display-name: Ad-hoc query execution request
+      x-display-id: AdHocQueryExecutionRequest
+    AdHocQueryGroupFilterField:
+      type: object
+      properties:
+        object_name:
+          type:
+          - string
+          - 'null'
+          description: Object name the aggregate runs over.
+        column_name:
+          type:
+          - string
+          - 'null'
+          description: Column on the object.
+        parent_path:
+          type:
+          - string
+          - 'null'
+          description: Join path.
+        aggregate_type:
+          type:
+          - string
+          - 'null'
+          description: Aggregate to apply (Count, Sum, etc.).
+        filter_operator:
+          type:
+          - string
+          - 'null'
+          description: HAVING-side filter operator (e.g. IsGreaterThan).
+        values:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: Comparison values.
+      additionalProperties: false
+      description: One element of group_filter_fields (a HAVING-clause predicate over an aggregate).
+      x-display-name: Ad-hoc query group filter field
+      x-display-id: AdHocQueryGroupFilterField
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type: integer
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type: string
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: false
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-display-name: Problem details
+      x-display-id: ProblemDetails
+    AdHocQueryRunResponseField:
+      type: object
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+          description: Column name as it appears in result rows.
+        data_type:
+          type:
+          - string
+          - 'null'
+          description: Data type of the column (String, Integer, Date, Guid, etc.).
+        is_primary_key:
+          type: boolean
+          description: True for the synthetic QUERYRECID primary-key column.
+      additionalProperties: false
+      description: Output-column metadata.
+      x-display-name: Ad-hoc query response field
+      x-display-id: AdHocQueryRunResponseField
+    AdHocQueryPermissionedRole:
+      type: object
+      properties:
+        system_role_id:
+          type:
+          - string
+          - 'null'
+          description: System role being granted or denied (SYSTEMROLE.ID).
+          format: uuid
+        grant_or_deny:
+          type:
+          - boolean
+          - 'null'
+          description: True grants the role the permission; false denies it.
+      additionalProperties: false
+      description: A system-role grant or deny on a saved query's run or edit permission.
+      x-display-name: Ad-hoc query permissioned role
+      x-display-id: AdHocQueryPermissionedRole
+    AdHocQuerySelectField:
+      required:
+      - column_name
+      - object_name
+      type: object
+      properties:
+        object_name:
+          minLength: 1
+          type: string
+          description: View / table object name. Required.
+        column_name:
+          minLength: 1
+          type: string
+          description: Column name on the object. Required.
+        parent_path:
+          type:
+          - string
+          - 'null'
+          description: Query-view join path leading to the object. Required for every select field; for root-table fields it equals object_name (defaulted when omitted). For joined fields, supply the full backslash-delimited path (e.g. V_QUERY_CONSTITUENT\Interactions).
+        display_path:
+          type:
+          - string
+          - 'null'
+          description: Human-readable join-path display. Used in error messages and output column captions; usually mirrors parent_path.
+        alias_name:
+          type:
+          - string
+          - 'null'
+          description: Alias to apply to the output column. Optional; one is generated when omitted.
+        aggregate_type:
+          type:
+          - string
+          - 'null'
+          description: Aggregate to apply (None, Count, Sum, Min, Max, Average).
+        is_id_set_field:
+          type:
+          - boolean
+          - 'null'
+          description: True when this field references an ID set (selection) rather than a scalar column.
+        is_hidden:
+          type:
+          - boolean
+          - 'null'
+          description: Suppresses the field from output while still allowing it to participate in filter/sort/group expressions.
+      additionalProperties: false
+      description: One element of select_fields. Field names map 1:1 to the underlying query definition.
+      x-display-name: Ad-hoc query select field
+      x-display-id: AdHocQuerySelectField
+    AdHocQueryIdSetInfo:
+      type: object
+      properties:
+        is_static:
+          type:
+          - boolean
+          - 'null'
+          description: When true, the selection is static (materialized); false yields a dynamic selection.
+        use_in_query_designer:
+          type:
+          - boolean
+          - 'null'
+          description: When true, the selection is shown in the Query Designer. Optional.
+        num_rows:
+          type:
+          - integer
+          - 'null'
+          description: Row count for a static selection. Optional; the server computes it when omitted.
+          format: int32
+        id_set_id:
+          type:
+          - string
+          - 'null'
+          description: ID of an existing selection (IDSETREGISTER.ID) to reuse; omit or leave empty to let the server assign one.
+          format: uuid
+      additionalProperties: false
+      description: Selection / ID-set options for a saved query. Providing this marks the query as producing a selection.
+      x-display-name: Ad-hoc query ID set info
+      x-display-id: AdHocQueryIdSetInfo
+    AdHocQueryRead:
+      type: object
+      properties:
+        fields:
+          type: array
+          items:
+            type: string
+        field_names:
+          type: array
+          items:
+            type: string
+        query_name:
+          type: string
+        record_type_id:
+          type: string
+        row_count:
+          type: string
+          description: The number of rows available for retrieval into the rows collection after applying any request parameters.
+        rows:
+          type: array
+          items:
+            type: array
+            items:
+              type: string
+        had_more_results:
+          type: string
+          description: Indicates whether more results were available than were returned. Returned as a string ('true' or 'false').
+    GetAdHocQueryId:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ad-hoc query ID.
+      description: The ad-hoc query ID for a given query name.
+      x-display-name: Ad-hoc query ID
+      x-display-id: Ad-hoc query ID
+    AdHocQuerySortField:
+      type: object
+      properties:
+        alias_name:
+          type:
+          - string
+          - 'null'
+          description: Output-column alias to sort on. Either this or field_name must be supplied.
+        field_name:
+          type:
+          - string
+          - 'null'
+          description: Raw field reference, typically in ObjectName.ColumnName form.
+        sort_order:
+          type:
+          - string
+          - 'null'
+          description: Ascending or Descending. Defaults to Ascending when omitted.
+      additionalProperties: false
+      description: One element of sort_fields (an ORDER BY entry). Each sort field must reference a select field.
+      x-display-name: Ad-hoc query sort field
+      x-display-id: AdHocQuerySortField
+    AdHocQueryFilterField:
+      required:
+      - column_name
+      - filter_operator
+      - object_name
+      type: object
+      properties:
+        object_name:
+          minLength: 1
+          type: string
+          description: View / table object name. Required.
+        column_name:
+          minLength: 1
+          type: string
+          description: Column name on the object. Required.
+        parent_path:
+          type:
+          - string
+          - 'null'
+          description: Join path to the object.
+        display_path:
+          type:
+          - string
+          - 'null'
+          description: Human-readable join-path display.
+        filter_operator:
+          minLength: 1
+          type: string
+          description: Filter operator (e.g. IsEqualTo, IsOneOf, IsBlank, BeginsWith). Required for the row to be applied.
+        compare_type:
+          type:
+          - string
+          - 'null'
+          description: Boolean connector to the previous filter (None, And, Or). The first filter typically uses None.
+        values:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: Comparison values. Most operators need one; IsOneOf / IsBetween need more.
+        data_type:
+          type:
+          - string
+          - 'null'
+          description: Data type of the values (String, Integer, Date, Money, Boolean, Guid, etc.). Optional for most operators.
+        include_blanks:
+          type:
+          - boolean
+          - 'null'
+          description: When true, blank values in the source pass the filter alongside the comparison.
+        is_id_set_field:
+          type:
+          - boolean
+          - 'null'
+          description: True when this filter references an ID set (selection) rather than a scalar.
+        use_left_parenthesis:
+          type:
+          - boolean
+          - 'null'
+          description: Open-parenthesis grouping for compound expressions.
+        use_right_parenthesis:
+          type:
+          - boolean
+          - 'null'
+          description: Close-parenthesis grouping for compound expressions.
+        left_parenthesis_count:
+          type:
+          - integer
+          - 'null'
+          description: Number of opening parens to emit when nested deeper than one level.
+          format: int32
+        right_parenthesis_count:
+          type:
+          - integer
+          - 'null'
+          description: Number of closing parens to emit when nested deeper than one level.
+          format: int32
+      additionalProperties: false
+      description: One element of filter_fields (a WHERE-clause predicate).
+      x-display-name: Ad-hoc query filter field
+      x-display-id: AdHocQueryFilterField
+    AdHocQueryExecutionResponse:
+      type: object
+      properties:
+        status:
+          enum:
+          - ready
+          - deferred
+          - running
+          type:
+          - string
+          - 'null'
+          description: 'Outcome discriminator. `ready`: the result set is present. `deferred`: the run was queued — poll GetAdHocQueryExecution with deferred_result_key. `running`: (fetch) still executing — poll again with the same key.'
+        deferred_result_key:
+          type:
+          - string
+          - 'null'
+          description: Key to fetch the completed result via GetAdHocQueryExecution. Present when status is `deferred` or `running`; null once `ready`.
+        infinity_session:
+          type:
+          - string
+          - 'null'
+          description: Load-balancer session-affinity cookie value. Returned alongside a `deferred`/`running` status; pass it back (with deferred_result_key) on GetAdHocQueryExecution and DeleteAdHocQueryExecution via the infinity_session query parameter so the poll/cancel reach the same server session that holds the result. Null once `ready`.
+        fields:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/AdHocQueryRunResponseField'
+          description: Output column metadata in execution order. The implicit QUERYRECID primary-key column appears unless suppress_primary_key_field was set.
+        rows:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/AdHocQueryRunResponseRow'
+          description: Result rows. Each row's values array is positionally aligned with fields. Empty when do_return_data was false.
+        row_count:
+          type:
+          - integer
+          - 'null'
+          description: Total row count when reported. Null when bypass_record_count was set or the query view doesn't supply one.
+          format: int64
+        had_more_results:
+          type: boolean
+          description: True when the result set was truncated. Paginate via start/limit to fetch the remainder.
+        sql:
+          type:
+          - string
+          - 'null'
+          description: The generated T-SQL. Populated when do_return_data was false (SQL-only) or include_security_sql was true; otherwise null.
+        record_type_id:
+          type:
+          - string
+          - 'null'
+          description: The record type associated with the executed query. Null when not reported.
+          format: uuid
+        query_was_cancelled:
+          type:
+          - boolean
+          - 'null'
+          description: True when the query was cancelled before completion. Null when not reported.
+      additionalProperties: false
+      description: Result of an ad-hoc query execution. When status is `ready`, column metadata plus positionally-aligned result rows are included; when `deferred`/`running`, status, deferred_result_key, and infinity_session are set (poll GetAdHocQueryExecution).
+      x-display-name: Ad-hoc query execution response
+      x-display-id: AdHocQueryExecutionResponse
+    AdHocQueryReadCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of rows returned in the response.
+          format: int32
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/AdHocQueryRead'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+      description: A collection of ad-hoc query items.
+    SaveAdHocQueryResponse:
+      type: object
+      properties:
+        adhoc_query_id:
+          type:
+          - string
+          - 'null'
+          description: ID of the created or updated query.
+          format: uuid
+        owner:
+          type:
+          - string
+          - 'null'
+          description: Display name of the query's owner.
+        owner_id:
+          type:
+          - string
+          - 'null'
+          description: System user ID of the query's owner.
+          format: uuid
+        others_can_modify:
+          type:
+          - boolean
+          - 'null'
+          description: Indicates whether other users may modify this saved query.
+        added_by_id:
+          type:
+          - string
+          - 'null'
+          description: System user ID of the user who originally created the query.
+          format: uuid
+        added_by_user_name:
+          type:
+          - string
+          - 'null'
+          description: User name of the user who originally created the query.
+        changed_by_id:
+          type:
+          - string
+          - 'null'
+          description: System user ID of the user who last changed the query.
+          format: uuid
+        changed_by_user_name:
+          type:
+          - string
+          - 'null'
+          description: User name of the user who last changed the query.
+        date_added:
+          type:
+          - string
+          - 'null'
+          description: Raw wire value of the date the query was originally created, passed through verbatim (not parsed to date-time).
+        date_changed:
+          type:
+          - string
+          - 'null'
+          description: Raw wire value of the date the query was last changed, passed through verbatim (not parsed to date-time).
+        id_set_register_id:
+          type:
+          - string
+          - 'null'
+          description: Register ID for the ID set associated with the saved query, when applicable.
+          format: uuid
+      additionalProperties: false
+      description: 'Result of AdHocQuerySave: the created or updated query ID plus owner and audit metadata. date_added and date_changed are raw pass-through strings.'
+      x-display-name: Save ad-hoc query response
+      x-display-id: SaveAdHocQueryResponse
+    AdHocQueryRunResponseRow:
+      type: object
+      properties:
+        values:
+          type:
+          - array
+          - 'null'
+          items:
+            type:
+            - string
+            - 'null'
+          description: Cell values, one per output field, in the same order as fields. An individual entry is null when the underlying cell was null.
+      additionalProperties: false
+      description: A single result row. Values are positionally aligned with the response fields.
+      x-display-name: Ad-hoc query response row
+      x-display-id: AdHocQueryRunResponseRow
+    DeleteAdHocQueryExecutionResponse:
+      type: object
+      properties:
+        status:
+          enum:
+          - cancellation_requested
+          type:
+          - string
+          - 'null'
+          description: 'Outcome discriminator: `cancellation_requested` — AppFx was asked to cancel the running command. Best-effort: a no-op if the query already finished or the key is unknown to the server instance that ran it.'
+      additionalProperties: false
+      description: Response from DeleteAdHocQueryExecution (best-effort cancel of a deferred run). Acknowledges the request rather than confirming completion; poll GetAdHocQueryExecution to observe query_was_cancelled.
+      x-display-name: Delete ad-hoc query execution response
+      x-display-id: DeleteAdHocQueryExecutionResponse
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+x-refined-from:
+- blackbaud-altru-analysis-api-openapi.yml
+- blackbaud-crm-analysis-api-openapi.yml

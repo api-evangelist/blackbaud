@@ -1,0 +1,489 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Billing Management Generalledger API'
+  description: Billing Management provides APIs that expose data and functionality from the billing office.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/tms-bmapi
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/tms-bmapi
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Generalledger
+paths:
+  /v1/generalledger/batches:
+    get:
+      operationId: GetGeneralLedgerBatchList
+      summary: Post to GL batches (List) (PREVIEW)
+      description: 'Returns a page of up to 50 post to general ledger batches, most recently created first. When a continuation_token is returned, pass it back unmodified to retrieve the following page, and keep going until no token is returned. A page may contain fewer batches than the page size - even none at all - while still returning a token, so use the presence of the token rather than the number of batches to decide whether to continue. A continuation_token is intended for continuing a traversal that is already in progress; it should not be stored and reused later.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: continuation_token
+        in: query
+        required: false
+        schema:
+          type: string
+        description: The token returned by a previous request, used to fetch the following page. Omit to start from the first page.
+      responses:
+        '200':
+          description: A page of post to general ledger batches.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JournalEntryBatchDataPagedResult'
+              example:
+                items:
+                - id: 8f3c1e04-9b2a-4c77-9f61-2d5b6a0e7c31
+                  date_added: '2026-08-20T02:02:11Z'
+                - id: c41d7b58-3e6f-4a19-8b0d-7f92ac13de60
+                  date_added: '2026-08-19T09:47:03Z'
+                continuation_token: i65WSs7PLcgvzixJDcnPTs1TsqpWKoEwlLSDPF2s6vIsin0d_UPSAgKdshzhwNZWOSjEykg5JMjZytDAQNkzOMzKSNnT1d_KzNTU1FA50NnNykJJR6koMS89FWRobibISCUdpdzECiUrJTcoUKqtrY0FAA==
+                has_more: true
+        '400':
+          description: The request was bad or malformed.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Default400ResponseTypes'
+              example:
+                type: urn:blackbaud:invalid-address-type
+                title: One or more validation errors occurred.
+                status: 400
+                detail: The type Home is not valid for this address.
+                values:
+                  type: Home
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+      tags:
+      - Generalledger
+  /v1/generalledger/batches/{batch_id}/distributions:
+    get:
+      operationId: GetGeneralLedgerBatchDistributionList
+      summary: Post to GL batch distributions (List) (PREVIEW)
+      description: 'Returns a page of up to 50 general ledger distributions belonging to a post to general ledger batch, in ascending order by their unique identifier. Sort by line_number client side if the batch''s own line ordering matters for display. When a continuation_token is returned, pass it back unmodified to retrieve the following page, and keep going until no token is returned. A page may contain fewer distributions than the page size - even none at all - while still returning a token, so use the presence of the token rather than the number of distributions to decide whether to continue. A continuation_token is intended for continuing a traversal that is already in progress; it should not be stored and reused later.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: batch_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The unique identifier of the batch whose distributions are returned
+      - name: continuation_token
+        in: query
+        required: false
+        schema:
+          type: string
+        description: The token returned by a previous request, used to fetch the following page. Omit to start from the first page.
+      responses:
+        '200':
+          description: A page of general ledger distributions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JournalEntryBatchDistributionDataPagedResult'
+              example:
+                items:
+                - id: 91422
+                  line_number: 1
+                  account_number: 1000-00
+                  account_name: Cash
+                  project_description: Annual Fund
+                  debit_amount: 250
+                  credit_amount: 0
+                  post_date: '2026-08-20T12:00:00Z'
+                  journal_name: BILLING
+                  journal_reference: INV-8842
+                  transaction_id: 55120
+                  distribution_id: 91422
+                - id: 91423
+                  line_number: 2
+                  account_number: 4000-00
+                  account_name: Tuition Revenue
+                  project_description: Annual Fund
+                  debit_amount: 0
+                  credit_amount: 250
+                  post_date: '2026-08-20T12:00:00Z'
+                  journal_name: BILLING
+                  journal_reference: INV-8842
+                  transaction_id: 55120
+                  distribution_id: 91423
+                continuation_token: eyJwYWdlIjoyLCJiYXRjaF9pZCI6IjhmM2MxZTA0LTliMmEtNGM3Ny05ZjYxLTJkNWI2YTBlN2MzMSJ9
+                has_more: true
+        '400':
+          description: The request was bad or malformed.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Default400ResponseTypes'
+              example:
+                type: urn:blackbaud:invalid-address-type
+                title: One or more validation errors occurred.
+                status: 400
+                detail: The type Home is not valid for this address.
+                values:
+                  type: Home
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '404':
+          description: The requested item(s) were not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: urn:blackbaud:resource-not-found
+                title: The requested resource could not be found.
+                status: 404
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+      tags:
+      - Generalledger
+  /v1/generalledger/batches/{batch_id}/status:
+    patch:
+      operationId: EditGeneralLedgerBatchPostRunStatus
+      summary: Update GL batch post-run status (PREVIEW)
+      description: 'Allows a general ledger system to report the result of a post run for a post to general ledger batch, updating its status and recording the identifier for the run. Returns an error if the batch does not exist, has been deleted, or has already been posted.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: batch_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The unique identifier of the batch whose post run status is being reported
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateGeneralLedgerBatchPostRunStatusMessage'
+            example:
+              status: Posted
+              reference_id: My reference ID for this batch
+        description: The post run status and identifier
+      responses:
+        '200':
+          description: Whether the post run status was successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WasEditSuccessfulResponse'
+              example:
+                was_successful: true
+        '400':
+          description: The request was bad or malformed.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Default400ResponseTypes'
+              example:
+                type: urn:blackbaud:invalid-address-type
+                title: One or more validation errors occurred.
+                status: 400
+                detail: The type Home is not valid for this address.
+                values:
+                  type: Home
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '404':
+          description: The requested item(s) were not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: urn:blackbaud:resource-not-found
+                title: The requested resource could not be found.
+                status: 404
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '410':
+          description: The requested item has been deleted.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: urn:blackbaud:resource-gone
+                title: The requested resource is gone.
+                status: 410
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '409':
+          description: The request conflicts with the current state of the requested item.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: urn:blackbaud:conflict
+                title: The request failed conflict validation.
+                status: 409
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+      tags:
+      - Generalledger
+components:
+  schemas:
+    JournalEntryBatchStatus:
+      title: JournalEntryBatchStatus
+      enum:
+      - Approved
+      - Deleted
+      - Open
+      - PendingApproval
+      - Posted
+      type: string
+      description: Status of a journal entry batch
+    WasEditSuccessfulResponse:
+      type: object
+      properties:
+        was_successful:
+          type: boolean
+          description: Whether the edit succeeded
+      additionalProperties: false
+      description: A response indicating whether an edit succeeded.
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".
+        title:
+          type:
+          - string
+          - 'null'
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type:
+          - integer
+          - 'null'
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: {}
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+    JournalEntryBatchData:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier of the batch
+          format: uuid
+        date_added:
+          type: string
+          description: The date and time the batch was added to the system, in UTC
+          format: date-time
+      additionalProperties: false
+      description: Represents a post to general ledger batch
+    UpdateGeneralLedgerBatchPostRunStatusMessage:
+      required:
+      - status
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/JournalEntryBatchStatus'
+        reference_id:
+          maxLength: 200
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: 'Your reference ID for the general ledger batch. Character limit: 200'
+      additionalProperties: false
+      description: A request to report the result of a general ledger batch post run
+    JournalEntryBatchDataPagedResult:
+      type: object
+      properties:
+        items:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/JournalEntryBatchData'
+          description: The records in this page
+        continuation_token:
+          type:
+          - string
+          - 'null'
+          description: 'The token used to request the following page, or null when this is the last page. Pass it back
+
+            unmodified. A page can contain fewer records than requested, or none at all, and still return a
+
+            token, so use the presence of this token rather than the number of records to decide whether to
+
+            continue. A token is intended for continuing a traversal that is already in progress; it should
+
+            not be stored and reused later.'
+        has_more:
+          type: boolean
+          description: Whether a following page is available. Equivalent to checking whether the continuation_token field is present.
+          readOnly: true
+      additionalProperties: false
+      description: A single page of records along with the token used to request the following page.
+    JournalEntryBatchDistributionData:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The unique identifier of the distribution
+          format: int32
+        line_number:
+          type: integer
+          description: The line number of the distribution within the batch
+          format: int32
+        account_number:
+          type:
+          - string
+          - 'null'
+          description: The account number the distribution was posted against
+        account_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the account the distribution was posted against
+        project_description:
+          type:
+          - string
+          - 'null'
+          description: The description of the project associated with the distribution
+        debit_amount:
+          type: number
+          description: The debit amount of the distribution
+          format: double
+        credit_amount:
+          type: number
+          description: The credit amount of the distribution
+          format: double
+        post_date:
+          type: string
+          description: The date the distribution was posted
+          format: date-time
+        journal_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the journal the distribution was posted to
+        journal_reference:
+          type:
+          - string
+          - 'null'
+          description: The journal reference of the distribution
+        transaction_id:
+          type: integer
+          description: The identifier of the transaction that produced the distribution
+          format: int32
+        distribution_id:
+          type: integer
+          description: The unique identifier of the distribution
+          format: int32
+      additionalProperties: false
+      description: Represents a single general ledger distribution line belonging to a post to general ledger batch
+    Default400ResponseTypes:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".<br/><br/>Available values:<table><tr><th>type</th><th>detail</th></tr><tr><td>urn:blackbaud:model-validation-error</td><td>A model validation rule was violated, such as a missing required field.</td></tr><tr><td>urn:blackbaud:validation-error</td><td>The request was invalid.</td></tr></table>
+        title:
+          type:
+          - string
+          - 'null'
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type:
+          - integer
+          - 'null'
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: {}
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-bb-error-types:
+      - urn:blackbaud:model-validation-error
+      - urn:blackbaud:validation-error
+    JournalEntryBatchDistributionDataPagedResult:
+      type: object
+      properties:
+        items:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/JournalEntryBatchDistributionData'
+          description: The records in this page
+        continuation_token:
+          type:
+          - string
+          - 'null'
+          description: 'The token used to request the following page, or null when this is the last page. Pass it back
+
+            unmodified. A page can contain fewer records than requested, or none at all, and still return a
+
+            token, so use the presence of this token rather than the number of records to decide whether to
+
+            continue. A token is intended for continuing a traversal that is already in progress; it should
+
+            not be stored and reused later.'
+        has_more:
+          type: boolean
+          description: Whether a following page is available. Equivalent to checking whether the continuation_token field is present.
+          readOnly: true
+      additionalProperties: false
+      description: A single page of records along with the token used to request the following page.
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

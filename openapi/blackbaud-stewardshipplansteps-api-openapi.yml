@@ -1,0 +1,1472 @@
+openapi: 3.2.0
+info:
+  title: Blackbaud Stewardshipplansteps API
+  version: '1.0'
+  x-refined-note:
+  - x-apievangelist-provenance differs across the merged source definitions and was not carried
+  description: 'Operations tagged Stewardshipplansteps across 2 of this provider''s published API definitions: blackbaud-altru-prospect-api-openapi.yml, blackbaud-crm-prospect-api-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.sky.blackbaud.com/alt-prsmg
+- url: https://api.sky.blackbaud.com/crm-prsmg
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Stewardshipplansteps
+paths:
+  /stewardshipplansteps:
+    post:
+      operationId: CreateStewardshipPlanSteps
+      summary: Create a stewardship plan steps
+      description: Add operation for a stewardship plan step for an individual.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewStewardshipPlanSteps'
+            example:
+              id: string
+              category: string
+              objective: string
+              target_date: string
+              date_locked: true
+              target_start_time:
+                hour: 0
+                minute: 0
+              target_end_time:
+                hour: 0
+                minute: 0
+              time_zone_entry: string
+              all_day_event: true
+              contact_person: string
+              contact_method: string
+              constituent_id: string
+              associated_plans_text: string
+              associated_plans:
+              - id: string
+                prospect_plan_id: string
+                plan_name: string
+                has_site_security: true
+              template: string
+              recurs: string
+              status_code: string
+              next_target_date: string
+              start_date: string
+              end_date: string
+              link_type_code: string
+              event_id: string
+              mailing_id: string
+              benefit_id: string
+              actual_date: string
+              actual_start_time:
+                hour: 0
+                minute: 0
+              actual_end_time:
+                hour: 0
+                minute: 0
+              step_participants:
+              - constituent_id: string
+              stewardship_plan_id: string
+              step_owner_is_individual: true
+              step_owner_name: string
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully creates the resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to create the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Stewardshipplansteps
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-prsmg
+  /stewardshipplansteps/search:
+    get:
+      operationId: SearchStewardshipPlanSteps
+      summary: Search for stewardship plan steps
+      parameters:
+      - name: constituentid
+        in: query
+        required: false
+        schema:
+          type: string
+        description: constituent
+      - name: planname
+        in: query
+        required: false
+        schema:
+          type: string
+        description: plan name
+      - name: objective
+        in: query
+        required: false
+        schema:
+          type: string
+        description: step objective
+      - name: targetdate_from
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Format - date (as full-date in RFC3339). target date from
+      - name: targetdate_to
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Format - date (as full-date in RFC3339). to
+      - name: contact_method
+        in: query
+        required: false
+        schema:
+          type: string
+        description: contact method This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/INTERACTIONTYPECODE/entries
+      - name: contactpersonid
+        in: query
+        required: false
+        schema:
+          type: string
+        description: contact person
+      - name: assigned_to
+        in: query
+        required: false
+        schema:
+          type: string
+        description: assigned to
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Limits the number of records to return.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of result entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StewardshipPlanStepsSearchCollection'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to view the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+      tags:
+      - Stewardshipplansteps
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-prsmg
+  /stewardshipplansteps/{stewardship_plan_id}/list:
+    get:
+      operationId: ListStewardshipPlanSteps
+      summary: List stewardship plan steps
+      description: List of pending steps for a given stewardship plan.
+      parameters:
+      - name: stewardship_plan_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The stewardship plan id.
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Limits the number of records to return.
+      - name: session_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: A unique key provided by user for paging results. The same key will be returned in a successful response.
+      - name: infinity_session
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Values for cookies related to the Infinity load balancer session.
+      - name: more_rows_range_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Key for accessing cached results on subsequent calls to this data list.
+      - name: start_row_index
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Number of rows to skip,get result after these rows.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of result entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StewardshipPlanStepsListCollection'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to view the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+      tags:
+      - Stewardshipplansteps
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-prsmg
+  /stewardshipplansteps/{stewardship_plan_step_id}:
+    delete:
+      operationId: DeleteStewardshipPlanSteps
+      summary: Delete a stewardship plan steps
+      description: Deletes a step from a stewardship plan.
+      parameters:
+      - name: stewardship_plan_step_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The stewardship plan step id
+      responses:
+        '200':
+          description: Returned when the operation successfully deletes the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to delete the resource.
+      tags:
+      - Stewardshipplansteps
+    patch:
+      operationId: EditStewardshipPlanSteps
+      summary: Edit a stewardship plan steps
+      description: Edit operation for a stewardship plan step for an individual.
+      parameters:
+      - name: stewardship_plan_step_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The stewardship plan step id.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditStewardshipPlanSteps'
+            example:
+              step_owner_id: 7bf23c52-b65d-4b53-b38f-6b4ea574cb91
+              step_owner_name: andrew
+              step_owner_is_individual: 'false'
+              stewardship_plan_id: fddb1dc9-e829-4d9b-8b14-e042cbbd42f1
+              category_code_id: c318d81e-37d8-4639-a7e3-7cefddda272e
+              category_code_id_value_translation: ''
+              objective: ''
+              target_date: '2022-12-29T12:00:00Z'
+              date_locked: 'false'
+              actual_date: '2022-12-23T12:00:00Z'
+              start_date: '2022-12-23T12:00:00Z'
+              end_date: '2022-12-29T12:00:00Z'
+              contact_method_code_id: 7ed20706-0107-48bb-8bab-0a72495e992f
+              contact_method_code_id_value_translation: ''
+              constituent_id: 89486c68-fe07-409f-a8aa-a461fc57a723
+              associated_plans:
+                associated_plans_data_item:
+                - id: 9badb9e0-0812-4513-ad0e-c3fbd4379bc7
+                  prospect_plan_id: 93f6da94-2163-44d8-a229-6fa99f396bf1
+                  plan_name: ''
+                  has_site_security: 'false'
+              template: ''
+              recurs_code: '1'
+              recurs_code_value_translation: ''
+              status_code: '4'
+              status_code_value_translation: ''
+              next_target_date: '2022-12-31T12:00:00Z'
+              link_type_code: '0'
+              linkt_ypecode_value_translation: ''
+              event_id: 8528b3cb-afc3-4a57-aaff-758b8694df99
+              mailing_id: 4e34d36d-0de9-44ec-8cae-413272d7aa1d
+              benefit_id: 3c6d0181-887a-4f7f-be88-ee017c0ef0b1
+              target_start_time:
+                hour: '1'
+                minute: '26'
+              target_end_time:
+                hour: '2'
+                minute: '33'
+              time_zone_entry_id: 87f0d578-4fe7-472c-aee6-e35b5b2df679
+              all_day_event: 'false'
+              actual_start_time:
+                hour: '1'
+                minute: '25'
+              actual_end_time:
+                hour: '2'
+                minute: '35'
+              step_participants:
+                step_participants_data_item:
+                - constituent_id: 853af834-c8bb-41cc-a187-8a7671c0e627
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully edits the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to edit the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Stewardshipplansteps
+    get:
+      operationId: GetStewardshipPlanSteps
+      summary: Get a stewardship plan steps
+      description: Edit operation for a stewardship plan step for an individual.
+      parameters:
+      - name: stewardship_plan_step_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The stewardship plan step id.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the specified resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StewardshipPlanSteps'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to get the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Stewardshipplansteps
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-prsmg
+components:
+  schemas:
+    StewardshipPlanStepsAssociatedPlans:
+      type: object
+      properties:
+        id:
+          type: string
+          description: id
+        prospect_plan_id:
+          type: string
+          description: prospect plan id
+        plan_name:
+          type: string
+          description: plan name
+        has_site_security:
+          type: boolean
+          description: user has site security
+      description: StewardshipPlanStepsAssociatedPlans
+      x-display-name: associated_plans
+      x-display-id: associated_plans
+    StewardshipPlanStepsSearchSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID.
+        constituent:
+          type: string
+          description: The constituent.
+        plan:
+          type: string
+          description: The plan name.
+        objective:
+          type: string
+          description: The step objective.
+        category:
+          type: string
+          description: The category.
+        target_date:
+          type: string
+          description: 'The target date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        contact_method:
+          type: string
+          description: The contact method.
+        contact_person:
+          type: string
+          description: The contact person.
+        assigned_to:
+          type: string
+          description: The assigned to.
+        sites:
+          type: string
+          description: The sites.
+      additionalProperties: false
+      description: SearchStewardshipPlanSteps
+      x-display-name: Stewardship Plan Step Search
+      x-display-id: Stewardship Plan Step Search
+    EditStewardshipPlanSteps:
+      type: object
+      properties:
+        step_owner_id:
+          type: string
+          description: The step owner ID. Read-only in the SOAP API.
+        step_owner_name:
+          maxLength: 154
+          minLength: 0
+          type: string
+          description: The constituent name. Read-only in the SOAP API.
+        step_owner_is_individual:
+          type: boolean
+          description: Indicates whether step owner is an individual.
+        steward_ship_plan_id:
+          type: string
+          description: The plan ID.
+        category:
+          type: string
+          description: The category. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/stewardshipstepcategorycode/entries
+        objective:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The objective.
+        target_date:
+          type: string
+          description: 'The target date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        date_locked:
+          type: boolean
+          description: Indicates whether locked.
+        actual_date:
+          type: string
+          description: 'The actual date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        end_date:
+          type: string
+          description: 'The end date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        contact_method:
+          type: string
+          description: The contact method. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/interactiontypecode/entries
+        constituent_id:
+          type: string
+          description: The assigned to.
+        associated_plans:
+          type: array
+          items:
+            $ref: '#/components/schemas/EditStewardshipPlanStepsAssociatedPlans'
+          description: Associated plans.
+        template:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The template.
+        recurs:
+          type: string
+          description: The frequency. Available values are <i>single occurrence</i>, <i>annually</i>, <i>semi-annually</i>, <i>quarterly</i>, <i>bi-monthly</i>, <i>monthly</i>, <i>semi-monthly</i>, <i>bi-weekly</i>, <i>weekly</i>
+        status:
+          type: string
+          description: The status. Available values are <i>pending</i>, <i>completed</i>, <i>canceled</i>, <i>declined</i>
+        next_target_date:
+          type: string
+          description: 'The next target date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        link_type:
+          type: string
+          description: The link type. Available values are <i>benefit</i>, <i>event</i>, <i>mailing</i>
+        event_id:
+          type: string
+          description: The event.
+        mailing_id:
+          type: string
+          description: The mailing.
+        benefit_id:
+          type: string
+          description: The benefit.
+        target_start_time:
+          $ref: '#/components/schemas/HourMinute'
+        target_end_time:
+          $ref: '#/components/schemas/HourMinute'
+        time_zone_entry:
+          type: string
+          description: The time zone. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/7fba76fa-b1ea-4c01-b841-edb18f03fe8c.
+        all_day_event:
+          type: boolean
+          description: Indicates whether is all day event.
+        actual_start_time:
+          $ref: '#/components/schemas/HourMinute'
+        actual_end_time:
+          $ref: '#/components/schemas/HourMinute'
+        step_participants:
+          type: array
+          items:
+            $ref: '#/components/schemas/EditStewardshipPlanStepsStepParticipants'
+          description: Step participants.
+      additionalProperties: false
+      description: EditStewardshipPlanSteps
+      example:
+        step_owner_id: 7bf23c52-b65d-4b53-b38f-6b4ea574cb91
+        step_owner_name: andrew
+        step_owner_is_individual: 'false'
+        stewardship_plan_id: fddb1dc9-e829-4d9b-8b14-e042cbbd42f1
+        category_code_id: c318d81e-37d8-4639-a7e3-7cefddda272e
+        category_code_id_value_translation: ''
+        objective: ''
+        target_date: '2022-12-29T12:00:00Z'
+        date_locked: 'false'
+        actual_date: '2022-12-23T12:00:00Z'
+        start_date: '2022-12-23T12:00:00Z'
+        end_date: '2022-12-29T12:00:00Z'
+        contact_method_code_id: 7ed20706-0107-48bb-8bab-0a72495e992f
+        contact_method_code_id_value_translation: ''
+        constituent_id: 89486c68-fe07-409f-a8aa-a461fc57a723
+        associated_plans:
+          associated_plans_data_item:
+          - id: 9badb9e0-0812-4513-ad0e-c3fbd4379bc7
+            prospect_plan_id: 93f6da94-2163-44d8-a229-6fa99f396bf1
+            plan_name: ''
+            has_site_security: 'false'
+        template: ''
+        recurs_code: '1'
+        recurs_code_value_translation: ''
+        status_code: '4'
+        status_code_value_translation: ''
+        next_target_date: '2022-12-31T12:00:00Z'
+        link_type_code: '0'
+        linkt_ypecode_value_translation: ''
+        event_id: 8528b3cb-afc3-4a57-aaff-758b8694df99
+        mailing_id: 4e34d36d-0de9-44ec-8cae-413272d7aa1d
+        benefit_id: 3c6d0181-887a-4f7f-be88-ee017c0ef0b1
+        target_start_time:
+          hour: '1'
+          minute: '26'
+        target_end_time:
+          hour: '2'
+          minute: '33'
+        time_zone_entry_id: 87f0d578-4fe7-472c-aee6-e35b5b2df679
+        all_day_event: 'false'
+        actual_start_time:
+          hour: '1'
+          minute: '25'
+        actual_end_time:
+          hour: '2'
+          minute: '35'
+        step_participants:
+          step_participants_data_item:
+          - constituent_id: 853af834-c8bb-41cc-a187-8a7671c0e627
+      x-display-name: Stewardship Plan Step Edit Form
+      x-display-id: Stewardship Plan Step Edit Form
+    EditStewardshipPlanStepsStepParticipants:
+      required:
+      - constituent_id
+      type: object
+      properties:
+        constituent_id:
+          type: string
+          description: plan participant
+      description: EditStewardshipPlanStepsStepParticipants
+      x-display-name: step_participants
+      x-display-id: step_participants
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type: integer
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type: string
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: false
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-display-name: Problem details
+      x-display-id: ProblemDetails
+    StewardshipPlanStepsStepParticipants:
+      required:
+      - constituent_id
+      type: object
+      properties:
+        constituent_id:
+          type: string
+          description: plan participant
+      description: StewardshipPlanStepsStepParticipants
+      x-display-name: step_participants
+      x-display-id: step_participants
+    HourMinute:
+      type: object
+      properties:
+        hour:
+          type: integer
+          description: The hour.
+          format: int32
+        minute:
+          type: integer
+          description: The minute.
+          format: int32
+      description: HourMinute
+      x-display-name: Hour Minute
+      x-display-id: Hour Minute
+    StewardshipPlanStepsSearchCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items available for retrieval into the collection after applying any request parameters.
+          format: int32
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/StewardshipPlanStepsSearchSummary'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+      additionalProperties: false
+      description: A collection of items. Data lists can contain paginated results.
+    StewardshipPlanStepsListCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items available for retrieval into the collection after applying any request parameters.
+          format: int32
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/StewardshipPlanStepsListSummary'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+        infinity_session:
+          type: string
+          description: Values for cookies related to the Infinity load balancer session.
+          format: string
+        session_key:
+          type: string
+          description: Session key for paging provided by user in request query parameter.
+          format: string
+        total_available_rows:
+          type: integer
+          description: The number of total rows available.
+          format: int32
+        more_rows_range_key:
+          type: string
+          description: Key for accessing cached results on subsequent calls to this data list.
+          format: string
+        data_no_longer_available:
+          type: boolean
+          description: Indicates data is no longer available in the context of this session.
+          format: boolean
+      additionalProperties: false
+      description: A collection of items. Data lists can contain paginated results.
+    NewStewardshipPlanStepsStepParticipants:
+      type: object
+      properties:
+        constituent_id:
+          type: string
+          description: plan participant
+      description: NewStewardshipPlanStepsStepParticipants
+      x-display-name: step_participants
+      x-display-id: step_participants
+    StewardshipPlanStepsListSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID.
+        is_group_org_step:
+          type: boolean
+          description: Indicates whether is group or organization step.
+        category:
+          type: string
+          description: The category.
+        objective:
+          type: string
+          description: The objective.
+        target_date:
+          type: string
+          description: 'The target date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        contact_method:
+          type: string
+          description: The contact method.
+        assigned_to:
+          type: string
+          description: The assigned to.
+        associated_plans:
+          type: string
+          description: The associated plans.
+        template:
+          type: string
+          description: The template.
+        has_documentation:
+          type: boolean
+          description: Indicates whether has documentation.
+        recurs:
+          type: string
+          description: The frequency.
+        date_added:
+          type: string
+          description: 'The date added. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        step_owner_name:
+          type: string
+          description: The step origin.
+        target_start_time:
+          $ref: '#/components/schemas/HourMinute'
+        target_end_time:
+          $ref: '#/components/schemas/HourMinute'
+        time_zone:
+          type: string
+          description: The time zone.
+      additionalProperties: false
+      description: ListStewardshipPlanSteps
+      x-display-name: Stewardship Plan Pending Steps List
+      x-display-id: Stewardship Plan Pending Steps List
+    NewStewardshipPlanSteps:
+      required:
+      - objective
+      - target_date
+      - recurs
+      type: object
+      properties:
+        id:
+          type: string
+          description: id
+        category:
+          type: string
+          description: The category. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/stewardshipstepcategorycode/entries
+        objective:
+          type: string
+          description: objective
+        target_date:
+          type: string
+          description: target date
+          format: date
+        date_locked:
+          type: boolean
+          description: locked
+        target_start_time:
+          $ref: '#/components/schemas/HourMinute'
+        target_end_time:
+          $ref: '#/components/schemas/HourMinute'
+        time_zone_entry:
+          type: string
+          description: The time zone. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/7fba76fa-b1ea-4c01-b841-edb18f03fe8c.
+        all_day_event:
+          type: boolean
+          description: is all day event
+        contact_person:
+          type: string
+          description: The contact person. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/4a57e218-017f-4658-8e22-c8a700402e81?parameters=constituent_id,{constituent_id}&parameters=dataforminstanceid,{93ca630c-413c-483d-b08a-363089e5cab5}.
+        contact_method:
+          type: string
+          description: The contact method. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/interactiontypecode/entries
+        constituent_id:
+          type: string
+          description: assigned to
+        associated_plans_text:
+          type: string
+          description: associated plans
+        associated_plans:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewStewardshipPlanStepsAssociatedPlans'
+          description: Associated plans.
+        template:
+          type: string
+          description: template
+        recurs:
+          type: string
+          description: The frequency. Available values are <i>single occurrence</i>, <i>annually</i>, <i>semi-annually</i>, <i>quarterly</i>, <i>bi-monthly</i>, <i>monthly</i>, <i>semi-monthly</i>, <i>bi-weekly</i>, <i>weekly</i>
+        status_code:
+          type: string
+          description: status
+          format: smallint
+        next_target_date:
+          type: string
+          description: next target date
+          format: date
+        start_date:
+          type: string
+          description: start date
+          format: date
+        end_date:
+          type: string
+          description: end date
+          format: date
+        link_type_code:
+          type: string
+          description: link type
+          format: smallint
+        event_id:
+          type: string
+          description: event
+        mailing_id:
+          type: string
+          description: mailing
+        benefit_id:
+          type: string
+          description: benefit
+        actual_date:
+          type: string
+          description: actual date
+          format: date
+        actual_start_time:
+          $ref: '#/components/schemas/HourMinute'
+        actual_end_time:
+          $ref: '#/components/schemas/HourMinute'
+        step_participants:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewStewardshipPlanStepsStepParticipants'
+          description: Step participants.
+        stewardship_plan_id:
+          type: string
+          description: plan id
+        step_owner_is_individual:
+          type: boolean
+          description: step owner is an individual
+        step_owner_name:
+          type: string
+          description: step origin
+      description: NewStewardshipPlanSteps
+      x-display-name: steps
+      x-display-id: steps
+    StewardshipPlanSteps:
+      required:
+      - objective
+      - target_date
+      - recurs
+      - status
+      type: object
+      properties:
+        step_owner_id:
+          type: string
+          description: The step owner ID. Read-only in the SOAP API.
+        step_owner_name:
+          maxLength: 154
+          minLength: 0
+          type: string
+          description: The constituent name. Read-only in the SOAP API.
+        step_owner_is_individual:
+          type: boolean
+          description: Indicates whether step owner is an individual.
+        stewardshipplanid:
+          type: string
+          description: The plan ID.
+        category:
+          type: string
+          description: The category. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/stewardshipstepcategorycode/entries
+        objective:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The objective.
+        target_date:
+          type: string
+          description: 'The target date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        date_locked:
+          type: boolean
+          description: Indicates whether locked.
+        actual_date:
+          type: string
+          description: 'The actual date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        end_date:
+          type: string
+          description: 'The end date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        contact_method:
+          type: string
+          description: The contact method. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/interactiontypecode/entries
+        constituent_id:
+          type: string
+          description: The assigned to.
+        associated_plans:
+          type: array
+          items:
+            $ref: '#/components/schemas/StewardshipPlanStepsAssociatedPlans'
+          description: Associated plans.
+        template:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The template.
+        recurs:
+          type: string
+          description: The frequency. Available values are <i>single occurrence</i>, <i>annually</i>, <i>semi-annually</i>, <i>quarterly</i>, <i>bi-monthly</i>, <i>monthly</i>, <i>semi-monthly</i>, <i>bi-weekly</i>, <i>weekly</i>
+        status:
+          type: string
+          description: The status. Available values are <i>pending</i>, <i>completed</i>, <i>canceled</i>, <i>declined</i>
+        next_target_date:
+          type: string
+          description: 'The next target date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        linktype:
+          type: string
+          description: The link type. Available values are <i>benefit</i>, <i>event</i>, <i>mailing</i>
+        event_id:
+          type: string
+          description: The event.
+        mailing_id:
+          type: string
+          description: The mailing.
+        benefit_id:
+          type: string
+          description: The benefit.
+        target_start_time:
+          $ref: '#/components/schemas/HourMinute'
+        target_end_time:
+          $ref: '#/components/schemas/HourMinute'
+        time_zone_entry:
+          type: string
+          description: The time zone. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/7fba76fa-b1ea-4c01-b841-edb18f03fe8c.
+        all_day_event:
+          type: boolean
+          description: Indicates whether is all day event.
+        actual_start_time:
+          $ref: '#/components/schemas/HourMinute'
+        actual_end_time:
+          $ref: '#/components/schemas/HourMinute'
+        step_participants:
+          type: array
+          items:
+            $ref: '#/components/schemas/StewardshipPlanStepsStepParticipants'
+          description: Step participants.
+      additionalProperties: false
+      description: GetStewardshipPlanSteps
+      x-display-name: Stewardship Plan Step Edit Form
+      x-display-id: Stewardship Plan Step Edit Form
+    PostResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The newly created ID.
+      additionalProperties: false
+      description: Defines the shape of a post response object.
+    EditStewardshipPlanStepsAssociatedPlans:
+      type: object
+      properties:
+        id:
+          type: string
+          description: id
+        prospect_plan_id:
+          type: string
+          description: prospect plan id
+        plan_name:
+          type: string
+          description: plan name
+        has_site_security:
+          type: boolean
+          description: user has site security
+      description: EditStewardshipPlanStepsAssociatedPlans
+      x-display-name: associated_plans
+      x-display-id: associated_plans
+    NewStewardshipPlanStepsAssociatedPlans:
+      type: object
+      properties:
+        id:
+          type: string
+          description: id
+        prospect_plan_id:
+          type: string
+          description: prospect plan id
+        plan_name:
+          type: string
+          description: plan name
+        has_site_security:
+          type: boolean
+          description: user has site security
+      description: NewStewardshipPlanStepsAssociatedPlans
+      x-display-name: associated_plans
+      x-display-id: associated_plans
+    StewardshipPlanStepsSearchSummary_2:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID.
+        constituent:
+          type: string
+          description: The constituent.
+        plan:
+          type: string
+          description: The plan name.
+        objective:
+          type: string
+          description: The step objective.
+        category:
+          type: string
+          description: The category.
+        target_date:
+          type: string
+          description: 'The target date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        contact_method:
+          type: string
+          description: The contact method.
+        contact_person:
+          type: string
+          description: The contact person.
+        assigned_to:
+          type: string
+          description: The assigned to.
+        sites:
+          type: string
+          description: The sites.
+        historical:
+          type: boolean
+          description: Indicates whether historical plan.
+      additionalProperties: false
+      description: SearchStewardshipPlanSteps
+      x-display-name: Stewardship Plan Step Search
+      x-display-id: Stewardship Plan Step Search
+    EditStewardshipPlanSteps_2:
+      type: object
+      properties:
+        step_owner_id:
+          type: string
+          description: The step owner ID. Read-only in the SOAP API.
+        step_owner_name:
+          maxLength: 154
+          minLength: 0
+          type: string
+          description: The constituent name. Read-only in the SOAP API.
+        step_owner_is_individual:
+          type: boolean
+          description: Indicates whether step owner is an individual.
+        steward_ship_plan_id:
+          type: string
+          description: The plan ID.
+        category:
+          type: string
+          description: The category. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/stewardshipstepcategorycode/entries
+        objective:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The objective.
+        target_date:
+          type: string
+          description: 'The target date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        date_locked:
+          type: boolean
+          description: Indicates whether locked.
+        actual_date:
+          type: string
+          description: 'The actual date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        end_date:
+          type: string
+          description: 'The end date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        contact_method:
+          type: string
+          description: The contact method. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/interactiontypecode/entries
+        constituent_id:
+          type: string
+          description: The assigned to.
+        associated_plans:
+          type: array
+          items:
+            $ref: '#/components/schemas/EditStewardshipPlanStepsAssociatedPlans'
+          description: Associated plans.
+        template:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The template.
+        recurs:
+          type: string
+          description: The frequency. Available values are <i>single occurrence</i>, <i>annually</i>, <i>semi-annually</i>, <i>quarterly</i>, <i>bi-monthly</i>, <i>monthly</i>, <i>semi-monthly</i>, <i>bi-weekly</i>, <i>weekly</i>
+        status:
+          type: string
+          description: The status. Available values are <i>pending</i>, <i>completed</i>, <i>canceled</i>, <i>declined</i>
+        next_target_date:
+          type: string
+          description: 'The next target date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        link_type:
+          type: string
+          description: The link type. Available values are <i>benefit</i>, <i>event</i>, <i>mailing</i>
+        event_id:
+          type: string
+          description: The event.
+        mailing_id:
+          type: string
+          description: The mailing.
+        benefit_id:
+          type: string
+          description: The benefit.
+        target_start_time:
+          $ref: '#/components/schemas/HourMinute'
+        target_end_time:
+          $ref: '#/components/schemas/HourMinute'
+        time_zone_entry:
+          type: string
+          description: The time zone. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/7fba76fa-b1ea-4c01-b841-edb18f03fe8c.
+        all_day_event:
+          type: boolean
+          description: Indicates whether is all day event.
+        actual_start_time:
+          $ref: '#/components/schemas/HourMinute'
+        actual_end_time:
+          $ref: '#/components/schemas/HourMinute'
+        step_participants:
+          type: array
+          items:
+            $ref: '#/components/schemas/EditStewardshipPlanStepsStepParticipants'
+          description: Step participants.
+      additionalProperties: false
+      description: EditStewardshipPlanSteps
+      example:
+        step_owner_id: 7bf23c52-b65d-4b53-b38f-6b4ea574cb91
+        step_owner_name: andrew
+        step_owner_is_individual: 'false'
+        stewardship_plan_id: fddb1dc9-e829-4d9b-8b14-e042cbbd42f1
+        category_code_id: c318d81e-37d8-4639-a7e3-7cefddda272e
+        category_code_id_value_translation: ''
+        objective: ''
+        target_date: '2022-12-29T12:00:00Z'
+        date_locked: 'false'
+        actual_date: '2022-12-23T12:00:00Z'
+        start_date: '2022-12-23T12:00:00Z'
+        end_date: '2022-12-29T12:00:00Z'
+        contact_method_code_id: 7ed20706-0107-48bb-8bab-0a72495e992f
+        contact_method_code_id_value_translation: ''
+        constituent_id: 89486c68-fe07-409f-a8aa-a461fc57a723
+        associated_plans:
+          associated_plans_data_item:
+          - id: 9badb9e0-0812-4513-ad0e-c3fbd4379bc7
+            prospect_plan_id: 93f6da94-2163-44d8-a229-6fa99f396bf1
+            plan_name: ''
+            has_site_security: 'false'
+        template: ''
+        recurs_code: '1'
+        recurs_code_value_translation: ''
+        status_code: '4'
+        status_code_value_translation: ''
+        next_target_date: '2022-12-31T12:00:00Z'
+        link_type_code: '0'
+        linkt_ypecode_value_translation: ''
+        event_id: 8528b3cb-afc3-4a57-aaff-758b8694df99
+        mailing_id: 4e34d36d-0de9-44ec-8cae-413272d7aa1d
+        benefit_id: 3c6d0181-887a-4f7f-be88-ee017c0ef0b1
+        target_start_time:
+          hour: '1'
+          minute: '26'
+        target_end_time:
+          hour: '2'
+          minute: '33'
+        time_zone_entry_id: 87f0d578-4fe7-472c-aee6-e35b5b2df679
+        all_day_event: 'false'
+        actual_start_time:
+          hour: '1'
+          minute: '25'
+        actual_end_time:
+          hour: '2'
+          minute: '35'
+        step_participants:
+          step_participants_data_item:
+          - constituent_id: 853af834-c8bb-41cc-a187-8a7671c0e627
+      x-display-name: Stewardship Plan Step Edit Form
+      x-display-id: Stewardship Plan Step Edit Form
+    NewStewardshipPlanSteps_2:
+      required:
+      - objective
+      - target_date
+      - recurs
+      type: object
+      properties:
+        id:
+          type: string
+          description: id
+        category:
+          type: string
+          description: The category. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/stewardshipstepcategorycode/entries
+        objective:
+          type: string
+          description: objective
+        target_date:
+          type: string
+          description: target date
+          format: date
+        date_locked:
+          type: boolean
+          description: locked
+        target_start_time:
+          $ref: '#/components/schemas/HourMinute'
+        target_end_time:
+          $ref: '#/components/schemas/HourMinute'
+        time_zone_entry:
+          type: string
+          description: The time zone. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/7fba76fa-b1ea-4c01-b841-edb18f03fe8c.
+        all_day_event:
+          type: boolean
+          description: is all day event
+        contact_person:
+          type: string
+          description: The contact person. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/4a57e218-017f-4658-8e22-c8a700402e81?parameters=constituent_id,{constituent_id}&parameters=dataforminstanceid,{93ca630c-413c-483d-b08a-363089e5cab5}.
+        contact_method:
+          type: string
+          description: The contact method. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/interactiontypecode/entries
+        constituent_id:
+          type: string
+          description: assigned to
+        associated_plans_text:
+          type: string
+          description: associated plans
+        associated_plans:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewStewardshipPlanStepsAssociatedPlans'
+          description: Associated plans.
+        template:
+          type: string
+          description: template
+        recurs:
+          type: string
+          description: The frequency. Available values are <i>single occurrence</i>, <i>annually</i>, <i>semi-annually</i>, <i>quarterly</i>, <i>bi-monthly</i>, <i>monthly</i>, <i>semi-monthly</i>, <i>bi-weekly</i>, <i>weekly</i>
+        status_code:
+          type: string
+          description: status
+          format: smallint
+        next_target_date:
+          type: string
+          description: next target date
+          format: date
+        start_date:
+          type: string
+          description: start date
+          format: date
+        end_date:
+          type: string
+          description: end date
+          format: date
+        link_type_code:
+          type: string
+          description: link type
+          format: smallint
+        event_id:
+          type: string
+          description: event
+        mailing_id:
+          type: string
+          description: mailing
+        benefit_id:
+          type: string
+          description: benefit
+        actual_date:
+          type: string
+          description: actual date
+          format: date
+        actual_start_time:
+          $ref: '#/components/schemas/HourMinute'
+        actual_end_time:
+          $ref: '#/components/schemas/HourMinute'
+        step_participants:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewStewardshipPlanStepsStepParticipants'
+          description: Step participants.
+        stewardship_plan_id:
+          type: string
+          description: plan id
+        step_owner_is_individual:
+          type: boolean
+          description: step owner is an individual
+        step_owner_name:
+          type: string
+          description: step origin
+      description: NewStewardshipPlanSteps
+      x-display-name: steps
+      x-display-id: steps
+    StewardshipPlanSteps_2:
+      required:
+      - objective
+      - target_date
+      - recurs
+      - status
+      type: object
+      properties:
+        step_owner_id:
+          type: string
+          description: The step owner ID. Read-only in the SOAP API.
+        step_owner_name:
+          maxLength: 154
+          minLength: 0
+          type: string
+          description: The constituent name. Read-only in the SOAP API.
+        step_owner_is_individual:
+          type: boolean
+          description: Indicates whether step owner is an individual.
+        stewardshipplanid:
+          type: string
+          description: The plan ID.
+        category:
+          type: string
+          description: The category. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/stewardshipstepcategorycode/entries
+        objective:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The objective.
+        target_date:
+          type: string
+          description: 'The target date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        date_locked:
+          type: boolean
+          description: Indicates whether locked.
+        actual_date:
+          type: string
+          description: 'The actual date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        end_date:
+          type: string
+          description: 'The end date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        contact_method:
+          type: string
+          description: The contact method. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/interactiontypecode/entries
+        constituent_id:
+          type: string
+          description: The assigned to.
+        associated_plans:
+          type: array
+          items:
+            $ref: '#/components/schemas/StewardshipPlanStepsAssociatedPlans'
+          description: Associated plans.
+        template:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The template.
+        recurs:
+          type: string
+          description: The frequency. Available values are <i>single occurrence</i>, <i>annually</i>, <i>semi-annually</i>, <i>quarterly</i>, <i>bi-monthly</i>, <i>monthly</i>, <i>semi-monthly</i>, <i>bi-weekly</i>, <i>weekly</i>
+        status:
+          type: string
+          description: The status. Available values are <i>pending</i>, <i>completed</i>, <i>canceled</i>, <i>declined</i>
+        next_target_date:
+          type: string
+          description: 'The next target date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        linktype:
+          type: string
+          description: The link type. Available values are <i>benefit</i>, <i>event</i>, <i>mailing</i>
+        event_id:
+          type: string
+          description: The event.
+        mailing_id:
+          type: string
+          description: The mailing.
+        benefit_id:
+          type: string
+          description: The benefit.
+        target_start_time:
+          $ref: '#/components/schemas/HourMinute'
+        target_end_time:
+          $ref: '#/components/schemas/HourMinute'
+        time_zone_entry:
+          type: string
+          description: The time zone. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/7fba76fa-b1ea-4c01-b841-edb18f03fe8c.
+        all_day_event:
+          type: boolean
+          description: Indicates whether is all day event.
+        actual_start_time:
+          $ref: '#/components/schemas/HourMinute'
+        actual_end_time:
+          $ref: '#/components/schemas/HourMinute'
+        step_participants:
+          type: array
+          items:
+            $ref: '#/components/schemas/StewardshipPlanStepsStepParticipants'
+          description: Step participants.
+      additionalProperties: false
+      description: GetStewardshipPlanSteps
+      x-display-name: Stewardship Plan Step Edit Form
+      x-display-id: Stewardship Plan Step Edit Form
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+x-refined-from:
+- blackbaud-altru-prospect-api-openapi.yml
+- blackbaud-crm-prospect-api-openapi.yml

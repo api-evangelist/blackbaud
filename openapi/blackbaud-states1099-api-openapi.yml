@@ -1,0 +1,82 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Accounts Payable States1099 API'
+  description: This API is used to manage accounts payable, including vendors and invoices.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/57a342f1d7dcde1c28a749fe
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/accountspayable/v1
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: States1099
+paths:
+  /states1099:
+    get:
+      operationId: ListStates1099
+      summary: State 1099 (List)
+      description: Returns a list of states for 1099.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains a list of states for 1099.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StateApiCollection'
+              example:
+                count: 3
+                value:
+                - id: 3
+                  name: GA
+                - id: 2
+                  name: NC
+                - id: 1
+                  name: SC
+      tags:
+      - States1099
+components:
+  schemas:
+    State:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The identifier for this state.
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the state.
+      additionalProperties: false
+      description: Contract for state.
+    StateApiCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/State'
+      additionalProperties: false
+      description: Collection Response
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

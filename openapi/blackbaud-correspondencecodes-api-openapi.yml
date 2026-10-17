@@ -1,0 +1,542 @@
+openapi: 3.2.0
+info:
+  title: Blackbaud Correspondencecodes API
+  version: '1.0'
+  x-refined-note:
+  - x-apievangelist-provenance differs across the merged source definitions and was not carried
+  description: 'Operations tagged Correspondencecodes across 2 of this provider''s published API definitions: blackbaud-altru-marketing-api-openapi.yml, blackbaud-crm-marketing-api-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.sky.blackbaud.com/alt-mktmg
+- url: https://api.sky.blackbaud.com/crm-mktmg
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Correspondencecodes
+paths:
+  /correspondencecodes:
+    post:
+      operationId: CreateCorrespondenceCode
+      summary: Create a correspondence code
+      description: This operation is used to add a correspondence code.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewCorrespondenceCode'
+            example:
+              name: 20205KRUN
+              description: 2020 5K Run Email
+              category: ''
+              site_id: ''
+              site_required: false
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully creates the resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to create the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Correspondencecodes
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-mktmg
+  /correspondencecodes/list:
+    get:
+      operationId: ListCorrespondenceCodes
+      summary: List correspondence codes
+      description: This operation returns the correspondence code operation.
+      parameters:
+      - name: include_inactive
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: include inactive
+      - name: site_filter_mode
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - All sites
+          - My site
+          - My site's branch
+          - Selected sites
+        description: sites
+      - name: sites_selected
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Format - XML. sites selected
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Limits the number of records to return.
+      - name: session_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: A unique key provided by user for paging results. The same key will be returned in a successful response.
+      - name: infinity_session
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Values for cookies related to the Infinity load balancer session.
+      - name: more_rows_range_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Key for accessing cached results on subsequent calls to this data list.
+      - name: start_row_index
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Number of rows to skip,get result after these rows.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of result entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CorrespondenceCodeListCollection'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to view the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+      tags:
+      - Correspondencecodes
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-mktmg
+  /correspondencecodes/{correspondence_code_id}:
+    delete:
+      operationId: DeleteCorrespondenceCode
+      summary: Delete a correspondence code
+      description: This deletion handles only the basic deletion rules for a correspondence code (currently none).
+      parameters:
+      - name: correspondence_code_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The correspondence code id
+      responses:
+        '200':
+          description: Returned when the operation successfully deletes the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to delete the resource.
+      tags:
+      - Correspondencecodes
+    patch:
+      operationId: EditCorrespondenceCode
+      summary: Edit a correspondence code
+      description: This operation is for editing a correspondence code.
+      parameters:
+      - name: correspondence_code_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The correspondence code id.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditCorrespondenceCode'
+            example:
+              name: 20205KRUN
+              description: 2020 5K Run Email
+              category: ''
+              site_id: ''
+              site_required: false
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully edits the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to edit the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Correspondencecodes
+    get:
+      operationId: GetCorrespondenceCode
+      summary: Get a correspondence code
+      description: This operation is for editing a correspondence code.
+      parameters:
+      - name: correspondence_code_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The correspondence code id.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the specified resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CorrespondenceCode'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to get the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Correspondencecodes
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-mktmg
+components:
+  schemas:
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type: integer
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type: string
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: false
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-display-name: Problem details
+      x-display-id: ProblemDetails
+    CorrespondenceCodeListSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID.
+        name:
+          type: string
+          description: The name.
+        description:
+          type: string
+          description: The description.
+        active:
+          type: boolean
+          description: Indicates whether active.
+        category:
+          type: string
+          description: The category.
+        site:
+          type: string
+          description: The site.
+      additionalProperties: false
+      description: ListCorrespondenceCodes
+      x-display-name: Correspondence Code List
+      x-display-id: Correspondence Code List
+    CorrespondenceCode:
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The name.
+        description:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The description.
+        category:
+          type: string
+          description: The category. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/correspondencecategorycode/entries
+        site_id:
+          type: string
+          description: The site.
+        site_required:
+          type: boolean
+          description: Indicates whether site required. Read-only in the SOAP API.
+      additionalProperties: false
+      description: GetCorrespondenceCode
+      x-display-name: Correspondence Code Edit Form 3
+      x-display-id: Correspondence Code Edit Form 3
+    EditCorrespondenceCode:
+      type: object
+      properties:
+        name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The name.
+        description:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The description.
+        category:
+          type: string
+          description: The category. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/correspondencecategorycode/entries
+        site_id:
+          type: string
+          description: The site.
+        site_required:
+          type: boolean
+          description: Indicates whether site required. Read-only in the SOAP API.
+      additionalProperties: false
+      description: EditCorrespondenceCode
+      example:
+        name: 20205KRUN
+        description: 2020 5K Run Email
+        category: ''
+        site_id: ''
+        site_required: false
+      x-display-name: Correspondence Code Edit Form 3
+      x-display-id: Correspondence Code Edit Form 3
+    CorrespondenceCodeListCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items available for retrieval into the collection after applying any request parameters.
+          format: int32
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/CorrespondenceCodeListSummary'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+        infinity_session:
+          type: string
+          description: Values for cookies related to the Infinity load balancer session.
+          format: string
+        session_key:
+          type: string
+          description: Session key for paging provided by user in request query parameter.
+          format: string
+        total_available_rows:
+          type: integer
+          description: The number of total rows available.
+          format: int32
+        more_rows_range_key:
+          type: string
+          description: Key for accessing cached results on subsequent calls to this data list.
+          format: string
+        data_no_longer_available:
+          type: boolean
+          description: Indicates data is no longer available in the context of this session.
+          format: boolean
+      additionalProperties: false
+      description: A collection of items. Data lists can contain paginated results.
+    NewCorrespondenceCode:
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The name.
+        description:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The description.
+        category:
+          type: string
+          description: The category. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/correspondencecategorycode/entries
+        site_id:
+          type: string
+          description: The site.
+        site_required:
+          type: boolean
+          description: Indicates whether site required. Read-only in the SOAP API.
+      additionalProperties: false
+      description: CreateCorrespondenceCode
+      example:
+        name: 20205KRUN
+        description: 2020 5K Run Email
+        category: ''
+        site_id: ''
+        site_required: false
+      x-display-name: Correspondence Code Add Form
+      x-display-id: Correspondence Code Add Form
+    PostResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The newly created ID.
+      additionalProperties: false
+      description: Defines the shape of a post response object.
+    CorrespondenceCode_2:
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The name.
+        description:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The description.
+        category:
+          type: string
+          description: The category. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/correspondencecategorycode/entries
+        site_id:
+          type: string
+          description: The site.
+        site_required:
+          type: boolean
+          description: Indicates whether site required. Read-only in the SOAP API.
+      additionalProperties: false
+      description: GetCorrespondenceCode
+      x-display-name: Correspondence Code Edit Form 3
+      x-display-id: Correspondence Code Edit Form 3
+    EditCorrespondenceCode_2:
+      type: object
+      properties:
+        name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The name.
+        description:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The description.
+        category:
+          type: string
+          description: The category. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/correspondencecategorycode/entries
+        site_id:
+          type: string
+          description: The site.
+        site_required:
+          type: boolean
+          description: Indicates whether site required. Read-only in the SOAP API.
+      additionalProperties: false
+      description: EditCorrespondenceCode
+      example:
+        name: 20205KRUN
+        description: 2020 5K Run Email
+        category: ''
+        site_id: ''
+        site_required: false
+      x-display-name: Correspondence Code Edit Form 3
+      x-display-id: Correspondence Code Edit Form 3
+    NewCorrespondenceCode_2:
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The name.
+        description:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The description.
+        category:
+          type: string
+          description: The category. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/correspondencecategorycode/entries
+        site_id:
+          type: string
+          description: The site.
+        site_required:
+          type: boolean
+          description: Indicates whether site required. Read-only in the SOAP API.
+      additionalProperties: false
+      description: CreateCorrespondenceCode
+      example:
+        name: 20205KRUN
+        description: 2020 5K Run Email
+        category: ''
+        site_id: ''
+        site_required: false
+      x-display-name: Correspondence Code Add Form
+      x-display-id: Correspondence Code Add Form
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+x-refined-from:
+- blackbaud-altru-marketing-api-openapi.yml
+- blackbaud-crm-marketing-api-openapi.yml

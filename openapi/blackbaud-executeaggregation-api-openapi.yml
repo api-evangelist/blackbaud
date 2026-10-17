@@ -1,0 +1,274 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Lists V2 Executeaggregation API'
+  description: This API manages lists of records
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/lst-lists
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/lst-lists
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Executeaggregation
+paths:
+  /executeaggregation:
+    post:
+      operationId: GetAggregationResults
+      summary: Executes an aggregation request (PREVIEW)
+      description: 'Executes an aggregation operation against a data model
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Blackbaud.List.Service.Models.SimpleAggregationRequest'
+            example:
+              data_model_name: invoice
+              aggregation_type: Sum
+              field: balance
+              filter:
+                filter_items:
+                - field:
+                    value:
+                      value:
+                        date_range_type: SpecificRange
+                        start_date: '2020-05-06T04:15:00Z'
+                        end_date: '2021-05-06T04:15:00Z'
+                    field_id: transaction_date
+                    operator: Equal
+                time_zone_offset_in_minutes: 300
+        description: The aggregation request.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Blackbaud.List.Service.Models.SimpleAggregationResult'
+              example:
+                value: 0
+                count: 0
+      tags:
+      - Executeaggregation
+components:
+  schemas:
+    Blackbaud.List.Service.Models.FilterValue:
+      type: object
+      properties:
+        value:
+          description: The value for the filter
+        label:
+          type:
+          - string
+          - 'null'
+          description: An optional label associated with the Blackbaud.List.Service.Models.FilterValue
+        filter_value_options:
+          type:
+          - String
+          - 'null'
+          description: Defines additional options that can be used for filtering
+      additionalProperties: false
+      description: Represents the value for a filter field
+    Blackbaud.List.Service.Models.Filter:
+      type: object
+      properties:
+        filter_items:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Blackbaud.List.Service.Models.FilterItem'
+          description: The set of filter items in the filter
+        time_zone_offset_in_minutes:
+          type:
+          - integer
+          - 'null'
+          description: Gets or sets the time zone offset to support dynamic date filtering
+          format: int32
+        first_day_of_week:
+          title: FirstDayOfWeekType
+          enum:
+          - Sunday
+          - Monday
+          type:
+          - string
+          - 'null'
+          description: Gets or sets the first day of week when using certain date filters.
+        selected_filters:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Blackbaud.List.Service.Models.SelectedFilter'
+          description: The set of selected filter items in the filter
+      additionalProperties: false
+      description: Filter information for a query or report execution
+    Blackbaud.List.Service.Models.FilterItem:
+      type: object
+      properties:
+        field:
+          $ref: '#/components/schemas/Blackbaud.List.Service.Models.FilterField'
+        grouping:
+          $ref: '#/components/schemas/Blackbaud.List.Service.Models.FilterGrouping'
+        collection_field:
+          $ref: '#/components/schemas/Blackbaud.List.Service.Models.CollectionFilterField'
+      additionalProperties: false
+      description: 'Represents an individual item in a group of filter items.  This item can contain filter information for a specific
+
+        field or contain another group of filter items.  It cannot contain both.'
+    Blackbaud.List.Service.Models.CollectionFilterField:
+      type: object
+      properties:
+        field_id:
+          type:
+          - string
+          - 'null'
+          description: The identifier of the field the filter applies to
+        filter_fields:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Blackbaud.List.Service.Models.FilterField'
+          description: The set of filters to be applied to items in the collection.  An indidivudal item must meet the entire set of filter criteria.
+      additionalProperties: false
+      description: Represents filter information for a collection.  This is used for filtering to records that have a single item in a collection that match a set of filters.
+    Blackbaud.List.Service.Models.SelectedFilter:
+      type: object
+      properties:
+        field_id:
+          type:
+          - string
+          - 'null'
+          description: The identifier of the field the filter applies to
+      additionalProperties: false
+      description: Represents a filter that is present but has not been applied
+    Blackbaud.List.Service.Models.SimpleAggregationResult:
+      type: object
+      properties:
+        value:
+          type:
+          - number
+          - 'null'
+          description: The numeric result of the aggregation
+          format: double
+        count:
+          type:
+          - integer
+          - 'null'
+          description: The count of the records included for this aggregation.
+          format: int64
+      additionalProperties: false
+      description: Contains the result of an aggregation request
+    Blackbaud.List.Service.Models.FilterField:
+      type: object
+      properties:
+        value:
+          $ref: '#/components/schemas/Blackbaud.List.Service.Models.FilterValue'
+        field_id:
+          type:
+          - string
+          - 'null'
+          description: The identifier of the field the filter applies to
+        operator:
+          title: FilterOperator
+          enum:
+          - None
+          - Equal
+          - NotEqual
+          - GreaterThan
+          - LessThan
+          - GreaterThanOrEqual
+          - LessThanOrEqual
+          - OneOf
+          - NotOneOf
+          - Blank
+          - NotBlank
+          - Between
+          - StartsWith
+          - DoesNotStartWith
+          - AllOf
+          - NotBetween
+          - NotNull
+          type: string
+          description: The operator for the filter
+        is_aggregate:
+          type:
+          - boolean
+          - 'null'
+          description: Whether this filter represents an aggregate filter field.
+          x-bb-suppressions:
+          - parameter_property_name
+      additionalProperties: false
+      description: Represents filter information for a specific field
+    Blackbaud.List.Service.Models.FilterGrouping:
+      type: object
+      properties:
+        grouping_id:
+          type:
+          - string
+          - 'null'
+          description: The identifier of the grouping the filter applies to
+        items:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Blackbaud.List.Service.Models.FilterItem'
+          description: The set of filter items in the grouping
+        operator:
+          title: FilterGroupingOperator
+          enum:
+          - None
+          - AllOf
+          - OneOf
+          type: string
+          description: The operator for how the items in the group relate
+      additionalProperties: false
+      description: Represents a group of filter items and how they relate
+    Blackbaud.List.Service.Models.SimpleAggregationRequest:
+      required:
+      - data_model_name
+      type: object
+      properties:
+        data_model_name:
+          type: string
+          description: Defines which data model to use when executing the query
+        aggregation_type:
+          title: SimpleAggregationType
+          enum:
+          - NotSpecified
+          - Avg
+          - Sum
+          - Max
+          - Min
+          - Count
+          type: string
+          description: The type of aggregation to perform
+        field:
+          type:
+          - string
+          - 'null'
+          description: Gets or sets the numeric field to be used for aggregation
+        filter:
+          $ref: '#/components/schemas/Blackbaud.List.Service.Models.Filter'
+      additionalProperties: false
+      description: A simple aggregation request that can be used to aggregate numeric field values across multiple records
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

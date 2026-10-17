@@ -1,0 +1,674 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Treasury Cashreceipts API'
+  description: This API is used to manage bank accounts and transactions.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/58e3b2880528ab71c796492e
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/treasury/v1
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Cashreceipts
+paths:
+  /cashreceipts/attachments:
+    post:
+      operationId: CreateCashReceiptAttachment
+      summary: Cash receipt attachment (Create)
+      description: Returns the id saved attachment.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAttachment'
+            example:
+              parent_id: 1
+              name: Attachment Name
+              url: https://www.google.com
+              type: Link
+              media_type: Manual
+          multipart/form-data: {}
+        description: The attachment to create.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the file id of the saved attachment.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreatedResult_Int32'
+              example:
+                record_id: 843
+        '400':
+          description: Returned when the request is not in the correct format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DomainErrorMessage'
+              example:
+                Error: Invalid Request
+                Details:
+                - The value 'fake' is not valid for transaction_status.
+                ErrorPath: null
+        '403':
+          description: Returned when the user does not have permission to add attachments.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+        '404':
+          description: Returned when no cash receipt is found with the specified ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Cashreceipts
+  /cashreceipts/customfields:
+    get:
+      operationId: ListCashReceiptCustomFields
+      summary: Cash receipt custom field (List)
+      description: Get custom field options for cash receipts.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the list of custom fields.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiCollection_CustomFieldOptions'
+              example:
+                count: 7
+                value:
+                - custom_field_id: 1
+                  name: Restitution Recipient
+                  type: Text
+                  is_required: false
+                  table_values:
+                  - Table Entry1
+                  - Table Entry 2
+                  - Table Entry 4
+                - custom_field_id: 3
+                  name: Insurance Payments
+                  type: Boolean
+                  is_required: false
+                  table_values:
+                  - Table Entry1
+                  - Table Entry 2
+                  - Table Entry 3
+                - custom_field_id: 4
+                  name: Payee City
+                  type: Text
+                  is_required: false
+                  table_values:
+                  - Value 1
+                  - Value 2
+                  - Value 3
+      tags:
+      - Cashreceipts
+  /cashreceipts/{cash_receipt_id}:
+    get:
+      operationId: GetCashReceipt
+      summary: Cash receipt (Get)
+      description: Retrieves information about a given cash receipt.
+      parameters:
+      - name: cash_receipt_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The id of the cash receipt to retrieve
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the cash receipt.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CashReceiptDetail'
+              example:
+                cash_receipt_id: 621
+                date: '2014-06-30T00:00:00Z'
+                payment_from: Deposited Gifts
+                amount: 22900
+                payment_method: Check
+                category: ''
+                description: Contributions - Jun 2014
+                post_date: '2014-06-30T00:00:00Z'
+                post_status: Posted
+                receipt_status: Do not print
+                receipt_address: ''
+                reference_notes: ''
+                custom_fields: []
+                deposit_id: 89
+                number: 239
+                interfund_set: '00'
+                distributions:
+                - distribution_id: 2386
+                  amount: 22900
+                  description: ''
+                  account_number: 02-4010-07
+                  type_code: Credit
+                  custom_fields: []
+                  distribution_splits:
+                  - distribution_split_id: 2396
+                    ui_project_id: '1100'
+                    transaction_code_values:
+                    - name: Grants
+                      value: None
+                      id: 1
+                    - name: Spendable/Non-Spendable
+                      value: Non-Spendable
+                      id: 2
+                    - name: Performance
+                      value: ''
+                      id: 3
+                    - name: The Raiser's Edge
+                      value: ''
+                      id: 4
+                    - name: ''
+                      value: ''
+                      id: 0
+                    amount: 22900
+                    percent: 100
+                    account_class: Temporarily Restricted Net Assets
+                deposit_status: Closed
+                deposit_cleared_on_status: NotCleared
+        '400':
+          description: Returned when the request is not in the correct format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DomainErrorMessage'
+              example:
+                Error: Invalid Request
+                Details:
+                - The value 'fake' is not valid for transaction_status.
+                ErrorPath: null
+        '403':
+          description: Returned when the user does not have permission to view the cash receipt.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+        '404':
+          description: Returned when the specified cash receipt could not be found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Cashreceipts
+components:
+  schemas:
+    ApiCollection_CustomFieldOptions:
+      type: object
+      properties:
+        count:
+          format: int32
+          type: integer
+          x-ms-summary: Count
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomFieldOptions'
+          x-ms-summary: Value
+      x-hidden: true
+      x-display-name: Api collection `1
+      x-ms-summary: Api collection `1
+    CashReceiptDetail:
+      description: Cash receipt information.
+      type: object
+      properties:
+        cash_receipt_id:
+          format: int32
+          description: The identifier for this cash receipt
+          type: integer
+          x-ms-summary: Cash receipt id
+        date:
+          format: date-time
+          description: The date for this cash receipt
+          type: string
+          x-ms-summary: Date
+        payment_from:
+          description: The payment from for this cash receipt
+          type: string
+          x-ms-summary: Payment from
+        amount:
+          format: double
+          description: The amount for this cash receipt
+          type: number
+          x-ms-summary: Amount
+        payment_method:
+          description: The payment method for this cash receipt
+          enum:
+          - Cash
+          - CashiersCheck
+          - Check
+          - COD
+          - CreditCard
+          - ReceivedEFT
+          - Other
+          type: string
+          x-ms-summary: Payment method
+        category:
+          description: The category for this cash receipt
+          type: string
+          x-ms-summary: Category
+        description:
+          description: The description for this cash receipt
+          type: string
+          x-ms-summary: Description
+        post_date:
+          format: date-time
+          description: The post date for this cash receipt
+          type: string
+          x-ms-summary: Post date
+        post_status:
+          description: The post status for this cash receipt
+          enum:
+          - DoNotPost
+          - NotYetPosted
+          - Posted
+          type: string
+          x-ms-summary: Post status
+        receipt_status:
+          description: The receipt status for this cash receipt
+          enum:
+          - NotYetPrinted
+          - Printed
+          - DoNotPrint
+          - Reprint
+          type: string
+          x-ms-summary: Receipt status
+        receipt_address:
+          description: The receipt address for this cash receipt
+          type: string
+          x-ms-summary: Receipt address
+        notes:
+          description: The notes for this cash receipt
+          type: string
+          x-ms-summary: Notes
+        custom_fields:
+          description: The custom field's for this cash receipt
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomField'
+          x-ms-summary: Custom fields
+        deposit_id:
+          format: int32
+          description: The deposit id for this cash receipt
+          type: integer
+          x-ms-summary: Deposit id
+        interfund_set:
+          description: The distribution interfund set for this cash receipt
+          type: string
+          x-ms-summary: Interfund set
+        distributions:
+          description: The distribution's for this cash receipt
+          type: array
+          items:
+            $ref: '#/components/schemas/Distribution'
+          x-ms-summary: Distributions
+        deposit_status:
+          description: The deposit status for this cash receipt
+          type: string
+          x-ms-summary: Deposit status
+        deposit_cleared_on_status:
+          description: The deposit cleared on status value for this cash receipt.
+          enum:
+          - NotCleared
+          - Cleared
+          type: string
+          x-ms-summary: Deposit cleared on status
+        number:
+          format: int32
+          description: The number for this cash receipt
+          type: integer
+          x-ms-summary: Number
+      x-display-name: Cash receipt detail
+      x-ms-summary: Cash receipt detail
+    DomainErrorMessage:
+      type: object
+      properties:
+        Error:
+          type: string
+          x-ms-summary: Error
+        Details:
+          type: array
+          items:
+            type: string
+          x-ms-summary: Details
+        ErrorPath:
+          type: string
+          x-ms-summary: Error path
+      x-display-name: Domain error message
+      x-ms-summary: Domain error message
+    CustomFieldOptions:
+      type: object
+      properties:
+        custom_field_id:
+          format: int32
+          description: The identifier for this custom field.
+          type: integer
+          x-ms-summary: Custom field id
+        name:
+          description: The name of this custom field.
+          type: string
+          x-ms-summary: Name
+        type:
+          description: The type (boolean, table, etc) of this custom field.
+          enum:
+          - Text
+          - Number
+          - DateTime
+          - Currency
+          - Boolean
+          - Table
+          - FuzzyDate
+          type: string
+          x-ms-summary: Type
+        is_required:
+          description: If this custom field is required.
+          type: boolean
+          x-ms-summary: Is required
+        table_values:
+          description: 'List of table values.
+
+            Only applicable if type = ''Table''.'
+          type: array
+          items:
+            type: string
+          x-ms-summary: Table values
+      x-display-name: Custom field options
+      x-ms-summary: Custom field options
+    TransactionCodeValue:
+      description: Transaction code value
+      required:
+      - value
+      - id
+      type: object
+      properties:
+        name:
+          description: The transaction code name.
+          type: string
+          x-ms-summary: Name
+        value:
+          description: The transaction code value.
+          type: string
+          x-ms-summary: Value
+        id:
+          format: int32
+          description: The transaction code value id.
+          type: integer
+          x-ms-summary: Id
+        inactive:
+          description: Indicate if record is inactive or not.
+          type: boolean
+          x-ms-summary: Inactive
+      x-display-name: Transaction code value
+      x-ms-summary: Transaction code value
+    BasicErrorMessage:
+      type: object
+      properties:
+        Error:
+          type: string
+          x-ms-summary: Error
+      x-display-name: Basic error message
+      x-ms-summary: Basic error message
+    CustomField:
+      description: Custom field definition.
+      type: object
+      properties:
+        field_name:
+          description: The name of the custom field.
+          type: string
+          x-ms-summary: Field name
+        value:
+          description: The value for this custom field.
+          type: string
+          x-ms-summary: Value
+        comments:
+          description: The description for this custom field.
+          type: string
+          x-ms-summary: Comments
+        type:
+          description: The type of this custom field.
+          enum:
+          - Text
+          - Number
+          - DateTime
+          - Currency
+          - Boolean
+          - Table
+          - FuzzyDate
+          type: string
+          x-ms-summary: Type
+        is_required:
+          description: If this custom field is required.
+          type: boolean
+          x-ms-summary: Is required
+        date:
+          format: date-time
+          description: The date on this custom field.
+          type: string
+          x-ms-summary: Date
+      x-display-name: Custom field
+      x-ms-summary: Custom field
+    Distribution:
+      description: Distribution.
+      required:
+      - distribution_splits
+      type: object
+      properties:
+        distribution_id:
+          format: int32
+          description: The distribution identifier.
+          type: integer
+          x-ms-summary: Distribution id
+        amount:
+          format: double
+          description: The distribution amount.
+          type: number
+          x-ms-summary: Amount
+        description:
+          description: The description for this distribution.
+          type: string
+          x-ms-summary: Description
+        account_number:
+          description: The account number for this distribution.
+          type: string
+          x-ms-summary: Account number
+        type_code:
+          description: The journal entry transaction type (debit or credit).
+          enum:
+          - Debit
+          - Credit
+          type: string
+          x-ms-summary: Type code
+        custom_fields:
+          description: The custom fields for this distribution.
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomField'
+          x-ms-summary: Custom fields
+        distribution_splits:
+          description: The distribution split.
+          type: array
+          items:
+            $ref: '#/components/schemas/DistributionSplit'
+          x-ms-summary: Distribution splits
+      x-display-name: Distribution
+      x-ms-summary: Distribution
+    DistributionSplit:
+      description: Journal Entry Distribution.
+      required:
+      - transaction_code_values
+      type: object
+      properties:
+        distribution_split_id:
+          format: int32
+          description: The distribution split identifier.
+          type: integer
+          x-ms-summary: Distribution split id
+        ui_project_id:
+          description: The user-visible identifier of the project.
+          type: string
+          x-ms-summary: Ui project id
+        transaction_code_values:
+          description: The distribution transaction code values. The values should be in the same order as the codes defined in the database.
+          type: array
+          items:
+            $ref: '#/components/schemas/TransactionCodeValue'
+          x-ms-summary: Transaction code values
+        amount:
+          format: double
+          description: The distribution journal entry amount. Only one of amount or percent can be specified.
+          type: number
+          x-ms-summary: Amount
+        percent:
+          format: double
+          description: The distribution journal entry amount percentage. Only one of amount or percent can be specified.
+          type: number
+          x-ms-summary: Percent
+        account_class:
+          description: The account class for this distribution split.
+          type: string
+          x-ms-summary: Account class
+      x-display-name: Distribution split
+      x-ms-summary: Distribution split
+    HttpPostedFileBase:
+      type: object
+      properties:
+        ContentLength:
+          format: int32
+          type: integer
+          readOnly: true
+          x-ms-summary: Content length
+        ContentType:
+          type: string
+          readOnly: true
+          x-ms-summary: Content type
+        FileName:
+          type: string
+          readOnly: true
+          x-ms-summary: File name
+        InputStream:
+          $ref: '#/components/schemas/Stream'
+          readOnly: true
+          x-ms-summary: Input stream
+      x-display-name: Http posted file base
+      x-ms-summary: Http posted file base
+    CreatedResult_Int32:
+      type: object
+      properties:
+        record_id:
+          format: int32
+          type: integer
+          x-ms-summary: Record id
+      x-hidden: true
+      x-display-name: Created result `1
+      x-ms-summary: Created result `1
+    CreateAttachment:
+      required:
+      - parent_id
+      - name
+      - type
+      - media_type
+      type: object
+      properties:
+        parent_id:
+          format: int32
+          description: The identifier of the parent item for this attachment.
+          type: integer
+          x-ms-summary: Parent id
+        name:
+          description: The name of this attachment.
+          type: string
+          x-ms-summary: Name
+        url:
+          description: The URL of this attachment.
+          type: string
+          x-ms-summary: Url
+        type:
+          description: The attachment type. Available values are Link and Physical. Physical attachments are stored and managed in the system. Link attachments are stored and managed externally. Defaults to Link if not provided.
+          enum:
+          - Link
+          - Physical
+          type: string
+          x-ms-summary: Type
+        media_type:
+          description: User-defined category of this attachment. Available values are the entries in the Media Type table for the parent record. Use the value types defined in /mediaTypes
+          type: string
+          x-ms-summary: Media type
+        file:
+          $ref: '#/components/schemas/HttpPostedFileBase'
+          description: The uploaded file for this attachment.
+          x-ms-summary: File
+      example:
+        parent_id: 1
+        name: Attachment Name
+        url: https://www.google.com
+        type: Link
+        media_type: Manual
+      x-display-name: Create attachment
+      x-ms-summary: Create attachment
+    Stream:
+      type: object
+      properties:
+        CanRead:
+          type: boolean
+          readOnly: true
+          x-ms-summary: Can read
+        CanSeek:
+          type: boolean
+          readOnly: true
+          x-ms-summary: Can seek
+        CanTimeout:
+          type: boolean
+          readOnly: true
+          x-ms-summary: Can timeout
+        CanWrite:
+          type: boolean
+          readOnly: true
+          x-ms-summary: Can write
+        Length:
+          format: int64
+          type: integer
+          readOnly: true
+          x-ms-summary: Length
+        Position:
+          format: int64
+          type: integer
+          x-ms-summary: Position
+        ReadTimeout:
+          format: int32
+          type: integer
+          x-ms-summary: Read timeout
+        WriteTimeout:
+          format: int32
+          type: integer
+          x-ms-summary: Write timeout
+      x-display-name: Stream
+      x-ms-summary: Stream
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

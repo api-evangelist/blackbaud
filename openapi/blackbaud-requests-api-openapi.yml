@@ -1,0 +1,1189 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Grantmaking Requests API'
+  description: This API manages grantmaking information.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/grantmaking
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/grantmaking
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Requests
+paths:
+  /api/v1/requests:
+    post:
+      operationId: AssignRequestCustomProperties
+      summary: Updates a Request in the Grantmaking system
+      description: Updates a Request in the Grantmaking system.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestUpdateRequest'
+            example:
+              id: string
+              custom:
+              - name: string
+                value: {}
+        description: A Blackbaud.CFS.MiddlewareService.DataAccess.Models.SKYAPI.Request.RequestUpdateRequest.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestUpdateResponse'
+              example:
+                status: string
+                message: string
+      tags:
+      - Requests
+  /api/v1/requests/classifications:
+    get:
+      operationId: GetRequestClassifications
+      summary: Gets the classifications for Requests
+      description: Fetches the coding tables associated with the Requests. Includes coding sheet properties when applicable.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationResponse'
+              example:
+                classifications:
+                - code_table_id: 0
+                  code_table:
+                  - id: 0
+                    code: string
+                    description: string
+                    description_with_code: string
+                    full_path_description_code: string
+                    full_path_description: string
+                    depth: 0
+                    parent_id: 0
+                    is_active: true
+                    full_path: string
+                    full_path_with_code: string
+      tags:
+      - Requests
+  /api/v1/requests/ids:
+    post:
+      operationId: GetRequestsById
+      summary: Return Requests with the provided IDs
+      description: Fetches Requests from the Grantmaking system.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestGetByIdRequest'
+            example:
+              ids:
+              - string
+              custom_fields:
+              - string
+              per_page: 0
+              page: 0
+        description: A Blackbaud.CFS.MiddlewareService.DataAccess.Models.SKYAPI.Request.RequestGetByIdRequest containg the Request IDs and any desired custom fields./
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestSearchResponse'
+              example:
+                requests:
+                - id: string
+                  project_title: string
+                  request_date: string
+                  approval_date: string
+                  disposition: string
+                  disposition_date: string
+                  request_amount: 0
+                  recommended_amount: 0
+                  grant_amount: 0
+                  paid_amount: 0
+                  balance: 0
+                  organization:
+                    organization_id: string
+                    name: string
+                  contact:
+                    email: string
+                    contact_id: string
+                    name: string
+                  status:
+                    classification_id: 0
+                    code: string
+                    description: string
+                  status_date: string
+                  type:
+                    classification_id: 0
+                    code: string
+                    description: string
+                  reference_number: string
+                  project_start_date: string
+                  project_end_date: string
+                  declination_reason:
+                    classification_id: 0
+                    code: string
+                    description: string
+                  declination_notes: string
+                  is_complete: true
+                  complete_date: string
+                  grant_fiscal_year: 0
+                  term_months: 0
+                  complete_notes: string
+                  meeting_date: string
+                  meeting_minutes: string
+                  docket_number: string
+                  branch:
+                    classification_id: 0
+                    code: string
+                    description: string
+                  staff:
+                    login_id: string
+                    name: string
+                  secondary_staff:
+                    login_id: string
+                    name: string
+                  subdivision: string
+                  payments_count: 0
+                  alert: string
+                  change_date: string
+                  create_date: string
+                  codings:
+                  - id: 0
+                    code_table:
+                      id: 0
+                      description: string
+                    level_1:
+                      classification_id: 0
+                      code: string
+                      description: string
+                    level_2:
+                      classification_id: 0
+                      code: string
+                      description: string
+                    level_3:
+                      classification_id: 0
+                      code: string
+                      description: string
+                    level_4:
+                      classification_id: 0
+                      code: string
+                      description: string
+                    level_5:
+                      classification_id: 0
+                      code: string
+                      description: string
+                    allocation_percentage: 0
+                    allocation_amount: 0
+                    primary_flag: true
+                  application_id: 0
+                  codes_ids: string
+                  custom_fields: {}
+      tags:
+      - Requests
+  /api/v1/requests/search:
+    post:
+      operationId: SearchRequest
+      summary: Search for Requests which meet the provided criteria
+      description: Fetches Grantmaking Requests that meet the provided search criteria.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestSearchRequest'
+            example:
+              id: string
+              request_date:
+                start_date: string
+                end_date: string
+                is: string
+              branch_id: 0
+              disposition: string
+              disposition_date:
+                start_date: string
+                end_date: string
+                is: string
+              grant_amount:
+                min_value: 0
+                max_value: 0
+                is: 0
+              project_start_date:
+                start_date: string
+                end_date: string
+                is: string
+              project_end_date:
+                start_date: string
+                end_date: string
+                is: string
+              recommended_amount:
+                min_value: 0
+                max_value: 0
+                is: 0
+              requested_amount:
+                min_value: 0
+                max_value: 0
+                is: 0
+              request_type_id: 0
+              request_status_id: 0
+              staff_id: string
+              secondary_staff_id: string
+              primary_contact_id: string
+              organization_id: string
+              change_date:
+                start_date: string
+                end_date: string
+                is: string
+              create_date:
+                start_date: string
+                end_date: string
+                is: string
+              custom_criteria:
+              - field_name: string
+                date_criteria:
+                  start_date: string
+                  end_date: string
+                  is: string
+                decimal_criteria:
+                  min_value: 0
+                  max_value: 0
+                  is: 0
+                string_criteria:
+                  is: string
+                  contains: string
+                  begins_with: string
+                  ends_with: string
+                integer_criteria: 0
+                boolean_criteria: true
+              custom_fields:
+              - string
+              per_page: 0
+              page: 0
+        description: An instance of Blackbaud.CFS.MiddlewareService.DataAccess.Models.SKYAPI.Request.RequestSearchRequest.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestSearchResponse'
+              example:
+                requests:
+                - id: string
+                  project_title: string
+                  request_date: string
+                  approval_date: string
+                  disposition: string
+                  disposition_date: string
+                  request_amount: 0
+                  recommended_amount: 0
+                  grant_amount: 0
+                  paid_amount: 0
+                  balance: 0
+                  organization:
+                    organization_id: string
+                    name: string
+                  contact:
+                    email: string
+                    contact_id: string
+                    name: string
+                  status:
+                    classification_id: 0
+                    code: string
+                    description: string
+                  status_date: string
+                  type:
+                    classification_id: 0
+                    code: string
+                    description: string
+                  reference_number: string
+                  project_start_date: string
+                  project_end_date: string
+                  declination_reason:
+                    classification_id: 0
+                    code: string
+                    description: string
+                  declination_notes: string
+                  is_complete: true
+                  complete_date: string
+                  grant_fiscal_year: 0
+                  term_months: 0
+                  complete_notes: string
+                  meeting_date: string
+                  meeting_minutes: string
+                  docket_number: string
+                  branch:
+                    classification_id: 0
+                    code: string
+                    description: string
+                  staff:
+                    login_id: string
+                    name: string
+                  secondary_staff:
+                    login_id: string
+                    name: string
+                  subdivision: string
+                  payments_count: 0
+                  alert: string
+                  change_date: string
+                  create_date: string
+                  codings:
+                  - id: 0
+                    code_table:
+                      id: 0
+                      description: string
+                    level_1:
+                      classification_id: 0
+                      code: string
+                      description: string
+                    level_2:
+                      classification_id: 0
+                      code: string
+                      description: string
+                    level_3:
+                      classification_id: 0
+                      code: string
+                      description: string
+                    level_4:
+                      classification_id: 0
+                      code: string
+                      description: string
+                    level_5:
+                      classification_id: 0
+                      code: string
+                      description: string
+                    allocation_percentage: 0
+                    allocation_amount: 0
+                    primary_flag: true
+                  application_id: 0
+                  codes_ids: string
+                  custom_fields: {}
+      tags:
+      - Requests
+  /api/v1/requests/{request_id}:
+    get:
+      operationId: GetRequest
+      summary: Return a Request
+      description: Fetches a Request from the Grantmaking system.
+      parameters:
+      - name: request_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: A request ID.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiRequest'
+              example:
+                id: string
+                project_title: string
+                request_date: string
+                approval_date: string
+                disposition: string
+                disposition_date: string
+                request_amount: 0
+                recommended_amount: 0
+                grant_amount: 0
+                paid_amount: 0
+                balance: 0
+                organization:
+                  organization_id: string
+                  name: string
+                contact:
+                  email: string
+                  contact_id: string
+                  name: string
+                status:
+                  classification_id: 0
+                  code: string
+                  description: string
+                status_date: string
+                type:
+                  classification_id: 0
+                  code: string
+                  description: string
+                reference_number: string
+                project_start_date: string
+                project_end_date: string
+                declination_reason:
+                  classification_id: 0
+                  code: string
+                  description: string
+                declination_notes: string
+                is_complete: true
+                complete_date: string
+                grant_fiscal_year: 0
+                term_months: 0
+                complete_notes: string
+                meeting_date: string
+                meeting_minutes: string
+                docket_number: string
+                branch:
+                  classification_id: 0
+                  code: string
+                  description: string
+                staff:
+                  login_id: string
+                  name: string
+                secondary_staff:
+                  login_id: string
+                  name: string
+                subdivision: string
+                payments_count: 0
+                alert: string
+                change_date: string
+                create_date: string
+                codings:
+                - id: 0
+                  code_table:
+                    id: 0
+                    description: string
+                  level_1:
+                    classification_id: 0
+                    code: string
+                    description: string
+                  level_2:
+                    classification_id: 0
+                    code: string
+                    description: string
+                  level_3:
+                    classification_id: 0
+                    code: string
+                    description: string
+                  level_4:
+                    classification_id: 0
+                    code: string
+                    description: string
+                  level_5:
+                    classification_id: 0
+                    code: string
+                    description: string
+                  allocation_percentage: 0
+                  allocation_amount: 0
+                  primary_flag: true
+                application_id: 0
+                codes_ids: string
+                custom_fields: {}
+      tags:
+      - Requests
+components:
+  schemas:
+    CodeInfo:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the coding table value
+          format: int32
+        code:
+          type:
+          - string
+          - 'null'
+          description: The code value of the coding table value
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description value of the coding table value
+        description_with_code:
+          type:
+          - string
+          - 'null'
+          description: The code and the description shown to the user
+        full_path_description_code:
+          type:
+          - string
+          - 'null'
+          description: The code and the description shown to the user preceded by the parent values
+        full_path_description:
+          type:
+          - string
+          - 'null'
+          description: The description shown to the user
+        depth:
+          type: integer
+          description: The level that this code resides in within the coding table hierarchy
+          format: int32
+        parent_id:
+          type: integer
+          description: The ID of the parent code to this one, 0 if this is a top level code
+          format: int32
+        is_active:
+          type: boolean
+          description: To determine if this is an active code
+          x-bb-suppressions:
+          - parameter_property_name
+        full_path:
+          type:
+          - string
+          - 'null'
+          description: The full path to the description in the coding table hierarchy
+        full_path_with_code:
+          type:
+          - string
+          - 'null'
+          description: The full path including code and description to the code in the coding table hierarchy
+      additionalProperties: false
+      description: Model for coding options data
+    RequestGetByIdRequest:
+      required:
+      - ids
+      type: object
+      properties:
+        ids:
+          type: array
+          items:
+            type: string
+          description: The IDs of the requests to fetch.
+        custom_fields:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: Represents the list of custom fields to return on the entities in the result.
+        per_page:
+          maximum: 100
+          minimum: 1
+          type: integer
+          description: The page size for paged output.
+          format: int32
+        page:
+          type: integer
+          description: The page number for paged output.
+          format: int32
+      additionalProperties: false
+      description: A request model for getting Requests by ID.
+    ContactReference:
+      type: object
+      properties:
+        email:
+          type:
+          - string
+          - 'null'
+          description: The contact's email address.
+        contact_id:
+          type:
+          - string
+          - 'null'
+          description: The related contact's ID.
+        name:
+          type:
+          - string
+          - 'null'
+          description: The contact's full name.
+      additionalProperties: false
+      description: Represents related Contact information.
+    RequestUpdateResponse:
+      type: object
+      properties:
+        status:
+          type:
+          - string
+          - 'null'
+          description: A string indicating the status of the operation.
+        message:
+          type:
+          - string
+          - 'null'
+          description: A string containing a message regarding the operation.
+      additionalProperties: false
+      description: A response model for request update.
+    CustomSearchCriteria:
+      type: object
+      properties:
+        field_name:
+          type:
+          - string
+          - 'null'
+          description: A string custom field name criteria.
+        date_criteria:
+          $ref: '#/components/schemas/DateSearchCriteria'
+        decimal_criteria:
+          $ref: '#/components/schemas/DecimalSearchCriteria'
+        string_criteria:
+          $ref: '#/components/schemas/StringSearchCriteria'
+        integer_criteria:
+          type:
+          - integer
+          - 'null'
+          description: An integer criteria value.
+          format: int32
+        boolean_criteria:
+          type:
+          - boolean
+          - 'null'
+          description: A boolean criteria value.
+      additionalProperties: false
+      description: A model with custom field search criteria.
+    Staff:
+      type: object
+      properties:
+        login_id:
+          type:
+          - string
+          - 'null'
+          description: The staff member's login ID.
+        name:
+          type:
+          - string
+          - 'null'
+          description: The staff member's name.
+      additionalProperties: false
+      description: Represents a Grantmaking staff user.
+    DateSearchCriteria:
+      type: object
+      properties:
+        start_date:
+          type:
+          - string
+          - 'null'
+          description: An earliest date criteria.
+          format: date-time
+        end_date:
+          type:
+          - string
+          - 'null'
+          description: A latest date criteria.
+          format: date-time
+        is:
+          type:
+          - string
+          - 'null'
+          description: An exact match criteria.
+          format: date-time
+      additionalProperties: false
+      description: A model with date search criteria.
+    RequestSearchResponse:
+      type: object
+      properties:
+        requests:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ApiRequest'
+          description: The results of the request search.
+      additionalProperties: false
+      description: A response model for request search.
+    ClassificationResponse:
+      type: object
+      properties:
+        classifications:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CodeInfoList'
+          description: The classifications for the entity type.
+      additionalProperties: false
+      description: A response model for classifications.
+    CodeInfoList:
+      type: object
+      properties:
+        code_table_id:
+          type: integer
+          description: Gets or sets the table ID.
+          format: int32
+        code_table:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CodeInfo'
+          description: Gets or sets the list of coding values in the table.
+      additionalProperties: false
+      description: Coding table model.
+    IdCodeDescription:
+      type: object
+      properties:
+        classification_id:
+          type: integer
+          description: Classification's ID.
+          format: int32
+        code:
+          type:
+          - string
+          - 'null'
+          description: Classification's code.
+        description:
+          type:
+          - string
+          - 'null'
+          description: Classification's description.
+      additionalProperties: false
+      description: Represents a Classification value.
+    DecimalSearchCriteria:
+      type: object
+      properties:
+        min_value:
+          type:
+          - number
+          - 'null'
+          description: A lowest value criteria.
+          format: double
+        max_value:
+          type:
+          - number
+          - 'null'
+          description: A highest value criteria.
+          format: double
+        is:
+          type:
+          - number
+          - 'null'
+          description: An exact match criteria.
+          format: double
+      additionalProperties: false
+      description: A model with decimal search criteria.
+    SimpleCustomProperty:
+      type: object
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the custom property.
+        value:
+          description: The value of the custom property.
+      additionalProperties: false
+      description: A simple representation of a custom property.
+    ApiRequest:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: The Request's ID.
+        project_title:
+          type:
+          - string
+          - 'null'
+          description: The Request's project title.
+        request_date:
+          type:
+          - string
+          - 'null'
+          description: The Request's request date.
+          format: date-time
+        approval_date:
+          type:
+          - string
+          - 'null'
+          description: The Request's approval date.
+          format: date-time
+        disposition:
+          type:
+          - string
+          - 'null'
+          description: The Request's disposition.
+        disposition_date:
+          type:
+          - string
+          - 'null'
+          description: The Request's disposition date.
+          format: date-time
+        request_amount:
+          type:
+          - number
+          - 'null'
+          description: The Request's request amount.
+          format: double
+        recommended_amount:
+          type:
+          - number
+          - 'null'
+          description: The Request's recommended amount.
+          format: double
+        grant_amount:
+          type:
+          - number
+          - 'null'
+          description: The Request's grant amount.
+          format: double
+        paid_amount:
+          type:
+          - number
+          - 'null'
+          description: The Request's paid amount.
+          format: double
+        balance:
+          type:
+          - number
+          - 'null'
+          description: The Request's balance.
+          format: double
+        organization:
+          $ref: '#/components/schemas/OrganizationReference'
+        contact:
+          $ref: '#/components/schemas/ContactReference'
+        status:
+          $ref: '#/components/schemas/IdCodeDescription'
+        status_date:
+          type:
+          - string
+          - 'null'
+          description: The Request's status date.
+          format: date-time
+        type:
+          $ref: '#/components/schemas/IdCodeDescription'
+        reference_number:
+          type:
+          - string
+          - 'null'
+          description: The Request's reference number.
+        project_start_date:
+          type:
+          - string
+          - 'null'
+          description: The Request's project start date.
+          format: date-time
+        project_end_date:
+          type:
+          - string
+          - 'null'
+          description: The Request's project end date.
+          format: date-time
+        declination_reason:
+          $ref: '#/components/schemas/IdCodeDescription'
+        declination_notes:
+          type:
+          - string
+          - 'null'
+          description: The Request's declination notes.
+        is_complete:
+          type: boolean
+          description: The Request's is complete.
+          x-bb-suppressions:
+          - parameter_property_name
+        complete_date:
+          type:
+          - string
+          - 'null'
+          description: The Request's complete date.
+          format: date-time
+        grant_fiscal_year:
+          type:
+          - integer
+          - 'null'
+          description: The Request's grant fiscal year.
+          format: int32
+        term_months:
+          type:
+          - integer
+          - 'null'
+          description: The Request's term months.
+          format: int32
+        complete_notes:
+          type:
+          - string
+          - 'null'
+          description: The Request's complete notes.
+        meeting_date:
+          type:
+          - string
+          - 'null'
+          description: The Request's meeting date.
+          format: date-time
+        meeting_minutes:
+          type:
+          - string
+          - 'null'
+          description: The Request's meeting minutes.
+        docket_number:
+          type:
+          - string
+          - 'null'
+          description: The Request's docket number.
+        branch:
+          $ref: '#/components/schemas/IdCodeDescription'
+        staff:
+          $ref: '#/components/schemas/Staff'
+        secondary_staff:
+          $ref: '#/components/schemas/Staff'
+        subdivision:
+          type:
+          - string
+          - 'null'
+          description: The Request's subdivision.
+        payments_count:
+          type:
+          - integer
+          - 'null'
+          description: The Request's payments count.
+          format: int32
+        alert:
+          type:
+          - string
+          - 'null'
+          description: The Request's alert.
+        change_date:
+          type:
+          - string
+          - 'null'
+          description: The Request's change date.
+          format: date-time
+        create_date:
+          type:
+          - string
+          - 'null'
+          description: The Request's create date.
+          format: date-time
+        codings:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Coding'
+          description: The Request's coding list.
+        application_id:
+          type:
+          - integer
+          - 'null'
+          description: The Request's application ID.
+          format: int32
+        codes_ids:
+          type:
+          - string
+          - 'null'
+          description: The Request's list of code IDs.
+        custom_fields:
+          type:
+          - object
+          - 'null'
+          additionalProperties: {}
+          description: The Entity's custom field data.
+      additionalProperties: false
+      description: A SKY API specific version of a Grantmaking Request entity.
+    StringSearchCriteria:
+      type: object
+      properties:
+        is:
+          type:
+          - string
+          - 'null'
+          description: A exact match criteria.
+        contains:
+          type:
+          - string
+          - 'null'
+          description: A partial match criteria.
+        begins_with:
+          type:
+          - string
+          - 'null'
+          description: A beginning match criteria.
+        ends_with:
+          type:
+          - string
+          - 'null'
+          description: A ending match criteria.
+      additionalProperties: false
+      description: A model with string search criteria.
+    RequestSearchRequest:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: A Request ID.
+        request_date:
+          $ref: '#/components/schemas/DateSearchCriteria'
+        branch_id:
+          type:
+          - integer
+          - 'null'
+          description: An integer value representing the Request Branch ID.
+          format: int32
+        disposition:
+          type:
+          - string
+          - 'null'
+          description: A string value representing the Request Disposition. Valid values are "Approved", "Pending", or "Declined".
+        disposition_date:
+          $ref: '#/components/schemas/DateSearchCriteria'
+        grant_amount:
+          $ref: '#/components/schemas/DecimalSearchCriteria'
+        project_start_date:
+          $ref: '#/components/schemas/DateSearchCriteria'
+        project_end_date:
+          $ref: '#/components/schemas/DateSearchCriteria'
+        recommended_amount:
+          $ref: '#/components/schemas/DecimalSearchCriteria'
+        requested_amount:
+          $ref: '#/components/schemas/DecimalSearchCriteria'
+        request_type_id:
+          type:
+          - integer
+          - 'null'
+          description: A classification ID value representing the Request Type.
+          format: int32
+        request_status_id:
+          type:
+          - integer
+          - 'null'
+          description: A classification ID value representing the Request Status.
+          format: int32
+        staff_id:
+          type:
+          - string
+          - 'null'
+          description: A string value representing the staff person assigned to the Request to query.
+        secondary_staff_id:
+          type:
+          - string
+          - 'null'
+          description: A string value representing the secondary staff person assigned to the Request to query.
+        primary_contact_id:
+          type:
+          - string
+          - 'null'
+          description: A string value representing the Primary Contact ID.
+        organization_id:
+          type:
+          - string
+          - 'null'
+          description: A string value representing the associated Organization ID.
+        change_date:
+          $ref: '#/components/schemas/DateSearchCriteria'
+        create_date:
+          $ref: '#/components/schemas/DateSearchCriteria'
+        custom_criteria:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CustomSearchCriteria'
+          description: A list containing request custom field search criteria.
+        custom_fields:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: Represents the list of custom fields to return on the entities in the result.
+        per_page:
+          maximum: 100
+          minimum: 1
+          type: integer
+          description: The page size for paged output.
+          format: int32
+        page:
+          type: integer
+          description: The page number for paged output.
+          format: int32
+      additionalProperties: false
+      description: A request model for searching Requests.
+      x-bb-suppressions:
+      - request_body_has_required_property
+    CodeTable:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The code's ID.
+          format: int32
+        description:
+          type:
+          - string
+          - 'null'
+          description: The code's description.
+      additionalProperties: false
+      description: Represents a Classification value.
+    RequestUpdateRequest:
+      required:
+      - id
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the request to update.
+        custom:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SimpleCustomProperty'
+          description: A list of Blackbaud.CFS.MiddlewareService.DataAccess.Models.SKYAPI.Common.CustomPropertyData objects for request update.
+      additionalProperties: false
+      description: A request model for request update.
+    OrganizationReference:
+      type: object
+      properties:
+        organization_id:
+          type:
+          - string
+          - 'null'
+          description: The related Organization's ID.
+        name:
+          type:
+          - string
+          - 'null'
+          description: Related Organization's name.
+      additionalProperties: false
+      description: Represents related Contact information.
+    Coding:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The coding selection's ID.
+          format: int32
+        code_table:
+          $ref: '#/components/schemas/CodeTable'
+        level_1:
+          $ref: '#/components/schemas/IdCodeDescription'
+        level_2:
+          $ref: '#/components/schemas/IdCodeDescription'
+        level_3:
+          $ref: '#/components/schemas/IdCodeDescription'
+        level_4:
+          $ref: '#/components/schemas/IdCodeDescription'
+        level_5:
+          $ref: '#/components/schemas/IdCodeDescription'
+        allocation_percentage:
+          type:
+          - integer
+          - 'null'
+          description: The coding selection's allocation percentage.
+          format: int32
+        allocation_amount:
+          type:
+          - number
+          - 'null'
+          description: The coding selection's allocation amount.
+          format: double
+        primary_flag:
+          type: boolean
+          description: The coding selection's primary flag.
+          x-bb-suppressions:
+          - parameter_property_name
+      additionalProperties: false
+      description: Represents a Coding Sheet Classification selection.
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

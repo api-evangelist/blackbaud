@@ -1,0 +1,1826 @@
+openapi: 3.2.0
+info:
+  title: Blackbaud Transactions API
+  version: '1.0'
+  x-refined-note:
+  - x-apievangelist-provenance differs across the merged source definitions and was not carried
+  description: 'Operations tagged Transactions across 2 of this provider''s published API definitions: blackbaud-fixed-assets-api-openapi.yml, blackbaud-payments-api-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.sky.blackbaud.com/fixedassets
+- url: https://api.sky.blackbaud.com/payments
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Transactions
+paths:
+  /v1/transactions:
+    get:
+      operationId: ListTransactions
+      summary: Get transaction list
+      description: Returns a paginated list of transactions.
+      parameters:
+      - name: search_text
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Text to match.
+
+          Can match transaction number.'
+      - name: asset_description
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filter the results by asset description.
+      - name: post_status
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - DoNotPost
+          - NotYetPosted
+          - Posted
+        description: Filter the results using the transaction post status.
+      - name: transaction_type
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - AccumulatedDepreciation
+          - AnnualDepreciation
+          - AssetAcquisition
+          - AssetDisposal
+          - AssetImprovement
+          - PeriodDepreciation
+          - YTDDepreciation
+        description: Filter the results using the transaction type.
+      - name: to_date
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filter the transactions before a certain date.
+      - name: from_date
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filter the transactions after a certain date.
+      - name: date_added
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filter the results added on or after the specified date.
+      - name: added_by
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filter the results by who added the transaction.
+      - name: last_modified
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filter the results modified on or after the specified date.
+      - name: last_modified_by
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filter the results by who last modified the transaction.
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: 'The number of records to skip.
+
+          For use with pagination.'
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: "The number of records to return.\nThe default is 100. \nThe maximum allowed value is 500."
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the list of transactions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionSummaryApiCollection'
+              example:
+                count: 150
+                value:
+                - transaction_date: '2024-01-10T10:43:21Z'
+                  amount: 150
+                  transaction_type: Period depreciation
+                  post_date: '2024-01-10T10:43:21Z'
+                  post_status: NotYetPosted
+                  description: Campus
+                  added_by: Supervisor
+                  date_added: '2024-01-10T10:43:21Z'
+                  modified_by: Supervisor
+                  date_modified: '2024-01-10T10:43:21Z'
+                  disposal_method: Test
+                  disposal_date: '2024-01-10T10:43:21Z'
+                - transaction_date: '2024-01-10T10:43:21Z'
+                  amount: 151
+                  transaction_type: Period depreciation
+                  post_date: '2024-01-10T10:43:21Z'
+                  post_status: NotYetPosted
+                  description: Campus
+                  added_by: Supervisor
+                  date_added: '2024-01-10T10:43:21Z'
+                  modified_by: Supervisor
+                  date_modified: '2024-01-10T10:43:21Z'
+                  disposal_method: Test
+                  disposal_date: '2024-01-10T10:43:21Z'
+        '400':
+          description: Returned when the request is not in the correct format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DomainErrorMessage'
+              example:
+                Error: Invalid Request
+                Details:
+                - The value 'fake' is not valid for transaction_status.
+        '403':
+          description: Returned when the user does not have permission to view transactions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                Error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Transactions
+    post:
+      operationId: CreateTransaction
+      summary: Transaction
+      description: Create a transaction.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionAdd'
+        description: An object that represents the transaction to process.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains transaction details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionRead'
+              example:
+                additional_fee: 25
+                amount: 1000
+                net_amount: 925
+                application: Payments API
+                billing_info:
+                  city: Charleston
+                  country: US
+                  post_code: '29492'
+                  state: SC
+                  street: 2000 Daniel Island Drive
+                comment: Recurring donation
+                credit_card:
+                  card_type: Visa
+                  exp_month: 2
+                  exp_year: 1985
+                  last_four: '1111'
+                  name: Blackbaud
+                  pay_pal_funding_source: Unknown
+                currency: USD
+                disbursement_status: NotDisbursable
+                donor_ip_address: 192.168.0.1
+                fraud_result:
+                  anonymous_proxy_result: NotProcessed
+                  bin_and_ip_country_result: NotProcessed
+                  high_risk_country_result: NotProcessed
+                  result_code: NotProcessed
+                  risk_score: 0
+                  risk_threshold: 0
+                  velocity_result: NotProcessed
+                id: 92844827-5b74-40db-907f-480b13242eb5
+                related_transactions:
+                - id: 6fef1d90-60f2-43ea-aa96-b7562286c57d
+                  transaction_type: Refund
+                is_live: false
+                state: Processed
+                token: 00000000-0000-0000-0000-000000000000
+                transaction_date: '2018-01-31T11:07:12Z'
+                transaction_type: CardNotPresent
+                total_fees: 75
+                authorization_code: '123456'
+                transaction_category: donation
+                gateway_result:
+                  message: Gateway declined
+        '400':
+          description: Returned when the request body is not in the appropriate format. The response body contains error details.
+        '201':
+          description: Returned when the transaction is successfully created but an unexpected problem occurs retrieving the full details of the transaction. The response body will be null.
+      tags:
+      - Transactions
+    servers:
+    - url: https://api.sky.blackbaud.com/fixedassets
+  /v1/transactions/{transaction_id}:
+    get:
+      operationId: GetTransaction
+      summary: Get a transaction
+      description: Gets information about a transaction.
+      parameters:
+      - name: transaction_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The identifier of the transaction to retrieve.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the specified transaction.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionDetail'
+              example:
+                transaction_id: 10679
+                transaction_date: '2023-06-27T12:00:00Z'
+                amount: 142.86
+                transaction_type: Period depreciation
+                transaction_number: 0
+                status: NotYetPosted
+                number: 0
+                asset_description: Furniture
+                post_date: '2023-06-27T12:00:00Z'
+                period_start_date: '2023-06-27T12:00:00Z'
+                period_end_date: '2023-06-27T12:00:00Z'
+                disposal_method: Test
+                asset_id: '1078'
+                asset_record_id: 356
+                distributions:
+                - distribution_id: 291174
+                  distribution_splits:
+                  - distribution_split_id: 502317
+                    ui_project_id: ''
+                    transaction_code_values:
+                    - name: Jurisdiction
+                      value: None
+                      id: 0
+                      inactive: false
+                    - name: Spendable ?
+                      value: Spendable
+                      id: 0
+                      inactive: false
+                    - name: RE Appeals
+                      value: ''
+                      id: 0
+                      inactive: false
+                    - name: Grant
+                      value: ''
+                      id: 0
+                      inactive: false
+                    - name: Activities
+                      value: ''
+                      id: 0
+                      inactive: false
+                    amount: 22
+                    percent: 100
+                    account_class: Unrestricted Net Assets
+                  amount: 22
+                  description: ''
+                  account_number: 01-5570-00
+                  type_code: Debit
+                  custom_fields: []
+                - distribution_id: 291174
+                  distribution_splits:
+                  - distribution_split_id: 502318
+                    ui_project_id: ''
+                    transaction_code_values:
+                    - name: Jurisdiction
+                      value: None
+                      id: 0
+                      inactive: false
+                    - name: Spendable ?
+                      value: Spendable
+                      id: 0
+                      inactive: false
+                    - name: RE Appeals
+                      value: ''
+                      id: 0
+                      inactive: false
+                    - name: Grant
+                      value: ''
+                      id: 0
+                      inactive: false
+                    - name: Activities
+                      value: ''
+                      id: 0
+                      inactive: false
+                    amount: 22
+                    percent: 100
+                    account_class: Unrestricted Net Assets
+                  amount: 22
+                  description: ''
+                  account_number: 01-2010-00
+                  type_code: Credit
+                  custom_fields: []
+                custom_fields:
+                - field_name: Inventory
+                  value: d1 - Demo 1
+                  comments: Inventory details
+                  type: Boolean
+                  is_required: false
+                  date: '2018-07-12T12:00:00Z'
+                next_transaction_type: Period depreciation
+                has_adjustment: false
+                is_posted: false
+                added_by: User5
+                date_added: '2018-06-19T09:57:05Z'
+                date_modified: '2018-06-19T09:58:07Z'
+                modified_by: User5
+        '404':
+          description: Returned when the specified transaction could not be found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                Error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+        '403':
+          description: Returned when the user does not have permission to view transactions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                Error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Transactions
+    servers:
+    - url: https://api.sky.blackbaud.com/fixedassets
+  /v1/transactions/terminal:
+    post:
+      operationId: CreateTerminalTransaction
+      summary: Terminal transaction (PREVIEW)
+      description: 'Create a terminal transaction.
+
+
+        ***This endpoint is in PREVIEW and may be subject to change.***'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TerminalTransactionAdd'
+            example:
+              payment_configuration_id: 646acda6-e199-4ae2-b5a3-f6e06ec940a3
+              amount: 2500
+              contact_info:
+                first_name: John
+                last_name: Doe
+                email: john.doe@example.com
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the terminal transaction along with the terminal information.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TerminalTransactionRead'
+              example:
+                transaction:
+                  additional_fee: 25
+                  amount: 1000
+                  net_amount: 0
+                  application: Payments API
+                  billing_info:
+                    city: Charleston
+                    country: US
+                    post_code: '29492'
+                    state: SC
+                    street: 2000 Daniel Island Drive
+                  comment: Recurring donation
+                  credit_card:
+                    card_type: Visa
+                    exp_month: 2
+                    exp_year: 1985
+                    last_four: '1111'
+                    name: Blackbaud
+                    pay_pal_funding_source: Unknown
+                  currency: USD
+                  disbursement_status: NotDisbursable
+                  donor_ip_address: 192.168.0.1
+                  fraud_result:
+                    anonymous_proxy_result: NotProcessed
+                    bin_and_ip_country_result: NotProcessed
+                    high_risk_country_result: NotProcessed
+                    result_code: NotProcessed
+                    risk_score: 0
+                    risk_threshold: 0
+                    velocity_result: NotProcessed
+                  id: 92844827-5b74-40db-907f-480b13242eb5
+                  is_live: false
+                  state: Created
+                  token: 00000000-0000-0000-0000-000000000000
+                  transaction_date: '2018-01-31T11:07:12Z'
+                  transaction_type: CardPresent
+                  total_fees: 0
+                  authorization_code: '123456'
+                  transaction_category: donation
+                terminal:
+                  session_key: pi_***_secret_***
+        '400':
+          description: Returned when the request body is not in the appropriate format. The response body contains error details.
+      tags:
+      - Transactions
+    servers:
+    - url: https://api.sky.blackbaud.com/payments
+  /v1/transactions/terminal/uncaptured:
+    get:
+      operationId: GetUncapturedTerminalTransactionList
+      summary: Uncaptured terminal transaction list (PREVIEW)
+      description: 'Returns information about a list of terminal transactions that require capture.
+
+
+        ***This endpoint is in PREVIEW and may be subject to change.***'
+      parameters:
+      - name: payment_configuration_id
+        in: query
+        required: true
+        schema:
+          type: string
+        description: The identifier of the payment configuration.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the list of uncaptured terminal transactions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UncapturedTerminalTransactionListRead'
+              example:
+                count: 1
+                value:
+                - reference_id: pi_12345
+                  amount: 2500
+                  currency: usd
+                  id: 0edd41ee-db5f-438e-97eb-7aea1ac16724
+        '400':
+          description: Returned when the payment configuration id is invalid or not in the appropriate format. The response body contains error details.
+        '403':
+          description: Returned when the requested action is forbidden. The response body contains error details.
+      tags:
+      - Transactions
+    servers:
+    - url: https://api.sky.blackbaud.com/payments
+  /v1/transactions/{transaction_id}/capture:
+    post:
+      operationId: CaptureTransaction
+      summary: Transaction capture
+      description: Captures an authorized transaction.
+      parameters:
+      - name: transaction_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The identifier of the authorized transaction you would like to capture.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionCapture'
+            example:
+              amount: 1000
+        description: Information about the transaction capture.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains transaction details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionRead'
+              example:
+                additional_fee: 25
+                amount: 1000
+                net_amount: 925
+                application: Payments API
+                billing_info:
+                  city: Charleston
+                  country: US
+                  post_code: '29492'
+                  state: SC
+                  street: 2000 Daniel Island Drive
+                comment: Recurring donation
+                credit_card:
+                  card_type: Visa
+                  exp_month: 2
+                  exp_year: 1985
+                  last_four: '1111'
+                  name: Blackbaud
+                  pay_pal_funding_source: Unknown
+                currency: USD
+                disbursement_status: NotDisbursable
+                donor_ip_address: 192.168.0.1
+                fraud_result:
+                  anonymous_proxy_result: NotProcessed
+                  bin_and_ip_country_result: NotProcessed
+                  high_risk_country_result: NotProcessed
+                  result_code: NotProcessed
+                  risk_score: 0
+                  risk_threshold: 0
+                  velocity_result: NotProcessed
+                id: 92844827-5b74-40db-907f-480b13242eb5
+                related_transactions:
+                - id: 6fef1d90-60f2-43ea-aa96-b7562286c57d
+                  transaction_type: Refund
+                is_live: false
+                state: Processed
+                token: 00000000-0000-0000-0000-000000000000
+                transaction_date: '2018-01-31T11:07:12Z'
+                transaction_type: CardNotPresent
+                total_fees: 75
+                authorization_code: '123456'
+                transaction_category: donation
+                gateway_result:
+                  message: Gateway declined
+        '400':
+          description: Returned when the request body is not in the appropriate format or the transaction is not able to be captured. The response body contains error details.
+        '404':
+          description: Returned when the specified transaction is not found. The response body contains error details.
+        '409':
+          description: Returned when the request is received while the transaction is currently being processed. The response body contains error details.
+        '201':
+          description: Returned when the transaction is successfully captured but an unexpected problem occurs retrieving the full details of the transaction. The response body will be null.
+      tags:
+      - Transactions
+    servers:
+    - url: https://api.sky.blackbaud.com/payments
+components:
+  schemas:
+    TransactionSummary:
+      type: object
+      properties:
+        transaction_date:
+          type:
+          - string
+          - 'null'
+          description: The transaction date.
+          format: date
+        amount:
+          type:
+          - number
+          - 'null'
+          description: The transaction amount.
+          format: decimal
+        transaction_type:
+          type:
+          - string
+          - 'null'
+          description: The transaction type method.
+        post_date:
+          type:
+          - string
+          - 'null'
+          description: The transaction post date.
+          format: date
+        post_status:
+          $ref: '#/components/schemas/FaPostStatus'
+        description:
+          type:
+          - string
+          - 'null'
+          description: The transaction description.
+        added_by:
+          type:
+          - string
+          - 'null'
+          description: The person who created the transaction.
+        date_added:
+          type:
+          - string
+          - 'null'
+          description: The transaction creation date.
+          format: date-time
+        modified_by:
+          type:
+          - string
+          - 'null'
+          description: The person who modified the transaction.
+        date_modified:
+          type:
+          - string
+          - 'null'
+          description: The transaction modified date.
+          format: date-time
+        disposal_method:
+          type:
+          - string
+          - 'null'
+          description: The transaction disposal method.
+        disposal_date:
+          type:
+          - string
+          - 'null'
+          description: The transaction disposal date.
+          format: date-time
+      additionalProperties: false
+      description: Response contract for transaction summary.
+    DomainErrorMessage:
+      type: object
+      properties:
+        Error:
+          type:
+          - string
+          - 'null'
+          description: The error message.
+        Details:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: The error details.
+        ErrorPath:
+          type:
+          - string
+          - 'null'
+          description: The error path.
+      additionalProperties: false
+      description: Contract for domain error message.
+    TransactionSummaryApiCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The count.
+          format: int32
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/TransactionSummary'
+          description: The value.
+      additionalProperties: false
+      description: Contract for collection Response
+    TransactionAdjustmentSummary:
+      type: object
+      properties:
+        adjustment_id:
+          type: integer
+          description: The identifier for the invoice adjustment.
+          format: int32
+        post_status:
+          $ref: '#/components/schemas/FaPostStatus'
+        post_date:
+          type:
+          - string
+          - 'null'
+          description: The post date for the invoice adjustment.
+          format: date-time
+        adjustment_date:
+          type:
+          - string
+          - 'null'
+          description: The adjustment date for the invoice adjustment.
+          format: date-time
+        reason:
+          type:
+          - string
+          - 'null'
+          description: The reason for the invoice adjustment.
+        notes:
+          type:
+          - string
+          - 'null'
+          description: The notes for the invoice adjustment.
+      additionalProperties: false
+      description: Contract for transaction adjustment summary.
+    CustomFieldDataType:
+      title: CustomFieldDataType
+      enum:
+      - Text
+      - Number
+      - DateTime
+      - Currency
+      - Boolean
+      - Table
+      - FuzzyDate
+      type: string
+      description: Contract for custom field data types.
+    DistributionTypeCode:
+      title: DistributionTypeCode
+      enum:
+      - Debit
+      - Credit
+      type: string
+      description: The distribution type codes, debit or credit.
+    BasicErrorMessage:
+      type: object
+      properties:
+        Error:
+          type:
+          - string
+          - 'null'
+          description: The error message.
+      additionalProperties: false
+      description: Contract for basic error message details.
+    CustomFieldResponse:
+      type: object
+      properties:
+        field_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the custom field.
+        value:
+          type:
+          - string
+          - 'null'
+          description: The value of the custom field.
+        comments:
+          type:
+          - string
+          - 'null'
+          description: The description of the custom field.
+        type:
+          $ref: '#/components/schemas/CustomFieldDataType'
+        is_required:
+          type: boolean
+          description: Required status of the custom field.
+        date:
+          type:
+          - string
+          - 'null'
+          description: The date on this custom field.
+          format: date-time
+      additionalProperties: false
+      description: Custom field definition.
+    Distribution:
+      required:
+      - distribution_splits
+      type: object
+      properties:
+        distribution_id:
+          type: integer
+          description: The distribution identifier.
+          format: int32
+        distribution_splits:
+          type: array
+          items:
+            $ref: '#/components/schemas/DistributionSplit'
+          description: The distribution split.
+        amount:
+          type: number
+          description: The distribution amount.
+          format: decimal
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description for this distribution.
+        account_number:
+          type:
+          - string
+          - 'null'
+          description: The account number for this distribution.
+        type_code:
+          $ref: '#/components/schemas/DistributionTypeCode'
+        custom_fields:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CustomFieldResponse'
+          description: The custom fields of the distribution.
+      additionalProperties: false
+      description: Distribution.
+    FaPostStatus:
+      title: FaPostStatus
+      enum:
+      - DoNotPost
+      - NotYetPosted
+      - Posted
+      type: string
+      description: The enum for fixed assets post status.
+    DistributionSplit:
+      required:
+      - transaction_code_values
+      type: object
+      properties:
+        distribution_split_id:
+          type: integer
+          description: The distribution split identifier.
+          format: int32
+        ui_project_id:
+          type:
+          - string
+          - 'null'
+          description: The user-visible identifier of the project.
+        transaction_code_values:
+          type: array
+          items:
+            $ref: '#/components/schemas/TransactionCodeValue'
+          description: The distribution transaction code values. The values should be in the same order as the codes defined in the database.
+        amount:
+          type:
+          - number
+          - 'null'
+          description: The distribution journal entry amount. Only one of Amount or Percent can be specified.
+          format: decimal
+        percent:
+          type:
+          - number
+          - 'null'
+          description: The distribution journal entry amount percentage. Only one of Amount or Percent can be specified.
+          format: decimal
+        account_class:
+          type:
+          - string
+          - 'null'
+          description: The account class for this distribution split.
+      additionalProperties: false
+      description: Contract for Journal Entry Distribution Split.
+    TransactionCodeValue:
+      required:
+      - id
+      - value
+      type: object
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+          description: The transaction code name.
+        value:
+          type: string
+          description: The transaction code value.
+        id:
+          type: integer
+          description: The transaction code value ID.
+          format: int32
+        inactive:
+          type: boolean
+          description: Indicate if record is inactive or not.
+      additionalProperties: false
+      description: The distribution transaction code values. The values should be in the same order as the codes defined in the database.
+    TransactionDetail:
+      type: object
+      properties:
+        transaction_id:
+          type: integer
+          description: The transaction identifier.
+          format: int32
+        transaction_date:
+          type:
+          - string
+          - 'null'
+          description: The date of the transaction.
+          format: date-time
+        amount:
+          type:
+          - number
+          - 'null'
+          description: The amount of the transaction.
+          format: decimal
+        transaction_type:
+          type:
+          - string
+          - 'null'
+          description: The transaction type method for transaction.
+        transaction_number:
+          type: integer
+          description: The number for the transaction.
+          format: int32
+        status:
+          $ref: '#/components/schemas/FaPostStatus'
+        number:
+          type: integer
+          description: The number of transactions.
+          format: int32
+        asset_description:
+          type:
+          - string
+          - 'null'
+          description: The description for the asset.
+        post_date:
+          type:
+          - string
+          - 'null'
+          description: The post date of the transaction.
+          format: date-time
+        period_start_date:
+          type:
+          - string
+          - 'null'
+          description: The period start date of the transaction.
+          format: date-time
+        period_end_date:
+          type:
+          - string
+          - 'null'
+          description: The period end date of the transaction.
+          format: date-time
+        disposal_method:
+          type:
+          - string
+          - 'null'
+          description: The disposal method for the transaction.
+        asset_id:
+          type:
+          - string
+          - 'null'
+          description: The asset identifier associated with the transaction.
+        interfund_set:
+          type:
+          - string
+          - 'null'
+          description: Interfund Set of the transaction.
+        asset_record_id:
+          type: integer
+          description: The asset record for the transaction.
+          format: int32
+        distributions:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Distribution'
+          description: The distributions on this transaction.
+        custom_fields:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CustomFieldResponse'
+          description: Contract for custom fields. Value and Date field should be added as per the custom field value.
+        next_transaction_type:
+          type:
+          - string
+          - 'null'
+          description: Next Transaction Type.
+        adjustment_summary:
+          $ref: '#/components/schemas/TransactionAdjustmentSummary'
+        has_adjustment:
+          type: boolean
+          description: Indicates whether or not transaction has an adjustment.
+        is_posted:
+          type: boolean
+          description: Indicates whether or not transaction is posted.
+        added_by:
+          type:
+          - string
+          - 'null'
+          description: The creator of the transaction.
+        date_added:
+          type:
+          - string
+          - 'null'
+          description: The created date of the transaction.
+          format: date-time
+        date_modified:
+          type:
+          - string
+          - 'null'
+          description: The modified date of the transaction.
+          format: date-time
+        modified_by:
+          type:
+          - string
+          - 'null'
+          description: The modifier of the transaction.
+      additionalProperties: false
+      description: Transaction Information.
+    FraudResultRead:
+      type: object
+      properties:
+        anonymous_proxy_result:
+          type:
+          - string
+          - 'null'
+          description: 'Used for clients who have opted in to Premium Fraud Service, this is the result of the anonymous proxy validation.
+
+            The possible values are NotProcessed, Pass, or Failed.'
+        bin_and_ip_country_result:
+          type:
+          - string
+          - 'null'
+          description: 'Used for clients who have opted in to Premium Fraud Service, this is the result of the bin origination country compared to the origination country of the ip.
+
+            The possible values are NotProcessed, Pass, or Failed.'
+        high_risk_country_result:
+          type:
+          - string
+          - 'null'
+          description: 'Used for clients who have opted in to Premium Fraud Service, this is the result of the high risk country validation.
+
+            The possible values are NotProcessed, Pass, or Failed.'
+        result_code:
+          type:
+          - string
+          - 'null'
+          description: 'Used for clients who have opted in to Premium Fraud Service, this is the result of the overall result of the premium fraud validation.
+
+            The possible values are NotProcessed, Passed, FailedProcessingError, FailedProfileSettings, MissingRequiredLicensekey, MissingRequiredField, or NonRoutableIP'
+        risk_score:
+          type: integer
+          description: Used for clients who have opted in to Premium Fraud Service, this is the score that was determined for this transaction.
+          format: int32
+        risk_threshold:
+          type: integer
+          description: Used for clients who have opted in to Premium Fraud Service, this is the threshold that was set by the client at the time of this transaction.
+          format: int32
+        velocity_result:
+          type:
+          - string
+          - 'null'
+          description: 'Used for clients who have opted in to Premium Fraud Service, this is the result of the velocity validation.
+
+            The possible values are NotProcessed, Pass, or Failed.'
+      additionalProperties: false
+      description: The fraud result information for the transaction.
+    DirectDebitAccountInfo:
+      required:
+      - account_holder
+      - direct_debit_type
+      type: object
+      properties:
+        direct_debit_type:
+          $ref: '#/components/schemas/DirectDebitType'
+        account_holder:
+          minLength: 1
+          type: string
+          description: The name of the account holder for the direct debit account.
+        account_email:
+          type:
+          - string
+          - 'null'
+          description: The email address of the account holder for the direct debit account. <b>Note:</b> This property is required for <b>CAD</b>, <b>AUD</b>, or <b>GBP</b> accounts.
+          format: email
+        au_becs_debit:
+          $ref: '#/components/schemas/AuBecsDebitDetails'
+        us_bank_account:
+          $ref: '#/components/schemas/UsBankAccountDetails'
+        acss_debit:
+          $ref: '#/components/schemas/AcssDebitDetails'
+        bacs_debit:
+          $ref: '#/components/schemas/BacsDebitDetails'
+        billing_address:
+          $ref: '#/components/schemas/BillingAddressAdd'
+        account_number:
+          type:
+          - string
+          - 'null'
+          description: "[DEPRECATED] The account number used to process this request. This property will be removed in future versions.  \nInclude `direct_debit_type` and the related object, such as `us_bank_account`, to pass in account details."
+        account_type:
+          $ref: '#/components/schemas/AccountType'
+        check_number:
+          type:
+          - string
+          - 'null'
+          description: '[DEPRECATED] The check number used to process this request. This property will be removed in future versions.'
+        routing_number:
+          type:
+          - string
+          - 'null'
+          description: "[DEPRECATED] The routing number used to process this request. This property will be removed in future versions.  \nInclude `direct_debit_type` and the related object, such as `us_bank_account`, to pass in account details."
+        mandate_is_variable_amount:
+          type: boolean
+          description: True if mandate is for a variable amount. <b>Note:</b> This property is required for <b>CAD</b> accounts.
+        mandate_amount:
+          type: integer
+          description: 'The mandate amount. Measured in cents: 1000 = $10.00. <b>Note:</b> This property is required for <b>CAD</b> or <b>GBP</b> accounts.'
+          format: int32
+        recurrence_description:
+          type:
+          - string
+          - 'null'
+          description: The description of the recurring schedule for the mandate. <b>Note:</b> This property is required for <b>CAD</b> or <b>GBP</b> accounts.
+      additionalProperties: false
+      description: The direct debit account information to be used when processing this request.
+    BillingInfoAdd:
+      type: object
+      properties:
+        address:
+          type:
+          - string
+          - 'null'
+          description: The account holder’s billing address.
+        city:
+          type:
+          - string
+          - 'null'
+          description: The account holder’s billing city.
+        country:
+          type:
+          - string
+          - 'null'
+          description: The account holder’s billing country - ISO standard.
+        first_name:
+          type:
+          - string
+          - 'null'
+          description: The given name of the account holder for the card whose PAN you wish to use for this transaction.
+        last_name:
+          type:
+          - string
+          - 'null'
+          description: The surname of the account holder for the card whose PAN you wish to use for this transaction.
+        post_code:
+          type:
+          - string
+          - 'null'
+          description: The account holder’s billing postal code.
+        state:
+          type:
+          - string
+          - 'null'
+          description: The account holder’s billing state - ISO standard.
+      additionalProperties: false
+      description: The billing information for the transaction.
+    TransactionAdd:
+      required:
+      - amount
+      - payment_configuration_id
+      type: object
+      properties:
+        amount:
+          type: integer
+          description: 'The monetary amount of the transaction. Measured in cents: 1000 = $10.00.'
+          format: int32
+        authorize_only:
+          type:
+          - boolean
+          - 'null'
+          description: Only authorize the transaction. This parameter does not apply to direct debit transactions.
+        billing_contact:
+          $ref: '#/components/schemas/BillingInfoAdd'
+        card_token:
+          type: string
+          description: The <a href="https://en.wikipedia.org/wiki/Universally_unique_identifier">unique identifier</a> for the stored credit card whose PAN you wish to use for this transaction.
+          format: uuid
+        comment:
+          type:
+          - string
+          - 'null'
+          description: A free form comment for this transaction.
+        credit_card:
+          $ref: '#/components/schemas/CreditCardAdd'
+        csc:
+          type:
+          - string
+          - 'null'
+          description: 'The Card Security Code (CVV2) for the card whose PAN was specified in the ```credit_card``` parameter.
+
+            This parameter should be omitted when using a payment configuration that does not perform CSC check.'
+        direct_debit_account_info:
+          $ref: '#/components/schemas/DirectDebitAccountInfo'
+        direct_debit_account_token:
+          type: string
+          description: The <a href="https://en.wikipedia.org/wiki/Universally_unique_identifier">unique identifier</a> for the stored debit account info that can be used for the transaction.
+          format: uuid
+        donor_ip:
+          type:
+          - string
+          - 'null'
+          description: 'The routable IPv4 address of the person with the credit card to process.
+
+            <b>*Important:*</b> Treat this parameter as required for all web applications because it is necessary for fraud screening.
+
+            Without it, you may expose customers to fraudulent transactions, and we may revoke your application''s access to the Payments API.'
+        email:
+          type:
+          - string
+          - 'null'
+          description: The email address of the donor.
+        extend_capture_period:
+          type:
+          - boolean
+          - 'null'
+          description: Allow up to seven days for an authorized transaction created with a card token or credit card to be captured before it is automatically voided. Uncaptured transactions are automatically voided at midnight ET by default.
+        is_backoffice:
+          type:
+          - boolean
+          - 'null'
+          description: Optional parameter that requests exemption from <a href="https://developer.blackbaud.com/skyapi/apis/payments/key-considerations#strong-customer-authentication">Strong Customer Authentication</a>.
+          x-bb-suppressions:
+          - parameter_property_name
+        payment_configuration_id:
+          type: string
+          description: "The unique identifier for the payment configuration to be used when processing this request.\n            \nPayment configurations can be retrieved using the <a href=\"https://developer.sky.blackbaud.com/docs/services/payments/operations/ListPaymentConfiguration\">GET Payment Configuration list endpoint</a>."
+          format: uuid
+        phone:
+          type:
+          - string
+          - 'null'
+          description: The phone number of the donor.
+        tokenize:
+          type: boolean
+          description: 'Optionally tokenize payment information if ```credit_card``` or ```direct_debit_account_info``` parameters are available.
+
+            For recurring transactions, must be set to <strong>true</strong>.
+
+            For credit cards, tokens are registered in Credit Card Updater.'
+        transaction_id:
+          type:
+          - string
+          - 'null'
+          description: Optional unique identifier for this transaction. If null or empty, a GUID is auto-generated.
+          format: uuid
+        transaction_category:
+          type:
+          - string
+          - 'null'
+          description: 'The category for this transaction (ex: "donation").'
+      additionalProperties: false
+      description: 'Note: Either the credit_card, card_token, direct_debit_account_info or direct_debit_account_token parameter must be specified. <b>direct_debit_account_info</b> parameter is only supported for USD accounts.'
+    TerminalTransactionRead:
+      type: object
+      properties:
+        transaction:
+          $ref: '#/components/schemas/TransactionRead'
+        terminal:
+          $ref: '#/components/schemas/TerminalRead'
+      additionalProperties: false
+      description: Defines the data model for the terminal transaction endpoint response.
+    BillingInfoRead:
+      type: object
+      properties:
+        city:
+          type:
+          - string
+          - 'null'
+          description: The account holder’s billing city.
+        country:
+          type:
+          - string
+          - 'null'
+          description: The account holder’s billing country - ISO standard.
+        post_code:
+          type:
+          - string
+          - 'null'
+          description: The account holder’s billing postal code.
+        state:
+          type:
+          - string
+          - 'null'
+          description: The account holder’s billing state - ISO standard.
+        street:
+          type:
+          - string
+          - 'null'
+          description: The account holder’s billing address.
+      additionalProperties: false
+      description: The billing info for the transaction.
+    DAFPayDetails:
+      type: object
+      properties:
+        tracking_id:
+          type:
+          - string
+          - 'null'
+          description: A 10-digit alphanumeric identifier generated by DAFpay, included in the initial grant request and usually passed to the nonprofit from the DAF.
+        external_grant_id:
+          type:
+          - string
+          - 'null'
+          description: A string identifier generated by the DAF provider following a successful grant initiation request.
+      additionalProperties: false
+      description: DAF Pay Details
+    DirectDebitType:
+      enum:
+      - us_bank_account
+      - acss_debit
+      - au_becs_debit
+      - bacs_debit
+      type: string
+      description: Direct debit types<p>Available values:</p><ul><li><i>us_bank_account</i></li><li><i>acss_debit</i></li><li><i>au_becs_debit</i></li><li><i>bacs_debit</i></li></ul>
+    CreditCardAdd:
+      type: object
+      properties:
+        exp_month:
+          type: integer
+          description: The expiration month for the card.
+          format: int32
+        exp_year:
+          type: integer
+          description: The 4-digit expiration year for the card.
+          format: int32
+        issue_number:
+          type:
+          - string
+          - 'null'
+          description: Optional issue number for the card.
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the card holder.
+        number:
+          type:
+          - string
+          - 'null'
+          description: The primary account number for this card.
+        valid_from_month:
+          type: integer
+          description: Optional issue month for the card.
+          format: int32
+        valid_from_year:
+          type: integer
+          description: Optional issue year for the card.
+          format: int32
+      additionalProperties: false
+      description: The credit card information to be used for the transaction.
+    GrantRead:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: The source of the grant
+        id:
+          type:
+          - string
+          - 'null'
+          description: The id of the created grant
+        daf_pay_details:
+          $ref: '#/components/schemas/DAFPayDetails'
+      additionalProperties: false
+      description: Grant Read Details
+    UncapturedTerminalTransactionRead:
+      type: object
+      properties:
+        reference_id:
+          type:
+          - string
+          - 'null'
+          description: The id of the payment intent.
+        amount:
+          type: integer
+          description: 'The monetary amount of the terminal transaction. Measured in cents: 1000 = $10.00.'
+          format: int32
+        currency:
+          type:
+          - string
+          - 'null'
+          description: The 3 char ISO4217 currency code used for the terminal transaction.
+        id:
+          type:
+          - string
+          - 'null'
+          description: The unique identifier of the terminal transaction. If this value is blank, call the <a href="https://developer.sky.blackbaud.com/docs/services/payments/operations/CreateTerminalTransaction">CreateTerminalTransaction</a> endpoint with the reference_id to create a new terminal transaction.
+      additionalProperties: false
+      description: Defines the data model for an uncaptured terminal transaction.
+    BillingAddressAdd:
+      type: object
+      properties:
+        address_block:
+          type:
+          - string
+          - 'null'
+          description: The account holder’s billing address. <b>Note:</b> This property is required for <b>GBP</b> accounts.
+        city:
+          type:
+          - string
+          - 'null'
+          description: The account holder’s billing city. <b>Note:</b> This property is required for <b>GBP</b> accounts.
+        state:
+          type:
+          - string
+          - 'null'
+          description: The account holder’s billing state - ISO standard.
+        country:
+          type:
+          - string
+          - 'null'
+          description: The account holder’s billing country - ISO standard. <b>Note:</b> This property is required for <b>GBP</b> accounts.
+        post_code:
+          type:
+          - string
+          - 'null'
+          description: The account holder’s billing postal code. <b>Note:</b> This property is required for <b>GBP</b> accounts.
+      additionalProperties: false
+      description: The billing information for the direct debit account.
+    TerminalContactInfoAdd:
+      type: object
+      properties:
+        first_name:
+          type:
+          - string
+          - 'null'
+          description: The given name of the donor.
+        last_name:
+          type:
+          - string
+          - 'null'
+          description: The surname of the donor.
+        email:
+          type:
+          - string
+          - 'null'
+          description: The email address of the donor.
+      additionalProperties: false
+      description: The contact information for the terminal transaction.
+    TransactionState:
+      enum:
+      - Unknown
+      - Processed
+      - Failed
+      - Refunded
+      - Pending
+      - Authorized
+      - Voided
+      - Created
+      type: string
+      description: The current processing state of the transaction.<p>Available values:</p><ul><li><i>Unknown</i></li><li><i>Processed</i></li><li><i>Failed</i></li><li><i>Refunded</i></li><li><i>Pending</i></li><li><i>Authorized</i></li><li><i>Voided</i></li><li><i>Created</i></li></ul>
+    RelatedTransactionRead:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: The unique identifier of this related transaction.
+        transaction_type:
+          type:
+          - string
+          - 'null'
+          description: "The transaction type of this related transaction. \nPossible values are Refund, DirectDebitRefund, DirectDebitReturn, ChargeBack, ReverseChargeback, or Adjustment."
+      additionalProperties: false
+      description: Represents a related transaction.
+    BacsDebitDetails:
+      required:
+      - account_number
+      - sort_code
+      type: object
+      properties:
+        account_number:
+          minLength: 1
+          type: string
+          description: The account number of the bank account.
+        sort_code:
+          minLength: 1
+          type: string
+          description: Sort code of the bank account.
+      additionalProperties: false
+      description: UK bacs bank account details
+    TransactionRead:
+      type: object
+      properties:
+        account_type:
+          type:
+          - string
+          - 'null'
+          description: 'The type of account of this transaction. Used for Direct Debit transactions.
+
+            Possible values are Checking, Savings, Corporate checkings, or Corporate savings.'
+        additional_fee:
+          type: integer
+          description: 'The additional fee amount for this transaction.
+
+            Measured in cents: 1000 = $10.00.'
+          format: int32
+        amount:
+          type: integer
+          description: 'The gross amount of this transaction. Measured in cents: 1000 = $10.00.'
+          format: int32
+        net_amount:
+          type: integer
+          description: 'The net amount of this transaction after fees. Measured in cents: 1000 = $10.00.'
+          format: int32
+        application:
+          type:
+          - string
+          - 'null'
+          description: The calling Application of this transaction.
+        billing_info:
+          $ref: '#/components/schemas/BillingInfoRead'
+        check_number:
+          type:
+          - string
+          - 'null'
+          description: The Check Number for the transaction to be processed.
+        comment:
+          type:
+          - string
+          - 'null'
+          description: The comment on this transaction.
+        credit_card:
+          $ref: '#/components/schemas/CreditCardRead'
+        currency:
+          type:
+          - string
+          - 'null'
+          description: The 3 char ISO4217 currency code used for this transaction.
+        disbursement_status:
+          type:
+          - string
+          - 'null'
+          description: 'The disbursement status of this transaction.
+
+            Possible values are Disbursable, DoNotDisburse, and Disbursed.'
+        donor_ip_address:
+          type:
+          - string
+          - 'null'
+          description: The routable IPv4 address where this transaction originated.
+        email_address:
+          type:
+          - string
+          - 'null'
+          description: The account holder’s email address.
+        fraud_result:
+          $ref: '#/components/schemas/FraudResultRead'
+        id:
+          type: string
+          description: The unique identifier of this transaction.
+          format: uuid
+        reference_transaction_id:
+          type:
+          - string
+          - 'null'
+          description: 'The unique identifier of the original transaction associated with a refund or dispute.
+
+            Present when the specified transaction_id is a refund, dispute, or direct debit return.'
+          format: uuid
+        related_transactions:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/RelatedTransactionRead'
+          description: An array of related transactions for this transaction.
+        is_live:
+          type: boolean
+          description: True if this is not a test or demo transaction.
+          x-bb-suppressions:
+          - parameter_property_name
+        pending_date:
+          type:
+          - string
+          - 'null'
+          description: The date by which decision could be made for the transaction. It will be approved or declined.
+        phone_number:
+          type:
+          - string
+          - 'null'
+          description: The account holder’s phone number.
+        routing_number:
+          type:
+          - string
+          - 'null'
+          description: The Routing Number for the transaction.
+        state:
+          $ref: '#/components/schemas/TransactionState'
+        terminal_type:
+          type:
+          - string
+          - 'null'
+          description: 'Used for card present transactions to indicate the type of terminal used.
+
+            Possible values are Unknown, AutomatedDispensingMachine, SelfServiceTerminal, LimitedAmountTerminal, MobilePayDevice, ChipAndPIN, or VerifoneP400'
+        token:
+          type: string
+          description: The stored token. Available only on creation of Transaction record.
+          format: uuid
+        transaction_date:
+          type:
+          - string
+          - 'null'
+          description: The date and time of this transaction.
+        transaction_type:
+          type:
+          - string
+          - 'null'
+          description: "The transaction type of this transaction. \nPossible values are CardNotPresent, CardPresent, DirectDebit, TransactionBatch, DirectDebitBatch, OfflineBatch, Refund, DirectDebitRefund, ChargeBack, or DirectDebitReturn."
+        application_fee:
+          type:
+          - integer
+          - 'null'
+          description: 'The application fee amount for this transaction.
+
+            Measured in cents: 1000 = $10.00.'
+          format: int32
+        total_fees:
+          type: integer
+          description: 'The total fees for this transaction.
+
+            Measured in cents: 1000 = $10.00.'
+          format: int32
+        authorization_code:
+          type:
+          - string
+          - 'null'
+          description: The authorization code for the transaction.
+        transaction_category:
+          type:
+          - string
+          - 'null'
+          description: 'The category for this transaction (ex: "donation").'
+        pay_pal_reference_id:
+          type:
+          - string
+          - 'null'
+          description: A reference number from PayPal for the transaction.
+        gateway_result:
+          $ref: '#/components/schemas/GatewayResultRead'
+        grant_read:
+          $ref: '#/components/schemas/GrantRead'
+      additionalProperties: false
+      description: Represents a created transaction.
+    TerminalRead:
+      type: object
+      properties:
+        session_key:
+          type:
+          - string
+          - 'null'
+          description: Session Key
+      additionalProperties: false
+      description: Defines the data model for the terminal information.
+    PayPalFundingSource:
+      enum:
+      - Unknown
+      - PayPal
+      - Venmo
+      type: string
+      description: The type of PayPal funding source, if any, used to determine the PayPal payment source used for the transaction.<p>Available values:</p><ul><li><i>Unknown</i></li><li><i>PayPal</i></li><li><i>Venmo</i></li></ul>
+    TransactionCapture:
+      required:
+      - amount
+      type: object
+      properties:
+        amount:
+          type: integer
+          description: 'The monetary amount to capture. Measured in cents: 1000 = $10.00.'
+          format: int32
+      additionalProperties: false
+      description: Represents the data needed to capture a transaction.
+    CreditCardRead:
+      type: object
+      properties:
+        card_type:
+          type:
+          - string
+          - 'null'
+          description: The IIN value of the card.
+        exp_month:
+          type: integer
+          description: The expiration month for the card.
+          format: int32
+        exp_year:
+          type: integer
+          description: The expiration year for the card.
+          format: int32
+        last_four:
+          type:
+          - string
+          - 'null'
+          description: The last 4 digits of primary account number for this card.
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the card holder.
+        pay_pal_funding_source:
+          $ref: '#/components/schemas/PayPalFundingSource'
+      additionalProperties: false
+      description: The information of the credit card for the transaction.
+    AuBecsDebitDetails:
+      required:
+      - account_number
+      - bsb_number
+      type: object
+      properties:
+        account_number:
+          minLength: 1
+          type: string
+          description: The account number of the bank account.
+        bsb_number:
+          minLength: 1
+          type: string
+          description: Bank-State-Branch number of the bank account.
+      additionalProperties: false
+      description: AU becs bank account details
+    AccountType:
+      enum:
+      - Checking
+      - Savings
+      - CorporateChecking
+      - CorporateSavings
+      type: string
+      description: The account type. Possible values are Checking, Savings, Corporate checking, or Corporate savings.<p>Available values:</p><ul><li><i>Checking</i></li><li><i>Savings</i></li><li><i>CorporateChecking</i></li><li><i>CorporateSavings</i></li></ul>
+    GatewayResultRead:
+      type: object
+      properties:
+        message:
+          type:
+          - string
+          - 'null'
+          description: A message provided by the gateway that processed this transaction. Requires a direct debit return id passed in.
+      additionalProperties: false
+      description: The gateway result information for the transaction.
+    UsBankAccountDetails:
+      required:
+      - account_number
+      - account_type
+      - routing_number
+      type: object
+      properties:
+        account_number:
+          minLength: 1
+          type: string
+          description: The account number of the bank account.
+        account_type:
+          $ref: '#/components/schemas/AccountType'
+        routing_number:
+          minLength: 1
+          type: string
+          description: The routing number of the bank account.
+      additionalProperties: false
+      description: US bank account details
+    AcssDebitDetails:
+      required:
+      - account_number
+      - institution_number
+      - transit_number
+      type: object
+      properties:
+        account_number:
+          minLength: 1
+          type: string
+          description: The account number of the bank account.
+        institution_number:
+          minLength: 1
+          type: string
+          description: Instituition number of the bank account.
+        transit_number:
+          minLength: 1
+          type: string
+          description: Transit number of the bank account.
+      additionalProperties: false
+      description: Acss bank account details
+    UncapturedTerminalTransactionListRead:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of uncaptured terminal transactions in the list.
+          format: int32
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UncapturedTerminalTransactionRead'
+          description: The list of uncaptured terminal transactions.
+      additionalProperties: false
+      description: Defines the data model for a list of uncaptured terminal transactions.
+    TerminalTransactionAdd:
+      required:
+      - amount
+      - payment_configuration_id
+      type: object
+      properties:
+        payment_configuration_id:
+          minLength: 1
+          type: string
+          description: The unique identifier of the payment configuration.
+        amount:
+          maximum: 2147483647
+          minimum: 50
+          type: integer
+          description: 'The monetary amount of the terminal transaction. Measured in cents: 1000 = $10.00.'
+          format: int32
+        reference_id:
+          type:
+          - string
+          - 'null'
+          description: The id of the existing payment intent.
+        contact_info:
+          $ref: '#/components/schemas/TerminalContactInfoAdd'
+      additionalProperties: false
+      description: Defines the data model for the terminal transaction request.
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+x-refined-from:
+- blackbaud-fixed-assets-api-openapi.yml
+- blackbaud-payments-api-openapi.yml

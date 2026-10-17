@@ -1,0 +1,122 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Payments Readers API'
+  description: This API enables users to accept and manage payments via Blackbaud Merchant Services.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/payments
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/payments
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Readers
+paths:
+  /v1/readers:
+    get:
+      operationId: GetReaderList
+      summary: Reader list
+      description: Returns the list of readers.
+      parameters:
+      - name: payment_configuration_id
+        in: query
+        required: true
+        schema:
+          type: string
+        description: The identifier for the payment configuration.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the list of readers.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReaderListRead'
+              example:
+                count: 1
+                value:
+                - device_name: Example device name
+                  device_type: p400
+                  ip_address: 192.168.0.1
+                  network_status: offline
+                  reader_id: abc_D8EF4gHijf1lmn
+                  serial_number: 000-000-001
+                  software_version: 1.0.0.0
+        '400':
+          description: Returned when the request body is not in the appropriate format. The response body contains error details.
+      tags:
+      - Readers
+components:
+  schemas:
+    ReaderListRead:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: Total count of ReaderDetailRead records.
+          format: int32
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ReaderDetailRead'
+          description: Defines reader details.
+      additionalProperties: false
+      description: Defines the data model for the Reader List endpoint response.
+    ReaderDetailRead:
+      type: object
+      properties:
+        device_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the reader.
+        device_type:
+          type:
+          - string
+          - 'null'
+          description: The type of the reader.
+        ip_address:
+          type:
+          - string
+          - 'null'
+          description: The IP address of the reader.
+        network_status:
+          type:
+          - string
+          - 'null'
+          description: 'The network status of the reader.
+
+            Possible values are online or offline.'
+        reader_id:
+          type:
+          - string
+          - 'null'
+          description: The unique identifier of the reader.
+        serial_number:
+          type:
+          - string
+          - 'null'
+          description: The serial number of the reader.
+        software_version:
+          type:
+          - string
+          - 'null'
+          description: The software version of the reader.
+      additionalProperties: false
+      description: Defines reader details.
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

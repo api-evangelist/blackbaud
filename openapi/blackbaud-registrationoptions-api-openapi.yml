@@ -1,0 +1,654 @@
+openapi: 3.2.0
+info:
+  title: Blackbaud Registrationoptions API
+  version: '1.0'
+  x-refined-note:
+  - x-apievangelist-provenance differs across the merged source definitions and was not carried
+  description: 'Operations tagged Registrationoptions across 2 of this provider''s published API definitions: blackbaud-altru-event-api-openapi.yml, blackbaud-crm-event-api-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.sky.blackbaud.com/alt-evtmg
+- url: https://api.sky.blackbaud.com/crm-evtmg
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Registrationoptions
+paths:
+  /registrationoptions:
+    post:
+      operationId: CreateEventRegistrationOption
+      summary: Create an event registration option
+      description: Operation for adding a registration option record.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewEventRegistrationOption'
+            example:
+              event_id: 36da7826-7f00-42d7-9727-89480dea1303
+              event_registration_type: Family
+              amount: 0
+              cost: 0
+              receipt_amount: 0
+              benefit:
+              - id: ef6996cf-b4f9-4277-bbcd-fed81f633fb8
+                benefit_id: c5a9bdd9-b386-4ef3-88a9-be560b795fc2
+                quantity: 0
+                unit_value: 0
+                total_value: 0
+                details: benefit details
+                base_currency_id: 7ad9254e-fe38-45ef-bc32-f61eb6caabd9
+                event_base_currency_total_value: 0
+              name: ''
+              registration_count: 0
+              event_registration_types:
+              - id: e2ddc822-d5d4-499c-9bca-2f3e20fb3992
+                description: event registration for sponsor
+                registration_count: 0
+                active: false
+              base_currency_id: 7ad9254e-fe38-45ef-bc32-f61eb6caabd9
+              event_base_currency_decimal_digits: 0
+              event_base_currency_rounding_type_code: 0
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully creates the resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to create the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Registrationoptions
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-evtmg
+  /registrationoptions/{event_price_id}:
+    delete:
+      operationId: DeleteEventRegistrationOption
+      summary: Delete an event registration option
+      description: Removes a registration option from the given event.
+      parameters:
+      - name: event_price_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The event price id
+      responses:
+        '200':
+          description: Returned when the operation successfully deletes the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to delete the resource.
+      tags:
+      - Registrationoptions
+    patch:
+      operationId: EditEventRegistrationOption
+      summary: Edit an event registration option
+      description: Operation for editing a registration option.
+      parameters:
+      - name: event_price_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The event price id.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditEventRegistrationOption'
+            example:
+              event_registration_type: ''
+              amount: 20
+              cost: 20
+              receipt_amount: 20
+              benefit:
+              - id: dd9ff3f2-cf84-4e69-9524-e0289643ea25
+                benefit_id: c8b4dbb2-a55b-42de-a5c3-dac089e23f62
+                quantity: 1
+                unit_value: 20
+                total_value: 20
+                details: benefit details
+                base_currency_id: 36da7826-7f00-42d7-9727-89480dea1303
+                event_base_currency_total_value: 20
+              name: ''
+              registration_count: 100
+              base_currency_id: 6abe6c7e-fedc-473d-abe8-505807c94e0e
+              event_base_currency_decimal_digits: 2
+              event_base_currency_rounding_type_code: 1
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully edits the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to edit the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Registrationoptions
+    get:
+      operationId: GetEventRegistrationOption
+      summary: Get an event registration option
+      description: Operation for editing a registration option.
+      parameters:
+      - name: event_price_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The event price id.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the specified resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventRegistrationOption'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to get the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Registrationoptions
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-evtmg
+components:
+  schemas:
+    EditEventRegistrationOption:
+      type: object
+      properties:
+        event_registration_type:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The registration type. Read-only in the SOAP API.
+        amount:
+          type: number
+          description: The registration fee.
+          format: double
+        cost:
+          type: number
+          description: The cost.
+          format: double
+        receipt_amount:
+          type: number
+          description: The receipt amount.
+          format: double
+        benefit:
+          type: array
+          items:
+            $ref: '#/components/schemas/EditEventRegistrationOptionBenefit'
+          description: Benefit.
+        name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The name.
+        registration_count:
+          type: integer
+          description: The registration count.
+          format: int32
+        base_currency_id:
+          type: string
+          description: The base currency ID. Read-only in the SOAP API.
+        event_base_currency_decimal_digits:
+          type: integer
+          description: The event base currency decimal digits. Read-only in the SOAP API.
+          format: int32
+        event_base_currency_rounding_type_code:
+          type: integer
+          description: The event base currency rounding type code. Read-only in the SOAP API.
+          format: int32
+      additionalProperties: false
+      description: EditEventRegistrationOption
+      example:
+        event_registration_type: ''
+        amount: 20
+        cost: 20
+        receipt_amount: 20
+        benefit:
+        - id: dd9ff3f2-cf84-4e69-9524-e0289643ea25
+          benefit_id: c8b4dbb2-a55b-42de-a5c3-dac089e23f62
+          quantity: 1
+          unit_value: 20
+          total_value: 20
+          details: benefit details
+          base_currency_id: 36da7826-7f00-42d7-9727-89480dea1303
+          event_base_currency_total_value: 20
+        name: ''
+        registration_count: 100
+        base_currency_id: 6abe6c7e-fedc-473d-abe8-505807c94e0e
+        event_base_currency_decimal_digits: 2
+        event_base_currency_rounding_type_code: 1
+      x-display-name: Registration Option Edit Form 2
+      x-display-id: Registration Option Edit Form 2
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type: integer
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type: string
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: false
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-display-name: Problem details
+      x-display-id: ProblemDetails
+    EditEventRegistrationOptionBenefit:
+      required:
+      - benefit_id
+      type: object
+      properties:
+        id:
+          type: string
+          description: id
+        benefit_id:
+          type: string
+          description: benefit
+        quantity:
+          type: integer
+          description: quantity
+        unit_value:
+          type: number
+          description: unit value
+        total_value:
+          type: number
+          description: total value
+        details:
+          type: string
+          description: details
+        base_currency_id:
+          type: string
+          description: base currency id
+        event_base_currency_total_value:
+          type: number
+          description: event currency total value
+      description: EditEventRegistrationOptionBenefit
+      x-display-name: benefit
+      x-display-id: benefit
+    NewEventRegistrationOptionBenefit:
+      required:
+      - benefit_id
+      type: object
+      properties:
+        id:
+          type: string
+          description: id
+        benefit_id:
+          type: string
+          description: benefit
+        quantity:
+          type: integer
+          description: quantity
+        unit_value:
+          type: number
+          description: unit value
+        total_value:
+          type: number
+          description: total value
+        details:
+          type: string
+          description: details
+        base_currency_id:
+          type: string
+          description: base currency id
+        event_base_currency_total_value:
+          type: number
+          description: event currency total value
+      description: NewEventRegistrationOptionBenefit
+      x-display-name: benefit
+      x-display-id: benefit
+    EventRegistrationOptionBenefit:
+      required:
+      - benefit_id
+      type: object
+      properties:
+        id:
+          type: string
+          description: id
+        benefit_id:
+          type: string
+          description: benefit
+        quantity:
+          type: integer
+          description: quantity
+        unit_value:
+          type: number
+          description: unit value
+        total_value:
+          type: number
+          description: total value
+        details:
+          type: string
+          description: details
+        base_currency_id:
+          type: string
+          description: base currency id
+        event_base_currency_total_value:
+          type: number
+          description: event currency total value
+      description: EventRegistrationOptionBenefit
+      x-display-name: benefit
+      x-display-id: benefit
+    NewEventRegistrationOption:
+      required:
+      - event_id
+      - event_registration_type
+      - amount
+      - name
+      - registration_count
+      type: object
+      properties:
+        event_id:
+          type: string
+          description: The event ID.
+        event_registration_type:
+          type: string
+          description: The registration type. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/5c69fd15-969c-4034-a040-49ab3fea8cd5?parameters=include_inactive,{0}.
+        amount:
+          type: number
+          description: The registration fee.
+          format: double
+        cost:
+          type: number
+          description: The cost.
+          format: double
+        receipt_amount:
+          type: number
+          description: The receipt amount.
+          format: double
+        benefit:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewEventRegistrationOptionBenefit'
+          description: Benefit.
+        name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The name.
+        registration_count:
+          type: integer
+          description: The registration count.
+          format: int32
+        event_registration_types:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewEventRegistrationOptionEventRegistrationTypes'
+          description: Event registration types.
+        base_currency_id:
+          type: string
+          description: The base currency ID. Read-only in the SOAP API.
+        event_base_currency_decimal_digits:
+          type: integer
+          description: The event base currency decimal digits. Read-only in the SOAP API.
+          format: int32
+        event_base_currency_rounding_type_code:
+          type: integer
+          description: The event base currency rounding type code. Read-only in the SOAP API.
+          format: int32
+      additionalProperties: false
+      description: CreateEventRegistrationOption
+      example:
+        event_id: 36da7826-7f00-42d7-9727-89480dea1303
+        event_registration_type: Family
+        amount: 0
+        cost: 0
+        receipt_amount: 0
+        benefit:
+        - id: ef6996cf-b4f9-4277-bbcd-fed81f633fb8
+          benefit_id: c5a9bdd9-b386-4ef3-88a9-be560b795fc2
+          quantity: 0
+          unit_value: 0
+          total_value: 0
+          details: benefit details
+          base_currency_id: 7ad9254e-fe38-45ef-bc32-f61eb6caabd9
+          event_base_currency_total_value: 0
+        name: ''
+        registration_count: 0
+        event_registration_types:
+        - id: e2ddc822-d5d4-499c-9bca-2f3e20fb3992
+          description: event registration for sponsor
+          registration_count: 0
+          active: false
+        base_currency_id: 7ad9254e-fe38-45ef-bc32-f61eb6caabd9
+        event_base_currency_decimal_digits: 0
+        event_base_currency_rounding_type_code: 0
+      x-display-name: Registration Option Add Form 2
+      x-display-id: Registration Option Add Form 2
+    PostResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The newly created ID.
+      additionalProperties: false
+      description: Defines the shape of a post response object.
+    EventRegistrationOption:
+      required:
+      - amount
+      - name
+      - registration_count
+      type: object
+      properties:
+        event_registration_type:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The registration type. Read-only in the SOAP API.
+        amount:
+          type: number
+          description: The registration fee.
+          format: double
+        cost:
+          type: number
+          description: The cost.
+          format: double
+        receipt_amount:
+          type: number
+          description: The receipt amount.
+          format: double
+        benefit:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventRegistrationOptionBenefit'
+          description: Benefit.
+        name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The name.
+        registration_count:
+          type: integer
+          description: The registration count.
+          format: int32
+        base_currency_id:
+          type: string
+          description: The base currency ID. Read-only in the SOAP API.
+        event_base_currency_decimal_digits:
+          type: integer
+          description: The event base currency decimal digits. Read-only in the SOAP API.
+          format: int32
+        event_base_currency_rounding_type_code:
+          type: integer
+          description: The event base currency rounding type code. Read-only in the SOAP API.
+          format: int32
+      additionalProperties: false
+      description: GetEventRegistrationOption
+      x-display-name: Registration Option Edit Form 2
+      x-display-id: Registration Option Edit Form 2
+    NewEventRegistrationOptionEventRegistrationTypes:
+      type: object
+      properties:
+        id:
+          type: string
+          description: id
+        description:
+          type: string
+          description: description
+        registration_count:
+          type: integer
+          description: registration count
+        active:
+          type: boolean
+          description: active
+      description: NewEventRegistrationOptionEventRegistrationTypes
+      x-display-name: event_registration_types
+      x-display-id: event_registration_types
+    NewEventRegistrationOption_2:
+      required:
+      - event_id
+      - event_registration_type
+      - amount
+      - name
+      - registration_count
+      type: object
+      properties:
+        event_id:
+          type: string
+          description: The event ID.
+        event_registration_type:
+          type: string
+          description: The registration type. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/5c69fd15-969c-4034-a040-49ab3fea8cd5?parameters=include_inactive,{0}.
+        amount:
+          type: number
+          description: The registration fee.
+          format: double
+        cost:
+          type: number
+          description: The cost.
+          format: double
+        receipt_amount:
+          type: number
+          description: The receipt amount.
+          format: double
+        benefit:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewEventRegistrationOptionBenefit'
+          description: Benefit.
+        name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The name.
+        registration_count:
+          type: integer
+          description: The registration count.
+          format: int32
+        event_registration_types:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewEventRegistrationOptionEventRegistrationTypes'
+          description: Event registration types.
+        base_currency_id:
+          type: string
+          description: The base currency ID. Read-only in the SOAP API.
+        event_base_currency_decimal_digits:
+          type: integer
+          description: The event base currency decimal digits. Read-only in the SOAP API.
+          format: int32
+        event_base_currency_rounding_type_code:
+          type: integer
+          description: The event base currency rounding type code. Read-only in the SOAP API.
+          format: int32
+      additionalProperties: false
+      description: CreateEventRegistrationOption
+      example:
+        event_id: 36da7826-7f00-42d7-9727-89480dea1303
+        event_registration_type: Family
+        amount: 0
+        cost: 0
+        receipt_amount: 0
+        benefit:
+        - id: ef6996cf-b4f9-4277-bbcd-fed81f633fb8
+          benefit_id: c5a9bdd9-b386-4ef3-88a9-be560b795fc2
+          quantity: 0
+          unit_value: 0
+          total_value: 0
+          details: benefit details
+          base_currency_id: 7ad9254e-fe38-45ef-bc32-f61eb6caabd9
+          event_base_currency_total_value: 0
+        name: ''
+        registration_count: 0
+        event_registration_types:
+        - id: e2ddc822-d5d4-499c-9bca-2f3e20fb3992
+          description: event registration for sponsor
+          registration_count: 0
+          active: false
+        base_currency_id: 7ad9254e-fe38-45ef-bc32-f61eb6caabd9
+        event_base_currency_decimal_digits: 0
+        event_base_currency_rounding_type_code: 0
+      x-display-name: Registration Option Add Form 2
+      x-display-id: Registration Option Add Form 2
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+x-refined-from:
+- blackbaud-altru-event-api-openapi.yml
+- blackbaud-crm-event-api-openapi.yml

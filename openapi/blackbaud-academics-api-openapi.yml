@@ -1,630 +1,4968 @@
-openapi: 3.0.1
+openapi: 3.2.0
 info:
-  title: 'Blackbaud SKY API: Academics'
-  description: This API is used to provide access to academics information, such as grades, attendance and scheduling.
+  title: 'Blackbaud SKY API: School Academics API'
+  description: This API is used to provide access to school information such as users, academics, admissions, athletics, content, lists, and general school info.
   version: '1.0'
   x-apievangelist-provenance:
-    source: https://developer.sky.blackbaud.com/developer/apis/afe-edaca
-    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations,
-      examples, stored definitions); nothing authored
+    source: https://developer.sky.blackbaud.com/developer/apis/school
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
     assembled: '2026-10-14'
 servers:
-- url: https://api.sky.blackbaud.com/afe-edaca
+- url: https://api.sky.blackbaud.com/school
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Academics
 paths:
-  /v1/grading/gradetranslations:
+  /v1/academics/courserequests:
     get:
-      operationId: V1GradingGradetranslationsGet
-      summary: Grade translations list (Get)
-      description: 'Returns a collection of grade translations.
+      operationId: V1AcademicsCourserequestsGet
+      summary: Academics course requests
+      description: 'Course requests for all of the offering types that allow requests are returned, including Academics, Activities, Advisories and Athletics.
 
 
         Requires the following role in the Education Management system:
 
-        <ul><li>Grading Manager</li></ul>'
+
+        Schedule Manager'
       parameters:
-      - name: offering_type
+      - name: school_year
         in: query
         required: false
         schema:
           type: string
-        description: 'The offering type (group type) of the grading periods to return. Defaults to 1 (Academics).
+        description: Provide the ID or label of the school year of the course request. Defaults to the current school year.
+      - name: school_level
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Provide the ID of a school level to limit results to requests for courses in that school level.
+      - name: course_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Provide a course ID (offering ID) to limit results to requests for that course.
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Provide a status to limit results to requests with that request status. Allowed values: Pending, Approved, Denied.'
+      - name: enrollment_status
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Provide an enrolled status to limit results to requests where the student is enrolled or not. Allowed values: NotEnrolled, Enrolled, Dropped.'
+      - name: include_recommendations
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: 'false'
+        description: Set to true to include recommendations for each request. Defaults to false.
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: '1'
+        description: The page number for pagination.
+      - name: size
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: '5000'
+        description: The number of items per page.
+      responses:
+        '200':
+          description: A List of Course Requests
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1AcademicsCourserequestsGet200ApplicationJsonResponse'
+              example:
+              - id: 1
+                user:
+                  id: 1
+                  email: JohnJr@domain.com
+                  first_name: John
+                  last_name: Smith
+                  maiden_name: Brannigan
+                  middle_name: Robert
+                  preferred_name: Jack
+                  preferred_last_name: Brannigan
+                  prefix: Mr.
+                  suffix: Jr.
+                course:
+                  id: 1
+                  name: Fencing
+                  type:
+                    id: 1
+                    description: Academics
+                  course_code: CHR240
+                  description: Fun with pointy sticks
+                  length: 1
+                  credits: 0.5
+                  school_level:
+                    id: 1
+                    abbreviation: US
+                    name: Upper School
+                  school_year: 2023 - 2024
+                start_term:
+                  id: 1
+                  name: Fall
+                preference: 1
+                status: Approved
+                enrollment_status: Enrolled
+                type: Request
+                is_required: false
+                is_recommendation: true
+                request_date: '2024-09-30T01:30:05Z'
+                requested_by:
+                  id: 1
+                  email: JohnJr@domain.com
+                  first_name: John
+                  last_name: Smith
+                  maiden_name: Brannigan
+                  middle_name: Robert
+                  preferred_name: Jack
+                  preferred_last_name: Brannigan
+                  prefix: Mr.
+                  suffix: Jr.
+                recommended_by:
+                  id: 1
+                  email: JohnJr@domain.com
+                  first_name: John
+                  last_name: Smith
+                  maiden_name: Brannigan
+                  middle_name: Robert
+                  preferred_name: Jack
+                  preferred_last_name: Brannigan
+                  prefix: Mr.
+                  suffix: Jr.
+                reviewer:
+                  id: 1
+                  email: JohnJr@domain.com
+                  first_name: John
+                  last_name: Smith
+                  maiden_name: Brannigan
+                  middle_name: Robert
+                  preferred_name: Jack
+                  preferred_last_name: Brannigan
+                  prefix: Mr.
+                  suffix: Jr.
+                fulfilled_by_alternate: false
+                note: Test Course
+                alternates:
+                - course:
+                    id: 1
+                    name: Fencing
+                    type:
+                      id: 1
+                      description: Academics
+                    course_code: CHR240
+                    description: Fun with pointy sticks
+                    length: 1
+                    credits: 0.5
+                    school_level:
+                      id: 1
+                      abbreviation: US
+                      name: Upper School
+                    school_year: 2023 - 2024
+                  start_term:
+                    id: 1
+                    name: Fall
+                  preference: 1
+      tags:
+      - Academics
+  /v1/academics/courses:
+    get:
+      operationId: V1AcademicsCoursesGet
+      summary: Academics courses
+      description: 'Returns a collection of academic courses, filtered by department and/or school level.
 
-          Allowed values: 1 – Academics, 2 – Activities, 3 – Advisories, 4 – Dorms, 9 – Athletics'
+
+        Requires at least one of the following roles in the Education Management system:
+
+
+        Academic Group Manager
+
+
+        Platform Manager'
+      parameters:
+      - name: department_id
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Identifier for a specific department.
+      - name: level_id
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Identifier for a specific school level.
+      - name: exclude_inactive
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: 'false'
+        description: Set to True to exclude inactive courses. Defaults to false, if omitted.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseCollection'
+              example:
+                count: 1
+                value:
+                - offering_id: 1010
+                  course_length: 1
+                  course_code: Math101
+                  course_title: Intro To Algebra
+                  course_description: The introductory course for the subject of Algebra.
+                  inactive: false
+                  level_num: 123
+                  room_type_id: 11788
+                  room_id: 14
+                  building_id: 2
+                  credits: 0.5
+                  custom_fields:
+                  - usage_id: 12345
+                    udf_usage_id: 5
+                    data_type_id: 1
+                    data_type: Data Type
+                    data_type_description: Data Type Description
+                    field_id: 0
+                    field_name: Field Name
+                    bit_value: true
+                    int_value: 1
+                    decimal_value: 1.5
+                    text_value: Text Value
+                    last_modified_user_id: 1
+                    last_modified_date: '2023-10-17T12:00:00Z'
+                    status: true
+                    unique: true
+                    required: true
+                    table_id: 1
+                    table_value_id: 1
+                    table_value: Table Value
+                    table_value_abbreviation: Table Value Abbreviation
+                  grade_levels:
+                  - id: 1506
+                    active: true
+                    description: 12th Grade
+                    abbreviation: '12'
+                    name: 12th Grade
+                    promote_to_code: 2
+                    promotion:
+                      type: Graduated
+                      school_level:
+                        id: 123
+                        description: Upper School
+                      grade_level:
+                        id: 123
+                        name: 12th Grade
+                        abbreviation: '12'
+                        active: true
+                  schedule_settings:
+                    min_sections: 1
+                    target_sections: 1
+                    max_sections: 1
+                    min_students: 10
+                    target_students: 15
+                    max_students: 18
+                    priority:
+                      id: 1
+                      name: Core Course
+                    exclude_from_gms: false
+                    exclude_from_gss: false
+                    teacher:
+                    - user:
+                        id: 1
+                        first_name: John
+                        last_name: Smith
+                        maiden_name: Brannigan
+                        middle_name: Robert
+                      target_sections: 1
+                      max_sections: 1
+                      priority: High
+                    room_type:
+                      id: 11788
+                      name: Academics
+                    building:
+                      building_id: 104509
+                      building_name: Harker Hall
+                    room:
+                      room_id: 554980
+                      name: Science Room A
+                    include_teacher_homeroom: true
+                    block_type: Academic
+                    use_selected_blocks: true
+                    blocks:
+                    - id: 22
+                      name: Period A
+                    use_all_block_meetings: false
+                    number_of_meetings: 1
+                    use_different_blocks: false
+                  departments:
+                  - id: 123
+                    level_description: Upper School
+                    name: Math
+                    is_academic: true
+                    description: ''
+                  school_level:
+                    id: 1
+                    description: Upper School
+                    abbreviation: US
+                  types:
+                  - id: 1
+                    name: Advanced Metals
+                    active: false
+                  records_attendance: true
+                  publish_to_website: true
+                  notes: The admin notes for the course
+      tags:
+      - Academics
+  /v1/academics/courses/{course_id}/customfields/list:
+    post:
+      operationId: V1AcademicsCoursesByCourse_idCustomfieldsListPost
+      summary: Academics courses custom fields list create
+      description: 'Add custom field data to a course
+
+
+        Requires at least one of the following roles in the Education Management system:
+
+
+        Academic group manager
+
+
+        Platform Manager'
+      parameters:
+      - name: course_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The ID of the course.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/V1AcademicsCourses-course_id-CustomfieldsListPostRequest-1'
+            example:
+            - field_id: 1
+              data_type_id: 1
+              int_value: 1
+            - field_id: 2
+              data_type_id: 2
+              text_value: texting
+            - field_id: 3
+              data_type_id: 3
+              decimal_value: 3.14
+            - field_id: 4
+              data_type_id: 4
+              bit_value: true
+        description: Object that describes the list of custom fields that will be created for the course.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1AcademicsCourses-course_id-CustomfieldsListPost200ApplicationJsonResponse'
+              example: 0
+      tags:
+      - Academics
+    patch:
+      operationId: V1AcademicsCoursesByCourse_idCustomfieldsListPatch
+      summary: Academics courses custom fields list update
+      description: 'Update the custom field data for a course
+
+
+        Requires at least one of the following roles in the Education Management system:
+
+
+        Academic group manager
+
+
+        Platform Manager'
+      parameters:
+      - name: course_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The ID of the course.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/V1AcademicsCourses-course_id-CustomfieldsListPatchRequest-1'
+            example:
+            - id: 1
+              field_id: 1
+              data_type_id: 1
+              int_value: 1
+            - id: 1
+              field_id: 2
+              data_type_id: 2
+              text_value: texting
+            - id: 3
+              field_id: 3
+              data_type_id: 3
+              decimal_value: 3.14
+            - id: 4
+              field_id: 4
+              data_type_id: 4
+              bit_value: true
+        description: Object that describes the list of custom fields that will be updated for the course.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1AcademicsCourses-course_id-CustomfieldsListPatch200ApplicationJsonResponse'
+              example: 0
+      tags:
+      - Academics
+  /v1/academics/departments:
+    get:
+      operationId: V1AcademicsDepartmentsGet
+      summary: Academics departments
+      description: 'Returns a collection of academic departments.
+
+
+        Requires at least one of the following roles in the Education Management system:
+
+
+        Academic Group Manager
+
+
+        Platform Manager
+
+
+        Any Manager Role'
+      parameters:
+      - name: level_id
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Provide a school level ID to limit results to departments valid for the specified school level.
+      - name: include_nonacademic
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: Set to true to include non-academic departments in results. Defaults to false.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DepartmentCollection'
+              example:
+                count: 2
+                value:
+                - id: 123
+                  level_description: Upper School
+                  name: Math
+                  sort: 10
+                  is_academic: true
+                  description: ''
+                  school_levels:
+                  - id: 1
+                    description: Upper School
+                    abbreviation: US
+                - id: 124
+                  level_description: Upper School
+                  name: English
+                  sort: 20
+                  is_academic: true
+                  description: All English for Lower school campus
+                  school_levels:
+                  - id: 1
+                    description: Upper School
+                    abbreviation: US
+      tags:
+      - Academics
+  /v1/academics/enrollments/changes:
+    get:
+      operationId: V1AcademicsEnrollmentsChangesGet
+      summary: Academics Student Enrollments Changes
+      description: 'Returns a collection of students with enrollment changes on or after the date parameter.
+
+
+        The maximum period of time that can be specified is 30 days from start_date, if end_date is not provided or is greater than 30 days from start_date it will be set to start_date + 30 days.
+
+
+        Requires at least one of the following roles in the Education Management system:
+
+
+        Schedule Manager
+
+
+        Academic Group Manager'
+      parameters:
+      - name: start_date
+        in: query
+        required: true
+        schema:
+          type: string
+        description: The DateTime of changes to academics enrollments to begin with
+      - name: end_date
+        in: query
+        required: false
+        schema:
+          type: string
+        description: The DateTime of changes to academics enrollments to end with.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnrollmentChangesCollection'
+              example:
+                count: 0
+                next_link: string
+                value:
+                - id: 0
+                  preferred_name: string
+                  first_name: string
+                  last_name: string
+                  changes:
+                  - section_id: 0
+                    course_code: string
+                    section_name: string
+                    modified_date_time: string
+                    modified_by: 0
+                    action: string
+      tags:
+      - Academics
+  /v1/academics/enrollments/{user_id}:
+    get:
+      operationId: V1AcademicsEnrollmentsByUser_idGet
+      summary: Academics student enrollment list
+      description: 'Returns a collection of course sections in which the provided student is enrolled.
+
+
+        Requires at least one of the following roles in the Education Management system:
+
+
+        Academic Group Manager
+
+
+        Schedule Manager'
+      parameters:
+      - name: user_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: User identifier.
+      - name: school_year
+        in: query
+        required: false
+        schema:
+          type: string
+        description: The school year to filter the collection of sections by. Corresponds to ```school_year_label``` in the <a href="https://developer.sky.blackbaud.com/docs/services/school/operations/v1yearsget">Year list</a>. Defaults to the current school year.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnrollmentCollection'
+              example:
+                count: 1
+                value:
+                - id: 21890883
+                  begin_date: '2018-08-30T12:00:00Z'
+                  block_id: 1966
+                  block_name: A
+                  blocks: true
+                  building_name: Alumni Hall
+                  course_code: AL1
+                  course_title: Arthurian Legends
+                  enrollment_type:
+                    id: 123
+                    description: Student Enrollment
+                    earns_credit: true
+                    use_all_grades: true
+                    takes_attendance: true
+                    is_default: true
+                  departments:
+                  - id: 1
+                    level_description: Level Description
+                    name: English
+                    sort: 1
+                    is_academic: false
+                  distinction: ''
+                  dropped: 0
+                  duration_begin_date: '2018-11-25T12:00:00Z'
+                  duration_description: Fall
+                  duration_end_date: '2019-02-01T12:00:00Z'
+                  duration_id: 78739
+                  duration_name: Fall
+                  end_date: '2019-11-24T12:00:00Z'
+                  faculty_first_name: Ian
+                  faculty_last_name: Smith
+                  level_number: 455
+                  offering_description: Athletics
+                  offering_id: 263402
+                  offering_type_id: 9
+                  room_id: 6959
+                  room_name: 107 update
+                  room_number: Alu. 107
+                  school_year: 2017 - 2018
+                  section_identifier: '1'
+                  custom_fields:
+                  - usage_id: 12345
+                    udf_usage_id: 5
+                    data_type_id: 1
+                    data_type: Data Type
+                    data_type_description: Data Type Description
+                    field_id: 0
+                    field_name: Field Name
+                    bit_value: true
+                    int_value: 1
+                    decimal_value: 1.5
+                    text_value: Text Value
+                    last_modified_user_id: 1
+                    last_modified_date: '2018-11-25T12:00:00Z'
+                    status: true
+                    unique: true
+                    required: true
+                    table_id: 1
+                    table_value_id: 1
+                    table_value: Table Value
+                    table_value_abbreviation: Table Value Abbreviation
+      tags:
+      - Academics
+  /v1/academics/rosters:
+    get:
+      operationId: V1AcademicsRostersGet
+      summary: Academics rosters
+      description: 'Returns the academic rosters for a selected year. Uses current school year by default.
+
+
+        Requires the following role in the Education Management system:
+
+
+        Schedule Manager
+
+
+        Academic Group Manager'
+      parameters:
+      - name: school_year
+        in: query
+        required: false
+        schema:
+          type: string
+        description: "The ID or label of the school year. \nDefaults to the current school year."
+      - name: school_level
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Limits rosters returned to school level specified.
+      - name: section_ids
+        in: query
+        required: false
+        schema:
+          type: string
+        description: "Limits rosters returned to sections specified. \nProvide comma-delimited list of section_id values."
+      - name: last_modified
+        in: query
+        required: false
+        schema:
+          type: string
+        description: "Limits rosters returned to sections that were modified on or after the date provided. \n Use ISO-8601 date-time format: 2024-09-01T00:00:00-5:00."
+      - name: include_dropped
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: 'false'
+        description: Set to True to include dropped students in the rosters. Defaults to false, if omitted.
       - name: include_inactive
         in: query
         required: false
         schema:
           type: boolean
           default: 'false'
-        description: Set to true to include grade translations marked inactive.
+        description: Set to True to include inactive sections. Defaults to false.
+      responses:
+        '200':
+          description: A List of Academic rosters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1AcademicsRostersGet200ApplicationJsonResponse'
+              example:
+              - section:
+                  id: 1
+                  name: Fencing – 2 (Boys)
+                  identifier: 2 (Boys)
+                  offering:
+                    id: 1
+                    name: Fencing
+                    type:
+                      id: 1
+                      description: Academics
+                    course_code: CHR240
+                    description: Fun with pointy sticks
+                    length: 1
+                    credits: 0.5
+                    status: Active
+                    publish_to_website: true
+                    record_attendance: true
+                    max_requests: 15
+                    school_level:
+                      id: 1
+                      abbreviation: US
+                      name: Upper School
+                    school_year: 2023 - 2024
+                  duration:
+                    id: 1
+                    name: Fall
+                  school_year:
+                    id: 1234
+                    begin_date: '2019-08-30T12:00:00Z'
+                    current_year: true
+                    end_date: '2020-08-30T12:00:00Z'
+                    published: true
+                    begin_billing_year_date: '2019-08-30T12:00:00Z'
+                    end_billing_year_date: '2020-08-30T12:00:00Z'
+                  lead_section_id: 1
+                  modified: '2024-09-30T01:30:05Z'
+                  room:
+                    room_id: 1
+                    room_number: LR7
+                    name: Labroom 7
+                    code: AH-LR7
+                    capacity: '20'
+                    notes: Saving a note
+                    building:
+                      id: 1
+                      description: Test Building
+                    type:
+                      id: 1
+                      description: Academics
+                  block:
+                    id: 1
+                    name: A
+                    type:
+                      id: 1
+                      description: Academic
+                    offering_type:
+                      id: 1
+                      description: Academics
+                    is_inactive: false
+                roster:
+                - user:
+                    id: 1
+                    email: JohnJr@domain.com
+                    first_name: John
+                    last_name: Smith
+                    maiden_name: Brannigan
+                    middle_name: Robert
+                    preferred_name: Jack
+                    preferred_last_name: Brannigan
+                    prefix: Mr.
+                    suffix: Jr.
+                  enroll_date: '2024-09-30T01:30:05Z'
+                  depart_date: '2024-09-30T01:30:05Z'
+                  leader:
+                    is_leader: true
+                    is_head: true
+                    is_faculty: true
+                    type: Teacher
+                  photo:
+                    large_filename_url: //some.cdn.com/pathTo/largeFilename
+                    thumb_filename_url: //some.cdn.com/pathTo/thumbFilename
+                  status: Enrolled
+                  enrollment_type:
+                    id: 123
+                    description: Student Enrollment
+                    earns_credit: true
+                    use_all_grades: true
+                    takes_attendance: true
+                    is_default: true
+      tags:
+      - Academics
+  /v1/academics/schedules/master:
+    get:
+      operationId: V1AcademicsSchedulesMasterGet
+      summary: Academics master schedule
+      description: 'Returns a collection of Master Schedule days within the date range provided.
+
+
+        Requires at least one of the following roles in the Education Management system:
+
+
+        Academic Group Manager
+
+
+        Schedule Manager
+
+
+        SKY API Basic'
+      parameters:
+      - name: level_num
+        in: query
+        required: true
+        schema:
+          type: integer
+        description: Level Number indicates which school you are working with.
+      - name: start_date
+        in: query
+        required: true
+        schema:
+          type: string
+        description: Start of the date range (inclusive).  The earliest possible start_date is 1/1/1900, any date entered before that date will be overwritten with 1/1/1900.
+      - name: end_date
+        in: query
+        required: true
+        schema:
+          type: string
+        description: End of the date range (inclusive). If the end_date is earlier than the start_date the end_date wil be overwritten with the start_date plus 7 days.
+      - name: offering_type
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Filters the results by a specific group type. Defaults to "All" offering types.
       responses:
         '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/V1GradingGradetranslationsGet200ApplicationJsonResponse'
+                $ref: '#/components/schemas/MasterScheduleDayCollection'
               example:
-              - id: 1
-                description: A-F Scale
-                offering_type:
-                  id: 1
-                  description: Academics
-                translate_output: Grade label
-                grades:
-                - id: 1
-                  grade_label: A
-                  abbreviation: A
-                  minimum: 10
-                  maximum: 90
-                  numeric_equivalent: 96
-                  include_in_gpa1: true
-                  gpa1_equivalent: 4
-                  include_in_gpa2: true
-                  gpa2_equivalent: 5
-                  type: Pass
-                status: Active
-  /v1/learningprofiles:
+                count: 2
+                value:
+                - calendar_day: '2019-06-06T12:00:00Z'
+                  schedule_sets:
+                  - schedule_set_id: 85214793
+                    day_label: Thursday
+                    blocks:
+                    - block_id: 9876454
+                      block: E Block
+                      start_time: '2019-06-06T02:25:00Z'
+                      end_time: '2019-06-06T03:05:00Z'
+                      offering_type: 1
+                      is_canceled: false
+                - calendar_day: '2019-06-07T12:00:00Z'
+                  schedule_sets:
+                  - schedule_set_id: 12345098
+                    holiday_label: Very Special Holiday
+                    blocks: []
+      tags:
+      - Academics
+  /v1/academics/schedules/sets:
+    get:
+      operationId: V1AcademicsSchedulesSetsGet
+      summary: Academics schedule sets by level
+      description: 'Returns a collection of Schedule Sets for the specified ```level_num```.
+
+
+        Requires at least one of the following roles in the Education Management system:
+
+
+        Academic Group Manager
+
+
+        Schedule Manager'
+      parameters:
+      - name: level_num
+        in: query
+        required: true
+        schema:
+          type: integer
+        description: Level Number indicates which school you are working with.
+      - name: school_year
+        in: query
+        required: false
+        schema:
+          type: string
+        description: The school year to get Schedule Sets for. Corresponds to ```school_year_label``` in the <a href="https://developer.sky.blackbaud.com/docs/services/school/operations/v1yearsget">Year list</a>. Defaults to the current school year.
+      - name: group_type
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: '1'
+        description: The Group Type to filter the collection of Schedule Sets. Defaults to the 'Academics' (1).
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScheduleSetCollection'
+              example:
+                count: 1
+                value:
+                - schedule_set_id: 100200300
+                  title: Thur Afternoons
+                  meeting_time: true
+                  rotation: true
+                  begin_date: '2018-07-01T12:00:00Z'
+                  end_date: '2019-06-15T12:00:00Z'
+      tags:
+      - Academics
+  /v1/academics/schedules/sets/{schedule_set_id}:
+    get:
+      operationId: V1AcademicsSchedulesSetsBySchedule_set_idGet
+      summary: Academics schedule set
+      description: 'Returns details about the specified ```schedule_set_id```.
+
+
+        Requires at least one of the following roles in the Education Management system:
+
+
+        Academic Group Manager
+
+
+        Schedule Manager'
+      parameters:
+      - name: schedule_set_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the Schedule Set you seek.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScheduleSetDetails'
+              example:
+                begin_date: '2018-07-01T12:00:00Z'
+                ScheduleSetId: 1234
+                ScheduleSetDescription: Schedule Set E
+                Effdate: '2018-07-01T12:00:00Z'
+                Enddate: '2019-06-15T12:00:00Z'
+                StartDay: 5
+                StartWeek: 1
+                MaxDay: 6
+                MaxWeek: 1
+                MeetingList:
+                - PatternNum: 1
+                  Sun: false
+                  Mon: true
+                  Tue: true
+                  Wed: true
+                  Thu: false
+                  Fri: true
+                  Sat: false
+                  MeetingTimeList:
+                  - PatternNum: 1
+                    DailyOrdinal: 1
+                    BeginTime: '1900-01-01T08:00:00Z'
+                    EndTime: '1900-01-01T08:45:00Z'
+                  - PatternNum: 1
+                    DailyOrdinal: 2
+                    BeginTime: '1900-01-01T02:10:00Z'
+                    EndTime: '1900-01-01T03:55:00Z'
+                RotationList:
+                - WeekInCycle: 1
+                  WeekDayList:
+                  - WeekInCycle: 1
+                    DayInCycle: 1
+                    DayLabel: DAY 1
+                    RotaionDayMeetingList:
+                    - WeekInCycle: 1
+                      DayInCycle: 1
+                      BlockId: 12345
+                      BlockName: A
+                    - WeekInCycle: 1
+                      DayInCycle: 1
+                      BlockId: 98765
+                      BlockName: B
+      tags:
+      - Academics
+  /v1/academics/sections:
+    get:
+      operationId: V1AcademicsSectionsGet
+      summary: Academics sections by school level
+      description: 'Returns a collection of academic sections for the specified school level.
+
+
+        Requires the following role in the Education Management system:
+
+
+        Academic Group Manager'
+      parameters:
+      - name: level_num
+        in: query
+        required: true
+        schema:
+          type: integer
+        description: Level number.
+      - name: school_year
+        in: query
+        required: false
+        schema:
+          type: string
+        description: The school year to get sections for. Corresponds to ```school_year_label``` in the <a href="https://developer.sky.blackbaud.com/docs/services/school/operations/v1yearsget">Year list</a>. Defaults to the current school year.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AcademicsSectionCollection'
+              example:
+                count: 1
+                value:
+                - teachers:
+                  - id: 4567
+                    head: true
+                    name: John Smith
+                    firstname: John
+                    lastname: Smith
+                    preferred_name: Jon
+                    formatted_name: Smith, Jon
+                    email: jonsmith@example.com
+                    cell_phone: 555-555-5555
+                  custom_fields:
+                  - usage_id: 12345
+                    udf_usage_id: 5
+                    data_type_id: 1
+                    data_type: Data Type
+                    data_type_description: Data Type Description
+                    field_id: 0
+                    field_name: Field Name
+                    bit_value: true
+                    int_value: 1
+                    decimal_value: 1.5
+                    text_value: Text Value
+                    last_modified_user_id: 1
+                    last_modified_date: '2023-10-17T12:00:00Z'
+                    status: true
+                    unique: true
+                    required: true
+                    table_id: 1
+                    table_value_id: 1
+                    table_value: Table Value
+                    table_value_abbreviation: Table Value Abbreviation
+                  block:
+                    id: 2099
+                    name: ADV
+                    type:
+                      id: 1
+                      description: Academic
+                    offering_type:
+                      id: 1
+                      description: Academics
+                    is_inactive: false
+                  room:
+                    room_id: 1
+                    room_number: LR7
+                    name: Labroom 7
+                    code: AH-LR7
+                    capacity: '20'
+                    building:
+                      id: 1
+                      description: Test Building
+                    type:
+                      id: 1
+                      description: Academics
+                  id: 123
+                  course_code: '123'
+                  duration:
+                    id: 1
+                    name: Duration Name
+                  lead_section_id: 2
+                  name: Section name
+                  description: The course description for the section
+                  offering_id: 1
+                  parent_section_id: 2
+                  room_id: 12
+                  school_year: 2017-2018
+                  section_identifier: Section Identifier
+      tags:
+      - Academics
+  /v1/academics/sections/students:
     post:
-      operationId: V1LearningprofilesPost
-      summary: Learning profile (Create) (PREVIEW)
-      description: 'Add a student learning profile.
+      operationId: V1AcademicsSectionsStudentsPost
+      summary: Academics enroll students into sections
+      description: 'Adds bulk enrollment data (students and/or teachers) for the specified section(s).
 
 
-        Requires the following role in the Education Management system:
-
-        <ul><li>Learning Profile Manager</li></ul>
+        Returns True if successful, otherwise false.
 
 
-        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+        Requires at least one of the following roles in the Education Management system:
+
+
+        Academic Group Manager
+
+
+        Schedule Manager'
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/StudentLearningProfileAdd'
+              $ref: '#/components/schemas/BulkEnrollment'
             example:
-              student_id: 345
-              author_id: 123
-              profile_form_id: 3
-              start: '2025-01-01T12:00:00Z'
-              status: Needs approval
-              inactive_date: '2026-01-01T12:00:00Z'
-              supplemental_files:
-              - original_name: originalfile.pdf
-                temp_name: file.pdf
-              - original_name: originalfile1.pdf
-                temp_name: file1.pdf
-              learning_profile_file:
-                original_name: originalfile.pdf
-                temp_name: file.pdf
+              id: 60708
+              enrollment_date: '2021-08-08T12:00:00Z'
+              section_ids: 90123567,89012345
+              user_ids: 12345678,9012345
+        description: Defines which users (students and/or teachers) should be added to which offerings (via ```section_id``` and duration ```id```)
       responses:
         '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/V1LearningprofilesPost200ApplicationJsonResponse'
-              example: 91130
-  /v1/learningprofiles/forms:
-    get:
-      operationId: V1LearningprofilesFormsGet
-      summary: Learning profile form list (Get) (PREVIEW)
-      description: "Returns the list of learning profile forms.\n\n Requires the following role in the Education Management\
-        \ system:\n <ul><li>Learning Profile Manager</li></ul>\n\n***This endpoint is in PREVIEW and may be changed or removed\
-        \ at any time.***"
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/V1LearningprofilesFormsGet200ApplicationJsonResponse'
+                $ref: '#/components/schemas/PostResponse'
               example:
-              - id: 1
-                description: My Education Plan
-                is_inactive: true
-                approval_required: true
-                type: Template
-  /v1/learningprofiles/{student_id}:
+                value: true
+      tags:
+      - Academics
+  /v1/academics/sections/{section_id}/assignments:
     get:
-      operationId: V1LearningprofilesByStudent_idGet
-      summary: Learning profile list – single student (Get) (PREVIEW)
-      description: 'Returns the list of learning profiles for a student.
+      operationId: V1AcademicsSectionsBySection_idAssignmentsGet
+      summary: Academics assignments by section
+      description: 'Returns a collection of assignments for the specified ```section_id```.
 
 
-        Requires the following role in the Education Management system:
-
-        <ul><li>Learning Profile Manager</li></ul>
+        Requires at least one of the following roles in the Education Management system:
 
 
-        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+        Academic Group Manager
+
+
+        Student
+
+
+        Teacher
+
+
+        Pending Teacher'
       parameters:
-      - name: student_id
+      - name: section_id
         in: path
         required: true
         schema:
           type: integer
-        description: The user ID of the student
+        description: The ID of the section.
+      - name: types
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Returns results that match a comma separated list of assignment type IDs.
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'The status of the assignment. The status corresponds with static system options. Allowed values: "0" for In Progress, "1" for Completed, "2" for Overdue, and "-1" for To Do.'
+      - name: persona_id
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: The ID of the persona to get assignments. 3 = Faculty, 2 = Student. Defaults to 3.
+      - name: filter
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Return assignments based on the entered string: ```expired```, ```future```, or ```all```. All is the default sort value.'
+      - name: search
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Returns results with Descriptions or Titles that match search string.
       responses:
         '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/V1Learningprofiles-student_id-Get200ApplicationJsonResponse'
+                $ref: '#/components/schemas/AssignmentCollection'
               example:
-              - id: 1
-                student:
-                  bbid: 8982fb06-cdf4-444b-92b9-265b7ee31725
-                  id: 1
-                  display: Brown
-                  birth_date: '2002-01-01T12:00:00Z'
-                  email: joe@example.com
-                  first_name: Terry
-                  last_name: Brown
-                  maiden_name: John Sign
-                  middle_name: Sign
-                  preferred_name: Brown
-                  preferred_last_name: Terry
-                  prefix: Mrs
-                  suffix: M
-                  username: joe@example.com
-                learning_profile:
-                  id: 1
-                  description: Education Plan
-                  type: Template
-                publish_date: '2025-01-01T12:00:00Z'
-                expire_date: '2025-01-02T12:00:00Z'
-                author:
-                  bbid: 8c0cd633-bbb2-4c7c-98f8-89e8edc3df4c
-                  id: 2
-                  display: John
-                  birth_date: '1980-01-01T12:00:00Z'
-                  email: johnperter@gmail.com
-                  first_name: John
-                  last_name: Peter
-                  maiden_name: John Sign
-                  middle_name: Sign
-                  preferred_name: Peter
-                  preferred_last_name: John
-                  prefix: Mrs
-                  suffix: M
-                  username: John Peter
-                status: Active
-                publish: Ready
-  /v1/learningprofiles/{student_id}/{learning_profile_id}:
+                count: 1
+                value:
+                - id: 7666244
+                  date: '2018-08-30T12:00:00Z'
+                  description: This is the description of the assignment
+                  discussion: false
+                  due_date: '2019-11-24T12:00:00Z'
+                  enrolled: 0
+                  graded_count: 0
+                  index_id: 11967810
+                  major: false
+                  name: Test API assignment
+                  publish_on_assigned: false
+                  published: true
+                  rank: 1
+                  status: 2
+                  type: Lab
+                  type_id: 1705
+                  rubric:
+                    id: 1
+                    description: Test rubric
+      tags:
+      - Academics
+  /v1/academics/sections/{section_id}/customfields/list:
+    post:
+      operationId: V1AcademicsSectionsBySection_idCustomfieldsListPost
+      summary: Academics sections custom fields list create
+      description: 'Add custom field data to an academic section
+
+
+        Requires at least one of the following roles in the Education Management system:
+
+
+        Academic group manager
+
+
+        Platform Manager'
+      parameters:
+      - name: section_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The Id of the section to create a custom field for
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/V1AcademicsSections-section_id-CustomfieldsListPostRequest-1'
+            example:
+            - field_id: 1
+              data_type_id: 1
+              int_value: 1
+            - field_id: 2
+              data_type_id: 2
+              text_value: texting
+            - field_id: 3
+              data_type_id: 3
+              decimal_value: 3.14
+            - field_id: 4
+              data_type_id: 4
+              bit_value: true
+        description: Object that describes the list of custom fields that will be created for the section.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1AcademicsSections-section_id-CustomfieldsListPost200ApplicationJsonResponse'
+              example: 0
+      tags:
+      - Academics
     patch:
-      operationId: V1LearningprofilesByStudent_idByLearning_profile_idPatch
-      summary: Learning profile (Edit) (PREVIEW)
-      description: "Update a student’s learning profile.\n\n Requires the following role in the Education Management system:\n\
-        \ <ul><li>Learning Profile Manager</li></ul>\n\n***This endpoint is in PREVIEW and may be changed or removed at any\
-        \ time.***"
+      operationId: V1AcademicsSectionsBySection_idCustomfieldsListPatch
+      summary: Academics sections custom fields list update
+      description: 'Update the custom field data for an academic section
+
+
+        Requires at least one of the following roles in the Education Management system:
+
+
+        Academic group manager
+
+
+        Platform Manager'
       parameters:
-      - name: learning_profile_id
+      - name: section_id
         in: path
         required: true
         schema:
           type: integer
-      - name: student_id
-        in: path
-        required: true
-        schema:
-          type: integer
+        description: The Id of the section to update a custom field for
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/StudentLearningProfileEdit'
+              $ref: '#/components/schemas/V1AcademicsSections-section_id-CustomfieldsListPatchRequest-1'
             example:
-              status: Needs approval
-              inactive_date: '2025-01-01T12:00:00Z'
-              supplemental_files:
-              - original_name: originalfile.pdf
-                temp_name: file.pdf
-              - original_name: originalfile1.pdf
-                temp_name: file1.pdf
+            - id: 1
+              field_id: 1
+              data_type_id: 1
+              int_value: 1
+            - id: 1
+              field_id: 2
+              data_type_id: 2
+              text_value: texting
+            - id: 3
+              field_id: 3
+              data_type_id: 3
+              decimal_value: 3.14
+            - id: 4
+              field_id: 4
+              data_type_id: 4
+              bit_value: true
+        description: Object that describes the list of custom fields that will be updated for the section.
       responses:
         '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/V1Learningprofiles-student_id-learning_profile_id-Patch200ApplicationJsonResponse'
-              example: 91130
+                $ref: '#/components/schemas/V1AcademicsSections-section_id-CustomfieldsListPatch200ApplicationJsonResponse'
+              example: 0
+      tags:
+      - Academics
+  /v1/academics/sections/{section_id}/cycles:
+    get:
+      operationId: V1AcademicsSectionsBySection_idCyclesGet
+      summary: Academics cycles by section
+      description: 'Returns a collection of cycles for the specified ```section_id```.
+
+
+        Requires the following role in the Education Management system:
+
+
+        Academic Group Manager'
+      parameters:
+      - name: section_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The ID of the section.
+      - name: duration_id
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: The ID of the term for which you want to return cycles. Defaults to the current term for the section provided.
+      - name: group_type
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: '1'
+        description: The Group Type for the section specified. Defaults to the 'Academics' (1).
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SectionCycles'
+              example:
+                section_id: 33444555
+                course_title: Advanced Biology
+                section_identifier: 01-A
+                block_name: E
+                course_code: '54321'
+                cycles:
+                - schedule_set: Tue & Thur Eve
+                  schedule_set_id: 101
+                  week: 222
+                  day: 345
+                  begin_time: '2026-10-06'
+                  end_time: '2026-10-06'
+                  sun: false
+                  mon: false
+                  tue: true
+                  wed: false
+                  thu: true
+                  fri: false
+                  sat: false
+                  room_full_name: Millhouse Rm110
+                  canceled: false
+      tags:
+      - Academics
+  /v1/academics/sections/{section_id}/students:
+    get:
+      operationId: V1AcademicsSectionsBySection_idStudentsGet
+      summary: Academics students by section
+      description: 'Returns a collection of students in the specified ```section_id```.
+
+
+        Requires at least one of the following roles in the Education Management system:
+
+
+        Academic Group Manager
+
+
+        Teacher'
+      parameters:
+      - name: section_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The ID of the section, which can be found using <a href="https://developer.sky.blackbaud.com/docs/services/school/operations/V1AcademicsSectionsGet">Section list</a>.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentCollection'
+              example:
+                count: 2
+                value:
+                - id: 4866154
+                  name: Chelsea Caynon
+                - id: 2861900
+                  name: David Gagne
+      tags:
+      - Academics
+  /v1/academics/specialdays:
+    get:
+      operationId: V1AcademicsSpecialdaysGet
+      summary: Academics special days
+      description: 'Returns a collection of special days.
+
+
+        Requires at least one of the following roles in the Education Management system:
+
+
+        Academic Group Manager
+
+
+        Schedule Manager'
+      parameters:
+      - name: level_id
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Identifier for a specific school level.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SpecialDayCollection'
+              example:
+                count: 1
+                value:
+                - id: 5
+                  day_description: 'National Holiday #1'
+                  sort_order: 1
+                  rotation_behavior: Bump
+                  blocks:
+                  - block_id: 22
+                    block_description: Period A
+                    start_time: '1900-01-01T08:00:00Z'
+                    end_time: '1900-01-01T09:15:00Z'
+                  - block_id: 34
+                    block_description: Period C
+                    start_time: '1900-01-01T02:05:00Z'
+                    end_time: '1900-01-01T03:20:00Z'
+      tags:
+      - Academics
+  /v1/academics/student/{student_id}/sections:
+    get:
+      operationId: V1AcademicsStudentByStudent_idSectionsGet
+      summary: Academics sections for student
+      description: 'Returns a collection of sections for the specified ```student_id```.
+
+
+        The user requesting the information must be the student, parent of the student or faculty member associated with the student.
+
+
+        Note: The ```marking_period``` and ```cumulative_grade``` fields will only be returned if the user requesting has the appropriate access permissions. Users must have Grade access for the marking periods associated with the section to retrieve these fields.
+
+
+        Requires at least one of the following roles in the Education Management system:
+
+
+        Student
+
+
+        Parent
+
+
+        Faculty'
+      parameters:
+      - name: student_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The ID of the student to view sections and grades for.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AcademicsSectionStudentCollection'
+              example:
+                count: 1
+                value:
+                - section_id: 45679
+                  section_display_name: AP Biology (7th Period)
+                  school_level_name: High School
+                  room_name: Biology Lab
+                  block_name: 7th Period
+                  lead_section_id: 45678
+                  marking_period_id: 123
+                  duration_id: 678
+                  cumulative_grade: 95.6
+      tags:
+      - Academics
+  /v1/academics/teachers/{teacher_id}/sections:
+    get:
+      operationId: V1AcademicsTeachersByTeacher_idSectionsGet
+      summary: Academics sections by teacher
+      description: 'Returns a collection of sections for the specified ```teacher_id```.
+
+
+        Requires at least one of the following roles in the Education Management system:
+
+
+        Academic Group Manager
+
+
+        Teacher'
+      parameters:
+      - name: teacher_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The ID of the teacher to get sections for.
+      - name: school_year
+        in: query
+        required: false
+        schema:
+          type: string
+        description: The school year. Corresponds to ```school_year_label``` in the <a href="https://developer.sky.blackbaud.com/docs/services/school/operations/v1yearsget">Year list</a>.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AcademicsSectionCollection'
+              example:
+                count: 1
+                value:
+                - teachers:
+                  - id: 4567
+                    head: true
+                    name: John Smith
+                    firstname: John
+                    lastname: Smith
+                    preferred_name: Jon
+                    formatted_name: Smith, Jon
+                    email: jonsmith@example.com
+                    cell_phone: 555-555-5555
+                  custom_fields:
+                  - usage_id: 12345
+                    udf_usage_id: 5
+                    data_type_id: 1
+                    data_type: Data Type
+                    data_type_description: Data Type Description
+                    field_id: 0
+                    field_name: Field Name
+                    bit_value: true
+                    int_value: 1
+                    decimal_value: 1.5
+                    text_value: Text Value
+                    last_modified_user_id: 1
+                    last_modified_date: '2023-10-17T12:00:00Z'
+                    status: true
+                    unique: true
+                    required: true
+                    table_id: 1
+                    table_value_id: 1
+                    table_value: Table Value
+                    table_value_abbreviation: Table Value Abbreviation
+                  block:
+                    id: 2099
+                    name: ADV
+                    type:
+                      id: 1
+                      description: Academic
+                    offering_type:
+                      id: 1
+                      description: Academics
+                    is_inactive: false
+                  room:
+                    room_id: 1
+                    room_number: LR7
+                    name: Labroom 7
+                    code: AH-LR7
+                    capacity: '20'
+                    building:
+                      id: 1
+                      description: Test Building
+                    type:
+                      id: 1
+                      description: Academics
+                  id: 123
+                  course_code: '123'
+                  duration:
+                    id: 1
+                    name: Duration Name
+                  lead_section_id: 2
+                  name: Section name
+                  description: The course description for the section
+                  offering_id: 1
+                  parent_section_id: 2
+                  room_id: 12
+                  school_year: 2017-2018
+                  section_identifier: Section Identifier
+      tags:
+      - Academics
+  /v1/academics/{student_id}/assignments:
+    get:
+      operationId: V1AcademicsByStudent_idAssignmentsGet
+      summary: Academics assignments for student
+      description: 'Returns assignments for a student that are assigned or due within the date range specified.
+
+
+        If no ```end_date``` is supplied it defaults to 31 days past the ```start_date```
+
+        Requires at least one of the following roles in the Education Management system:
+
+
+        Student
+
+
+        Parent'
+      parameters:
+      - name: student_id
+        in: path
+        required: true
+        schema:
+          type: integer
+      - name: start_date
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: end_date
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: section_ids
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentAssignmentCollection'
+              example:
+                count: 2
+                value:
+                - section_name: English III
+                  section_id: 1
+                  assignment_id: 1
+                  short_description: A short description of the assignment
+                  date_assigned: '2022-04-22T12:00:00Z'
+                  date_due: '2022-04-30T12:00:00Z'
+                  long_description: A long description of the assignment
+                  assignment_type: Homework
+                  grade_book: false
+                  online_submission: true
+                  assignment_status: 1
+                  assessment: false
+                  assessment_locked: false
+                  major: 0
+                  discussion: false
+                  formative: false
+                  exempt: false
+                  incomplete: false
+                  late: false
+                  missing: false
+                  rubric: false
+                  user_task: false
+                - section_name: English III
+                  section_id: 1
+                  assignment_id: 1
+                  short_description: A short description of the assignment
+                  date_assigned: '2022-04-22T12:00:00Z'
+                  date_due: '2022-04-30T12:00:00Z'
+                  long_description: A long description of the assignment
+                  assignment_type: Homework
+                  grade_book: false
+                  online_submission: true
+                  assignment_status: 1
+                  assessment: false
+                  assessment_locked: false
+                  major: 0
+                  discussion: false
+                  formative: false
+                  exempt: false
+                  incomplete: false
+                  late: false
+                  missing: false
+                  rubric: false
+                  user_task: false
+      tags:
+      - Academics
+  /v1/academics/{student_id}/{section_id}/gradedassignments:
+    get:
+      operationId: V1AcademicsByStudent_idBySection_idGradedassignmentsGet
+      summary: Academics graded assignments for student
+      description: 'Returns the graded assignments for the specified ```student_id``` and their ```section_id```.
+
+
+        Requires at least one of the following roles in the Education Management system:
+
+
+        Student
+
+
+        Parent'
+      parameters:
+      - name: student_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The ID of the student to view graded assignments for.
+      - name: section_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The ID of the lead section for the student.
+      - name: marking_period_id
+        in: query
+        required: true
+        schema:
+          type: integer
+        description: The ID of the marking period to return grades for.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentGradedAssignmentCollection'
+              example:
+                count: 1
+                value:
+                - assignment_id: 123456
+                  assignment_index_id: 56789
+                  short_description: Chapter 5 Notes
+                  date_assigned: '2022-04-22T08:00:00Z'
+                  date_due: '2022-04-24T08:00:00Z'
+                  max_points: 20
+                  points: 18
+                  assignment_percentage: 80
+                  letter: B+
+                  section_grade: 92.69
+                  formative: false
+                  missing: false
+                  late: false
+                  incomplete: true
+                  exempt: false
+                  comment: You skipped one question.
+                  assignment_type:
+                    id: 98
+                    name: Homework
+                    percentage: '92.56'
+                    weight: 80
+      tags:
+      - Academics
 components:
   schemas:
-    GradeRead:
+    Table:
       type: object
       properties:
         id:
           type: integer
-          description: The ID of the grade
+          description: ''
           format: int32
-          nullable: true
-        grade_label:
-          type: string
-          description: The grade label
-          nullable: true
-        abbreviation:
-          type: string
-          description: The grade abbreviation
-          nullable: true
-        minimum:
-          type: number
-          description: The minimum numeric value for the grade
-          format: double
-          nullable: true
-        maximum:
-          type: number
-          description: The maximum numeric value for the grade
-          format: double
-          nullable: true
-        numeric_equivalent:
-          type: number
-          description: The numeric equivalent when translating the grade
-          format: double
-          nullable: true
-        include_in_gpa1:
-          type: boolean
-          description: True if grade is included in GPA 1 calculations
-          nullable: true
-        gpa1_equivalent:
-          type: number
-          description: The GPA scale equivalent when translating the grade for GPA 1
-          format: double
-          nullable: true
-        include_in_gpa2:
-          type: boolean
-          description: True if grade is included in GPA 2 calculations
-          nullable: true
-        gpa2_equivalent:
-          type: number
-          description: The GPA scale equivalent when translating the grade for GPA 2
-          format: double
-          nullable: true
-        type:
-          type: string
-          description: The type of grade, either Pass, Fail or Audit
-          nullable: true
+        name:
+          type:
+          - string
+          - 'null'
+          description: ''
       additionalProperties: false
       description: ''
-    GradeTranslation:
+    ScheduleSetRotation:
       type: object
       properties:
-        id:
-          type: integer
-          description: The ID of the grade translation
+        WeekInCycle:
+          type:
+          - integer
+          - 'null'
           format: int32
-          nullable: true
-        description:
-          type: string
-          description: The description of the grade translation
-          nullable: true
-        offering_type:
-          $ref: '#/components/schemas/OfferingType'
-        translate_output:
-          type: string
-          description: The value to use when "Translate on output" is set for report cards and transcripts (new builder).
-          nullable: true
-        grades:
-          type: array
+        WeekDayList:
+          type:
+          - array
+          - 'null'
           items:
-            $ref: '#/components/schemas/GradeRead'
-          description: An object with grade and grade translation information
-          nullable: true
-        status:
-          type: string
-          description: The status of the grade translation
-          nullable: true
+            $ref: '#/components/schemas/ScheduleSetRotationDay'
       additionalProperties: false
-      description: Grade translation
-    LearningProfileFileAttachment:
-      required:
-      - temp_name
+    ScheduleSetRotationDayMeeting:
       type: object
       properties:
-        original_name:
-          type: string
-          description: The original name of the file that may be shown in the UI.
-          nullable: true
-        temp_name:
-          minLength: 1
-          pattern: .*\S.*
-          type: string
-          description: The temporary file location provided by the Attachment (Create) process.
+        WeekInCycle:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        DayInCycle:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        DailyOrdinal:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        BlockId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        BlockName:
+          type:
+          - string
+          - 'null'
       additionalProperties: false
-      description: This field is required if the learning profile form's type is <strong>File</strong> (see <a href="https://developer.sky.blackbaud.com/docs/services/afe-edaca/operations/V1LearningprofilesFormsGet"
-        target="_blank">Learning Profile form list(Get)</a> ). Include an attachment object, including the reference name
-        for the attachment’s temporary storage location and the original file name. The file's reference information is produced
-        using the upload process that begins with the <a href="https://developer.sky.blackbaud.com/api#api=afe-edcor&operation=V1AttachmentsGet"
-        target="_blank">Attachment (Upload) endpoint</a>. See also <a href="https://developer.blackbaud.com/skyapi/docs/in-depth-topics/physical-attachments"
-        target="_blank">Creating physical attachments</a>.
-    LearningProfileForm:
+    SpecialDayCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items in the collection
+          format: int32
+          readOnly: true
+        next_link:
+          type:
+          - string
+          - 'null'
+          description: For paginated responses, the URI for the next page of results
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SpecialDay'
+          description: The set of items included in the response. This may be a subset of the items in the collection
+      additionalProperties: false
+      description: A Collection
+    Section:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the section. This is the the class ID for academics, team ID for athletics, building_id for dorms, etc. dependent on offering type
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the roster group
+        identifier:
+          type:
+          - string
+          - 'null'
+          description: The section identifier
+        offering:
+          $ref: '#/components/schemas/OfferingModel'
+        duration:
+          $ref: '#/components/schemas/Duration'
+        school_year:
+          $ref: '#/components/schemas/Year'
+        lead_section_id:
+          type:
+          - integer
+          - 'null'
+          description: The section id for the lead section (i.e. first term) of the class.
+          format: int32
+        modified:
+          type:
+          - string
+          - 'null'
+          description: The last modified date for the section
+          format: date-time
+        photo:
+          $ref: '#/components/schemas/ProfilePictureUrls'
+        room:
+          $ref: '#/components/schemas/BuildingRoomRead'
+        block:
+          $ref: '#/components/schemas/BlockBase'
+      additionalProperties: false
+      description: An object with section information
+    RosterUser:
+      type: object
+      properties:
+        user:
+          $ref: '#/components/schemas/UserBaseRead'
+        enroll_date:
+          type:
+          - string
+          - 'null'
+          description: The date enrolled
+          format: date-time
+        depart_date:
+          type:
+          - string
+          - 'null'
+          description: The date dropped or left
+          format: date-time
+        leader:
+          $ref: '#/components/schemas/RosterLeader'
+        photo:
+          $ref: '#/components/schemas/ProfilePictureUrls'
+        status:
+          type:
+          - string
+          - 'null'
+          description: The status of the enrollment
+        enrollment_type:
+          $ref: '#/components/schemas/EnrollmentType'
+      additionalProperties: false
+      description: An object with roster user information
+    V1AcademicsSections-section_id-CustomfieldsListPatchRequest-1:
+      type: array
+      items:
+        $ref: '#/components/schemas/SectionAdminCustomFieldUpdate'
+      x-apim-inline: true
+    AcademicsSectionStudent:
+      type: object
+      properties:
+        section_id:
+          type: integer
+          description: The ID of the section
+          format: int32
+        section_display_name:
+          type:
+          - string
+          - 'null'
+          description: The section display value (name and block)
+        school_level_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the room where the section takes place
+        room_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the room where the section takes place
+        block_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the schedule block for this section
+        lead_section_id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the first section in a series of terms
+          format: int32
+        marking_period_id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the marking period for this section
+          format: int32
+        duration_id:
+          type:
+          - integer
+          - 'null'
+          description: The duration ID for a section
+          format: int32
+        cumulative_grade:
+          type:
+          - number
+          - 'null'
+          description: The cumulative grade for this section and student
+          format: double
+      additionalProperties: false
+      description: Student Academic Section Model
+    Course:
+      type: object
+      properties:
+        offering_id:
+          type: integer
+          description: The Offering Id of the Offering
+          format: int32
+        course_length:
+          type:
+          - integer
+          - 'null'
+          description: The length of the offering in terms
+          format: int32
+        course_code:
+          type:
+          - string
+          - 'null'
+          description: The course code for the offering
+        course_title:
+          type:
+          - string
+          - 'null'
+          description: The name of the offering
+        course_description:
+          type:
+          - string
+          - 'null'
+          description: The description of the offering
+        inactive:
+          type: boolean
+          description: ''
+        level_num:
+          type:
+          - integer
+          - 'null'
+          description: ''
+          format: int32
+        block_type_id:
+          $ref: '#/components/schemas/CourseBlockType'
+        room_type_id:
+          type:
+          - integer
+          - 'null'
+          description: ''
+          format: int32
+        room_id:
+          type:
+          - integer
+          - 'null'
+          description: ''
+          format: int32
+        building_id:
+          type:
+          - integer
+          - 'null'
+          description: ''
+          format: int32
+        credits:
+          type:
+          - number
+          - 'null'
+          description: The credits for the offering
+          format: float
+        custom_fields:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CustumFieldReadModel'
+          description: ''
+        grade_levels:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/GradeLevel'
+          description: An array of grade level objects
+        schedule_settings:
+          $ref: '#/components/schemas/CourseScheduleSettings'
+        departments:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Department'
+          description: ''
+        school_level:
+          $ref: '#/components/schemas/SchoolLevel'
+        types:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Type'
+          description: An array of course types
+        records_attendance:
+          type:
+          - boolean
+          - 'null'
+          description: True if the course records attendance
+        publish_to_website:
+          type:
+          - boolean
+          - 'null'
+          description: True when the Publish to Website setting is selected; otherwise, false
+        notes:
+          type:
+          - string
+          - 'null'
+          description: The admin notes for the course
+      additionalProperties: false
+      description: ''
+    IdDescriptorField:
       type: object
       properties:
         id:
           type: integer
-          description: The ID of the learning profile form
+          description: ID of the field
           format: int32
-          nullable: true
         description:
-          type: string
-          description: The description for the learning profile form
-          nullable: true
-        is_inactive:
-          type: boolean
-          description: True if the form is inactive
-          nullable: true
-        approval_required:
-          type: boolean
-          description: True if approval is required for student’s assigned this form
-          nullable: true
-        type:
-          $ref: '#/components/schemas/LearningProfileFormType'
+          type:
+          - string
+          - 'null'
+          description: Description of the field
       additionalProperties: false
-      description: An object with learning profile form information, including id, description, active status and if it requires
-        approval
-    LearningProfileFormType:
-      title: LearningProfileFormType
-      enum:
-      - File
-      - Template
-      type: string
-      description: The type of a learning profile form. <strong>File</strong> forms require a learning profile file when a
-        student learning profile is created.
-    NewAttachment:
-      required:
-      - temp_name
+      description: ''
+    ScheduleSetCollection:
       type: object
       properties:
-        original_name:
-          type: string
-          description: The original name of the file that may be shown in the UI.
-          nullable: true
-        temp_name:
-          minLength: 1
-          pattern: .*\S.*
-          type: string
-          description: The temporary file location provided by the Attachment (Create) process.
+        count:
+          type: integer
+          description: The number of items in the collection
+          format: int32
+          readOnly: true
+        next_link:
+          type:
+          - string
+          - 'null'
+          description: For paginated responses, the URI for the next page of results
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ScheduleSet'
+          description: The set of items included in the response. This may be a subset of the items in the collection
       additionalProperties: false
-      description: An object with attachment file name information, including the reference name for the attachment’s temporary
-        storage location. and the original file name. The file's reference information is produced using the upload process
-        that begins with the <a href="https://developer.sky.blackbaud.com/api#api=afe-edcor&operation=V1AttachmentsGet" target="_blank">Attachment
-        (Upload) endpoint</a>. See also <a href="https://developer.blackbaud.com/skyapi/docs/in-depth-topics/physical-attachments"
-        target="_blank">Creating physical attachments</a>. This field is in Preview.
+      description: A Collection
+    GradeLevel:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of a grade level
+          format: int32
+        active:
+          type:
+          - boolean
+          - 'null'
+          description: Returns true if the grade level is active
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the grade level
+        abbreviation:
+          type:
+          - string
+          - 'null'
+          description: The abbreviation of the grade level
+        name:
+          type:
+          - string
+          - 'null'
+          description: The label used to identify a grade level
+        promote_to_code:
+          type:
+          - integer
+          - 'null'
+          description: Returns integer value denoting what promotion a student receives when completing this grade, 1 = Promoted to next grade level, 2 = Graduate, 3 = No action
+          format: int32
+        promotion:
+          $ref: '#/components/schemas/GradeLevelPromotion'
+      additionalProperties: false
+      description: GradeLevel Model
+    Assignment:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the assignment
+          format: int32
+        date:
+          type:
+          - string
+          - 'null'
+          description: 'The date the assignment was assigned; Uses <a href="https://tools.ietf.org/html/rfc3339" target="_blank">ISO-8601</a> (24H) format: 2003-04-21T10:29:43'
+          format: date-time
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the assignment
+        discussion:
+          type: boolean
+          description: Returns True if Discussion is enabled; Discussion is a user-defined value.
+        due_date:
+          type:
+          - string
+          - 'null'
+          description: 'The date the assignment is due; Uses <a href="https://tools.ietf.org/html/rfc3339" target="_blank">ISO-8601</a> (24H) format: 2003-04-21T10:29:43'
+          format: date-time
+        enrolled:
+          type:
+          - integer
+          - 'null'
+          description: The number of students enrolled in a class.
+          format: int32
+        graded_count:
+          type:
+          - integer
+          - 'null'
+          description: Returns the number of assignments that have been graded
+          format: int32
+        index_id:
+          type:
+          - integer
+          - 'null'
+          description: The index ID of the assignment
+          format: int32
+        major:
+          type: boolean
+          description: Whether the assignment is a major assignment or not; a major assignment is a user-defined value
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the assignment
+        publish_on_assigned:
+          type: boolean
+          description: Returns True if assignment is published when it's assigned; based on the Date property
+        published:
+          type: boolean
+          description: Returns True if the assignment is published
+        rank:
+          type:
+          - integer
+          - 'null'
+          description: Gets or sets the rank of the assignment
+          format: int32
+        status:
+          type:
+          - integer
+          - 'null'
+          description: 'The status of the assignment. The status corresponds with static system options. Allowed values: "0" for In Progress, "1" for Completed, "2" for Overdue, and "-1" for To Do.'
+          format: int32
+        type:
+          type:
+          - string
+          - 'null'
+          description: The assignment type (ex. Homework, Essay)
+        type_id:
+          type:
+          - integer
+          - 'null'
+          description: The Type ID of the assignment; the Type ID is a static system value.
+          format: int32
+        rubric:
+          $ref: '#/components/schemas/IdDescriptorField'
+      additionalProperties: false
+      description: Assignment Model
+    AcademicsSectionStudentCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items in the collection
+          format: int32
+          readOnly: true
+        next_link:
+          type:
+          - string
+          - 'null'
+          description: For paginated responses, the URI for the next page of results
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/AcademicsSectionStudent'
+          description: The set of items included in the response. This may be a subset of the items in the collection
+      additionalProperties: false
+      description: A Collection
+    AssignmentCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items in the collection
+          format: int32
+          readOnly: true
+        next_link:
+          type:
+          - string
+          - 'null'
+          description: For paginated responses, the URI for the next page of results
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Assignment'
+          description: The set of items included in the response. This may be a subset of the items in the collection
+      additionalProperties: false
+      description: A Collection
+    V1AcademicsCourses-course_id-CustomfieldsListPostRequest-1:
+      type: array
+      items:
+        $ref: '#/components/schemas/OfferingAdminCustomFieldCreate'
+      x-apim-inline: true
+    StudentGradedAssignmentCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items in the collection
+          format: int32
+          readOnly: true
+        next_link:
+          type:
+          - string
+          - 'null'
+          description: For paginated responses, the URI for the next page of results
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/StudentGradedAssignment'
+          description: The set of items included in the response. This may be a subset of the items in the collection
+      additionalProperties: false
+      description: A Collection
+    AcademicsSection:
+      type: object
+      properties:
+        teachers:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Teacher'
+          description: The list of teachers for this section
+        custom_fields:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CustumFieldReadModel'
+          description: The list of custom fields for the section
+        block:
+          $ref: '#/components/schemas/BlockBase'
+        room:
+          $ref: '#/components/schemas/BuildingRoomRead'
+        id:
+          type: integer
+          description: The ID of the section
+          format: int32
+        course_code:
+          type:
+          - string
+          - 'null'
+          description: The identifier used to reference a course; the Course Code is a user-entered value
+        duration:
+          $ref: '#/components/schemas/Duration'
+        lead_section_id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the first section in a series of terms
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the section
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the section
+        offering_id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of an offered course
+          format: int32
+        parent_section_id:
+          type:
+          - integer
+          - 'null'
+          description: The ID that leads you back to the offered section
+          format: int32
+        room_id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the room the section is held in
+          format: int32
+        school_year:
+          type:
+          - string
+          - 'null'
+          description: The school year date range in which the section occurs
+        section_identifier:
+          type:
+          - string
+          - 'null'
+          description: The identifier used to differentiate between multiple sections that contain a course; the Section Identifier is a user-entered value
+      additionalProperties: false
+      description: Academics Section Model
+    StudentAssignmentCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items in the collection
+          format: int32
+          readOnly: true
+        next_link:
+          type:
+          - string
+          - 'null'
+          description: For paginated responses, the URI for the next page of results
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/StudentAssignment'
+          description: The set of items included in the response. This may be a subset of the items in the collection
+      additionalProperties: false
+      description: A Collection
+    SchoolLevel:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: Id
+          format: int32
+        description:
+          type:
+          - string
+          - 'null'
+          description: description
+        abbreviation:
+          type:
+          - string
+          - 'null'
+          description: Abbreviation
+      additionalProperties: false
+      description: An object with school level information
+    SpecialDay:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: ''
+          format: int32
+        day_description:
+          type:
+          - string
+          - 'null'
+          description: ''
+        sort_order:
+          type:
+          - integer
+          - 'null'
+          description: ''
+          format: int32
+        rotation_behavior:
+          $ref: '#/components/schemas/RotationBehavior'
+        blocks:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SpecialDayBlock'
+          description: ''
+      additionalProperties: false
+      description: ''
+    RotationBehavior:
+      title: RotationBehavior
+      enum:
+      - Bump
+      - Skip
+      type: string
+      description: ''
+    BlockBase:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the block
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The block name
+        type:
+          $ref: '#/components/schemas/IdDescriptorField'
+        offering_type:
+          $ref: '#/components/schemas/IdDescriptorField'
+        is_inactive:
+          type:
+          - boolean
+          - 'null'
+          description: True if the block is inactive
+      additionalProperties: false
+      description: ''
+    ProfilePictureUrls:
+      type: object
+      properties:
+        large_filename_url:
+          type:
+          - string
+          - 'null'
+          description: URL to users Large profile picture
+        thumb_filename_url:
+          type:
+          - string
+          - 'null'
+          description: URL to users Thumbnail profile picture
+      additionalProperties: false
+      description: An object with profile photo and thumbnail
+    AssignmentType:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID for the assignment type
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the assignment type
+        percentage:
+          type:
+          - string
+          - 'null'
+          description: The calculated percentage for the assignment type for this section
+        weight:
+          type:
+          - number
+          - 'null'
+          description: The weight applied to the assignment type
+          format: float
+      additionalProperties: false
+      description: Assignment Type Model
+    StudentGradedAssignment:
+      type: object
+      properties:
+        assignment_id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the assignment
+          format: int32
+        assignment_index_id:
+          type:
+          - integer
+          - 'null'
+          description: The index ID of the assignment
+          format: int32
+        short_description:
+          type:
+          - string
+          - 'null'
+          description: The short description for the assignment
+        date_assigned:
+          type:
+          - string
+          - 'null'
+          description: The date the assignment was assigned
+          format: date-time
+        date_due:
+          type:
+          - string
+          - 'null'
+          description: The date the assignment is due
+          format: date-time
+        max_points:
+          type:
+          - number
+          - 'null'
+          description: The maximum points for the assignment
+          format: float
+        points:
+          type:
+          - number
+          - 'null'
+          description: The graded number of points for the assignment
+          format: float
+        assignment_percentage:
+          type:
+          - number
+          - 'null'
+          description: The percentage grade for the assignment
+          format: float
+        letter:
+          type:
+          - string
+          - 'null'
+          description: The letter grade for the assignment
+        section_grade:
+          type:
+          - number
+          - 'null'
+          description: The cumulative grade for the section
+          format: float
+        formative:
+          type:
+          - boolean
+          - 'null'
+          description: Returns true if the assignment is formative
+        missing:
+          type:
+          - boolean
+          - 'null'
+          description: Returns true if the assignment is missing
+        late:
+          type:
+          - boolean
+          - 'null'
+          description: Returns true if the assignment is late
+        incomplete:
+          type:
+          - boolean
+          - 'null'
+          description: Returns true if the assignment is incomplete
+        exempt:
+          type:
+          - boolean
+          - 'null'
+          description: Returns true if the assignment is exempt
+        comment:
+          type:
+          - string
+          - 'null'
+          description: Comment for the assignment
+        assignment_type:
+          $ref: '#/components/schemas/AssignmentType'
+      additionalProperties: false
+      description: Student Graded Assignments Model
+    ScheduleSetRotationDay:
+      type: object
+      properties:
+        WeekInCycle:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        DayInCycle:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        DayLabel:
+          type:
+          - string
+          - 'null'
+        RotaionDayMeetingList:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ScheduleSetRotationDayMeeting'
+      additionalProperties: false
+    Cycle:
+      type: object
+      properties:
+        schedule_set:
+          type:
+          - string
+          - 'null'
+          description: Name of the schedule rotation for the cycle
+        schedule_set_id:
+          type:
+          - integer
+          - 'null'
+          description: Id of the schedule rotation for the cycle
+          format: int32
+        week:
+          type: integer
+          description: Week in the schedule rotation for the cycle
+          format: int32
+        day:
+          type: integer
+          description: Day in the schedule rotation for the cycle
+          format: int32
+        begin_time:
+          type:
+          - string
+          - 'null'
+          description: Start time of the cycle
+        end_time:
+          type:
+          - string
+          - 'null'
+          description: End time of the cycle
+        sun:
+          type: boolean
+          description: Flag to indicate if the section meets on Sundays
+        mon:
+          type: boolean
+          description: Flag to indicate if the section meets on Mondays
+        tue:
+          type: boolean
+          description: Flag to indicate if the section meets on Tuesdays
+        wed:
+          type: boolean
+          description: Flag to indicate if the section meets on Wednesdays
+        thu:
+          type: boolean
+          description: Flag to indicate if the section meets on Thursdays
+        fri:
+          type: boolean
+          description: Flag to indicate if the section meets on Fridays
+        sat:
+          type: boolean
+          description: Flag to indicate if the section meets on Saturdays
+        room_full_name:
+          type:
+          - string
+          - 'null'
+          description: Name of the room where this particular cycle meets
+        canceled:
+          type: boolean
+          description: Flag to indicate if the cycle has been canceled
+      additionalProperties: false
+      description: ''
+    MasterScheduleSet:
+      type: object
+      properties:
+        schedule_set_id:
+          type:
+          - integer
+          - 'null'
+          description: ''
+          format: int32
+        holiday_label:
+          type:
+          - string
+          - 'null'
+          description: ''
+        day_label:
+          type:
+          - string
+          - 'null'
+          description: ''
+        blocks:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/MasterScheduleBlock'
+          description: ''
+      additionalProperties: false
+      description: ''
+    TableValue:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ''
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: ''
+        abbreviation:
+          type:
+          - string
+          - 'null'
+          description: ''
+        active:
+          type: boolean
+          description: ''
+      additionalProperties: false
+      description: ''
+    OfferingModel:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The Id of the Offering
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the offering
+        type:
+          $ref: '#/components/schemas/OfferingType'
+        course_code:
+          type:
+          - string
+          - 'null'
+          description: The course code for the offering
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the offering
+        length:
+          type:
+          - integer
+          - 'null'
+          description: The length of the offering in terms
+          format: int32
+        credits:
+          type:
+          - number
+          - 'null'
+          description: The credits for the offering
+          format: float
+        status:
+          type:
+          - string
+          - 'null'
+          description: 'The status of the offering. Possible values: Active, Inactive.'
+        publish_to_website:
+          type:
+          - boolean
+          - 'null'
+          description: True when the Publish to Website setting is selected; otherwise, false.
+        record_attendance:
+          type:
+          - boolean
+          - 'null'
+          description: True when the Record Attendance setting is selected; otherwise, false. This is always FALSE for Community Groups offering type.
+        max_requests:
+          type:
+          - integer
+          - 'null'
+          description: The maximum number of requests for the offering. This is NULL for Athletics and Community Groups offering types.
+          format: int32
+        school_level:
+          $ref: '#/components/schemas/Level'
+        school_year:
+          type:
+          - string
+          - 'null'
+          description: The School year of the offering
+      additionalProperties: false
+      description: An object with offering information
+    BuildingRead:
+      type: object
+      properties:
+        building_id:
+          type:
+          - integer
+          - 'null'
+          description: ID of the building
+          format: int32
+        building_name:
+          type:
+          - string
+          - 'null'
+          description: Building Name
+        building_types:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/BuildingTypeEnum'
+          description: Building group types
+        rooms:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/BuildingRoomRead'
+          description: Collection of rooms within the building
+      additionalProperties: false
+      description: ''
+    CourseRequest:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the student course request.
+          format: int32
+        user:
+          $ref: '#/components/schemas/UserBaseRead'
+        course:
+          $ref: '#/components/schemas/OfferingModel'
+        start_term:
+          $ref: '#/components/schemas/Duration'
+        preference:
+          type:
+          - integer
+          - 'null'
+          description: The preference order for the request.
+          format: int32
+        status:
+          type:
+          - string
+          - 'null'
+          description: The status of the course request.
+        enrollment_status:
+          type:
+          - string
+          - 'null'
+          description: The enrollment status of the student's request.
+        type:
+          type:
+          - string
+          - 'null'
+          description: 'The type of the request. Allowed values: Request, Recommendation.'
+        is_required:
+          type: boolean
+          description: True if the request was marked as required.
+        is_recommendation:
+          type: boolean
+          description: True if the request originated from a recommendation.
+        request_date:
+          type:
+          - string
+          - 'null'
+          description: The date the request was made.
+          format: date-time
+        requested_by:
+          $ref: '#/components/schemas/UserBaseRead'
+        recommended_by:
+          $ref: '#/components/schemas/UserBaseRead'
+        reviewer:
+          $ref: '#/components/schemas/UserBaseRead'
+        fulfilled_by_alternate:
+          type:
+          - boolean
+          - 'null'
+          description: True if fulfilled by an alternate and not the primary request.
+        note:
+          type:
+          - string
+          - 'null'
+          description: The note for the course request.
+        alternates:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CourseRequestAlternate'
+          description: An array of altenate courses for the request.
+      additionalProperties: false
+      description: An object with course information
+    MasterScheduleBlock:
+      type: object
+      properties:
+        block_id:
+          type: integer
+          description: ''
+          format: int32
+        block:
+          type:
+          - string
+          - 'null'
+          description: ''
+        start_time:
+          type:
+          - string
+          - 'null'
+          description: ''
+          format: date-time
+        end_time:
+          type:
+          - string
+          - 'null'
+          description: ''
+          format: date-time
+        offering_type:
+          type:
+          - integer
+          - 'null'
+          description: ''
+          format: int32
+        is_canceled:
+          type: boolean
+          description: ''
+      additionalProperties: false
+      description: ''
+    SectionCycles:
+      type: object
+      properties:
+        section_id:
+          type: integer
+          description: The ID of the section
+          format: int32
+        course_title:
+          type:
+          - string
+          - 'null'
+          description: The name of the course
+        section_identifier:
+          type:
+          - string
+          - 'null'
+          description: The section identifier
+        block_name:
+          type:
+          - string
+          - 'null'
+          description: Name of the block to which this section belongs
+        course_code:
+          type:
+          - string
+          - 'null'
+          description: The course code
+        cycles:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Cycle'
+          description: The collection of cycles for the section
+      additionalProperties: false
+      description: ''
+    ScheduleSet:
+      type: object
+      properties:
+        schedule_set_id:
+          type: integer
+          description: ''
+          format: int32
+        title:
+          type:
+          - string
+          - 'null'
+          description: ''
+        meeting_time:
+          type: boolean
+          description: ''
+        rotation:
+          type: boolean
+          description: ''
+        begin_date:
+          type:
+          - string
+          - 'null'
+          description: ''
+          format: date-time
+        end_date:
+          type:
+          - string
+          - 'null'
+          description: ''
+          format: date-time
+      additionalProperties: false
+      description: ''
+    BuildingRoomRead:
+      type: object
+      properties:
+        room_id:
+          type:
+          - integer
+          - 'null'
+          description: Identifier for the room
+          format: int32
+        room_number:
+          type:
+          - string
+          - 'null'
+          description: Room number
+        name:
+          type:
+          - string
+          - 'null'
+          description: Room name
+        code:
+          type:
+          - string
+          - 'null'
+          description: Room code
+        capacity:
+          type:
+          - string
+          - 'null'
+          description: Room capacity
+        room_type:
+          type:
+          - string
+          - 'null'
+          description: Denotes how the room is used
+        room_type_id:
+          type:
+          - integer
+          - 'null'
+          description: Identifier for the room type
+          format: int32
+        notes:
+          type:
+          - string
+          - 'null'
+          description: The notes for the room
+        building:
+          $ref: '#/components/schemas/IdDescriptorField'
+        type:
+          $ref: '#/components/schemas/IdDescriptorField'
+      additionalProperties: false
+      description: ''
+    OfferingAdminCustomFieldCreate:
+      required:
+      - data_type_id
+      type: object
+      properties:
+        field_id:
+          type: integer
+          description: The ID of the custom field to update. This value is returned from <a href="https://developer.sky.blackbaud.com/docs/services/school/operations/V1CustomfieldsGet" target="_blank">Core custom fields</a>.
+          format: int32
+        data_type_id:
+          type: integer
+          description: The ID of the data type of the custom field. This value is returned from <a href="https://developer.sky.blackbaud.com/docs/services/school/operations/V1CustomfieldsGet" target="_blank">Core custom fields</a>.
+          format: int32
+        int_value:
+          type:
+          - integer
+          - 'null'
+          description: 'If the field format is Number, use this property for the value of the custom field. Values must be a whole number (positive or negative).
+
+
+            If the field format is Dropdown or Checkbox List, use this property for the value of the custom field. The value is the table value ID returned from <a href="https://developer.sky.blackbaud.com/docs/services/school/operations/V1CustomfieldsGet" target="_blank">Core custom fields</a>.'
+          format: int32
+        text_value:
+          type:
+          - string
+          - 'null'
+          description: If the field format is Text input or Text paragraph, use this property for the value of the custom field.
+        decimal_value:
+          type:
+          - number
+          - 'null'
+          description: If the field format is Currency, use this property for the value of the custom field. Values must be between 0.00 and 99,999,999.99.
+          format: double
+        date_value:
+          type:
+          - string
+          - 'null'
+          description: If field format is Date, use this property for the value of the custom field. Values must be formatted YYYY/MM/DD.
+          format: date-time
+        bit_value:
+          type:
+          - boolean
+          - 'null'
+          description: If field format is Yes/No or Checkbox, use this property for the value of the custom field. Values must be 'true" or 'false'.
+      additionalProperties: false
+      description: An object with custom field information
+    OfferingAdminCustomFieldUpdate:
+      required:
+      - data_type_id
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The id of that instance of the custom field for the specified course.
+          format: int32
+        field_id:
+          type: integer
+          description: The ID of the custom field to update. This value is returned from <a href="https://developer.sky.blackbaud.com/docs/services/school/operations/V1CustomfieldsGet" target="_blank">Core custom fields</a>.
+          format: int32
+        data_type_id:
+          type: integer
+          description: The ID of the data type of the custom field. This value is returned from <a href="https://developer.sky.blackbaud.com/docs/services/school/operations/V1CustomfieldsGet" target="_blank">Core custom fields</a>.
+          format: int32
+        int_value:
+          type:
+          - integer
+          - 'null'
+          description: 'If the field format is Number, use this property for the value of the custom field. Values must be a whole number (positive or negative).
+
+
+            If the field format is Dropdown or Checkbox List, use this property for the value of the custom field. The value is the table value ID returned from <a href="https://developer.sky.blackbaud.com/docs/services/school/operations/V1CustomfieldsGet" target="_blank">Core custom fields</a>.'
+          format: int32
+        text_value:
+          type:
+          - string
+          - 'null'
+          description: If the field format is Text input or Text paragraph, use this property for the value of the custom field.
+        decimal_value:
+          type:
+          - number
+          - 'null'
+          description: If the field format is Currency, use this property for the value of the custom field. Values must be between 0.00 and 99,999,999.99.
+          format: double
+        date_value:
+          type:
+          - string
+          - 'null'
+          description: If field format is Date, use this property for the value of the custom field. Values must be formatted YYYY/MM/DD.
+          format: date-time
+        bit_value:
+          type:
+          - boolean
+          - 'null'
+          description: If field format is Yes/No or Checkbox, use this property for the value of the custom field. Values must be 'true" or 'false'.
+      additionalProperties: false
+      description: An object with custom field information
+    CourseBlockType:
+      title: CourseBlockType
+      enum:
+      - Homeroom
+      - Academic
+      - Lunch
+      - Double
+      - NonAcademic
+      type: string
+      description: ''
+    ScheduleSetMettingPattern:
+      type: object
+      properties:
+        PatternNum:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        Sun:
+          type:
+          - boolean
+          - 'null'
+        Mon:
+          type:
+          - boolean
+          - 'null'
+        Tue:
+          type:
+          - boolean
+          - 'null'
+        Wed:
+          type:
+          - boolean
+          - 'null'
+        Thu:
+          type:
+          - boolean
+          - 'null'
+        Fri:
+          type:
+          - boolean
+          - 'null'
+        Sat:
+          type:
+          - boolean
+          - 'null'
+        MeetingTimeList:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ScheduleSetMettingTime'
+        HasAttendance:
+          type:
+          - boolean
+          - 'null'
+      additionalProperties: false
+    Department:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the department
+          format: int32
+        level_description:
+          type:
+          - string
+          - 'null'
+          description: The description of the level this department is associated with
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the department
+        sort:
+          type:
+          - integer
+          - 'null'
+          description: The sort order of the department
+          format: int32
+        is_academic:
+          type: boolean
+          description: True if department is academic
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the department
+        school_levels:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SchoolLevel'
+          description: An array of school levels for the department
+      additionalProperties: false
+      description: Department model
+    CourseScheduleSettings:
+      type: object
+      properties:
+        min_sections:
+          type:
+          - integer
+          - 'null'
+          description: The minimum number of sections for the course
+          format: int32
+        target_sections:
+          type:
+          - integer
+          - 'null'
+          description: The tareget number of sections for the course
+          format: int32
+        max_sections:
+          type:
+          - integer
+          - 'null'
+          description: The maximum number of sections for the course
+          format: int32
+        min_students:
+          type:
+          - integer
+          - 'null'
+          description: The minimum number of students for a section
+          format: int32
+        target_students:
+          type:
+          - integer
+          - 'null'
+          description: The target number of students for a section
+          format: int32
+        max_students:
+          type:
+          - integer
+          - 'null'
+          description: The maximum number of students for a section
+          format: int32
+        priority:
+          $ref: '#/components/schemas/Table'
+        exclude_from_gms:
+          type:
+          - boolean
+          - 'null'
+          description: True is course is excluded from generate master schedule processing
+        exclude_from_gss:
+          type:
+          - boolean
+          - 'null'
+          description: True is course is excluded from generate student schedule processing
+        teacher:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CourseTeacher'
+          description: An array of teachers that can be scheduled for the course
+        room_type:
+          $ref: '#/components/schemas/Table'
+        building:
+          $ref: '#/components/schemas/BuildingRead'
+        room:
+          $ref: '#/components/schemas/BuildingRoomRead'
+        include_teacher_homeroom:
+          type:
+          - boolean
+          - 'null'
+          description: True if course can use teacher homerooms
+        block_type:
+          type:
+          - string
+          - 'null'
+          description: The type of block the course can use
+        use_selected_blocks:
+          type:
+          - boolean
+          - 'null'
+          description: True if the course must use selected blocks
+        blocks:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Table'
+          description: An array of blocks the course can use
+        use_all_block_meetings:
+          type:
+          - boolean
+          - 'null'
+          description: True if the course uses all meetings in the block
+        number_of_meetings:
+          type:
+          - integer
+          - 'null'
+          description: The number of meetings in a block to use
+          format: int32
+        use_different_blocks:
+          type:
+          - boolean
+          - 'null'
+          description: True if each class must use a different block
+      additionalProperties: false
+      description: An object with course schedule settings information
+    SectionAdminCustomFieldCreate:
+      required:
+      - data_type_id
+      type: object
+      properties:
+        field_id:
+          type: integer
+          description: The ID of the custom field to update. This value is returned from <a href="https://developer.sky.blackbaud.com/docs/services/school/operations/V1CustomfieldsGet" target="_blank">Core custom fields</a>.
+          format: int32
+        data_type_id:
+          type: integer
+          description: The ID of the data type of the custom field. This value is returned from <a href="https://developer.sky.blackbaud.com/docs/services/school/operations/V1CustomfieldsGet" target="_blank">Core custom fields</a>.
+          format: int32
+        int_value:
+          type:
+          - integer
+          - 'null'
+          description: 'If the field format is Number, use this property for the value of the custom field. Values must be a whole number (positive or negative).
+
+
+            If the field format is Dropdown or Checkbox List, use this property for the value of the custom field. The value is the table value ID returned from <a href="https://developer.sky.blackbaud.com/docs/services/school/operations/V1CustomfieldsGet" target="_blank">Core custom fields</a>.'
+          format: int32
+        text_value:
+          type:
+          - string
+          - 'null'
+          description: If the field format is Text input or Text paragraph, use this property for the value of the custom field.
+        decimal_value:
+          type:
+          - number
+          - 'null'
+          description: If the field format is Currency, use this property for the value of the custom field. Values must be between 0.00 and 99,999,999.99.
+          format: double
+        date_value:
+          type:
+          - string
+          - 'null'
+          description: If field format is Date, use this property for the value of the custom field. Values must be formatted YYYY/MM/DD.
+          format: date-time
+        bit_value:
+          type:
+          - boolean
+          - 'null'
+          description: If field format is Yes/No or Checkbox, use this property for the value of the custom field. Values must be 'true" or 'false'.
+      additionalProperties: false
+      description: ''
+    EnrollmentChanges:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the student
+          format: int32
+        preferred_name:
+          type:
+          - string
+          - 'null'
+          description: ''
+        first_name:
+          type:
+          - string
+          - 'null'
+          description: ''
+        last_name:
+          type:
+          - string
+          - 'null'
+          description: ''
+        changes:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/EnrollmentChangeAudit'
+          description: ''
+      additionalProperties: false
+      description: Enrollment Changes Model
+    StudentAssignment:
+      type: object
+      properties:
+        section_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the section the assignment was assigned in
+        section_id:
+          type:
+          - integer
+          - 'null'
+          description: The id of the section the assignment was assigned in
+          format: int32
+        assignment_id:
+          type:
+          - integer
+          - 'null'
+          description: The id of the assignment
+          format: int32
+        short_description:
+          type:
+          - string
+          - 'null'
+          description: The short description for the assignment
+        date_assigned:
+          type:
+          - string
+          - 'null'
+          description: The date the assignment was assigned
+          format: date-time
+        date_due:
+          type:
+          - string
+          - 'null'
+          description: The date the assignment is due
+          format: date-time
+        long_description:
+          type:
+          - string
+          - 'null'
+          description: The long description of the assignment
+        assignment_type:
+          type:
+          - string
+          - 'null'
+          description: The type of the assignment
+        grade_book:
+          type: boolean
+          description: Returns true if the assignment is included in the GradeBook
+        online_submission:
+          type: boolean
+          description: Returns true if the assignment is an online submission assignment
+        assignment_status:
+          type:
+          - integer
+          - 'null'
+          description: The status of the assignment
+          format: int32
+        assessment:
+          type: boolean
+          description: Returns true if this assignment is an assessment
+        assessment_id:
+          type:
+          - integer
+          - 'null'
+          description: The id of the assessment
+          format: int32
+        assessment_locked:
+          type: boolean
+          description: Returns true if the assessment is locked
+        major:
+          type:
+          - integer
+          - 'null'
+          description: ''
+          format: int32
+        discussion:
+          type: boolean
+          description: Returns true if the assignment has a discussion
+        formative:
+          type: boolean
+          description: Returns true if the assignment is formative
+        exempt:
+          type: boolean
+          description: Returns true if ther student is exempt from this assignment
+        incomplete:
+          type: boolean
+          description: Returns true if the assignment is incomplete
+        late:
+          type: boolean
+          description: Returns true if the assignment is late
+        missing:
+          type: boolean
+          description: Returns true if the assignment is missing
+        rubric:
+          type: boolean
+          description: Returns true if the assignment is included in the rubric
+        user_task:
+          type: boolean
+          description: Returns true if the assignment is a user generated task
+      additionalProperties: false
+      description: ''
     OfferingType:
       type: object
       properties:
         id:
           type: integer
-          description: ''
+          description: The ID of an offering type
           format: int32
-          nullable: true
         description:
-          type: string
-          description: ''
-          nullable: true
+          type:
+          - string
+          - 'null'
+          description: The description of an offering type
       additionalProperties: false
-      description: ''
-    StudentLearningProfileAdd:
-      required:
-      - profile_form_id
-      - start
-      - status
-      - student_id
+      description: An object with offering type information
+    EnrollmentType:
       type: object
       properties:
-        student_id:
-          maximum: 2147483647
-          minimum: 1
-          type: integer
-          description: The user ID of the student
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the enrollment type
           format: int32
-        author_id:
+        description:
+          type:
+          - string
+          - 'null'
+          description: The enrollment type
+        earns_credit:
+          type:
+          - boolean
+          - 'null'
+          description: True if the school tracks attempted and earned credit for students with this enrollment type.
+        use_all_grades:
+          type:
+          - boolean
+          - 'null'
+          description: True if a student with this enrollment type can earn any grades valid for the section. False if the grades get translated, such as if the enrollment type only allows Pass/Fail grades.
+        takes_attendance:
+          type:
+          - boolean
+          - 'null'
+          description: True if the school tracks attendance for students with this enrollment type.
+        is_default:
+          type:
+          - boolean
+          - 'null'
+          description: True if this is the default enrollment type
+      additionalProperties: false
+      description: An object with information about the enrollment type, including whether attendance is tracked, whether students can earn credit, or whether grades are limited to pass/fail.
+    V1AcademicsRostersGet200ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/SectionRosterModel'
+      x-apim-inline: true
+    CourseCollection:
+      type: object
+      properties:
+        count:
           type: integer
-          description: The user ID of the author
+          description: The number of items in the collection
           format: int32
-          nullable: true
-        profile_form_id:
-          maximum: 2147483647
-          minimum: 1
+          readOnly: true
+        next_link:
+          type:
+          - string
+          - 'null'
+          description: For paginated responses, the URI for the next page of results
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Course'
+          description: The set of items included in the response. This may be a subset of the items in the collection
+      additionalProperties: false
+      description: A Collection
+    V1AcademicsSections-section_id-CustomfieldsListPost200ApplicationJsonResponse:
+      type: integer
+      format: int32
+      x-apim-inline: true
+    MasterScheduleDayCollection:
+      type: object
+      properties:
+        count:
           type: integer
-          description: The ID of the learning profile form, See the <a href="https://developer.sky.blackbaud.com/docs/services/afe-edaca/operations/V1LearningprofilesFormsGet"
-            target="_blank">Learning Profile form list(Get)</a> endpoint for this value. If the form type is <strong>File</strong>
-            then the learning_profile_file is required.
+          description: The number of items in the collection
           format: int32
-        start:
+          readOnly: true
+        next_link:
+          type:
+          - string
+          - 'null'
+          description: For paginated responses, the URI for the next page of results
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/MasterScheduleDay'
+          description: The set of items included in the response. This may be a subset of the items in the collection
+      additionalProperties: false
+      description: A Collection
+    V1AcademicsCourses-course_id-CustomfieldsListPatch200ApplicationJsonResponse:
+      type: integer
+      format: int32
+      x-apim-inline: true
+    AcademicsSectionCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items in the collection
+          format: int32
+          readOnly: true
+        next_link:
+          type:
+          - string
+          - 'null'
+          description: For paginated responses, the URI for the next page of results
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/AcademicsSection'
+          description: The set of items included in the response. This may be a subset of the items in the collection
+      additionalProperties: false
+      description: A Collection
+    V1AcademicsCourserequestsGet200ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/CourseRequest'
+      x-apim-inline: true
+    V1AcademicsCourses-course_id-CustomfieldsListPost200ApplicationJsonResponse:
+      type: integer
+      format: int32
+      x-apim-inline: true
+    DepartmentCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items in the collection
+          format: int32
+          readOnly: true
+        next_link:
+          type:
+          - string
+          - 'null'
+          description: For paginated responses, the URI for the next page of results
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Department'
+          description: The set of items included in the response. This may be a subset of the items in the collection
+      additionalProperties: false
+      description: A Collection
+    EnrollmentCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items in the collection
+          format: int32
+          readOnly: true
+        next_link:
+          type:
+          - string
+          - 'null'
+          description: For paginated responses, the URI for the next page of results
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Enrollment'
+          description: The set of items included in the response. This may be a subset of the items in the collection
+      additionalProperties: false
+      description: A Collection
+    BulkEnrollment:
+      required:
+      - enrollment_date
+      - id
+      - section_ids
+      - user_ids
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The duration ID of section to be enrolled in. Corresponds to the ```duration ID``` in the <a href="https://developer.sky.blackbaud.com/docs/services/school/operations/V1AcademicsSectionsGet">section list</a>.
+          format: int32
+        enrollment_date:
           type: string
-          description: The start date of the student’s learning profile
+          description: 'The effective date that users will be added to the sections. Uses <a href="https://tools.ietf.org/html/rfc3339" target="_blank">ISO-8601</a> (24H) format: 2003-04-21T10:29:43'
           format: date-time
-        status:
+        section_ids:
           minLength: 1
           type: string
-          description: The student's status for the learning profile. This value is based on the ApprovalRequired value of
-            the selected Learning Profile Form (referenced by profile_form_id). When ApprovalRequired is set to True, the
-            valid status values are <strong>Needs Approval and Pending</strong>; when ApprovalRequired is set to False, the
-            valid status values are <strong>Approved and Pending</strong>.
-        inactive_date:
+          description: Comma delimited list of sections to which you want to add the users listed above into
+        user_ids:
+          minLength: 1
           type: string
-          description: The date the student’s learning profile is inactive.
-          format: date-time
-          nullable: true
-        supplemental_files:
-          type: array
-          items:
-            $ref: '#/components/schemas/NewAttachment'
-          description: An array of supporting document attachments. Each object in the array has attachment file information,
-            including the reference name for the attachment’s temporary storage location and the original file name. The file's
-            reference information is produced using the upload process that begins with the <a href="https://developer.sky.blackbaud.com/api#api=afe-edcor&operation=V1AttachmentsGet"
-            target="_blank">Attachment (Upload) endpoint</a>. See also <a href="https://developer.blackbaud.com/skyapi/docs/in-depth-topics/physical-attachments"
-            target="_blank">Creating physical attachments</a>.
-          nullable: true
-        learning_profile_file:
-          $ref: '#/components/schemas/LearningProfileFileAttachment'
+          description: Comma delimited list of ids representing users to be added to the sections listed below
       additionalProperties: false
-      description: ''
-    StudentLearningProfileEdit:
+      description: Model to define bulk enrollments for both students and teachers
+    GradeLevelPromotion:
       type: object
       properties:
-        status:
-          type: string
-          description: 'The student''s status for the learning profile. Allowed values: Pending, Needs approval, Approved,Denied'
-          nullable: true
-        inactive_date:
-          type: string
-          description: The date the student’s learning profile is inactive.
-          format: date-time
-          nullable: true
-        supplemental_files:
-          type: array
-          items:
-            $ref: '#/components/schemas/NewAttachment'
-          description: An array of supporting document attachments. Each object in the array has attachment file information,
-            including the reference name for the attachment’s temporary storage location and the original file name. The file's
-            reference information is produced using the upload process that begins with the <a href="https://developer.sky.blackbaud.com/api#api=afe-edcor&operation=V1AttachmentsGet"
-            target="_blank">Attachment (Upload) endpoint</a>. See also <a href="https://developer.blackbaud.com/skyapi/docs/in-depth-topics/physical-attachments"
-            target="_blank">Creating physical attachments</a>.
-          nullable: true
+        type:
+          type:
+          - string
+          - 'null'
+          description: The type of promotion for this grade level
+        school_level:
+          $ref: '#/components/schemas/IdDescriptorField'
+        grade_level:
+          $ref: '#/components/schemas/TableValue'
       additionalProperties: false
-      description: ''
-    StudentLearningProfileRead:
+      description: An object with information about promotion from this grade level, including promotion type and next grade level.
+    SpecialDayBlock:
       type: object
       properties:
-        id:
-          type: integer
-          description: The ID of the student’s learning profile
+        block_id:
+          type:
+          - integer
+          - 'null'
+          description: ''
           format: int32
-        student:
-          $ref: '#/components/schemas/UserBase'
-        learning_profile:
-          $ref: '#/components/schemas/LearningProfileForm'
-        publish_date:
-          type: string
-          description: The start time of the student’s learning profile
+        block_description:
+          type:
+          - string
+          - 'null'
+          description: ''
+        start_time:
+          type:
+          - string
+          - 'null'
+          description: ''
           format: date-time
-          nullable: true
-        expire_date:
-          type: string
-          description: The end time of the student’s learning profile
+        end_time:
+          type:
+          - string
+          - 'null'
+          description: ''
           format: date-time
-          nullable: true
-        author:
-          $ref: '#/components/schemas/UserBase'
-        status:
-          type: string
-          description: The status of the student’s learning profile
-          nullable: true
-        publish:
-          type: string
-          description: Whether the student’s learning profile is ready to publish
-          nullable: true
       additionalProperties: false
-      description: An object with learning profile information
-    UserBase:
+      description: ''
+    Teacher:
       type: object
       properties:
-        bbid:
-          type: string
-          description: The bbid of a user
-          format: uuid
-          nullable: true
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The user ID for the teacher
+          format: int32
+        head:
+          type:
+          - boolean
+          - 'null'
+          description: The head teacher indicator
+        name:
+          type:
+          - string
+          - 'null'
+          description: The firstname and lastname of the teacher
+        firstname:
+          type:
+          - string
+          - 'null'
+          description: The first name of the teacher
+        lastname:
+          type:
+          - string
+          - 'null'
+          description: The last name of the teacher
+        preferred_name:
+          type:
+          - string
+          - 'null'
+          description: The teachers preferred name
+        formatted_name:
+          type:
+          - string
+          - 'null'
+          description: The formatted name of the teacher.  If the teacher has a preferred name, it is used in place of the first name.
+        email:
+          type:
+          - string
+          - 'null'
+          description: The teacher's email address
+        cell_phone:
+          type:
+          - string
+          - 'null'
+          description: The teacher's cellular phone
+      additionalProperties: false
+      description: Academic Teacher Model
+    EnrollmentChangesCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items in the collection
+          format: int32
+          readOnly: true
+        next_link:
+          type:
+          - string
+          - 'null'
+          description: For paginated responses, the URI for the next page of results
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/EnrollmentChanges'
+          description: The set of items included in the response. This may be a subset of the items in the collection
+      additionalProperties: false
+      description: A Collection
+    Student:
+      type: object
+      properties:
         id:
           type: integer
+          description: The ID of the student
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the student
+      additionalProperties: false
+      description: Student Model
+    PostResponse:
+      type: object
+      properties:
+        value:
+          type: boolean
+          description: The return value for the POST
+      additionalProperties: false
+      description: ''
+    V1AcademicsSections-section_id-CustomfieldsListPostRequest-1:
+      type: array
+      items:
+        $ref: '#/components/schemas/SectionAdminCustomFieldCreate'
+      x-apim-inline: true
+    UserBaseRead:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
           description: The ID associated with a user
           format: int32
-        display:
-          type: string
-          description: The suffix of a user
-          nullable: true
-        birth_date:
-          type: string
-          description: The birth date of a user
-          format: date-time
-          nullable: true
         email:
-          type: string
+          type:
+          - string
+          - 'null'
           description: The email address of a user
-          nullable: true
         first_name:
-          type: string
+          type:
+          - string
+          - 'null'
           description: The first name of a user
-          nullable: true
         last_name:
-          type: string
+          type:
+          - string
+          - 'null'
           description: The last name of a user
-          nullable: true
         maiden_name:
-          type: string
+          type:
+          - string
+          - 'null'
           description: The maiden name of a user
-          nullable: true
         middle_name:
-          type: string
+          type:
+          - string
+          - 'null'
           description: The middle name of a user
-          nullable: true
         preferred_name:
-          type: string
+          type:
+          - string
+          - 'null'
           description: The nickname of a user
-          nullable: true
         preferred_last_name:
-          type: string
+          type:
+          - string
+          - 'null'
           description: The preferred last name of a user
-          nullable: true
         prefix:
-          type: string
+          type:
+          - string
+          - 'null'
           description: The prefix of a user
-          nullable: true
         suffix:
-          type: string
+          type:
+          - string
+          - 'null'
           description: The suffix of a user
-          nullable: true
-        username:
-          type: string
-          description: The user name of a user
-          nullable: true
       additionalProperties: false
       description: UserBaseRead Model
-    V1GradingGradetranslationsGetRequest:
+    StudentCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items in the collection
+          format: int32
+          readOnly: true
+        next_link:
+          type:
+          - string
+          - 'null'
+          description: For paginated responses, the URI for the next page of results
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Student'
+          description: The set of items included in the response. This may be a subset of the items in the collection
+      additionalProperties: false
+      description: A Collection
+    V1AcademicsCourses-course_id-CustomfieldsListPatchRequest-1:
+      type: array
+      items:
+        $ref: '#/components/schemas/OfferingAdminCustomFieldUpdate'
+      x-apim-inline: true
+    EnrollmentChangeAudit:
+      type: object
+      properties:
+        section_id:
+          type:
+          - integer
+          - 'null'
+          description: The Id of the section
+          format: int32
+        course_code:
+          type:
+          - string
+          - 'null'
+          description: The course code
+        section_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the section
+        modified_date_time:
+          type:
+          - string
+          - 'null'
+          description: The date/tim the change was made
+          format: date-time
+        modified_by:
+          type:
+          - integer
+          - 'null'
+          description: the Id of the user who modified the enrollment record
+          format: int32
+        action:
+          type:
+          - string
+          - 'null'
+          description: The action that was taken. Values can ve either Inserted, Updated, or Deleted
+      additionalProperties: false
+      description: ''
+    CourseRequestAlternate:
+      type: object
+      properties:
+        course:
+          $ref: '#/components/schemas/OfferingModel'
+        start_term:
+          $ref: '#/components/schemas/Duration'
+        preference:
+          type:
+          - integer
+          - 'null'
+          description: The preference order for the request
+          format: int32
+      additionalProperties: false
+      description: An object with course information
+    MasterScheduleDay:
+      type: object
+      properties:
+        calendar_day:
+          type:
+          - string
+          - 'null'
+          description: ''
+          format: date-time
+        schedule_sets:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/MasterScheduleSet'
+          description: ''
+      additionalProperties: false
+      description: ''
+    BuildingTypeEnum:
+      title: BuildingTypeEnum
+      enum:
+      - Academics
+      - Activities
+      - Advisory
+      - ResidenceLife
+      - Athletics
+      - Events
       type: string
-      x-apim-inline: true
-    V1GradingGradetranslationsGetRequest-1:
-      type: boolean
-      default: false
-      x-apim-inline: true
-    V1GradingGradetranslationsGet200ApplicationJsonResponse:
-      type: array
-      items:
-        $ref: '#/components/schemas/GradeTranslation'
-      x-apim-inline: true
-    V1Learningprofiles-student_id-GetRequest:
+      description: Denotes how the building is used.
+    Type:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ''
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: ''
+        abbreviation:
+          type:
+          - string
+          - 'null'
+          description: ''
+        active:
+          type: boolean
+          description: ''
+      additionalProperties: false
+      description: ''
+    Enrollment:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the section
+          format: int32
+        begin_date:
+          type: string
+          description: 'The begin date of the course. Uses <a href="https://tools.ietf.org/html/rfc3339" target="_blank">ISO-8601</a> (24H) format: 2003-04-21T10:29:43'
+          format: date-time
+        block_id:
+          type:
+          - integer
+          - 'null'
+          description: The block ID for a section
+          format: int32
+        block_name:
+          type:
+          - string
+          - 'null'
+          description: The block name for a section
+        blocks:
+          type: boolean
+          description: Returns true if the course has blocks
+        building_name:
+          type:
+          - string
+          - 'null'
+          description: The building name
+        changed_sections:
+          type:
+          - integer
+          - 'null'
+          description: changed sections
+          format: int32
+        course_code:
+          type:
+          - string
+          - 'null'
+          description: The identifier used to reference a course; the Course Code is a user-entered value
+        course_length:
+          type:
+          - integer
+          - 'null'
+          description: The length of a course
+          format: int32
+        course_title:
+          type:
+          - string
+          - 'null'
+          description: The title of the course
+        enrollment_type:
+          $ref: '#/components/schemas/EnrollmentType'
+        departments:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Department'
+          description: The list of departments the section is associated with
+        distinction:
+          type:
+          - string
+          - 'null'
+          description: distinction
+        dropped:
+          type:
+          - integer
+          - 'null'
+          description: was the course dropped
+          format: int32
+        duration_begin_date:
+          type: string
+          description: 'The begin date of the duration. Uses <a href="https://tools.ietf.org/html/rfc3339" target="_blank">ISO-8601</a> (24H) format: 2003-04-21T10:29:43'
+          format: date-time
+        duration_description:
+          type:
+          - string
+          - 'null'
+          description: The description of the starting term of the section
+        duration_end_date:
+          type: string
+          description: 'The end date of the duration. Uses <a href="https://tools.ietf.org/html/rfc3339" target="_blank">ISO-8601</a> (24H) format: 2003-04-21T10:29:43'
+          format: date-time
+        duration_id:
+          type: integer
+          description: The duration ID for a section
+          format: int32
+        duration_name:
+          type:
+          - string
+          - 'null'
+          description: The starting term of the section
+        end_date:
+          type: string
+          description: 'The end date of the course. Uses <a href="https://tools.ietf.org/html/rfc3339" target="_blank">ISO-8601</a> (24H) format: 2003-04-21T10:29:43'
+          format: date-time
+        faculty_first_name:
+          type:
+          - string
+          - 'null'
+          description: The first name of the head teacher
+        faculty_last_name:
+          type:
+          - string
+          - 'null'
+          description: The last name of the head teacher
+        level_number:
+          type: integer
+          description: level number
+          format: int32
+        offering_description:
+          type:
+          - string
+          - 'null'
+          description: The description of an offering type
+        offering_id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of an offered course
+          format: int32
+        offering_type_id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of an offering type
+          format: int32
+        room_id:
+          type:
+          - integer
+          - 'null'
+          description: The room ID for a section
+          format: int32
+        room_name:
+          type:
+          - string
+          - 'null'
+          description: The room name for the section
+        room_number:
+          type:
+          - string
+          - 'null'
+          description: The room number for the section
+        school_year:
+          type:
+          - string
+          - 'null'
+          description: The school year date range in which the section occurs
+        section_identifier:
+          type:
+          - string
+          - 'null'
+          description: The identifier used to differentiate between multiple sections that contain a course; the Section Identifier is a user-entered value
+        custom_fields:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CustumFieldReadModel'
+          description: The list of custom fields for the section
+      additionalProperties: false
+      description: Section Model
+    CourseTeacher:
+      type: object
+      properties:
+        user:
+          $ref: '#/components/schemas/UserBaseRead'
+        target_sections:
+          type:
+          - integer
+          - 'null'
+          description: The target number of sections for the teacher
+          format: int32
+        max_sections:
+          type:
+          - integer
+          - 'null'
+          description: The maximum number of sections for the teacher
+          format: int32
+        priority:
+          type:
+          - string
+          - 'null'
+          description: The scheduling priority of the teacher
+      additionalProperties: false
+      description: An object with schedule limits for the course’s teachers
+    Year:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of a school year
+          format: int32
+        begin_date:
+          type:
+          - string
+          - 'null'
+          description: 'The begin date in a school year date range. Uses <a href="https://tools.ietf.org/html/rfc3339" target="_blank">ISO-8601</a> (24H) format: 2003-04-21T10:29:43'
+          format: date-time
+        current_year:
+          type:
+          - boolean
+          - 'null'
+          description: Returns True if Current Year is enabled for the respective school year
+        end_date:
+          type:
+          - string
+          - 'null'
+          description: 'The end date in a school year date range. Uses <a href="https://tools.ietf.org/html/rfc3339" target="_blank">ISO-8601</a> (24H) format: 2003-04-21T10:29:43'
+          format: date-time
+        published:
+          type:
+          - boolean
+          - 'null'
+          description: Gets or sets the published flag
+        school_year_label:
+          type:
+          - string
+          - 'null'
+          description: The label used to identify the range of dates in a school year
+        begin_billing_year_date:
+          type:
+          - string
+          - 'null'
+          description: 'The begin billing year date in a school year date range. Uses <a href="https://tools.ietf.org/html/rfc3339" target="_blank">ISO-8601</a> (24H) format: 2003-04-21T10:29:43'
+          format: date-time
+        end_billing_year_date:
+          type:
+          - string
+          - 'null'
+          description: 'The end billing year date in a school year date range. Uses <a href="https://tools.ietf.org/html/rfc3339" target="_blank">ISO-8601</a> (24H) format: 2003-04-21T10:29:43'
+          format: date-time
+      additionalProperties: false
+      description: An object with school year information
+    CustumFieldReadModel:
+      type: object
+      properties:
+        usage_id:
+          type:
+          - integer
+          - 'null'
+          description: Usage id can be user id or address id or room id or offering id or sectionid
+          format: int32
+        udf_usage_id:
+          type:
+          - integer
+          - 'null'
+          description: Usage id of user define field for user or address or room or offering or section
+          format: int32
+        data_type_id:
+          type: integer
+          description: Data Type Id
+          format: int32
+        data_type:
+          type:
+          - string
+          - 'null'
+          description: Data Type
+        data_type_description:
+          type:
+          - string
+          - 'null'
+          description: Data Type Description
+        field_id:
+          type: integer
+          description: The custom field Id
+          format: int32
+        field_name:
+          type:
+          - string
+          - 'null'
+          description: Field Name
+        bit_value:
+          type:
+          - boolean
+          - 'null'
+          description: Bit Value
+        int_value:
+          type:
+          - integer
+          - 'null'
+          description: Int Value
+          format: int32
+        decimal_value:
+          type:
+          - number
+          - 'null'
+          description: Decimal Value
+          format: float
+        text_value:
+          type:
+          - string
+          - 'null'
+          description: Text Value
+        date_value:
+          type:
+          - string
+          - 'null'
+          description: Date Value
+          format: date-time
+        last_modified_user_id:
+          type: integer
+          description: Last Modified User Id
+          format: int32
+        last_modified_date:
+          type: string
+          description: Last Modified Date
+          format: date-time
+        status:
+          type: boolean
+          description: Status
+        unique:
+          type: boolean
+          description: Unique
+        required:
+          type: boolean
+          description: Required
+        table_id:
+          type:
+          - integer
+          - 'null'
+          description: Table Id
+          format: int32
+        table_value_id:
+          type:
+          - integer
+          - 'null'
+          description: Table Value Id
+          format: int32
+        table_value:
+          type:
+          - string
+          - 'null'
+          description: Table Value
+        table_value_abbreviation:
+          type:
+          - string
+          - 'null'
+          description: Table Value Abbreviation
+      additionalProperties: false
+      description: Custom Field Model for user or address or room or offering or section
+    SectionRosterModel:
+      type: object
+      properties:
+        section:
+          $ref: '#/components/schemas/Section'
+        roster:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/RosterUser'
+          description: An array of roster users assigned to the section. This includes members and leaders.
+      additionalProperties: false
+      description: An object with section roster information
+    SectionAdminCustomFieldUpdate:
+      required:
+      - data_type_id
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The id of that instance of the custom field for the specified section.
+          format: int32
+        field_id:
+          type: integer
+          description: The ID of the custom field to update. This value is returned from <a href="https://developer.sky.blackbaud.com/docs/services/school/operations/V1CustomfieldsGet" target="_blank">Core custom fields</a>.
+          format: int32
+        data_type_id:
+          type: integer
+          description: The ID of the data type of the custom field. This value is returned from <a href="https://developer.sky.blackbaud.com/docs/services/school/operations/V1CustomfieldsGet" target="_blank">Core custom fields</a>.
+          format: int32
+        int_value:
+          type:
+          - integer
+          - 'null'
+          description: 'If the field format is Number, use this property for the value of the custom field. Values must be a whole number (positive or negative).
+
+
+            If the field format is Dropdown or Checkbox List, use this property for the value of the custom field. The value is the table value ID returned from <a href="https://developer.sky.blackbaud.com/docs/services/school/operations/V1CustomfieldsGet" target="_blank">Core custom fields</a>.'
+          format: int32
+        text_value:
+          type:
+          - string
+          - 'null'
+          description: If the field format is Text input or Text paragraph, use this property for the value of the custom field.
+        decimal_value:
+          type:
+          - number
+          - 'null'
+          description: If the field format is Currency, use this property for the value of the custom field. Values must be between 0.00 and 99,999,999.99.
+          format: double
+        date_value:
+          type:
+          - string
+          - 'null'
+          description: If field format is Date, use this property for the value of the custom field. Values must be formatted YYYY/MM/DD.
+          format: date-time
+        bit_value:
+          type:
+          - boolean
+          - 'null'
+          description: If field format is Yes/No or Checkbox, use this property for the value of the custom field. Values must be 'true" or 'false'.
+      additionalProperties: false
+      description: An object with custom field information
+    Duration:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the duration
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The Name of the duration
+      additionalProperties: false
+      description: An object describing the term or season for the section
+    ScheduleSetAccess:
+      type: object
+      properties:
+        ScheduleSetId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        RoleDescription:
+          type:
+          - string
+          - 'null'
+        RoleId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        PublishDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        InsertDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        LastModifyDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        LastModifyUserId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        FieldsToNull:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+        vendor_external_id:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ScheduleSetDetailsOfferingType:
+      title: ScheduleSetDetailsOfferingType
+      enum:
+      - _0
+      - _1
+      - _2
+      - _3
+      - _4
+      - _5
+      - _6
+      - _8
+      - _9
+      - _10
+      - _11
+      - _12
+      - _13
+      type: string
+    V1AcademicsSections-section_id-CustomfieldsListPatch200ApplicationJsonResponse:
       type: integer
       format: int32
       x-apim-inline: true
-    V1Learningprofiles-student_id-Get200ApplicationJsonResponse:
-      type: array
-      items:
-        $ref: '#/components/schemas/StudentLearningProfileRead'
-      x-apim-inline: true
-    V1LearningprofilesFormsGet200ApplicationJsonResponse:
-      type: array
-      items:
-        $ref: '#/components/schemas/LearningProfileForm'
-      x-apim-inline: true
-    V1Learningprofiles-student_id-learning_profile_id-PatchRequest:
-      type: integer
-      format: int32
-      x-apim-inline: true
-    V1Learningprofiles-student_id-learning_profile_id-PatchRequest-1:
-      type: integer
-      format: int32
-      x-apim-inline: true
-    V1Learningprofiles-student_id-learning_profile_id-Patch200ApplicationJsonResponse:
-      type: integer
-      format: int32
-      x-apim-inline: true
-    V1LearningprofilesPost200ApplicationJsonResponse:
-      type: integer
-      format: int32
-      x-apim-inline: true
+    RosterLeader:
+      type: object
+      properties:
+        is_leader:
+          type:
+          - boolean
+          - 'null'
+          description: True if the roster user is a leader.
+        is_head:
+          type:
+          - boolean
+          - 'null'
+          description: True if the leader is the head teacher, head coach, etc.
+        is_faculty:
+          type:
+          - boolean
+          - 'null'
+          description: True if the leader is a faculty user
+        type:
+          type:
+          - string
+          - 'null'
+          description: The type of leader
+      additionalProperties: false
+      description: An object with leader information
+    Level:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of a school level
+          format: int32
+        abbreviation:
+          type:
+          - string
+          - 'null'
+          description: The abbreviation associated with a school level
+        name:
+          type:
+          - string
+          - 'null'
+          description: The label used to identify a school level
+        address:
+          $ref: '#/components/schemas/SchoolAddress'
+        school_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the School
+        school_address:
+          $ref: '#/components/schemas/SchoolAddress'
+      additionalProperties: false
+      description: An object with school level information
+    SchoolAddress:
+      type: object
+      properties:
+        address1:
+          type:
+          - string
+          - 'null'
+          description: The address line
+        address2:
+          type:
+          - string
+          - 'null'
+          description: The address line
+        address3:
+          type:
+          - string
+          - 'null'
+          description: The address line
+        city:
+          type:
+          - string
+          - 'null'
+          description: The city
+        state:
+          type:
+          - string
+          - 'null'
+          description: TThe state for the address
+        zip:
+          type:
+          - string
+          - 'null'
+          description: The postal/ZIP code for the address
+        county_province:
+          type:
+          - string
+          - 'null'
+          description: The county or province for the address
+        country:
+          type:
+          - string
+          - 'null'
+          description: The country for the address
+        phone:
+          type:
+          - string
+          - 'null'
+          description: The phone number for the address
+        fax:
+          type:
+          - string
+          - 'null'
+          description: The fax number for the address
+        website:
+          type:
+          - string
+          - 'null'
+          description: The website for the address
+      additionalProperties: false
+      description: An object with information about the address of the school level, including address fields, phone fields and website.
+    ScheduleSetMettingTime:
+      type: object
+      properties:
+        PatternNum:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        DailyOrdinal:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        BeginTime:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        EndTime:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        HasAttendance:
+          type:
+          - boolean
+          - 'null'
+      additionalProperties: false
+    ScheduleSetDetails:
+      type: object
+      properties:
+        ScheduleSetId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        ScheduleSetDescription:
+          type:
+          - string
+          - 'null'
+        ShortDescription:
+          type:
+          - string
+          - 'null'
+        OfferingType:
+          $ref: '#/components/schemas/ScheduleSetDetailsOfferingType'
+        SchoolYearLabel:
+          type:
+          - string
+          - 'null'
+        LevelNum:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        Effdate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        Enddate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        StartDay:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        StartWeek:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        MaxDay:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        MaxWeek:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        MeetingList:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ScheduleSetMettingPattern'
+        AccessList:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ScheduleSetAccess'
+        RotationList:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ScheduleSetRotation'
+        DefinedRotationPattern:
+          type:
+          - boolean
+          - 'null'
+        MeetingTimeCreated:
+          type:
+          - boolean
+          - 'null'
+        BlockRotationCreated:
+          type:
+          - boolean
+          - 'null'
+        Sun:
+          type:
+          - boolean
+          - 'null'
+        Mon:
+          type:
+          - boolean
+          - 'null'
+        Tue:
+          type:
+          - boolean
+          - 'null'
+        Wed:
+          type:
+          - boolean
+          - 'null'
+        Thu:
+          type:
+          - boolean
+          - 'null'
+        Fri:
+          type:
+          - boolean
+          - 'null'
+        Sat:
+          type:
+          - boolean
+          - 'null'
+        SunInUse:
+          type:
+          - boolean
+          - 'null'
+        MonInUse:
+          type:
+          - boolean
+          - 'null'
+        TueInUse:
+          type:
+          - boolean
+          - 'null'
+        WedInUse:
+          type:
+          - boolean
+          - 'null'
+        ThuInUse:
+          type:
+          - boolean
+          - 'null'
+        FriInUse:
+          type:
+          - boolean
+          - 'null'
+        SatInUse:
+          type:
+          - boolean
+          - 'null'
+        BlockGroupId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        MeetingTimeId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        InsertDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        LastModifyDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        LastModifyUserId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        FieldsToNull:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+        vendor_external_id:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
   securitySchemes:
     Bb-Api-Subscription-Key:
       type: apiKey
@@ -637,6 +4975,3 @@ components:
           authorizationUrl: https://app.blackbaud.com/oauth/authorize
           tokenUrl: https://oauth2.sky.blackbaud.com/token
           scopes: {}
-security:
-- Bb-Api-Subscription-Key: []
-  OAuth2: []

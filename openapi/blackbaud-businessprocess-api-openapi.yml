@@ -1,0 +1,264 @@
+openapi: 3.2.0
+info:
+  title: Blackbaud Businessprocess API
+  version: '1.0'
+  x-refined-note:
+  - x-apievangelist-provenance differs across the merged source definitions and was not carried
+  description: 'Operations tagged Businessprocess across 2 of this provider''s published API definitions: blackbaud-altru-administration-api-openapi.yml, blackbaud-crm-administration-api-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.sky.blackbaud.com/alt-adnmg
+- url: https://api.sky.blackbaud.com/crm-adnmg
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Businessprocess
+paths:
+  /businessprocess/launch:
+    post:
+      operationId: LaunchBusinessProcess
+      summary: Launch a business process
+      description: This operation is used to launch a business process.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LaunchBusinessProcess'
+            example:
+              business_process_id: 80a0d838-9e77-4316-9c20-b8a7c00152ef
+              parameter_set_id: cd824be4-84bc-4c2c-b0e9-0773edd02f00
+              file_upload_key: f1c23d6b-c482-40dd-81dc-74744d0bbd8e
+              business_process_status_id: d4893a4b-07cf-4e70-8a91-5fbfd428582c
+              deferred_result_key: 885f4e02-81b0-43be-aa6e-2d362ccb7180
+              deferred_result_token: 86b0d718-bee1-4ecd-a8a6-b9fd33818ea8
+              permit_enqueue: false
+              from_enqueue: false
+        description: The set of parameters required to launch a business process.
+      responses:
+        '200':
+          description: Returned when the operation successfully creates the resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LaunchBusinessProcessResponse'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to create the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Businessprocess
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-adnmg
+  /businessprocess/{business_process_parameter_set_id}/view:
+    get:
+      operationId: ViewBusinessProcess
+      summary: View a Business Process
+      description: Displays the most recent status information for the given business process parameter set.
+      parameters:
+      - name: business_process_parameter_set_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The business process parameter set ID.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the specified resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BusinessProcessView'
+      tags:
+      - Businessprocess
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-adnmg
+components:
+  schemas:
+    LaunchBusinessProcess:
+      required:
+      - business_process_id
+      - parameter_set_id
+      type: object
+      properties:
+        business_process_id:
+          type: string
+          description: The business process ID.
+        parameter_set_id:
+          type: string
+          description: The parameter set ID.
+        file_upload_key:
+          type: string
+          description: The file upload key.
+        business_process_status_id:
+          type: string
+          description: The business process status ID.
+        deferred_result_key:
+          type: string
+          description: The deferred result key.
+        deferred_result_token:
+          type: string
+          description: The deferred result token.
+        permit_enqueue:
+          type: boolean
+          description: Indicates whether business process permit to enqueue.
+        from_enqueue:
+          type: boolean
+          description: Indicates whether business process from enqueue.
+      additionalProperties: false
+      description: LaunchBusinessProcess
+      example:
+        business_process_id: 80a0d838-9e77-4316-9c20-b8a7c00152ef
+        parameter_set_id: cd824be4-84bc-4c2c-b0e9-0773edd02f00
+        file_upload_key: f1c23d6b-c482-40dd-81dc-74744d0bbd8e
+        business_process_status_id: d4893a4b-07cf-4e70-8a91-5fbfd428582c
+        deferred_result_key: 885f4e02-81b0-43be-aa6e-2d362ccb7180
+        deferred_result_token: 86b0d718-bee1-4ecd-a8a6-b9fd33818ea8
+        permit_enqueue: false
+        from_enqueue: false
+      x-display-name: Launch business process
+      x-display-id: Launch business process
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type: integer
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type: string
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: false
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-display-name: Problem details
+      x-display-id: ProblemDetails
+    LaunchBusinessProcessResponse:
+      type: object
+      properties:
+        business_process_name:
+          type: string
+          description: The business process name.
+        business_process_status_id:
+          type: string
+          description: The newly created business process status ID.
+        number_successfully_processed:
+          type: integer
+          description: The number of successfully processed record.
+      additionalProperties: false
+      description: Defines the shape of a launch business process response object.
+    BusinessProcessView:
+      type: object
+      properties:
+        status:
+          type: string
+          description: The status.
+        message:
+          type: string
+          description: The status message.
+        started_by:
+          type: string
+          description: The started by.
+        started_on:
+          type: string
+          description: The started.
+        ended_on:
+          type: string
+          description: The ended.
+        duration:
+          type: string
+          description: The duration.
+        success_count:
+          type: string
+          description: The records successfully processed.
+        exception_count:
+          type: string
+          description: The number of exceptions.
+        total_number_processed:
+          type: string
+          description: The total records processed.
+        server_name:
+          type: string
+          description: The server name.
+        completed:
+          type: boolean
+          description: Indicates whether completed. Read-only in the SOAP API.
+        enable_download:
+          type: boolean
+          description: Indicates whether enable download. Read-only in the SOAP API.
+        id:
+          type: string
+          description: The ID.
+        status_code:
+          type: integer
+          description: The status code.
+          format: int32
+        running:
+          type: boolean
+          description: Indicates whether running.
+        did_not_finish:
+          type: boolean
+          description: Indicates whether did not finish.
+        parameter_set_id:
+          type: string
+          description: The parameter set ID.
+        business_process_catalog_id:
+          type: string
+          description: The business process catalog ID.
+        enable_letter_mail_merge:
+          type: boolean
+          description: Indicates whether enable letter mail merge. Read-only in the SOAP API.
+        enable_label_mail_merge:
+          type: boolean
+          description: Indicates whether enable label mail merge. Read-only in the SOAP API.
+        output_table_exists:
+          type: boolean
+          description: Indicates whether output table exists. Read-only in the SOAP API.
+        allow_remove_from_enqueue:
+          type: boolean
+          description: Indicates whether allow remove from enqueue. Read-only in the SOAP API.
+        download_output:
+          type: string
+          description: The download output.
+      additionalProperties: false
+      description: ViewBusinessProcess
+      x-display-name: Business Process Parameter Set Recent Status View Form
+      x-display-id: Business Process Parameter Set Recent Status View Form
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+x-refined-from:
+- blackbaud-altru-administration-api-openapi.yml
+- blackbaud-crm-administration-api-openapi.yml

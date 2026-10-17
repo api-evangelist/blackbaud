@@ -1,0 +1,1161 @@
+openapi: 3.2.0
+info:
+  title: Blackbaud Occurrences API
+  version: '1.0'
+  x-refined-note:
+  - x-apievangelist-provenance differs across the merged source definitions and was not carried
+  description: 'Operations tagged Occurrences across 2 of this provider''s published API definitions: blackbaud-altru-volunteer-api-openapi.yml, blackbaud-crm-volunteer-api-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.sky.blackbaud.com/alt-volmg
+- url: https://api.sky.blackbaud.com/crm-volmg
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Occurrences
+paths:
+  /occurrences:
+    post:
+      operationId: CreateJobOccurrence
+      summary: Create a job occurrence
+      description: Adds an occurrence of a job.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewJobOccurrence'
+            example:
+              job_id: 8ced83ec-a61b-4df1-aa26-4ddf76b5defb
+              description: Health Awareness
+              department_code_id: 8ced83ec-a61b-4df1-aa26-4ddf76b5defb
+              location_code_id: a4975cdb-3761-4a3c-b78f-968caa5a6321
+              type_code: One Time
+              start_date: '2016-02-18T12:00:00Z'
+              end_date: '2017-06-12T12:00:00Z'
+              start_month_day:
+                month: 11
+                day: 5
+              end_month_day:
+                month: 11
+                day: 6
+              one_start_time:
+                hour: 8
+                minute: 20
+              one_end_time:
+                hour: 9
+                minute: 16
+              rec_start_time:
+                hour: 8
+                minute: 10
+              rec_end_time:
+                hour: 10
+                minute: 18
+              day_of_week: Monday
+              event_id: bbf8a260-eed7-4cda-ac02-ec1dae73ca79
+              volunteers_needed: 5
+              comments: ''
+              site_id: a01bd875-b0a6-4455-8b69-a8ceae176e3d
+              site_required: false
+              base_currency_id: 03d475fd-2527-477f-bfa6-5099ad36345f
+              estimated_value: 0
+              recurrence_start_date: '2022-12-15T12:00:00Z'
+              recurrence_end_date: '2026-12-25T12:00:00Z'
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully creates the resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to create the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Occurrences
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-volmg
+  /occurrences/search:
+    get:
+      operationId: SearchJobOccurrences
+      summary: Search for job occurrences
+      description: This search is for finding job occurrences.
+      parameters:
+      - name: description
+        in: query
+        required: false
+        schema:
+          type: string
+        description: occurrence name
+      - name: job_name
+        in: query
+        required: false
+        schema:
+          type: string
+        description: job name
+      - name: include_inactive
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: include inactive
+      - name: location
+        in: query
+        required: false
+        schema:
+          type: string
+        description: location This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/VOLUNTEERLOCATIONCODE/entries
+      - name: department
+        in: query
+        required: false
+        schema:
+          type: string
+        description: department This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/DEPARTMENTCODE/entries
+      - name: event_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: event
+      - name: exclude_volunteer_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: exclude volunteer id
+      - name: exclude_job_assignment_date
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Format - date (as full-date in RFC3339). exclude job assignment date
+      - name: site_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: site
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Limits the number of records to return.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of result entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobOccurrenceSearchCollection'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to view the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+      tags:
+      - Occurrences
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-volmg
+  /occurrences/{job_occurrence_id}:
+    delete:
+      operationId: DeleteJobOccurrence
+      summary: Delete a job occurrence
+      description: Delete an occurrence of a job.
+      parameters:
+      - name: job_occurrence_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The job occurrence id
+      responses:
+        '200':
+          description: Returned when the operation successfully deletes the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to delete the resource.
+      tags:
+      - Occurrences
+    patch:
+      operationId: EditJobOccurrence
+      summary: Edit a job occurrence
+      description: Edits an occurrence of a job.
+      parameters:
+      - name: job_occurrence_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The job occurrence id.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditJobOccurrence'
+            example:
+              description: Health Awareness
+              type: One Time
+              start_date: '2016-02-18T12:00:00Z'
+              end_date: '2017-06-12T12:00:00Z'
+              start_month_day:
+                month: 11
+                day: 5
+              end_month_day:
+                month: 11
+                day: 6
+              one_start_time:
+                hour: 8
+                minute: 20
+              one_end_time:
+                hour: 9
+                minute: 16
+              rec_start_time:
+                hour: 8
+                minute: 10
+              rec_end_time:
+                hour: 10
+                minute: 18
+              day_of_week: Monday
+              event_id: bbf8a260-eed7-4cda-ac02-ec1dae73ca79
+              volunteers_needed: 5
+              comments: ''
+              site_id: a01bd875-b0a6-4455-8b69-a8ceae176e3d
+              site_required: false
+              base_currency_id: 03d475fd-2527-477f-bfa6-5099ad36345f
+              estimated_value: 0
+              recurrence_start_date: '2022-12-15T12:00:00Z'
+              recurrence_end_date: '2026-12-25T12:00:00Z'
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully edits the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to edit the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Occurrences
+    get:
+      operationId: GetJobOccurrence
+      summary: Get a job occurrence
+      description: Edits an occurrence of a job.
+      parameters:
+      - name: job_occurrence_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The job occurrence id.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the specified resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobOccurrence'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to get the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Occurrences
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-volmg
+  /occurrences/{job_occurrence_id}/view:
+    get:
+      operationId: ViewJobOccurrence
+      summary: View a job occurrence
+      description: Shows basic inoperationation about a job occurrence
+      parameters:
+      - name: job_occurrence_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The job occurrence id.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the specified resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobOccurrenceView'
+      tags:
+      - Occurrences
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-volmg
+components:
+  schemas:
+    JobOccurrenceView:
+      type: object
+      properties:
+        start_date:
+          type: string
+          description: 'The dates. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        enddate:
+          type: string
+          description: 'The enddate. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        start_month_day:
+          $ref: '#/components/schemas/MonthDay'
+        end_month_day:
+          $ref: '#/components/schemas/MonthDay'
+        start_time:
+          $ref: '#/components/schemas/HourMinute'
+        end_time:
+          $ref: '#/components/schemas/HourMinute'
+        type_code:
+          type: integer
+          description: The typecode.
+          format: int32
+        type:
+          maxLength: 25
+          minLength: 0
+          type: string
+          description: The type.
+        day_of_week:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: The day of week.
+        volunteers_needed:
+          type: integer
+          description: The needed.
+          format: int32
+        comments:
+          type: string
+          description: The comments.
+        location:
+          maxLength: 250
+          minLength: 0
+          type: string
+          description: The location.
+        department:
+          maxLength: 250
+          minLength: 0
+          type: string
+          description: The department.
+        event:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: The event.
+        site:
+          maxLength: 1024
+          minLength: 0
+          type: string
+          description: The site.
+        schedule_summary:
+          maxLength: 1024
+          minLength: 0
+          type: string
+          description: The schedule.
+        schedule_summary_collection:
+          type: array
+          items:
+            $ref: '#/components/schemas/JobOccurrenceScheduleSummaryCollection'
+          description: Schedule summary collection.
+        more_than_five:
+          type: boolean
+          description: Indicates whether more than five.
+      additionalProperties: false
+      description: ViewJobOccurrence
+      x-display-name: Job Occurrence View Form
+      x-display-id: Job Occurrence View Form
+    NewJobOccurrence:
+      required:
+      - job_id
+      - description
+      - type
+      - day_of_week
+      type: object
+      properties:
+        job_id:
+          type: string
+          description: The job ID.
+        description:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: The occurrence name.
+        department:
+          type: string
+          description: The department. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/departmentcode/entries
+        location:
+          type: string
+          description: The location. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/volunteerlocationcode/entries
+        type:
+          type: string
+          description: The type. Available values are <i>one time</i>, <i>recurring</i>, <i>recurring over date range</i>, <i>ongoing</i>
+        start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        end_date:
+          type: string
+          description: 'The end date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        start_month_day:
+          $ref: '#/components/schemas/MonthDay'
+        end_month_day:
+          $ref: '#/components/schemas/MonthDay'
+        one_start_time:
+          $ref: '#/components/schemas/HourMinute'
+        one_end_time:
+          $ref: '#/components/schemas/HourMinute'
+        rec_start_time:
+          $ref: '#/components/schemas/HourMinute'
+        rec_end_time:
+          $ref: '#/components/schemas/HourMinute'
+        day_of_week:
+          type: string
+          description: The day of week. Available values are <i>every day</i>, <i>sunday</i>, <i>monday</i>, <i>tuesday</i>, <i>wednesday</i>, <i>thursday</i>, <i>friday</i>, <i>saturday</i>, <i>weekends</i>, <i>weekdays</i>
+        event_id:
+          type: string
+          description: The event.
+        volunteers_needed:
+          type: integer
+          description: The volunteers needed.
+          format: int32
+        comments:
+          type: string
+          description: The comment.
+        site_id:
+          type: string
+          description: The site.
+        site_required:
+          type: boolean
+          description: Indicates whether site required. Read-only in the SOAP API.
+        base_currency_id:
+          type: string
+          description: The base currency. Read-only in the SOAP API.
+        estimated_value:
+          type: number
+          description: The estimated value.
+          format: double
+        recurrence_start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        recurrence_end_date:
+          type: string
+          description: 'The end date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+      additionalProperties: false
+      description: CreateJobOccurrence
+      example:
+        job_id: 8ced83ec-a61b-4df1-aa26-4ddf76b5defb
+        description: Health Awareness
+        department_code_id: 8ced83ec-a61b-4df1-aa26-4ddf76b5defb
+        location_code_id: a4975cdb-3761-4a3c-b78f-968caa5a6321
+        type_code: One Time
+        start_date: '2016-02-18T12:00:00Z'
+        end_date: '2017-06-12T12:00:00Z'
+        start_month_day:
+          month: 11
+          day: 5
+        end_month_day:
+          month: 11
+          day: 6
+        one_start_time:
+          hour: 8
+          minute: 20
+        one_end_time:
+          hour: 9
+          minute: 16
+        rec_start_time:
+          hour: 8
+          minute: 10
+        rec_end_time:
+          hour: 10
+          minute: 18
+        day_of_week: Monday
+        event_id: bbf8a260-eed7-4cda-ac02-ec1dae73ca79
+        volunteers_needed: 5
+        comments: ''
+        site_id: a01bd875-b0a6-4455-8b69-a8ceae176e3d
+        site_required: false
+        base_currency_id: 03d475fd-2527-477f-bfa6-5099ad36345f
+        estimated_value: 0
+        recurrence_start_date: '2022-12-15T12:00:00Z'
+        recurrence_end_date: '2026-12-25T12:00:00Z'
+      x-display-name: Job Occurrence Add Form 1.1
+      x-display-id: Job Occurrence Add Form 1.1
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type: integer
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type: string
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: false
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-display-name: Problem details
+      x-display-id: ProblemDetails
+    HourMinute:
+      type: object
+      properties:
+        hour:
+          type: integer
+          description: The hour.
+          format: int32
+        minute:
+          type: integer
+          description: The minute.
+          format: int32
+      description: HourMinute
+      x-display-name: Hour Minute
+      x-display-id: Hour Minute
+    JobOccurrenceScheduleSummaryCollection:
+      type: object
+      properties:
+        assignment_date:
+          type: string
+          description: date
+          format: date
+        openings:
+          type: integer
+          description: needed
+      description: JobOccurrenceScheduleSummaryCollection
+      x-display-name: schedule_summary_collection
+      x-display-id: schedule_summary_collection
+    MonthDay:
+      type: object
+      properties:
+        month:
+          type: integer
+          description: The month.
+          format: int32
+        day:
+          type: integer
+          description: The day.
+          format: int32
+      description: MonthDay
+      example:
+        month: 4
+        day: 13
+      x-display-name: Month Day
+      x-display-id: Month Day
+    JobOccurrence:
+      required:
+      - description
+      - day_of_week
+      type: object
+      properties:
+        description:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: The occurrence name.
+        department:
+          type: string
+          description: The department. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/departmentcode/entries
+        location:
+          type: string
+          description: The location. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/volunteerlocationcode/entries
+        type:
+          type: string
+          description: The type. Available values are <i>one time</i>, <i>recurring</i>, <i>recurring over date range</i>, <i>ongoing</i>
+        start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        end_date:
+          type: string
+          description: 'The end date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        start_month_day:
+          $ref: '#/components/schemas/MonthDay'
+        end_month_day:
+          $ref: '#/components/schemas/MonthDay'
+        one_start_time:
+          $ref: '#/components/schemas/HourMinute'
+        one_end_time:
+          $ref: '#/components/schemas/HourMinute'
+        rec_start_time:
+          $ref: '#/components/schemas/HourMinute'
+        rec_end_time:
+          $ref: '#/components/schemas/HourMinute'
+        day_of_week:
+          type: string
+          description: The day of week. Available values are <i>every day</i>, <i>sunday</i>, <i>monday</i>, <i>tuesday</i>, <i>wednesday</i>, <i>thursday</i>, <i>friday</i>, <i>saturday</i>, <i>weekends</i>, <i>weekdays</i>
+        event_id:
+          type: string
+          description: The event.
+        volunteers_needed:
+          type: integer
+          description: The volunteers needed.
+          format: int32
+        comments:
+          type: string
+          description: The comment.
+        site_id:
+          type: string
+          description: The site.
+        site_required:
+          type: boolean
+          description: Indicates whether site required. Read-only in the SOAP API.
+        base_currency_id:
+          type: string
+          description: The base currency. Read-only in the SOAP API.
+        estimated_value:
+          type: number
+          description: The estimated value.
+          format: double
+        recurrence_start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        recurrence_end_date:
+          type: string
+          description: 'The end date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+      additionalProperties: false
+      description: GetJobOccurrence
+      x-display-name: Job Occurrence Edit Form 1.1
+      x-display-id: Job Occurrence Edit Form 1.1
+    EditJobOccurrence:
+      type: object
+      properties:
+        description:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: The occurrence name.
+        department:
+          type: string
+          description: The department. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/departmentcode/entries
+        location:
+          type: string
+          description: The location. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/volunteerlocationcode/entries
+        type:
+          type: string
+          description: The type. Available values are <i>one time</i>, <i>recurring</i>, <i>recurring over date range</i>, <i>ongoing</i>
+        start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        end_date:
+          type: string
+          description: 'The end date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        start_month_day:
+          $ref: '#/components/schemas/MonthDay'
+        end_month_day:
+          $ref: '#/components/schemas/MonthDay'
+        one_start_time:
+          $ref: '#/components/schemas/HourMinute'
+        one_end_time:
+          $ref: '#/components/schemas/HourMinute'
+        rec_start_time:
+          $ref: '#/components/schemas/HourMinute'
+        rec_end_time:
+          $ref: '#/components/schemas/HourMinute'
+        day_of_week:
+          type: string
+          description: The day of week. Available values are <i>every day</i>, <i>sunday</i>, <i>monday</i>, <i>tuesday</i>, <i>wednesday</i>, <i>thursday</i>, <i>friday</i>, <i>saturday</i>, <i>weekends</i>, <i>weekdays</i>
+        event_id:
+          type: string
+          description: The event.
+        volunteers_needed:
+          type: integer
+          description: The volunteers needed.
+          format: int32
+        comments:
+          type: string
+          description: The comment.
+        site_id:
+          type: string
+          description: The site.
+        site_required:
+          type: boolean
+          description: Indicates whether site required. Read-only in the SOAP API.
+        base_currency_id:
+          type: string
+          description: The base currency. Read-only in the SOAP API.
+        estimated_value:
+          type: number
+          description: The estimated value.
+          format: double
+        recurrence_start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        recurrence_end_date:
+          type: string
+          description: 'The end date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+      additionalProperties: false
+      description: EditJobOccurrence
+      example:
+        description: Health Awareness
+        type: One Time
+        start_date: '2016-02-18T12:00:00Z'
+        end_date: '2017-06-12T12:00:00Z'
+        start_month_day:
+          month: 11
+          day: 5
+        end_month_day:
+          month: 11
+          day: 6
+        one_start_time:
+          hour: 8
+          minute: 20
+        one_end_time:
+          hour: 9
+          minute: 16
+        rec_start_time:
+          hour: 8
+          minute: 10
+        rec_end_time:
+          hour: 10
+          minute: 18
+        day_of_week: Monday
+        event_id: bbf8a260-eed7-4cda-ac02-ec1dae73ca79
+        volunteers_needed: 5
+        comments: ''
+        site_id: a01bd875-b0a6-4455-8b69-a8ceae176e3d
+        site_required: false
+        base_currency_id: 03d475fd-2527-477f-bfa6-5099ad36345f
+        estimated_value: 0
+        recurrence_start_date: '2022-12-15T12:00:00Z'
+        recurrence_end_date: '2026-12-25T12:00:00Z'
+      x-display-name: Job Occurrence Edit Form 1.1
+      x-display-id: Job Occurrence Edit Form 1.1
+    PostResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The newly created ID.
+      additionalProperties: false
+      description: Defines the shape of a post response object.
+    JobOccurrenceSearchCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items available for retrieval into the collection after applying any request parameters.
+          format: int32
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/JobOccurrenceSearchSummary'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+      additionalProperties: false
+      description: A collection of items. Data lists can contain paginated results.
+    JobOccurrenceSearchSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID.
+        job_name:
+          type: string
+          description: The job name.
+        description:
+          type: string
+          description: The occurrence name.
+        location:
+          type: string
+          description: The location.
+        department:
+          type: string
+          description: The department.
+        event:
+          type: string
+          description: The event.
+        site:
+          type: string
+          description: The site.
+        start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        start_time:
+          $ref: '#/components/schemas/HourMinute'
+      additionalProperties: false
+      description: SearchJobOccurrences
+      x-display-name: Job Occurrence Search
+      x-display-id: Job Occurrence Search
+    NewJobOccurrence_2:
+      required:
+      - job_id
+      - description
+      - type
+      - day_of_week
+      type: object
+      properties:
+        job_id:
+          type: string
+          description: The job ID.
+        description:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: The occurrence name.
+        department:
+          type: string
+          description: The department. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/departmentcode/entries
+        location:
+          type: string
+          description: The location. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/volunteerlocationcode/entries
+        type:
+          type: string
+          description: The type. Available values are <i>one time</i>, <i>recurring</i>, <i>recurring over date range</i>, <i>ongoing</i>
+        start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        end_date:
+          type: string
+          description: 'The end date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        start_month_day:
+          $ref: '#/components/schemas/MonthDay'
+        end_month_day:
+          $ref: '#/components/schemas/MonthDay'
+        one_start_time:
+          $ref: '#/components/schemas/HourMinute'
+        one_end_time:
+          $ref: '#/components/schemas/HourMinute'
+        rec_start_time:
+          $ref: '#/components/schemas/HourMinute'
+        rec_end_time:
+          $ref: '#/components/schemas/HourMinute'
+        day_of_week:
+          type: string
+          description: The day of week. Available values are <i>every day</i>, <i>sunday</i>, <i>monday</i>, <i>tuesday</i>, <i>wednesday</i>, <i>thursday</i>, <i>friday</i>, <i>saturday</i>, <i>weekends</i>, <i>weekdays</i>
+        event_id:
+          type: string
+          description: The event.
+        volunteers_needed:
+          type: integer
+          description: The volunteers needed.
+          format: int32
+        comments:
+          type: string
+          description: The comment.
+        site_id:
+          type: string
+          description: The site.
+        site_required:
+          type: boolean
+          description: Indicates whether site required. Read-only in the SOAP API.
+        base_currency_id:
+          type: string
+          description: The base currency. Read-only in the SOAP API.
+        estimated_value:
+          type: number
+          description: The estimated value.
+          format: double
+        recurrence_start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        recurrence_end_date:
+          type: string
+          description: 'The end date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+      additionalProperties: false
+      description: CreateJobOccurrence
+      example:
+        job_id: 8ced83ec-a61b-4df1-aa26-4ddf76b5defb
+        description: Health Awareness
+        department_code_id: 8ced83ec-a61b-4df1-aa26-4ddf76b5defb
+        location_code_id: a4975cdb-3761-4a3c-b78f-968caa5a6321
+        type_code: One Time
+        start_date: '2016-02-18T12:00:00Z'
+        end_date: '2017-06-12T12:00:00Z'
+        start_month_day:
+          month: 11
+          day: 5
+        end_month_day:
+          month: 11
+          day: 6
+        one_start_time:
+          hour: 8
+          minute: 20
+        one_end_time:
+          hour: 9
+          minute: 16
+        rec_start_time:
+          hour: 8
+          minute: 10
+        rec_end_time:
+          hour: 10
+          minute: 18
+        day_of_week: Monday
+        event_id: bbf8a260-eed7-4cda-ac02-ec1dae73ca79
+        volunteers_needed: 5
+        comments: ''
+        site_id: a01bd875-b0a6-4455-8b69-a8ceae176e3d
+        site_required: false
+        base_currency_id: 03d475fd-2527-477f-bfa6-5099ad36345f
+        estimated_value: 0
+        recurrence_start_date: '2022-12-15T12:00:00Z'
+        recurrence_end_date: '2026-12-25T12:00:00Z'
+      x-display-name: Job Occurrence Add Form 1.1
+      x-display-id: Job Occurrence Add Form 1.1
+    JobOccurrence_2:
+      required:
+      - description
+      - day_of_week
+      type: object
+      properties:
+        description:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: The occurrence name.
+        department:
+          type: string
+          description: The department. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/departmentcode/entries
+        location:
+          type: string
+          description: The location. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/volunteerlocationcode/entries
+        type:
+          type: string
+          description: The type. Available values are <i>one time</i>, <i>recurring</i>, <i>recurring over date range</i>, <i>ongoing</i>
+        start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        end_date:
+          type: string
+          description: 'The end date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        start_month_day:
+          $ref: '#/components/schemas/MonthDay'
+        end_month_day:
+          $ref: '#/components/schemas/MonthDay'
+        one_start_time:
+          $ref: '#/components/schemas/HourMinute'
+        one_end_time:
+          $ref: '#/components/schemas/HourMinute'
+        rec_start_time:
+          $ref: '#/components/schemas/HourMinute'
+        rec_end_time:
+          $ref: '#/components/schemas/HourMinute'
+        day_of_week:
+          type: string
+          description: The day of week. Available values are <i>every day</i>, <i>sunday</i>, <i>monday</i>, <i>tuesday</i>, <i>wednesday</i>, <i>thursday</i>, <i>friday</i>, <i>saturday</i>, <i>weekends</i>, <i>weekdays</i>
+        event_id:
+          type: string
+          description: The event.
+        volunteers_needed:
+          type: integer
+          description: The volunteers needed.
+          format: int32
+        comments:
+          type: string
+          description: The comment.
+        site_id:
+          type: string
+          description: The site.
+        site_required:
+          type: boolean
+          description: Indicates whether site required. Read-only in the SOAP API.
+        base_currency_id:
+          type: string
+          description: The base currency. Read-only in the SOAP API.
+        estimated_value:
+          type: number
+          description: The estimated value.
+          format: double
+        recurrence_start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        recurrence_end_date:
+          type: string
+          description: 'The end date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+      additionalProperties: false
+      description: GetJobOccurrence
+      x-display-name: Job Occurrence Edit Form 1.1
+      x-display-id: Job Occurrence Edit Form 1.1
+    EditJobOccurrence_2:
+      type: object
+      properties:
+        description:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: The occurrence name.
+        department:
+          type: string
+          description: The department. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/departmentcode/entries
+        location:
+          type: string
+          description: The location. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/volunteerlocationcode/entries
+        type:
+          type: string
+          description: The type. Available values are <i>one time</i>, <i>recurring</i>, <i>recurring over date range</i>, <i>ongoing</i>
+        start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        end_date:
+          type: string
+          description: 'The end date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        start_month_day:
+          $ref: '#/components/schemas/MonthDay'
+        end_month_day:
+          $ref: '#/components/schemas/MonthDay'
+        one_start_time:
+          $ref: '#/components/schemas/HourMinute'
+        one_end_time:
+          $ref: '#/components/schemas/HourMinute'
+        rec_start_time:
+          $ref: '#/components/schemas/HourMinute'
+        rec_end_time:
+          $ref: '#/components/schemas/HourMinute'
+        day_of_week:
+          type: string
+          description: The day of week. Available values are <i>every day</i>, <i>sunday</i>, <i>monday</i>, <i>tuesday</i>, <i>wednesday</i>, <i>thursday</i>, <i>friday</i>, <i>saturday</i>, <i>weekends</i>, <i>weekdays</i>
+        event_id:
+          type: string
+          description: The event.
+        volunteers_needed:
+          type: integer
+          description: The volunteers needed.
+          format: int32
+        comments:
+          type: string
+          description: The comment.
+        site_id:
+          type: string
+          description: The site.
+        site_required:
+          type: boolean
+          description: Indicates whether site required. Read-only in the SOAP API.
+        base_currency_id:
+          type: string
+          description: The base currency. Read-only in the SOAP API.
+        estimated_value:
+          type: number
+          description: The estimated value.
+          format: double
+        recurrence_start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        recurrence_end_date:
+          type: string
+          description: 'The end date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+      additionalProperties: false
+      description: EditJobOccurrence
+      example:
+        description: Health Awareness
+        type: One Time
+        start_date: '2016-02-18T12:00:00Z'
+        end_date: '2017-06-12T12:00:00Z'
+        start_month_day:
+          month: 11
+          day: 5
+        end_month_day:
+          month: 11
+          day: 6
+        one_start_time:
+          hour: 8
+          minute: 20
+        one_end_time:
+          hour: 9
+          minute: 16
+        rec_start_time:
+          hour: 8
+          minute: 10
+        rec_end_time:
+          hour: 10
+          minute: 18
+        day_of_week: Monday
+        event_id: bbf8a260-eed7-4cda-ac02-ec1dae73ca79
+        volunteers_needed: 5
+        comments: ''
+        site_id: a01bd875-b0a6-4455-8b69-a8ceae176e3d
+        site_required: false
+        base_currency_id: 03d475fd-2527-477f-bfa6-5099ad36345f
+        estimated_value: 0
+        recurrence_start_date: '2022-12-15T12:00:00Z'
+        recurrence_end_date: '2026-12-25T12:00:00Z'
+      x-display-name: Job Occurrence Edit Form 1.1
+      x-display-id: Job Occurrence Edit Form 1.1
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+x-refined-from:
+- blackbaud-altru-volunteer-api-openapi.yml
+- blackbaud-crm-volunteer-api-openapi.yml

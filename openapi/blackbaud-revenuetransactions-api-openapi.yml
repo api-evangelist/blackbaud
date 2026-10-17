@@ -1,0 +1,374 @@
+openapi: 3.2.0
+info:
+  title: Blackbaud Revenuetransactions API
+  version: '1.0'
+  x-refined-note:
+  - x-apievangelist-provenance differs across the merged source definitions and was not carried
+  description: 'Operations tagged Revenuetransactions across 2 of this provider''s published API definitions: blackbaud-altru-revenue-api-openapi.yml, blackbaud-crm-revenue-api-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.sky.blackbaud.com/alt-revmg
+- url: https://api.sky.blackbaud.com/crm-revmg
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Revenuetransactions
+paths:
+  /revenuetransactions/search:
+    get:
+      operationId: SearchRevenueTransactions
+      summary: Search for revenue transactions
+      description: Search for transaction
+      parameters:
+      - name: key_name
+        in: query
+        required: false
+        schema:
+          type: string
+        description: last/org/group name
+      - name: first_name
+        in: query
+        required: false
+        schema:
+          type: string
+        description: first name
+      - name: lookup_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: lookup id
+      - name: payment_method
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - Cash
+          - Check
+          - Credit card
+          - Direct debit
+          - Stock
+          - Property
+          - Gift-in-kind
+          - None
+          - Other
+        description: payment method
+      - name: transaction_type
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - Payment
+          - Pledge
+          - Recurring gift
+          - Matching gift claim
+          - Donor challenge claim
+        description: transaction type
+      - name: revenue_type
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - Gift
+          - Event registration
+          - Fee
+          - Tax
+          - Other
+        description: revenue type
+      - name: transaction_amount
+        in: query
+        required: false
+        schema:
+          type: number
+        description: transaction amount
+      - name: transaction_date
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Format - date (as full-date in RFC3339). date from
+      - name: batch_number
+        in: query
+        required: false
+        schema:
+          type: string
+        description: batch number
+      - name: include_inactive
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: include inactive
+      - name: include_deceased
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: include deceased
+      - name: check_nickname
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: check nickname
+      - name: check_aliases
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: check aliases
+      - name: exact_match_only
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: match all criteria exactly
+      - name: receipt_number
+        in: query
+        required: false
+        schema:
+          type: string
+        description: receipt number
+      - name: check_alternate_lookup_ids
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: check alternate lookup ids
+      - name: revenue_lookup_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: revenue id
+      - name: address_block
+        in: query
+        required: false
+        schema:
+          type: string
+        description: address
+      - name: city
+        in: query
+        required: false
+        schema:
+          type: string
+        description: city
+      - name: state
+        in: query
+        required: false
+        schema:
+          type: string
+        description: state SimpleDataListID=7fa91401-596c-4f7c-936d-6e41683121d7.
+      - name: post_code
+        in: query
+        required: false
+        schema:
+          type: string
+        description: zip/postal code
+      - name: country
+        in: query
+        required: false
+        schema:
+          type: string
+        description: country SimpleDataListID=c9649672-353d-42e8-8c25-4d34bbabfbba.
+      - name: only_primary_address
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: only search primary addresses
+      - name: phone_number
+        in: query
+        required: false
+        schema:
+          type: string
+        description: phone number
+      - name: email_address
+        in: query
+        required: false
+        schema:
+          type: string
+        description: email address
+      - name: include_individuals
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: individuals
+      - name: include_organizations
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: organizations
+      - name: include_groups
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: groups/households
+      - name: appeal
+        in: query
+        required: false
+        schema:
+          type: string
+        description: appeal
+      - name: channel
+        in: query
+        required: false
+        schema:
+          type: string
+        description: inbound channel This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/CHANNELCODE/entries
+      - name: designation
+        in: query
+        required: false
+        schema:
+          type: string
+        description: designation
+      - name: transaction_end_date
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Format - date (as full-date in RFC3339). to
+      - name: include_transactions_with_no_constit
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: include transactions with no constituent
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Limits the number of records to return.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of result entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RevenueTransactionSearchCollection'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to view the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+      tags:
+      - Revenuetransactions
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-revmg
+components:
+  schemas:
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type: integer
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type: string
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: false
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-display-name: Problem details
+      x-display-id: ProblemDetails
+    RevenueTransactionSearchSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID.
+        lookup_id:
+          type: string
+          description: The lookup ID.
+        name:
+          type: string
+          description: The name.
+        transaction_type:
+          type: string
+          description: The transaction type.
+        amount:
+          type: number
+          description: The amount.
+          format: double
+        payment_method:
+          type: string
+          description: The payment method.
+        date:
+          type: string
+          description: 'The date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        details:
+          type: string
+          description: The details.
+        revenue_lookup_id:
+          type: string
+          description: The revenue ID.
+        revenue_type:
+          type: string
+          description: The revenue type.
+        transaction_currency_id:
+          type: string
+          description: The transaction currency.
+        sort_constituent_name:
+          type: string
+          description: The sort constituent name.
+      additionalProperties: false
+      description: SearchRevenueTransactions
+      x-display-name: Transaction Search
+      x-display-id: Transaction Search
+    RevenueTransactionSearchCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items available for retrieval into the collection after applying any request parameters.
+          format: int32
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/RevenueTransactionSearchSummary'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+      additionalProperties: false
+      description: A collection of items. Data lists can contain paginated results.
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+x-refined-from:
+- blackbaud-altru-revenue-api-openapi.yml
+- blackbaud-crm-revenue-api-openapi.yml

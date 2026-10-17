@@ -1,0 +1,167 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: GrantsConnect Tags API'
+  description: This API provides access to read and update data within GrantsConnect.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/grants-connect
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/grants-connect
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Tags
+paths:
+  /v1/tags/search:
+    post:
+      operationId: SearchTags
+      summary: Search system tags (PREVIEW)
+      description: 'Retrieves information about system tags.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApplyTagSearchFilters'
+            example:
+              tag_ids:
+              - 101
+              - 102
+              - 103
+              limit: 50
+              page: 1
+              date_modified: '2025-01-01T12:00:00Z'
+              include_inactive: false
+        description: Specifies the conditions of the tags to search. If no filter is provided, the response will return all tags.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReturnPaginatedTagRecords'
+              example:
+                records:
+                - id: 101
+                  name: Urgent
+                  description: Indicates urgent applications
+                  bucket: Application
+                  enabled: true
+                  color: '#FF0000'
+                record_count: 1
+      tags:
+      - Tags
+components:
+  schemas:
+    ReturnPaginatedTagRecords:
+      type: object
+      properties:
+        records:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ReturnTagQueryResults'
+          description: The details returned for the current page.
+        record_count:
+          type:
+          - integer
+          - 'null'
+          description: The total number of records in the search result.
+          format: int32
+      additionalProperties: false
+      description: Returns a paginated view of tags.
+    TagBuckets:
+      enum:
+      - General
+      - Application
+      - Nomination
+      - Nonprofit
+      - Payment
+      - Applicant
+      - Budget
+      type: string
+      description: The buckets that tags can be placed in<p>Available values:</p><ul><li><i>General</i></li><li><i>Application</i></li><li><i>Nomination</i></li><li><i>Nonprofit</i></li><li><i>Payment</i></li><li><i>Applicant</i></li><li><i>Budget</i></li></ul>
+    ReturnTagQueryResults:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The identifier of the tag.
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the tag.
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the tag.
+        bucket:
+          $ref: '#/components/schemas/TagBuckets'
+        enabled:
+          type: boolean
+          description: Indicates if the tag is active. Value is true or false.
+        color:
+          type:
+          - string
+          - 'null'
+          description: The color assigned to the tag. Available colors are from the client color scheme.
+      additionalProperties: false
+      description: Detailed information about the tag.
+    ApplyTagSearchFilters:
+      type: object
+      properties:
+        tag_ids:
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+            format: int32
+          description: If provided, results will filter on the identifier of the tag. Separate multiple IDs with a comma to query more than one tag.
+        limit:
+          maximum: 500
+          minimum: 50
+          type: integer
+          description: Specifies the maximum number of records to return per page.
+          format: int32
+          default: 50
+        page:
+          maximum: 2147483647
+          minimum: 1
+          type: integer
+          description: Specifies the page number for pagination.
+          format: int32
+          default: 1
+        date_modified:
+          type:
+          - string
+          - 'null'
+          description: If provided, only records modified since the date and time specified will be returned. Time zone is UTC.
+          format: date-time
+        include_inactive:
+          type: boolean
+          description: Specifies if inactive records should be returned. Value is true or false.
+          default: false
+      additionalProperties: false
+      description: Filters to apply to the search. Specify conditions of the tags to return detailed information.
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

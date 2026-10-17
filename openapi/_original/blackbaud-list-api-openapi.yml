@@ -1,0 +1,266 @@
+# x-archived-from: blackbaud-list-api-openapi.yml
+# x-archived-on: 2026-10-16
+openapi: 3.0.1
+info:
+  title: 'Blackbaud SKY API: List'
+  description: This API manages lists.
+  version: v1
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/list
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations,
+      examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/list
+paths:
+  /appendidstolist:
+    post:
+      operationId: AppendIdsToList
+      summary: Append identifiers to a list
+      description: Appends a set of identifiers to the filter of an existing list. The <code>list_id</code> parameter cannot
+        reference a list that was created from a static query. The <code>ids</code> parameter is limited to 100,000 identifiers.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AppendIdsToListRequest'
+            example:
+              list_id: c9335603-56f5-4253-a4f4-34bde8354d75
+              ids:
+              - '21'
+              - '34'
+              - '55'
+              - '89'
+              - '144'
+              - '233'
+        description: Represents a request to add ids to an existing list
+      responses:
+        '200':
+          description: Returned when the operation succeeds.
+        '400':
+          description: Returned when the specified request parameters are not in the appropriate format.
+        '403':
+          description: Returned when the user does not have permission to view lists.
+  /createlistfromids:
+    post:
+      operationId: CreateListFromIds
+      summary: Create a list from set of identifiers
+      description: Creates a new list filtered to the specified set of identifiers. Returns a unique identifier for the new
+        list The <code>name</code> parameter must be unique and not in use on an existing list. The <code>ids</code> parameter
+        is limited to 100,000 identifiers. The <code>name</code> parameter is limited to 50 characters
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateListFromIdsRequest'
+            example:
+              name: List of interesting people
+              description: List of people that were identified in another system
+              list_type: Constituent
+              list_permissions: OthersCanView
+              ids:
+              - '1'
+              - '2'
+              - '3'
+              - '5'
+              - '8'
+              - '13'
+        description: Represents a request to create a Constituent List from an idset
+      responses:
+        '200':
+          description: The identifier of the newly created list.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateListFromIdsResponse'
+              example:
+                id: c9335603-56f5-4253-a4f4-34bde8354d75
+        '400':
+          description: Returned when the specified request parameters are not in the appropriate format.
+        '403':
+          description: Returned when the user does not have permission to view lists.
+  /lists:
+    get:
+      operationId: GetLists
+      summary: Get a list of lists
+      description: Returns a list of lists for the given list type
+      parameters:
+      - name: list_type
+        in: query
+        required: true
+        schema:
+          type: string
+          enum:
+          - Constituent
+          - Gift
+          - Action
+          - Opportunity
+        description: The type of list to return. Currently supports 'Constituent', 'Gift', 'Action', 'Opportunity'.
+      responses:
+        '200':
+          description: Returned when the operation succeeds.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiCollectionOfList'
+              example:
+                count: 3
+                value:
+                - id: 455bea77-598a-49d1-8945-09f70e93af56
+                  name: Board Members
+                  description: The list of active board members
+                  record_count: 8
+                  date_modified: '2019-10-09T13:48:08.5767857Z'
+                  last_modified_by_user_name: MarkAd
+                  last_modified_by_user_id: b878e39b-89f5-43e8-a42a-204ffe9cac21
+                  is_public: false
+                - id: caebcd03-249b-4677-b54d-8c936956029a
+                  name: High wealth donors
+                  description: Constituents with a high wealth rating
+                  record_count: 82
+                  date_modified: '2018-11-12T12:12:51.3869213Z'
+                  last_modified_by_user_name: AdrianDe
+                  last_modified_by_user_id: 5491ca28-723e-4dcc-8150-d8d41c083537
+                  is_public: false
+                - id: 5fe12c32-3c90-4fcf-9990-f47b906837b5
+                  name: Recent givers
+                  description: List of constituents with recent gifts
+                  record_count: 985
+                  date_modified: '2019-10-01T15:28:09.4767233Z'
+                  last_modified_by_user_name: SarahKe
+                  last_modified_by_user_id: afad5b0b-c49d-49e7-bbc0-f95a4a390624
+                  is_public: true
+        '400':
+          description: Returned when the specified request parameters are not in the appropriate format.
+        '403':
+          description: Returned when the user does not have permission to view lists.
+components:
+  schemas:
+    ApiCollectionOfList:
+      description: Represents the list of lists entity
+      type: object
+      properties:
+        count:
+          format: int32
+          description: The total number of lists in the set
+          type: integer
+        value:
+          description: The set of lists
+          type: array
+          items:
+            $ref: '#/components/schemas/ApiList'
+      x-display-name: Lists
+      x-display-id: Lists
+    ApiList:
+      description: Represents the List entity
+      type: object
+      properties:
+        id:
+          description: The immutable system record ID for the list
+          type: string
+        name:
+          description: The name of the list
+          type: string
+        description:
+          description: The description of the list
+          type: string
+        record_count:
+          format: int32
+          description: The total number of records defined by this list based on the last time this list was saved
+          type: integer
+        date_modified:
+          format: date-time
+          description: 'The date this list was last modified. Uses <a href="https://tools.ietf.org/html/rfc3339">ISO-8601
+            format: </a><i>1969-11-21T10:29:43</i>'
+          type: string
+          x-supports-datetime-offset: true
+        last_modified_by_user_name:
+          description: The name of the user that last modified the list
+          type: string
+        last_modified_by_user_id:
+          description: The ID of the user that last modified the list
+          type: string
+        is_public:
+          description: Indicates whether this is a public or private list.
+          type: boolean
+      x-display-name: List
+      x-display-id: List
+    CreateListFromIdsRequest:
+      description: Represents a request to create a list filtered to a set of unique record identifiers
+      required:
+      - name
+      - list_type
+      - list_permissions
+      - ids
+      type: object
+      properties:
+        name:
+          description: The name of the list
+          type: string
+        description:
+          description: The description of the list
+          type: string
+        list_type:
+          description: Determines the type of list to create. Currently supports 'Constituent', 'Gift', 'Action', 'Opportunity'.
+          enum:
+          - Constituent
+          - Gift
+          - Action
+          - Opportunity
+          type: string
+        list_permissions:
+          description: Determines whether other users can access the list. Currently supports 'OnlyOwnerCanAccess', 'OthersCanView',
+            'OthersCanViewAndEdit'.
+          enum:
+          - OnlyOwnerCanAccess
+          - OthersCanView
+          - OthersCanViewAndEdit
+          type: string
+        ids:
+          description: The unique identifiers for the records contained in the list. Limited to a maximumum 100,000 identifiers.
+          type: array
+          items:
+            type: string
+      x-display-name: CreateListFromIdsRequest
+      x-display-id: Createlistfromidsrequest
+    CreateListFromIdsResponse:
+      description: Represents response when creating a list from a set of unique record identifiers
+      type: object
+      properties:
+        id:
+          description: The identifier for the new list
+          type: string
+      x-display-name: CreateListFromIdsResponse
+      x-display-id: Createlistfromidsresponse
+    AppendIdsToListRequest:
+      description: Represents request to create a list filtered to a set of unique record identifiers
+      required:
+      - list_id
+      - ids
+      type: object
+      properties:
+        list_id:
+          description: The immutable system record ID for the list
+          type: string
+        ids:
+          description: The unique identifiers for the records to be added to the list. Limited to a maximumum 100,000 identifiers.
+          type: array
+          items:
+            type: string
+      x-display-name: AppendIdsToList
+      x-display-id: Appendidstolist
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []

@@ -1,0 +1,449 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: GrantsConnect Workflows API'
+  description: This API provides access to read and update data within GrantsConnect.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/grants-connect
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/grants-connect
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Workflows
+paths:
+  /v1/workflows/search:
+    post:
+      operationId: SearchWorkflows
+      summary: Search workflows (PREVIEW)
+      description: 'Retrieves information about workflows.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkflowRequestModel'
+            example:
+              id: 1
+              name: Workflow 1
+              workflow_level_id: 123
+              workflow_level_name: Level 1
+              limit: 10
+              page: 1
+              date_modified: '2025-01-01T12:00:00Z'
+              include_inactive: false
+        description: Specifies the conditions of the workflows to search.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkflowPaginationReturn'
+              example:
+                records:
+                - id: 1
+                  name: Example Workflow
+                  description: This is an example workflow.
+                  levels:
+                  - id: 1
+                    name: Example Level
+                    description: This is an example level of the workflow.
+                record_count: 1
+      tags:
+      - Workflows
+  /v1/workflows/{workflow_id}/workflowlevels:
+    post:
+      operationId: SearchWorkflowLevels
+      summary: Search workflow levels (PREVIEW)
+      description: 'Retrieves information about workflows.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: workflow_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The identifier of the workflow.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkflowLevelDetailPaginationRequestModel'
+            example:
+              id: 1
+              name: Workflow Level 1
+              description: This is the first workflow level.
+              allow_declination: true
+              allow_approval: true
+              allow_award: false
+              allow_user_to_request_revision: true
+              allow_user_to_archive_and_unarchive: false
+              show_masked_applicant_info: false
+              show_budget_summary_info: true
+              allow_user_to_view_awards_and_payments: false
+              default_level_on_program: true
+              allow_form_due_date_extension: false
+              allow_recommended_funding: true
+              allow_budget_assignment: false
+              sort_order: 1
+              limit: 50
+              page: 1
+              date_modified: '2025-01-01T12:00:00Z'
+              include_inactive: false
+        description: Specifies the conditions of the workflow levels to search. If no filter is provided, the response will return all workflow levels.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReturnPaginatedWorkflowLevelDetails'
+              example:
+                records:
+                - id: 1
+                  name: Workflow Level 1
+                  description: This is the first workflow level.
+                  allow_declination: true
+                  allow_approval: true
+                  allow_award: false
+                  allow_user_to_request_revision: true
+                  allow_user_to_archive_and_unarchive: false
+                  show_masked_applicant_info: false
+                  show_budget_summary_info: true
+                  allow_user_to_view_awards_and_payments: false
+                  default_level_on_program: true
+                  allow_form_due_date_extension: false
+                  allow_recommended_funding: true
+                  allow_budget_assignment: false
+                  sort_order: 1
+                record_count: 1
+      tags:
+      - Workflows
+components:
+  schemas:
+    WorkflowPaginationReturn:
+      type: object
+      properties:
+        records:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/WorkflowModel'
+          description: The details returned for the current page.
+        record_count:
+          type:
+          - integer
+          - 'null'
+          description: The total number of records in the search result.
+          format: int32
+      additionalProperties: false
+      description: Represents a paginated result set of workflow records.
+    WorkflowModel:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The identifier of the workflow.
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the workflow.
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the workflow.
+        levels:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ReturnBasicWorkflowLevelDetails'
+          description: The workflow levels that make up the workflow.
+      additionalProperties: false
+      description: Basic information about the workflow.
+    ReturnBasicWorkflowLevelDetails:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The identifier of the workflow level.
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the workflow level.
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the workflow level.
+      additionalProperties: false
+      description: Basic information about the workflow level.
+    ReturnPaginatedWorkflowLevelDetails:
+      type: object
+      properties:
+        records:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ReturnWorkflowLevelDetails'
+          description: The details returned for the current page.
+        record_count:
+          type:
+          - integer
+          - 'null'
+          description: The total number of records in the search result.
+          format: int32
+      additionalProperties: false
+      description: Returns a paginated view of user roles.
+    WorkflowLevelDetailPaginationRequestModel:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The identifier of the Workflow level.
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the Workflow level.
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the workflow level.
+        allow_declination:
+          type:
+          - boolean
+          - 'null'
+          description: Determines if the workflow level can be declined. Value is true or false.
+        allow_approval:
+          type:
+          - boolean
+          - 'null'
+          description: Determines if the workflow level can be approved. Value is true or false.
+        allow_award:
+          type:
+          - boolean
+          - 'null'
+          description: Determines if the workflow level can be awarded. Value is true or false.
+        allow_user_to_request_revision:
+          type:
+          - boolean
+          - 'null'
+          description: Determines if the workflow level can be requested for revision by the user. Value is true or false.
+        allow_user_to_archive_and_unarchive:
+          type:
+          - boolean
+          - 'null'
+          description: Determines if the workflow level can be archived and unarchived by the user. Value is true or false.
+        show_masked_applicant_info:
+          type:
+          - boolean
+          - 'null'
+          description: Determines if the workflow level's sensitive data is masked or not. Value is true or false.
+        show_budget_summary_info:
+          type:
+          - boolean
+          - 'null'
+          description: Determines if the budget summary information can be viewed by user. Value is true or false.
+        allow_user_to_view_awards_and_payments:
+          type:
+          - boolean
+          - 'null'
+          description: Determines if the workflow level's awards and payments can be viewed by the user. Value is true or false.
+        default_level_on_program:
+          type:
+          - boolean
+          - 'null'
+          description: Determines if the workflow level is the default level on the program. Value is true or false.
+        allow_form_due_date_extension:
+          type:
+          - boolean
+          - 'null'
+          description: Determines if the workflow level allows form due date extension. Value is true or false.
+        allow_recommended_funding:
+          type:
+          - boolean
+          - 'null'
+          description: Determines if the workflow level allows recommended funding. Value is true or false.
+        allow_budget_assignment:
+          type:
+          - boolean
+          - 'null'
+          description: Determines if the workflow level allows budget assignment. Value is true or false.
+        sort_order:
+          type:
+          - integer
+          - 'null'
+          description: Determines the order of the workflow level in relation to other levels in the program. Levels with lower sort order values are earlier in the workflow than levels with higher sort order values.
+          format: int32
+        limit:
+          maximum: 500
+          minimum: 50
+          type: integer
+          description: Specifies the maximum number of records to return per page.
+          format: int32
+          default: 50
+        page:
+          maximum: 2147483647
+          minimum: 1
+          type: integer
+          description: Specifies the page number for pagination.
+          format: int32
+          default: 1
+        date_modified:
+          type:
+          - string
+          - 'null'
+          description: If provided, only records modified since the date and time specified will be returned. Time zone is UTC.
+          format: date-time
+        include_inactive:
+          type: boolean
+          description: Specifies if inactive records should be returned. Value is true or false.
+          default: false
+      additionalProperties: false
+      description: Filters to apply to the workflow level search. Specify conditions of the workflow levels to return detailed information.
+    ReturnWorkflowLevelDetails:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The identifier of the workflow level.
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the workflow level.
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the workflow level.
+        allow_declination:
+          type: boolean
+          description: Determines if the workflow level can be declined. Value is true or false.
+        allow_approval:
+          type: boolean
+          description: Determines if the workflow level can be approved. Value is true or false.
+        allow_award:
+          type: boolean
+          description: Determines if the workflow level can be awarded. Value is true or false.
+        allow_user_to_request_revision:
+          type: boolean
+          description: Determines if the workflow level can be requested for revision by the user. Value is true or false.
+        allow_user_to_archive_and_unarchive:
+          type: boolean
+          description: Determines if the workflow level can be archived and unarchived by the user. Value is true or false.
+        show_masked_applicant_info:
+          type: boolean
+          description: Determines if the workflow level's sensitive data is masked or not. Value is true or false.
+        show_budget_summary_info:
+          type: boolean
+          description: Determines if the workflow level can be viewed by the user. Value is true or false.
+        allow_user_to_view_awards_and_payments:
+          type: boolean
+          description: Determines if the Workflow Level's awards and payments can be viewed by the user. Value is true or false.
+        default_level_on_program:
+          type: boolean
+          description: Determines if the workflow level is the default level on the program. Value is true or false.
+        allow_form_due_date_extension:
+          type:
+          - boolean
+          - 'null'
+          description: Determines if the workflow level allows form due date extension. Value is true or false.
+        allow_recommended_funding:
+          type: boolean
+          description: Determines if the workflow level allows recommended funding. Value is true or false.
+        allow_budget_assignment:
+          type: boolean
+          description: Determines if the workflow level allows budget assignment. Value is true or false.
+        sort_order:
+          type:
+          - integer
+          - 'null'
+          description: Determines the order of the workflow level in relation to other levels in the program. Levels with lower sort order values are earlier in the workflow than levels with higher sort order values.
+          format: int32
+      additionalProperties: false
+      description: Returns information about the workflow level.
+    WorkflowRequestModel:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The identifier of the workflow.
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the workflow.
+        workflow_level_id:
+          type:
+          - integer
+          - 'null'
+          description: This is used to pull back workflows that have a specific workflow level in them (based on workflow level ID). If this field has a value, and if no workflows contain this level, nothing will come back.
+          format: int32
+        workflow_level_name:
+          type:
+          - string
+          - 'null'
+          description: This is used to pull back workflows that have a specific workflow level in them (based on workflow level name). If this field has a value, and if no workflows contain this level, nothing will come back.
+        limit:
+          maximum: 500
+          minimum: 50
+          type: integer
+          description: Specifies the maximum number of records to return per page.
+          format: int32
+          default: 50
+        page:
+          maximum: 2147483647
+          minimum: 1
+          type: integer
+          description: Specifies the page number for pagination.
+          format: int32
+          default: 1
+        date_modified:
+          type:
+          - string
+          - 'null'
+          description: If provided, only records modified since the date and time specified will be returned. Time zone is UTC.
+          format: date-time
+        include_inactive:
+          type: boolean
+          description: Specifies if inactive records should be returned. Value is true or false.
+          default: false
+      additionalProperties: false
+      description: Filters to apply to the workflow search. Specify conditions of the workflows to return detailed information.
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

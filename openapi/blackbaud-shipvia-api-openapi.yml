@@ -1,0 +1,96 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Accounts Payable Shipvia API'
+  description: This API is used to manage accounts payable, including vendors and invoices.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/57a342f1d7dcde1c28a749fe
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/accountspayable/v1
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Shipvia
+paths:
+  /shipvia:
+    get:
+      operationId: ListShipVias
+      summary: Ship via (List)
+      description: Returns a list of shipping codes.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains a list of ship via.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShipViaApiCollection'
+              example:
+                count: 2
+                value:
+                - id: 362
+                  description: Best Method
+                  value: Best Method
+                  inactive: false
+                - id: 282
+                  description: FEDEX
+                  value: FEDEX
+                  inactive: false
+                - id: 358
+                  description: No Shipping Required
+                  value: No Shipping Required
+                  inactive: false
+      tags:
+      - Shipvia
+components:
+  schemas:
+    ShipViaApiCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ShipVia'
+      additionalProperties: false
+      description: Collection Response
+    ShipVia:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The identifier for this shipping method.
+          format: int32
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the shipping method.
+        value:
+          type:
+          - string
+          - 'null'
+          description: The value of the shipping method.
+        inactive:
+          type: boolean
+          description: Whether or not the shipping method is active.
+      additionalProperties: false
+      description: Contract for shipping method.
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

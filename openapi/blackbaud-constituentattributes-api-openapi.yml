@@ -1,0 +1,894 @@
+openapi: 3.2.0
+info:
+  title: Blackbaud Constituentattributes API
+  version: '1.0'
+  x-refined-note:
+  - x-apievangelist-provenance differs across the merged source definitions and was not carried
+  description: 'Operations tagged Constituentattributes across 2 of this provider''s published API definitions: blackbaud-altru-constituent-api-openapi.yml, blackbaud-crm-constituent-api-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.sky.blackbaud.com/alt-conmg
+- url: https://api.sky.blackbaud.com/crm-conmg
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Constituentattributes
+paths:
+  /constituentattributes:
+    post:
+      operationId: CreateConstituentAttribute
+      summary: Create a constituent attribute
+      description: Adds an attribute to a constituent record.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewConstituentAttribute'
+            example:
+              attribute_context_id: ''
+              header_caption: ''
+              attribute_category: ''
+              string_value: ''
+              number_value: 0
+              money_value: 0
+              date_value: ''
+              boolean_value: 'No'
+              code_table_value: ''
+              fuzzy_date_value: ''
+              constituent_id_value: ''
+              hour_minute_value: ''
+              memo_value: ''
+              attribute_categories:
+              - id: ''
+                data_type_code: 0
+                constituent_search_list_catalog_id: ''
+                code_table_name: ''
+              comment: ''
+              start_date: ''
+              end_date: ''
+              record_type_string: ''
+              currency: ''
+              transaction_currency_id: ''
+              base_currency_id: ''
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully creates the resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to create the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Constituentattributes
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-conmg
+  /constituentattributes/{constituent_attribute_id}:
+    delete:
+      operationId: DeleteConstituentAttribute
+      summary: Delete a constituent attribute
+      description: Removes a constituent attribute from the system.
+      parameters:
+      - name: constituent_attribute_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The constituent attribute id
+      responses:
+        '200':
+          description: Returned when the operation successfully deletes the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to delete the resource.
+      tags:
+      - Constituentattributes
+    patch:
+      operationId: EditConstituentAttribute
+      summary: Edit a constituent attribute
+      description: Edits an attribute on a constituent record.
+      parameters:
+      - name: constituent_attribute_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The constituent attribute id.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditConstituentAttribute'
+            example:
+              header_caption: ''
+              attribute_category_description: ''
+              attribute_category_id: ''
+              data_type_code: 0
+              string_value: ''
+              number_value: 0
+              money_value: 0
+              date_value: ''
+              booleanvalue: 'No'
+              code_table_value: ''
+              fuzzy_date_value: ''
+              constituent_id_value: ''
+              hour_minute_value: ''
+              memo_value: ''
+              comment: ''
+              constituent_search_list_catalog_id: ''
+              code_table_name: ''
+              start_date: ''
+              end_date: ''
+              currency: ''
+              transaction_currency_id: ''
+              base_currency_id: ''
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully edits the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to edit the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Constituentattributes
+    get:
+      operationId: GetConstituentAttribute
+      summary: Get a constituent attribute
+      description: Edits an attribute on a constituent record.
+      parameters:
+      - name: constituent_attribute_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The constituent attribute id.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the specified resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConstituentAttribute'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to get the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Constituentattributes
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-conmg
+components:
+  schemas:
+    NewConstituentAttribute:
+      required:
+      - attribute_context_id
+      - attribute_category
+      - record_type_string
+      type: object
+      properties:
+        attribute_context_id:
+          type: string
+          description: The attribute context ID.
+        header_caption:
+          type: string
+          description: The headercaption. Read-only in the SOAP API.
+        attribute_category:
+          type: string
+          description: The category. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/958132a3-762a-4844-b7a1-f3a3098da95a?parameters=record_type,{record_type_string}.
+        string_value:
+          maxLength: 250
+          minLength: 0
+          type: string
+          description: The value.
+        number_value:
+          type: integer
+          description: The value.
+          format: int32
+        money_value:
+          type: number
+          description: The value.
+          format: double
+        date_value:
+          type: string
+          description: 'The value. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        boolean_value:
+          type: string
+          description: The value. Available values are <i>no</i>, <i>yes</i>
+        code_table_value:
+          type: string
+          description: The value. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/addresstypecode/entries
+        fuzzy_date_value:
+          $ref: '#/components/schemas/FuzzyDate'
+        constituent_id_value:
+          type: string
+          description: The value.
+        hour_minute_value:
+          $ref: '#/components/schemas/HourMinute'
+        memo_value:
+          type: string
+          description: The value.
+        attribute_categories:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewConstituentAttributeAttributeCategories'
+          description: Attribute categories.
+        comment:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The comment.
+        start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        end_date:
+          type: string
+          description: 'The end date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        record_type_string:
+          type: string
+          description: The record type. Read-only in the SOAP API.
+        currency:
+          type: string
+          description: The currency. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/13612288-b37e-409d-ba52-6ab31637ddd6?parameters=transaction_currency_id,{transaction_currency_id}&parameters=base_currency_id,{base_currency_id}.
+        transaction_currency_id:
+          type: string
+          description: The transaction currency. Read-only in the SOAP API.
+        base_currency_id:
+          type: string
+          description: The base currency. Read-only in the SOAP API.
+      additionalProperties: false
+      description: CreateConstituentAttribute
+      example:
+        attribute_context_id: ''
+        header_caption: ''
+        attribute_category: ''
+        string_value: ''
+        number_value: 0
+        money_value: 0
+        date_value: ''
+        boolean_value: 'No'
+        code_table_value: ''
+        fuzzy_date_value: ''
+        constituent_id_value: ''
+        hour_minute_value: ''
+        memo_value: ''
+        attribute_categories:
+        - id: ''
+          data_type_code: 0
+          constituent_search_list_catalog_id: ''
+          code_table_name: ''
+        comment: ''
+        start_date: ''
+        end_date: ''
+        record_type_string: ''
+        currency: ''
+        transaction_currency_id: ''
+        base_currency_id: ''
+      x-display-name: Constituent Attribute Add Form
+      x-display-id: Constituent Attribute Add Form
+    EditConstituentAttribute:
+      type: object
+      properties:
+        header_caption:
+          type: string
+          description: The headercaption. Read-only in the SOAP API.
+        attribute_category_description:
+          type: string
+          description: The category. Read-only in the SOAP API.
+        attribute_category_id:
+          type: string
+          description: The attributecategoryid. Read-only in the SOAP API.
+        data_type_code:
+          type: integer
+          description: The datatypecode. Read-only in the SOAP API.
+          format: int32
+        string_value:
+          maxLength: 250
+          minLength: 0
+          type: string
+          description: The value.
+        number_value:
+          type: integer
+          description: The value.
+          format: int32
+        money_value:
+          type: number
+          description: The value.
+          format: double
+        date_value:
+          type: string
+          description: 'The value. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        booleanvalue:
+          type: string
+          description: The value. Available values are <i>no</i>, <i>yes</i>
+        code_table_value:
+          type: string
+          description: The value. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/addresstypecode/entries
+        fuzzy_date_value:
+          $ref: '#/components/schemas/FuzzyDate'
+        constituent_id_value:
+          type: string
+          description: The value.
+        hour_minute_value:
+          $ref: '#/components/schemas/HourMinute'
+        memo_value:
+          type: string
+          description: The value.
+        comment:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The comment.
+        constituent_search_list_catalog_id:
+          type: string
+          description: The constituent search list catalog ID. Read-only in the SOAP API.
+        code_table_name:
+          type: string
+          description: The code table name. Read-only in the SOAP API.
+        start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        end_date:
+          type: string
+          description: 'The end date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        currency:
+          type: string
+          description: The currency. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/13612288-b37e-409d-ba52-6ab31637ddd6?parameters=transaction_currency_id,{transaction_currency_id}&parameters=base_currency_id,{base_currency_id}&parameters=current_currency_id,{currencyid}.
+        transaction_currency_id:
+          type: string
+          description: The transaction currency. Read-only in the SOAP API.
+        base_currency_id:
+          type: string
+          description: The base currency. Read-only in the SOAP API.
+      additionalProperties: false
+      description: EditConstituentAttribute
+      example:
+        header_caption: ''
+        attribute_category_description: ''
+        attribute_category_id: ''
+        data_type_code: 0
+        string_value: ''
+        number_value: 0
+        money_value: 0
+        date_value: ''
+        booleanvalue: 'No'
+        code_table_value: ''
+        fuzzy_date_value: ''
+        constituent_id_value: ''
+        hour_minute_value: ''
+        memo_value: ''
+        comment: ''
+        constituent_search_list_catalog_id: ''
+        code_table_name: ''
+        start_date: ''
+        end_date: ''
+        currency: ''
+        transaction_currency_id: ''
+        base_currency_id: ''
+      x-display-name: Constituent Attribute Edit Form 2
+      x-display-id: Constituent Attribute Edit Form 2
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type: integer
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type: string
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: false
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-display-name: Problem details
+      x-display-id: ProblemDetails
+    HourMinute:
+      type: object
+      properties:
+        hour:
+          type: integer
+          description: The hour.
+          format: int32
+        minute:
+          type: integer
+          description: The minute.
+          format: int32
+      description: HourMinute
+      x-display-name: Hour Minute
+      x-display-id: Hour Minute
+    NewConstituentAttributeAttributeCategories:
+      type: object
+      properties:
+        id:
+          type: string
+          description: id
+        data_type_code:
+          type: integer
+          description: datatypecode
+        constituent_search_list_catalog_id:
+          type: string
+          description: constituentsearchlistcatalogid
+        code_table_name:
+          type: string
+          description: codetablename
+      description: NewConstituentAttributeAttributeCategories
+      x-display-name: attribute_categories
+      x-display-id: attribute_categories
+    PostResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The newly created ID.
+      additionalProperties: false
+      description: Defines the shape of a post response object.
+    FuzzyDate:
+      type: object
+      properties:
+        year:
+          type: integer
+          description: The year.
+          format: int32
+        month:
+          type: integer
+          description: The month.
+          format: int32
+        day:
+          type: integer
+          description: The day.
+          format: int32
+      description: FuzzyDate
+      example:
+        year: 2024
+        month: 4
+        day: 13
+      x-display-name: Month Day
+      x-display-id: Month Day
+    ConstituentAttribute:
+      type: object
+      properties:
+        header_caption:
+          type: string
+          description: The headercaption. Read-only in the SOAP API.
+        attribute_category_description:
+          type: string
+          description: The category. Read-only in the SOAP API.
+        attribute_category_id:
+          type: string
+          description: The attributecategoryid. Read-only in the SOAP API.
+        data_type_code:
+          type: integer
+          description: The datatypecode. Read-only in the SOAP API.
+          format: int32
+        string_value:
+          maxLength: 250
+          minLength: 0
+          type: string
+          description: The value.
+        number_value:
+          type: integer
+          description: The value.
+          format: int32
+        money_value:
+          type: number
+          description: The value.
+          format: double
+        date_value:
+          type: string
+          description: 'The value. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        booleanvalue:
+          type: string
+          description: The value. Available values are <i>no</i>, <i>yes</i>
+        code_table_value:
+          type: string
+          description: The value. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/addresstypecode/entries
+        fuzzy_date_value:
+          $ref: '#/components/schemas/FuzzyDate'
+        constituent_id_value:
+          type: string
+          description: The value.
+        hour_minute_value:
+          $ref: '#/components/schemas/HourMinute'
+        memo_value:
+          type: string
+          description: The value.
+        comment:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The comment.
+        constituent_search_list_catalog_id:
+          type: string
+          description: The constituent search list catalog ID. Read-only in the SOAP API.
+        code_table_name:
+          type: string
+          description: The code table name. Read-only in the SOAP API.
+        start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        end_date:
+          type: string
+          description: 'The end date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        currency:
+          type: string
+          description: The currency. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/13612288-b37e-409d-ba52-6ab31637ddd6?parameters=transaction_currency_id,{transaction_currency_id}&parameters=base_currency_id,{base_currency_id}&parameters=current_currency_id,{currencyid}.
+        transaction_currency_id:
+          type: string
+          description: The transaction currency. Read-only in the SOAP API.
+        base_currency_id:
+          type: string
+          description: The base currency. Read-only in the SOAP API.
+      additionalProperties: false
+      description: GetConstituentAttribute
+      x-display-name: Constituent Attribute Edit Form 2
+      x-display-id: Constituent Attribute Edit Form 2
+    NewConstituentAttribute_2:
+      required:
+      - attribute_context_id
+      - attribute_category
+      - record_type_string
+      type: object
+      properties:
+        attribute_context_id:
+          type: string
+          description: The attribute context ID.
+        header_caption:
+          type: string
+          description: The headercaption. Read-only in the SOAP API.
+        attribute_category:
+          type: string
+          description: The category. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/958132a3-762a-4844-b7a1-f3a3098da95a?parameters=record_type,{record_type_string}.
+        string_value:
+          maxLength: 250
+          minLength: 0
+          type: string
+          description: The value.
+        number_value:
+          type: integer
+          description: The value.
+          format: int32
+        money_value:
+          type: number
+          description: The value.
+          format: double
+        date_value:
+          type: string
+          description: 'The value. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        boolean_value:
+          type: string
+          description: The value. Available values are <i>no</i>, <i>yes</i>
+        code_table_value:
+          type: string
+          description: The value. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/addresstypecode/entries
+        fuzzy_date_value:
+          $ref: '#/components/schemas/FuzzyDate'
+        constituent_id_value:
+          type: string
+          description: The value.
+        hour_minute_value:
+          $ref: '#/components/schemas/HourMinute'
+        memo_value:
+          type: string
+          description: The value.
+        attribute_categories:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewConstituentAttributeAttributeCategories'
+          description: Attribute categories.
+        comment:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The comment.
+        start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        end_date:
+          type: string
+          description: 'The end date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        record_type_string:
+          type: string
+          description: The record type. Read-only in the SOAP API.
+        currency:
+          type: string
+          description: The currency. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/13612288-b37e-409d-ba52-6ab31637ddd6?parameters=transaction_currency_id,{transaction_currency_id}&parameters=base_currency_id,{base_currency_id}.
+        transaction_currency_id:
+          type: string
+          description: The transaction currency. Read-only in the SOAP API.
+        base_currency_id:
+          type: string
+          description: The base currency. Read-only in the SOAP API.
+      additionalProperties: false
+      description: CreateConstituentAttribute
+      example:
+        attribute_context_id: ''
+        header_caption: ''
+        attribute_category: ''
+        string_value: ''
+        number_value: 0
+        money_value: 0
+        date_value: ''
+        boolean_value: 'No'
+        code_table_value: ''
+        fuzzy_date_value: ''
+        constituent_id_value: ''
+        hour_minute_value: ''
+        memo_value: ''
+        attribute_categories:
+        - id: ''
+          data_type_code: 0
+          constituent_search_list_catalog_id: ''
+          code_table_name: ''
+        comment: ''
+        start_date: ''
+        end_date: ''
+        record_type_string: ''
+        currency: ''
+        transaction_currency_id: ''
+        base_currency_id: ''
+      x-display-name: Constituent Attribute Add Form
+      x-display-id: Constituent Attribute Add Form
+    EditConstituentAttribute_2:
+      type: object
+      properties:
+        header_caption:
+          type: string
+          description: The headercaption. Read-only in the SOAP API.
+        attribute_category_description:
+          type: string
+          description: The category. Read-only in the SOAP API.
+        attribute_category_id:
+          type: string
+          description: The attributecategoryid. Read-only in the SOAP API.
+        data_type_code:
+          type: integer
+          description: The datatypecode. Read-only in the SOAP API.
+          format: int32
+        string_value:
+          maxLength: 250
+          minLength: 0
+          type: string
+          description: The value.
+        number_value:
+          type: integer
+          description: The value.
+          format: int32
+        money_value:
+          type: number
+          description: The value.
+          format: double
+        date_value:
+          type: string
+          description: 'The value. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        booleanvalue:
+          type: string
+          description: The value. Available values are <i>no</i>, <i>yes</i>
+        code_table_value:
+          type: string
+          description: The value. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/addresstypecode/entries
+        fuzzy_date_value:
+          $ref: '#/components/schemas/FuzzyDate'
+        constituent_id_value:
+          type: string
+          description: The value.
+        hour_minute_value:
+          $ref: '#/components/schemas/HourMinute'
+        memo_value:
+          type: string
+          description: The value.
+        comment:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The comment.
+        constituent_search_list_catalog_id:
+          type: string
+          description: The constituent search list catalog ID. Read-only in the SOAP API.
+        code_table_name:
+          type: string
+          description: The code table name. Read-only in the SOAP API.
+        start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        end_date:
+          type: string
+          description: 'The end date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        currency:
+          type: string
+          description: The currency. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/13612288-b37e-409d-ba52-6ab31637ddd6?parameters=transaction_currency_id,{transaction_currency_id}&parameters=base_currency_id,{base_currency_id}&parameters=current_currency_id,{currencyid}.
+        transaction_currency_id:
+          type: string
+          description: The transaction currency. Read-only in the SOAP API.
+        base_currency_id:
+          type: string
+          description: The base currency. Read-only in the SOAP API.
+      additionalProperties: false
+      description: EditConstituentAttribute
+      example:
+        header_caption: ''
+        attribute_category_description: ''
+        attribute_category_id: ''
+        data_type_code: 0
+        string_value: ''
+        number_value: 0
+        money_value: 0
+        date_value: ''
+        booleanvalue: 'No'
+        code_table_value: ''
+        fuzzy_date_value: ''
+        constituent_id_value: ''
+        hour_minute_value: ''
+        memo_value: ''
+        comment: ''
+        constituent_search_list_catalog_id: ''
+        code_table_name: ''
+        start_date: ''
+        end_date: ''
+        currency: ''
+        transaction_currency_id: ''
+        base_currency_id: ''
+      x-display-name: Constituent Attribute Edit Form 2
+      x-display-id: Constituent Attribute Edit Form 2
+    ConstituentAttribute_2:
+      type: object
+      properties:
+        header_caption:
+          type: string
+          description: The headercaption. Read-only in the SOAP API.
+        attribute_category_description:
+          type: string
+          description: The category. Read-only in the SOAP API.
+        attribute_category_id:
+          type: string
+          description: The attributecategoryid. Read-only in the SOAP API.
+        data_type_code:
+          type: integer
+          description: The datatypecode. Read-only in the SOAP API.
+          format: int32
+        string_value:
+          maxLength: 250
+          minLength: 0
+          type: string
+          description: The value.
+        number_value:
+          type: integer
+          description: The value.
+          format: int32
+        money_value:
+          type: number
+          description: The value.
+          format: double
+        date_value:
+          type: string
+          description: 'The value. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        booleanvalue:
+          type: string
+          description: The value. Available values are <i>no</i>, <i>yes</i>
+        code_table_value:
+          type: string
+          description: The value. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/addresstypecode/entries
+        fuzzy_date_value:
+          $ref: '#/components/schemas/FuzzyDate'
+        constituent_id_value:
+          type: string
+          description: The value.
+        hour_minute_value:
+          $ref: '#/components/schemas/HourMinute'
+        memo_value:
+          type: string
+          description: The value.
+        comment:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The comment.
+        constituent_search_list_catalog_id:
+          type: string
+          description: The constituent search list catalog ID. Read-only in the SOAP API.
+        code_table_name:
+          type: string
+          description: The code table name. Read-only in the SOAP API.
+        start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        end_date:
+          type: string
+          description: 'The end date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        currency:
+          type: string
+          description: The currency. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/13612288-b37e-409d-ba52-6ab31637ddd6?parameters=transaction_currency_id,{transaction_currency_id}&parameters=base_currency_id,{base_currency_id}&parameters=current_currency_id,{currencyid}.
+        transaction_currency_id:
+          type: string
+          description: The transaction currency. Read-only in the SOAP API.
+        base_currency_id:
+          type: string
+          description: The base currency. Read-only in the SOAP API.
+      additionalProperties: false
+      description: GetConstituentAttribute
+      x-display-name: Constituent Attribute Edit Form 2
+      x-display-id: Constituent Attribute Edit Form 2
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+x-refined-from:
+- blackbaud-altru-constituent-api-openapi.yml
+- blackbaud-crm-constituent-api-openapi.yml

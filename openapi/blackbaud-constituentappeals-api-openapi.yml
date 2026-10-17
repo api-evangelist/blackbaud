@@ -1,0 +1,629 @@
+openapi: 3.2.0
+info:
+  title: Blackbaud Constituentappeals API
+  version: '1.0'
+  x-refined-note:
+  - x-apievangelist-provenance differs across the merged source definitions and was not carried
+  description: 'Operations tagged Constituentappeals across 2 of this provider''s published API definitions: blackbaud-altru-constituent-api-openapi.yml, blackbaud-crm-constituent-api-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.sky.blackbaud.com/alt-conmg
+- url: https://api.sky.blackbaud.com/crm-conmg
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Constituentappeals
+paths:
+  /constituentappeals:
+    post:
+      operationId: CreateConstituentAppeal
+      summary: Create a constituent appeal
+      description: Operation for adding a constituent appeal record.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewConstituentAppeal'
+            example:
+              constituent_id: ''
+              appeal_id: ''
+              mkt_segmentation: ''
+              date_sent: ''
+              mkt_package_id: ''
+              source_code: ''
+              comments: ''
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully creates the resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to create the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Constituentappeals
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-conmg
+  /constituentappeals/{constituent_appeal_id}:
+    delete:
+      operationId: DeleteConstituentAppeal
+      summary: Delete a constituent appeal
+      description: This delete method handles the basic deletion rules for a constituent appeal.
+      parameters:
+      - name: constituent_appeal_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The constituent appeal id
+      responses:
+        '200':
+          description: Returned when the operation successfully deletes the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to delete the resource.
+      tags:
+      - Constituentappeals
+    patch:
+      operationId: EditConstituentAppeal
+      summary: Edit a constituent appeal
+      description: Operation for editing a constituent appeal record.
+      parameters:
+      - name: constituent_appeal_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The constituent appeal id.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditConstituentAppeal'
+            example:
+              appeal_id: b72f21ef-f298-4bed-b389-2b5ed2e57aa5
+              mkt_segmentation_id: ''
+              date_sent: '2022-12-20T12:00:00Z'
+              mkt_package_id: 9ed8235c-084c-4da0-990a-d12b682764f8
+              source_code: ''
+              comments: added appeal details.
+              read_only: false
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully edits the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to edit the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Constituentappeals
+    get:
+      operationId: GetConstituentAppeal
+      summary: Get a constituent appeal
+      description: Operation for editing a constituent appeal record.
+      parameters:
+      - name: constituent_appeal_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The constituent appeal id.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the specified resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConstituentAppeal'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to get the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Constituentappeals
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-conmg
+  /constituentappeals/{constituent_id}/appeals:
+    get:
+      operationId: ListConstituentAppeals
+      summary: List constituent appeals
+      description: Returns a list of appeals sent to this constituent.
+      parameters:
+      - name: constituent_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The constituent id.
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Limits the number of records to return.
+      - name: session_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: A unique key provided by user for paging results. The same key will be returned in a successful response.
+      - name: infinity_session
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Values for cookies related to the Infinity load balancer session.
+      - name: more_rows_range_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Key for accessing cached results on subsequent calls to this data list.
+      - name: start_row_index
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Number of rows to skip,get result after these rows.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of result entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConstituentAppealListCollection'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to view the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+      tags:
+      - Constituentappeals
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-conmg
+components:
+  schemas:
+    ConstituentAppeal:
+      required:
+      - appeal_id
+      type: object
+      properties:
+        appeal_id:
+          type: string
+          description: The appeal.
+        mkt_segmentation:
+          type: string
+          description: The mailing. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/664c0aa7-9f88-46f6-ba84-7b412e1131b5?parameters=appeal_id,{appeal_id}.
+        date_sent:
+          type: string
+          description: 'The date sent. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        mkt_package_id:
+          type: string
+          description: The package.
+        source_code:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: The source code.
+        comments:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The comments.
+        read_only:
+          type: boolean
+          description: Indicates whether read only. Read-only in the SOAP API.
+      additionalProperties: false
+      description: GetConstituentAppeal
+      x-display-name: Constituent Appeal Edit Form
+      x-display-id: Constituent Appeal Edit Form
+    ConstituentAppealListSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID.
+        appeal_id:
+          type: string
+          description: The appeal ID.
+        appeal:
+          type: string
+          description: The appeal.
+        description:
+          type: string
+          description: The description.
+        date_sent:
+          type: string
+          description: 'The date sent. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        source_code:
+          type: string
+          description: The source code.
+        finder_number:
+          type: integer
+          description: The finder number.
+          format: int32
+        comments:
+          type: string
+          description: The comments.
+        mkt_segmentation_id:
+          type: string
+          description: The mailing ID.
+        mkt_segmentation_segment_id:
+          type: string
+          description: The segment ID.
+        letter:
+          type: string
+          description: The letter.
+        package:
+          type: string
+          description: The package.
+        mailing:
+          type: string
+          description: The mailing.
+        segment:
+          type: string
+          description: The segment.
+        test_segment:
+          type: string
+          description: The test segment.
+        has_responses:
+          type: boolean
+          description: Indicates whether has responses.
+        appeal_mailing:
+          type: boolean
+          description: Indicates whether appeal mailing.
+        time_frame_text:
+          type: string
+          description: The timeframe.
+        time_frame_group_sort:
+          type: string
+          description: The timeframeorder.
+        site:
+          type: string
+          description: The site.
+        mailing_family_type_code:
+          type: integer
+          description: The mailing family type code.
+          format: int32
+      additionalProperties: false
+      description: ListConstituentAppeals
+      x-display-name: Constituent Appeals List
+      x-display-id: Constituent Appeals List
+    EditConstituentAppeal:
+      type: object
+      properties:
+        appeal_id:
+          type: string
+          description: The appeal.
+        mkt_segmentation:
+          type: string
+          description: The mailing. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/664c0aa7-9f88-46f6-ba84-7b412e1131b5?parameters=appeal_id,{appeal_id}.
+        date_sent:
+          type: string
+          description: 'The date sent. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        mkt_package_id:
+          type: string
+          description: The package.
+        source_code:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: The source code.
+        comments:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The comments.
+        read_only:
+          type: boolean
+          description: Indicates whether read only. Read-only in the SOAP API.
+      additionalProperties: false
+      description: EditConstituentAppeal
+      example:
+        appeal_id: b72f21ef-f298-4bed-b389-2b5ed2e57aa5
+        mkt_segmentation_id: ''
+        date_sent: '2022-12-20T12:00:00Z'
+        mkt_package_id: 9ed8235c-084c-4da0-990a-d12b682764f8
+        source_code: ''
+        comments: added appeal details.
+        read_only: false
+      x-display-name: Constituent Appeal Edit Form
+      x-display-id: Constituent Appeal Edit Form
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type: integer
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type: string
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: false
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-display-name: Problem details
+      x-display-id: ProblemDetails
+    ConstituentAppealListCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items available for retrieval into the collection after applying any request parameters.
+          format: int32
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConstituentAppealListSummary'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+        infinity_session:
+          type: string
+          description: Values for cookies related to the Infinity load balancer session.
+          format: string
+        session_key:
+          type: string
+          description: Session key for paging provided by user in request query parameter.
+          format: string
+        total_available_rows:
+          type: integer
+          description: The number of total rows available.
+          format: int32
+        more_rows_range_key:
+          type: string
+          description: Key for accessing cached results on subsequent calls to this data list.
+          format: string
+        data_no_longer_available:
+          type: boolean
+          description: Indicates data is no longer available in the context of this session.
+          format: boolean
+      additionalProperties: false
+      description: A collection of items. Data lists can contain paginated results.
+    PostResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The newly created ID.
+      additionalProperties: false
+      description: Defines the shape of a post response object.
+    NewConstituentAppeal:
+      required:
+      - constituent_id
+      - appeal_id
+      type: object
+      properties:
+        constituent_id:
+          type: string
+          description: The constituent ID.
+        appeal_id:
+          type: string
+          description: The appeal.
+        mkt_segmentation:
+          type: string
+          description: The mailing. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/664c0aa7-9f88-46f6-ba84-7b412e1131b5?parameters=appeal_id,{appeal_id}.
+        date_sent:
+          type: string
+          description: 'The date sent. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        mkt_package_id:
+          type: string
+          description: The package.
+        source_code:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: The source code.
+        comments:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The comments.
+      additionalProperties: false
+      description: CreateConstituentAppeal
+      example:
+        constituent_id: ''
+        appeal_id: ''
+        mkt_segmentation: ''
+        date_sent: ''
+        mkt_package_id: ''
+        source_code: ''
+        comments: ''
+      x-display-name: Constituent Appeal Add Form
+      x-display-id: Constituent Appeal Add Form
+    ConstituentAppeal_2:
+      required:
+      - appeal_id
+      type: object
+      properties:
+        appeal_id:
+          type: string
+          description: The appeal.
+        mkt_segmentation:
+          type: string
+          description: The mailing. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/664c0aa7-9f88-46f6-ba84-7b412e1131b5?parameters=appeal_id,{appeal_id}.
+        date_sent:
+          type: string
+          description: 'The date sent. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        mkt_package_id:
+          type: string
+          description: The package.
+        source_code:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: The source code.
+        comments:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The comments.
+        read_only:
+          type: boolean
+          description: Indicates whether read only. Read-only in the SOAP API.
+      additionalProperties: false
+      description: GetConstituentAppeal
+      x-display-name: Constituent Appeal Edit Form
+      x-display-id: Constituent Appeal Edit Form
+    EditConstituentAppeal_2:
+      type: object
+      properties:
+        appeal_id:
+          type: string
+          description: The appeal.
+        mkt_segmentation:
+          type: string
+          description: The mailing. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/664c0aa7-9f88-46f6-ba84-7b412e1131b5?parameters=appeal_id,{appeal_id}.
+        date_sent:
+          type: string
+          description: 'The date sent. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        mkt_package_id:
+          type: string
+          description: The package.
+        source_code:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: The source code.
+        comments:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The comments.
+        read_only:
+          type: boolean
+          description: Indicates whether read only. Read-only in the SOAP API.
+      additionalProperties: false
+      description: EditConstituentAppeal
+      example:
+        appeal_id: b72f21ef-f298-4bed-b389-2b5ed2e57aa5
+        mkt_segmentation_id: ''
+        date_sent: '2022-12-20T12:00:00Z'
+        mkt_package_id: 9ed8235c-084c-4da0-990a-d12b682764f8
+        source_code: ''
+        comments: added appeal details.
+        read_only: false
+      x-display-name: Constituent Appeal Edit Form
+      x-display-id: Constituent Appeal Edit Form
+    NewConstituentAppeal_2:
+      required:
+      - constituent_id
+      - appeal_id
+      type: object
+      properties:
+        constituent_id:
+          type: string
+          description: The constituent ID.
+        appeal_id:
+          type: string
+          description: The appeal.
+        mkt_segmentation:
+          type: string
+          description: The mailing. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/664c0aa7-9f88-46f6-ba84-7b412e1131b5?parameters=appeal_id,{appeal_id}.
+        date_sent:
+          type: string
+          description: 'The date sent. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        mkt_package_id:
+          type: string
+          description: The package.
+        source_code:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: The source code.
+        comments:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The comments.
+      additionalProperties: false
+      description: CreateConstituentAppeal
+      example:
+        constituent_id: ''
+        appeal_id: ''
+        mkt_segmentation: ''
+        date_sent: ''
+        mkt_package_id: ''
+        source_code: ''
+        comments: ''
+      x-display-name: Constituent Appeal Add Form
+      x-display-id: Constituent Appeal Add Form
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+x-refined-from:
+- blackbaud-altru-constituent-api-openapi.yml
+- blackbaud-crm-constituent-api-openapi.yml

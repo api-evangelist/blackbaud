@@ -1,0 +1,212 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Event Eventattachmentupload API'
+  description: This API manages event information and related entities such as participant.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/event
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/event
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Eventattachmentupload
+paths:
+  /v1/eventattachmentupload:
+    post:
+      operationId: CreateEventAttachmentUpload
+      summary: Create an event attachment upload
+      description: Creates a document upload location and unique document identifier for physical attachments. Use the returned url to upload a physical file for an attachment, then call the Create an event attachment endpoint. Maximum file size is 100MB.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AttachmentDocumentUpload'
+            example:
+              file_name: venue_photo.jpg
+              upload_thumbnail: true
+        description: An object that represents the document to upload.
+      responses:
+        '200':
+          description: Returned when the operation successfully posts a document. The response body contains the properties of the posted document.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AttachmentFileDefinition'
+              example:
+                file_id: e8ce3494-d961-4eef-9938-acf0a2d9a831
+                file_upload_request:
+                  headers:
+                  - name: x-ms-blob-type
+                    value: BlockBlob
+                  - name: x-ms-version
+                    value: '2015-12-11'
+                  method: PUT
+                  url: https://fil-pusa01.app.blackbaud.net/files/blobs/s21pusa01afilv2blkbsa01/files-private/8d6df4c4-d9ab-45d4-9369-46aa5748a235?sv=2024-11-04&st=2024-11-01T16%3A31%3A22Z&se=2024-11-01T17%3A01%3A27Z&sr=b&sp=rw&sig=vGujNuZ5hnW1I69g3rYVpelNWk0O1Ma3F9ElL3GnvZg%3D
+                thumbnail_id: 5b181d20-9b5f-44ab-8e63-46d14424dfe5
+                thumbnail_upload_request:
+                  headers:
+                  - name: x-ms-blob-type
+                    value: BlockBlob
+                  - name: x-ms-version
+                    value: '2015-12-11'
+                  method: PUT
+                  url: https://fil-pusa01.app.blackbaud.net/files/blobs/s21pusa01afilv2blkbsa01/files-private/08baedaf-b384-4ab2-abc0-3a72a79d3a7a?sv=2024-11-04&st=2024-11-01T16%3A31%3A22Z&se=2024-11-01T17%3A01%3A27Z&sr=b&sp=rw&sig=Pp7Pb0XHTaMu7n4lnPV7bwXBgOBOT2GJExqHoDQEM5s%3D
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1EventattachmentuploadPost400ApplicationJsonResponse'
+              example:
+              - message: The request body is not in the appropriate format.
+                error_name: BadRequest
+                error_code: 400
+                raw_message: The request body is not in the appropriate format.
+        '403':
+          description: Returned when the user does not have the rights to create event attachment uploads.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1EventattachmentuploadPost403ApplicationJsonResponse'
+              example:
+              - message: The user does not have the necessary permissions for this task.
+                error_name: Forbidden
+                error_code: 403
+                raw_message: The user does not have the necessary permissions for this task.
+      tags:
+      - Eventattachmentupload
+components:
+  schemas:
+    ServiceError:
+      type: object
+      properties:
+        message:
+          type:
+          - string
+          - 'null'
+          description: The description of the error.
+        error_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the error.
+        error_code:
+          type: integer
+          description: The number associated with the error.
+          format: int32
+        raw_message:
+          type:
+          - string
+          - 'null'
+          description: The description of the error which can include argument placeholders.
+        error_args:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: The argument data for the placeholders.
+      additionalProperties: false
+      description: Explains the reason for an error.
+    Header:
+      type: object
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name for the header.
+        value:
+          type:
+          - string
+          - 'null'
+          description: The value for the header.
+      additionalProperties: false
+      description: Request header used for uploading the physical attachment.
+    V1EventattachmentuploadPost403ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    AttachmentFileDefinition:
+      type: object
+      properties:
+        file_id:
+          type:
+          - string
+          - 'null'
+          description: The identifier of the file.
+        file_upload_request:
+          $ref: '#/components/schemas/AttachmentFileRequestMetadata'
+        thumbnail_id:
+          type:
+          - string
+          - 'null'
+          description: The identifier of the thumbnail.
+        thumbnail_upload_request:
+          $ref: '#/components/schemas/AttachmentFileRequestMetadata'
+      additionalProperties: false
+      description: Contains metadata for uploading a document and unique document identifier for physical attachments.
+    AttachmentFileRequestMetadata:
+      type: object
+      properties:
+        headers:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Header'
+          description: The headers to supply when making the request.
+        method:
+          type:
+          - string
+          - 'null'
+          description: The http method to use for the request.
+        url:
+          type:
+          - string
+          - 'null'
+          description: The url to use for the request.
+      additionalProperties: false
+      description: 'The AttachmentFileRequestMetadata entity specifies metadata for requests to upload physical
+
+        attachments, including the URL for files, headers and the HTTP method to use.'
+    V1EventattachmentuploadPost400ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    AttachmentDocumentUpload:
+      required:
+      - file_name
+      type: object
+      properties:
+        file_name:
+          minLength: 1
+          type: string
+          description: The file name. For physical attachments only.
+        upload_thumbnail:
+          type:
+          - boolean
+          - 'null'
+          description: Indicates that a thumbnail needs to be created.
+      additionalProperties: false
+      description: 'An object that represents the physical attachment to upload.
+
+        An attachment is information you save to a record, such as images, PDFs, or Word files.'
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

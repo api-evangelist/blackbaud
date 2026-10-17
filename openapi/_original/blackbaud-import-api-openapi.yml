@@ -1,0 +1,1477 @@
+# x-archived-from: blackbaud-import-api-openapi.yml
+# x-archived-on: 2026-10-16
+openapi: 3.0.1
+info:
+  title: 'Blackbaud SKY API: Import'
+  description: Manages import jobs for Raiser's Edge NXT.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/import
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations,
+      examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/import
+paths:
+  /jobs:
+    post:
+      operationId: CreateJob
+      summary: Create a job (PREVIEW)
+      description: 'Creates a new import job. As a best practice, review the field mappings in the response before uploading
+        the import file; uploading the file should be the last step before starting the job.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddJobRequest'
+        description: The import job data.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the created job ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddJobResponse'
+        '400':
+          description: Returned when the request is invalid.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/CreateJob400ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to create jobs.
+    get:
+      operationId: GetJobs
+      summary: Get jobs (PREVIEW)
+      description: 'Gets import jobs for the current environment.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - Pending
+          - Enqueued
+          - Starting
+          - Running
+          - Completed
+          - CompletedWithExceptions
+          - Failed
+        description: 'Filters jobs by status. When omitted, jobs in the `Pending` status are excluded
+
+          from results; to retrieve `Pending` jobs, set this filter to `Pending` explicitly.'
+      - name: continuation_token
+        in: query
+        required: false
+        schema:
+          type: string
+        description: The continuation token to get the next page of results.
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: '100'
+        description: The maximum number of records to return.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the collection of jobs for the environment.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetJobsResult'
+        '400':
+          description: Returned when the request is invalid.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/GetJobs400ResponseTypes'
+              example:
+                type: urn:blackbaud:model-validation-error
+                title: One or more validation errors occurred.
+                status: 400
+                detail: The date field is required.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '403':
+          description: Returned when the user does not have permission to list jobs.
+  /jobs/start:
+    post:
+      operationId: StartJob
+      summary: Start a job (PREVIEW)
+      description: 'Starts a pending import job. Call this after the import file has been uploaded. The uploaded file must
+        not exceed the maximum import file size (50 MB by default). A larger file is rejected with an `import-file-too-large`
+        error whose `values` member carries `max_file_size_bytes` (and `file_size_bytes` when known); the job stays pending,
+        so you can request a new upload request (`GET jobs/{job_id}/uploadrequest`), upload a smaller file, and start the
+        job again.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StartJobRequest'
+            example:
+              job_id: aa52b48c-4784-4a0f-907b-987454826fd6
+        description: The job to start.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains status of the job.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StartJobResponse'
+              example:
+                status: Enqueued
+        '400':
+          description: Returned when the request is invalid, including when the uploaded import file is larger than the maximum
+            import file size.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/StartJob400ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to start the requested job.
+        '404':
+          description: Returned when the requested job was not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: urn:blackbaud:resource-not-found
+                title: The requested resource could not be found.
+                status: 404
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+  /jobs/{job_id}:
+    delete:
+      operationId: DeleteJob
+      summary: Delete a job (PREVIEW)
+      description: 'Deletes an import job.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: job_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The ID of the job to delete.
+      responses:
+        '200':
+          description: Returned when the operation succeeds.
+        '400':
+          description: Returned when the request is invalid.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/DeleteJob400ResponseTypes'
+              example:
+                type: urn:blackbaud:model-validation-error
+                title: One or more validation errors occurred.
+                status: 400
+                detail: The date field is required.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '403':
+          description: Returned when the user does not have permission to delete the requested job.
+    patch:
+      operationId: EditJob
+      summary: Edit a job (PREVIEW)
+      description: 'Edits an import job. Changing `file_name` or `header_row` invalidates any previously uploaded import file;
+        the replacement file must be uploaded using the `file_upload_request` returned in the response, not upload information
+        obtained from an earlier request. `file_upload_request` is only included in the response when the edit changed `file_name`
+        or `header_row`; it is omitted otherwise, and any previously uploaded file remains valid. As a best practice, review
+        the field mappings in the response before uploading the import file; uploading the file should be the last step before
+        starting the job.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: job_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The ID of the job to edit.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditJobRequest'
+        description: The job changes to apply.
+      responses:
+        '200':
+          description: Returned when the operation succeeds.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EditJobResponse'
+        '400':
+          description: Returned when the request is invalid.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/EditJob400ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to edit the requested job.
+        '412':
+          description: Returned when the concurrency check fails. The request should be retried.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: urn:blackbaud:precondition-failed
+                title: The requested action failed on precondition.
+                status: 412
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+    get:
+      operationId: GetJob
+      summary: Get a job (PREVIEW)
+      description: 'Gets an import job.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: job_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The ID of the job to get.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the job.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Job'
+        '400':
+          description: Returned when the request is invalid.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/GetJob400ResponseTypes'
+              example:
+                type: urn:blackbaud:model-validation-error
+                title: One or more validation errors occurred.
+                status: 400
+                detail: The date field is required.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '403':
+          description: Returned when the user does not have permission to get the requested job.
+        '404':
+          description: Returned when the requested job was not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: urn:blackbaud:resource-not-found
+                title: The requested resource could not be found.
+                status: 404
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+  /jobs/{job_id}/exceptionfiledownloadinfo:
+    get:
+      operationId: GetExceptionFileDownloadInfo
+      summary: Get exception file download URI (PREVIEW)
+      description: 'Gets the download URI for an import job''s exception file.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: job_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The ID of the import job.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the exception file download URI.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImportFileDownloadInformation'
+              example:
+                file_download_uri: https://example.com/download/aa52b48c-4784-4a0f-907b-987454826fd6
+        '400':
+          description: Returned when the request is invalid.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/GetExceptionFileDownloadInfo400ResponseTypes'
+              example:
+                type: urn:blackbaud:model-validation-error
+                title: One or more validation errors occurred.
+                status: 400
+                detail: The date field is required.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '403':
+          description: Returned when the user does not have permission to access the requested job.
+        '404':
+          description: Returned when the requested job was not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: urn:blackbaud:resource-not-found
+                title: The requested resource could not be found.
+                status: 404
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+  /jobs/{job_id}/uploadrequest:
+    get:
+      operationId: GetJobUploadRequest
+      summary: Get import file upload request (PREVIEW)
+      description: 'Gets new upload information — the URL, HTTP method, and headers to send — for a pending import job''s
+        import file. Requesting new upload information invalidates any previously uploaded import file; the import file must
+        be uploaded as described in this response, not with upload information obtained from an earlier request.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: job_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The ID of the job to get new upload information for.
+      responses:
+        '200':
+          description: 'Returned when the operation succeeds. The response body describes how to upload the import file: the
+            upload URL, HTTP method, and required headers.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImportFileUploadRequestInformation'
+              example:
+                file_upload_request:
+                  url: https://example.com/upload/aa52b48c-4784-4a0f-907b-987454826fd6
+                  method: PUT
+                  headers:
+                  - name: x-ms-blob-type
+                    value: BlockBlob
+        '400':
+          description: Returned when the request is invalid.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/GetJobUploadUri400ResponseTypes'
+              example:
+                type: urn:blackbaud:model-validation-error
+                title: One or more validation errors occurred.
+                status: 400
+                detail: The date field is required.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '403':
+          description: Returned when the user does not have permission to access the requested job.
+        '404':
+          description: Returned when the requested job was not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: urn:blackbaud:resource-not-found
+                title: The requested resource could not be found.
+                status: 404
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+  /jobs/{job_id}/uploaduri:
+    get:
+      operationId: GetJobUploadUri
+      summary: Get import file upload URI (PREVIEW)
+      description: 'Deprecated: use GetJobUploadRequest, which also returns the HTTP method and headers required for the upload.
+        Gets a new file upload URI for a pending import job. Requesting a new upload URI invalidates any previously uploaded
+        import file; the import file must be uploaded using the URI from this response, not an upload URI obtained from an
+        earlier request.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: job_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The ID of the job to get the refreshed upload URI for.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains new import file upload URI.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImportFileUploadInformation'
+              example:
+                file_upload_uri: https://example.com/upload/aa52b48c-4784-4a0f-907b-987454826fd6
+        '400':
+          description: Returned when the request is invalid.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/GetJobUploadUri400ResponseTypes'
+              example:
+                type: urn:blackbaud:model-validation-error
+                title: One or more validation errors occurred.
+                status: 400
+                detail: The date field is required.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '403':
+          description: Returned when the user does not have permission to access the requested job.
+        '404':
+          description: Returned when the requested job was not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: urn:blackbaud:resource-not-found
+                title: The requested resource could not be found.
+                status: 404
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+  /jsonimportschema:
+    get:
+      operationId: GetJsonImportSchema
+      summary: Get JSON import schema (PREVIEW)
+      description: 'Returns the JSON schema for JSONL import files.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the JSON import schema.
+          content:
+            application/schema+json:
+              schema:
+                $ref: '#/components/schemas/JsonimportschemaGet200ApplicationSchema-jsonResponse'
+        '403':
+          description: Returned when the user does not have permission to access imports.
+components:
+  schemas:
+    AddJobRequest:
+      required:
+      - file_name
+      type: object
+      properties:
+        file_name:
+          minLength: 1
+          type: string
+          description: The name of the file to be imported by this job
+        header_row:
+          type: string
+          description: The header row to use in this import job. Required when importing a CSV file.
+          nullable: true
+        validation_mode:
+          $ref: '#/components/schemas/ValidationMode'
+      additionalProperties: false
+      description: The contract object for adding an import job.
+    AddJobResponse:
+      required:
+      - id
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the created job.
+          nullable: true
+        file_upload_request:
+          $ref: '#/components/schemas/RequestMetadata'
+        field_mappings:
+          type: array
+          items:
+            $ref: '#/components/schemas/FieldMapping'
+          description: The field mappings from the header row to the target fields. Only applies to CSV imports.
+          nullable: true
+        mapping_validation_messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/MappingValidationMessage'
+          description: 'The mapping validation messages from the created job''s header row. Only applies to CSV imports.
+
+            Contains only Blackbaud.Import.Process.Service.Models.MappingValidationMessageType.Warning messages; blocking
+            mapping errors
+
+            are returned as a 400 response rather than on a successful (200) response.'
+          nullable: true
+      additionalProperties: false
+      description: Contract object returned when adding a new job.
+    CreateJob400ProblemDetails:
+      type: object
+      properties:
+        values:
+          $ref: '#/components/schemas/MappingProblemValues'
+        type:
+          type: string
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when
+            dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]).
+            When this member is not present, its value is assumed to be "about:blank".<br/><br/>Available values:<table><tr><th>type</th><th>detail</th></tr><tr><td>urn:blackbaud:model-validation-error</td><td>A
+            model validation rule was violated, such as a missing required field.</td></tr><tr><td>urn:blackbaud:header-row-not-supported-for-jsonl-file</td><td>HeaderRowNotSupportedForJsonlFile</td></tr><tr><td>urn:blackbaud:missing-header-row-for-csv-file</td><td>MissingHeaderRowForCsvFile</td></tr><tr><td>urn:blackbaud:unsupported-import-file-type</td><td>UnsupportedImportFileType</td></tr><tr><td>urn:blackbaud:mapping-has-errors</td><td>The
+            header row produced a mapping with one or more validation errors. The field mappings and validation messages are
+            returned on the response's `values` member.</td></tr><tr><td>urn:blackbaud:at-least-one-field-must-be-mapped</td><td>AtLeastOneFieldMustBeMapped</td></tr><tr><td>urn:blackbaud:property-not-supported</td><td>This
+            operation does not support specification of '{0}'.</td></tr><tr><td>urn:blackbaud:invalid-value</td><td>'{0}'
+            is not a valid value for {1}.</td></tr></table>
+          nullable: true
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence
+            of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231],
+            Section 3.4).
+          nullable: true
+        status:
+          type: integer
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the
+            problem.
+          format: int32
+          nullable: true
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+          nullable: true
+        instance:
+          type: string
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further
+            information if dereferenced.
+          nullable: true
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: {}
+      description: 'The `application/problem+json` response returned from the create-job endpoint when the request
+
+        is invalid. The `type` member identifies which validation failure occurred; refer to the
+
+        documented error types for the specific cause and any additional data.'
+      x-bb-error-types:
+      - urn:blackbaud:model-validation-error
+      - urn:blackbaud:header-row-not-supported-for-jsonl-file
+      - urn:blackbaud:missing-header-row-for-csv-file
+      - urn:blackbaud:unsupported-import-file-type
+      - urn:blackbaud:mapping-has-errors
+      - urn:blackbaud:at-least-one-field-must-be-mapped
+      - urn:blackbaud:property-not-supported
+      - urn:blackbaud:invalid-value
+    DeleteJob400ResponseTypes:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when
+            dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]).
+            When this member is not present, its value is assumed to be "about:blank".<br/><br/>Available values:<table><tr><th>type</th><th>detail</th></tr><tr><td>urn:blackbaud:model-validation-error</td><td>A
+            model validation rule was violated, such as a missing required field.</td></tr><tr><td>urn:blackbaud:invalid-empty-value</td><td>InvalidEmptyValue</td></tr><tr><td>urn:blackbaud:cannot-delete-running-job</td><td>CannotDeleteRunningJob</td></tr></table>
+          nullable: true
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence
+            of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231],
+            Section 3.4).
+          nullable: true
+        status:
+          type: integer
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the
+            problem.
+          format: int32
+          nullable: true
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+          nullable: true
+        instance:
+          type: string
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further
+            information if dereferenced.
+          nullable: true
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: {}
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-bb-error-types:
+      - urn:blackbaud:model-validation-error
+      - urn:blackbaud:invalid-empty-value
+      - urn:blackbaud:cannot-delete-running-job
+    EditJob400ProblemDetails:
+      type: object
+      properties:
+        values:
+          $ref: '#/components/schemas/MappingProblemValues'
+        type:
+          type: string
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when
+            dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]).
+            When this member is not present, its value is assumed to be "about:blank".<br/><br/>Available values:<table><tr><th>type</th><th>detail</th></tr><tr><td>urn:blackbaud:model-validation-error</td><td>A
+            model validation rule was violated, such as a missing required field.</td></tr><tr><td>urn:blackbaud:invalid-empty-value</td><td>InvalidEmptyValue</td></tr><tr><td>urn:blackbaud:header-row-not-supported-for-jsonl-file</td><td>HeaderRowNotSupportedForJsonlFile</td></tr><tr><td>urn:blackbaud:missing-header-row-for-csv-file</td><td>MissingHeaderRowForCsvFile</td></tr><tr><td>urn:blackbaud:unsupported-import-file-type</td><td>UnsupportedImportFileType</td></tr><tr><td>urn:blackbaud:job-not-in-pending-state</td><td>JobNotInPendingState</td></tr><tr><td>urn:blackbaud:mapping-has-errors</td><td>The
+            header row produced a mapping with one or more validation errors. The field mappings and validation messages are
+            returned on the response's `values` member.</td></tr><tr><td>urn:blackbaud:at-least-one-field-must-be-mapped</td><td>AtLeastOneFieldMustBeMapped</td></tr><tr><td>urn:blackbaud:property-not-supported</td><td>This
+            operation does not support specification of '{0}'.</td></tr><tr><td>urn:blackbaud:invalid-value</td><td>'{0}'
+            is not a valid value for {1}.</td></tr></table>
+          nullable: true
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence
+            of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231],
+            Section 3.4).
+          nullable: true
+        status:
+          type: integer
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the
+            problem.
+          format: int32
+          nullable: true
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+          nullable: true
+        instance:
+          type: string
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further
+            information if dereferenced.
+          nullable: true
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: {}
+      description: 'The `application/problem+json` response returned from the edit-job endpoint when the request
+
+        is invalid. The `type` member identifies which validation failure occurred; refer to the
+
+        documented error types for the specific cause and any additional data.'
+      x-bb-error-types:
+      - urn:blackbaud:model-validation-error
+      - urn:blackbaud:invalid-empty-value
+      - urn:blackbaud:header-row-not-supported-for-jsonl-file
+      - urn:blackbaud:missing-header-row-for-csv-file
+      - urn:blackbaud:unsupported-import-file-type
+      - urn:blackbaud:job-not-in-pending-state
+      - urn:blackbaud:mapping-has-errors
+      - urn:blackbaud:at-least-one-field-must-be-mapped
+      - urn:blackbaud:property-not-supported
+      - urn:blackbaud:invalid-value
+    EditJobRequest:
+      type: object
+      properties:
+        file_name:
+          type: string
+          description: 'The name of the file to be imported by this job.
+
+            Changing this value invalidates any previously uploaded import file; the replacement file
+
+            must be uploaded as described by the `file_upload_request` returned in this response,
+
+            not with upload information obtained from an earlier request.'
+          nullable: true
+        header_row:
+          type: string
+          description: 'The header row to use in this import job.
+
+            Required when importing a CSV file.
+
+            Changing this value invalidates any previously uploaded import file; the replacement file
+
+            must be uploaded as described by the `file_upload_request` returned in this response,
+
+            not with upload information obtained from an earlier request.'
+          nullable: true
+        validation_mode:
+          $ref: '#/components/schemas/ValidationMode'
+      additionalProperties: false
+      description: The contract object for editing an import job.
+    EditJobResponse:
+      type: object
+      properties:
+        file_upload_request:
+          $ref: '#/components/schemas/RequestMetadata'
+        field_mappings:
+          type: array
+          items:
+            $ref: '#/components/schemas/FieldMapping'
+          description: The field mappings from the header row to the target fields. Only applies to CSV imports.
+          nullable: true
+        mapping_validation_messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/MappingValidationMessage'
+          description: 'The mapping validation messages from the edited job''s header row. Only applies to CSV imports.
+
+            Contains only Blackbaud.Import.Process.Service.Models.MappingValidationMessageType.Warning messages; blocking
+            mapping errors
+
+            are returned as a 400 response rather than on a successful (200) response.'
+          nullable: true
+      additionalProperties: false
+      description: Contract object returned when editing an existing job.
+    FieldMapping:
+      required:
+      - source_field
+      type: object
+      properties:
+        source_field:
+          type: string
+          description: The name of the source field.
+          nullable: true
+        target_field:
+          type: string
+          description: The name of the target field.
+          nullable: true
+      additionalProperties: false
+      description: Field mapping for an import job.
+    GetExceptionFileDownloadInfo400ResponseTypes:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when
+            dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]).
+            When this member is not present, its value is assumed to be "about:blank".<br/><br/>Available values:<table><tr><th>type</th><th>detail</th></tr><tr><td>urn:blackbaud:model-validation-error</td><td>A
+            model validation rule was violated, such as a missing required field.</td></tr><tr><td>urn:blackbaud:invalid-empty-value</td><td>InvalidEmptyValue</td></tr><tr><td>urn:blackbaud:job-not-completed-or-failed</td><td>JobNotCompletedOrFailed</td></tr></table>
+          nullable: true
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence
+            of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231],
+            Section 3.4).
+          nullable: true
+        status:
+          type: integer
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the
+            problem.
+          format: int32
+          nullable: true
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+          nullable: true
+        instance:
+          type: string
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further
+            information if dereferenced.
+          nullable: true
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: {}
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-bb-error-types:
+      - urn:blackbaud:model-validation-error
+      - urn:blackbaud:invalid-empty-value
+      - urn:blackbaud:job-not-completed-or-failed
+    GetJob400ResponseTypes:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when
+            dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]).
+            When this member is not present, its value is assumed to be "about:blank".<br/><br/>Available values:<table><tr><th>type</th><th>detail</th></tr><tr><td>urn:blackbaud:model-validation-error</td><td>A
+            model validation rule was violated, such as a missing required field.</td></tr><tr><td>urn:blackbaud:invalid-empty-value</td><td>InvalidEmptyValue</td></tr></table>
+          nullable: true
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence
+            of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231],
+            Section 3.4).
+          nullable: true
+        status:
+          type: integer
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the
+            problem.
+          format: int32
+          nullable: true
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+          nullable: true
+        instance:
+          type: string
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further
+            information if dereferenced.
+          nullable: true
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: {}
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-bb-error-types:
+      - urn:blackbaud:model-validation-error
+      - urn:blackbaud:invalid-empty-value
+    GetJobUploadUri400ResponseTypes:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when
+            dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]).
+            When this member is not present, its value is assumed to be "about:blank".<br/><br/>Available values:<table><tr><th>type</th><th>detail</th></tr><tr><td>urn:blackbaud:model-validation-error</td><td>A
+            model validation rule was violated, such as a missing required field.</td></tr><tr><td>urn:blackbaud:invalid-empty-value</td><td>InvalidEmptyValue</td></tr><tr><td>urn:blackbaud:job-not-in-pending-state</td><td>JobNotInPendingState</td></tr></table>
+          nullable: true
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence
+            of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231],
+            Section 3.4).
+          nullable: true
+        status:
+          type: integer
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the
+            problem.
+          format: int32
+          nullable: true
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+          nullable: true
+        instance:
+          type: string
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further
+            information if dereferenced.
+          nullable: true
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: {}
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-bb-error-types:
+      - urn:blackbaud:model-validation-error
+      - urn:blackbaud:invalid-empty-value
+      - urn:blackbaud:job-not-in-pending-state
+    GetJobs400ResponseTypes:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when
+            dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]).
+            When this member is not present, its value is assumed to be "about:blank".<br/><br/>Available values:<table><tr><th>type</th><th>detail</th></tr><tr><td>urn:blackbaud:model-validation-error</td><td>A
+            model validation rule was violated, such as a missing required field.</td></tr></table>
+          nullable: true
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence
+            of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231],
+            Section 3.4).
+          nullable: true
+        status:
+          type: integer
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the
+            problem.
+          format: int32
+          nullable: true
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+          nullable: true
+        instance:
+          type: string
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further
+            information if dereferenced.
+          nullable: true
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: {}
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-bb-error-types:
+      - urn:blackbaud:model-validation-error
+    GetJobsResult:
+      required:
+      - count
+      - jobs
+      - limit
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The total number of jobs matching the filter.
+          format: int32
+        limit:
+          type: integer
+          description: The limit on the get jobs request.
+          format: int32
+        jobs:
+          type: array
+          items:
+            $ref: '#/components/schemas/Job'
+          description: A collection of job summaries.
+          nullable: true
+        continuation_token:
+          type: string
+          description: 'A value will be returned here if not all possible results have been returned.
+
+            To get the next page of results, make another request with this token and the same request criteria.'
+          nullable: true
+      additionalProperties: false
+      description: A collection of job summaries.
+    ImportFileDownloadInformation:
+      required:
+      - file_download_uri
+      type: object
+      properties:
+        file_download_uri:
+          type: string
+          description: The file download URI for the job.
+          nullable: true
+      additionalProperties: false
+      description: Contract object returned when getting a file download URI for an import job.
+    ImportFileSizeProblemValues:
+      type: object
+      properties:
+        max_file_size_bytes:
+          type: integer
+          description: The largest import file, in bytes, that a job can be started with.
+          format: int64
+        file_size_bytes:
+          type: integer
+          description: 'The size, in bytes, of the rejected import file. Omitted when the file service rejected the file
+
+            and its size is unknown.'
+          format: int64
+          nullable: true
+      additionalProperties: false
+      description: 'The details carried on the `values` member of an `import-file-too-large` 400 response
+
+        (see Blackbaud.Import.Process.Service.Models.StartJob400ProblemDetails).'
+    ImportFileUploadInformation:
+      required:
+      - file_upload_uri
+      type: object
+      properties:
+        file_upload_uri:
+          type: string
+          description: 'The file upload URI for the job. The import file must be uploaded using this URI, not an
+
+            upload URI obtained from an earlier request; requesting a new upload URI invalidates any
+
+            previously uploaded import file.'
+          nullable: true
+      additionalProperties: false
+      description: Contract object returned getting a new file upload URI for an import job.
+    ImportFileUploadRequestInformation:
+      required:
+      - file_upload_request
+      type: object
+      properties:
+        file_upload_request:
+          $ref: '#/components/schemas/RequestMetadata'
+      additionalProperties: false
+      description: Contract object returned when getting new file upload information for an import job.
+    Job:
+      required:
+      - date_added
+      - file_name
+      - id
+      - status
+      - user_id
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the job.
+          nullable: true
+        sequence:
+          type: integer
+          description: The sequence number of the job.
+          format: int32
+          nullable: true
+        file_name:
+          type: string
+          description: The file name of the job.
+          nullable: true
+        status:
+          $ref: '#/components/schemas/JobStatus'
+        validation_mode:
+          $ref: '#/components/schemas/ValidationMode'
+        rows_processed:
+          type: integer
+          description: The number of rows in the job's file.
+          format: int32
+          nullable: true
+        rows_committed:
+          type: integer
+          description: The number of rows committed by this job to date.
+          format: int32
+          nullable: true
+        rows_rejected:
+          type: integer
+          description: The number of invalid rows for the job.
+          format: int32
+          nullable: true
+        exception_count:
+          type: integer
+          description: The number of unaddressed exceptions for the job.
+          format: int32
+          nullable: true
+        gift_batch_ids:
+          type: array
+          items:
+            type: string
+          description: 'The IDs of the gift batches created during this job, in creation order.
+
+            Null for jobs that did not create gift batches.'
+          nullable: true
+        output_queries:
+          type: array
+          items:
+            $ref: '#/components/schemas/OutputQueryResult'
+          description: 'The output queries created during this job.
+
+            Null for jobs that did not create output queries.'
+          nullable: true
+        run_duration:
+          type: integer
+          description: 'The duration of the job''s run in seconds, computed as the difference of end_date and start_date.
+
+            Null if the job has not finished running yet or if start_date or end_date is missing.'
+          format: int32
+          nullable: true
+          readOnly: true
+        start_date:
+          type: string
+          description: Date and time when the job first started running.
+          format: date-time
+          nullable: true
+        end_date:
+          type: string
+          description: Date and time when the job ended.
+          format: date-time
+          nullable: true
+        failure_message:
+          type: string
+          description: The message associated with a failed job.
+          nullable: true
+        failure_code:
+          $ref: '#/components/schemas/JobFailureCode'
+        failure_sub_code:
+          type: string
+          description: 'Reserved for a finer-grained reason within Blackbaud.Import.Process.Service.Models.Job.FailureCode.
+            Always null today; populated in
+
+            a future enhancement so that adding sub-reasons does not require a contract change.'
+          nullable: true
+        exception_file_from_job_id:
+          type: string
+          description: 'If the import is from an exception file, this will be the ID of the import job that produced the exception
+            file.
+
+            This is the immediate parent in the re-import chain, not the chain''s root.'
+          nullable: true
+        exception_file_from_job_sequence:
+          type: integer
+          description: 'The sequence number of the import job identified by Blackbaud.Import.Process.Service.Models.Job.ExceptionFileFromJobId,
+            letting consumers
+
+            correlate an exception-file re-import with the import that produced the file without a second call.
+
+            Null when this job did not import an exception file, or when the referenced job could not be
+
+            retrieved (for example it had been purged).'
+          format: int32
+          nullable: true
+        user_id:
+          type: string
+          description: The ID of the user who created the job and owns it.
+          nullable: true
+        user_name:
+          type: string
+          description: 'The display name of the user who created the job, or null when the name is unknown
+
+            (for example, a service-created job or a user whose name claims were unavailable).'
+          nullable: true
+        date_added:
+          type: string
+          description: Date and time when the job was created.
+          format: date-time
+        field_mappings:
+          type: array
+          items:
+            $ref: '#/components/schemas/FieldMapping'
+          description: The field mappings from the header row to the target fields. Only applies to CSV imports.
+          nullable: true
+        mapping_validation_messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/MappingValidationMessage'
+          description: 'The mapping validation messages from the job''s header row. Only applies to CSV imports.
+
+            Contains only Blackbaud.Import.Process.Service.Models.MappingValidationMessageType.Warning messages; blocking
+            mapping errors
+
+            prevent a job from being created or edited, so a persisted job never carries mapping errors.'
+          nullable: true
+      additionalProperties: false
+      description: Summary information for import jobs.
+    JobFailureCode:
+      title: JobFailureCode
+      enum:
+      - InternalError
+      - Canceled
+      - InvalidExceptionFile
+      - InvalidImportFile
+      - MappingError
+      - FileAccessError
+      - ImportConfigurationInvalid
+      - ExceptionFileAlreadyReimported
+      - NoRowsFound
+      type: string
+      description: <p>Members:</p><ul><li><i>InternalError</i></li><li><i>Canceled</i></li><li><i>InvalidExceptionFile</i></li><li><i>InvalidImportFile</i></li><li><i>MappingError</i></li><li><i>FileAccessError</i></li><li><i>ImportConfigurationInvalid</i></li><li><i>ExceptionFileAlreadyReimported</i></li><li><i>NoRowsFound</i></li></ul>
+    JobStatus:
+      title: JobStatus
+      enum:
+      - Pending
+      - Enqueued
+      - Starting
+      - Running
+      - Completed
+      - CompletedWithExceptions
+      - Failed
+      type: string
+      description: The status of an import job.<p>Members:</p><ul><li><i>Pending</i></li><li><i>Enqueued</i></li><li><i>Starting</i></li><li><i>Running</i></li><li><i>Completed</i></li><li><i>CompletedWithExceptions</i></li><li><i>Failed</i></li></ul>
+    MappingProblemValues:
+      type: object
+      properties:
+        field_mappings:
+          type: array
+          items:
+            $ref: '#/components/schemas/FieldMapping'
+          description: The field mappings derived from the header row. Only applies to CSV imports.
+          nullable: true
+        mapping_validation_messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/MappingValidationMessage'
+          description: 'The mapping validation messages produced for the header row, including the blocking errors that
+
+            caused the request to fail. Only applies to CSV imports.'
+          nullable: true
+      additionalProperties: false
+      description: 'The mapping details carried on the `values` member of a `mapping-has-errors` 400 response
+
+        (see Blackbaud.Import.Process.Service.Models.CreateJob400ProblemDetails and Blackbaud.Import.Process.Service.Models.EditJob400ProblemDetails).
+
+        Mirrors the mapping data returned on the success (200) response so that consumers receive the same
+
+        information regardless of whether the mapping was valid.'
+    MappingValidationMessage:
+      required:
+      - message
+      type: object
+      properties:
+        message:
+          type: string
+          description: The validation message.
+          nullable: true
+        message_type:
+          $ref: '#/components/schemas/MappingValidationMessageType'
+        file_fields:
+          type: array
+          items:
+            type: string
+          description: 'The file fields associated with the validation error message. A message can pertain to more than
+
+            one column when several columns together violate a rule.'
+          nullable: true
+        record_mapping:
+          type: string
+          description: The record mapping associated with the validation error message.
+          nullable: true
+        target_field:
+          type: string
+          description: The target field associated with the validation error message.
+          nullable: true
+      additionalProperties: false
+      description: Mapping validation error message.
+    MappingValidationMessageType:
+      title: MappingValidationMessageType
+      enum:
+      - Error
+      - Warning
+      type: string
+      description: "The type of a mapping validation message.<p>Members:</p><ul><li><i>Error</i> - A blocking message. Its\
+        \ presence prevents the import from proceeding.</li><li><i>Warning</i> - A non-blocking message. It alerts the user\
+        \ to a potentially unintended outcome but does not\n            prevent the import from proceeding.</li></ul>"
+    OutputQueryOperation:
+      title: OutputQueryOperation
+      enum:
+      - Added
+      - Updated
+      type: string
+      description: The record operation covered by an output query created during an import job.<p>Members:</p><ul><li><i>Added</i>
+        - The output query contains the records added during the job.</li><li><i>Updated</i> - The output query contains the
+        records updated during the job.</li></ul>
+    OutputQueryResult:
+      required:
+      - operation
+      type: object
+      properties:
+        type:
+          type: integer
+          description: The legacy query type of the output query (for example, Constituent 18, Action 38).
+          format: int32
+        operation:
+          $ref: '#/components/schemas/OutputQueryOperation'
+        query_id:
+          type: integer
+          description: The ID of the output query.
+          format: int32
+        record_count:
+          type: integer
+          description: The number of records in the output query.
+          format: int32
+        incomplete:
+          type: boolean
+          description: 'Whether records that were imported are missing from this output query, because some record IDs
+
+            could not be added to it.'
+      additionalProperties: false
+      description: Information about an output query created during an import job.
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when
+            dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]).
+            When this member is not present, its value is assumed to be "about:blank".
+          nullable: true
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence
+            of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231],
+            Section 3.4).
+          nullable: true
+        status:
+          type: integer
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the
+            problem.
+          format: int32
+          nullable: true
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+          nullable: true
+        instance:
+          type: string
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further
+            information if dereferenced.
+          nullable: true
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: {}
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+    RequestHeader:
+      required:
+      - name
+      - value
+      type: object
+      properties:
+        name:
+          type: string
+          description: The header name.
+          nullable: true
+        value:
+          type: string
+          description: The header value.
+          nullable: true
+      additionalProperties: false
+      description: An HTTP header that must be sent with a request.
+    RequestMetadata:
+      required:
+      - headers
+      - method
+      - url
+      type: object
+      properties:
+        url:
+          type: string
+          description: The URL to upload the import file to.
+          nullable: true
+        method:
+          type: string
+          description: The HTTP method to use for the upload.
+          nullable: true
+        headers:
+          type: array
+          items:
+            $ref: '#/components/schemas/RequestHeader'
+          description: The headers that must be sent with the upload request.
+          nullable: true
+      additionalProperties: false
+      description: 'Describes the HTTP request to use to upload an import file: the URL, the HTTP method, and the headers
+
+        that must be sent. Callers should use exactly this method and send every listed header; they may add a
+
+        `Content-Type` header describing the file.'
+    StartJob400ProblemDetails:
+      type: object
+      properties:
+        values:
+          $ref: '#/components/schemas/ImportFileSizeProblemValues'
+        type:
+          type: string
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when
+            dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]).
+            When this member is not present, its value is assumed to be "about:blank".<br/><br/>Available values:<table><tr><th>type</th><th>detail</th></tr><tr><td>urn:blackbaud:model-validation-error</td><td>A
+            model validation rule was violated, such as a missing required field.</td></tr><tr><td>urn:blackbaud:invalid-empty-value</td><td>InvalidEmptyValue</td></tr><tr><td>urn:blackbaud:job-not-in-pending-state</td><td>JobNotInPendingState</td></tr><tr><td>urn:blackbaud:missing-import-job-file</td><td>MissingImportJobFile</td></tr><tr><td>urn:blackbaud:import-file-too-large</td><td>The
+            import file exceeds the maximum size of {0} MB.</td></tr></table>
+          nullable: true
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence
+            of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231],
+            Section 3.4).
+          nullable: true
+        status:
+          type: integer
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the
+            problem.
+          format: int32
+          nullable: true
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+          nullable: true
+        instance:
+          type: string
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further
+            information if dereferenced.
+          nullable: true
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: {}
+      description: 'The `application/problem+json` response returned from the start-job endpoint when the request
+
+        is invalid. The `type` member identifies which validation failure occurred; refer to the
+
+        documented error types for the specific cause and any additional data.'
+      x-bb-error-types:
+      - urn:blackbaud:model-validation-error
+      - urn:blackbaud:invalid-empty-value
+      - urn:blackbaud:job-not-in-pending-state
+      - urn:blackbaud:missing-import-job-file
+      - urn:blackbaud:import-file-too-large
+    StartJobRequest:
+      required:
+      - job_id
+      type: object
+      properties:
+        job_id:
+          minLength: 1
+          type: string
+          description: The ID of the job to start.
+      additionalProperties: false
+      description: The contract object for starting an import job.
+    StartJobResponse:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/JobStatus'
+      additionalProperties: false
+      description: Contract object returned when starting a job.
+    ValidationMode:
+      title: ValidationMode
+      enum:
+      - WriteAllValidRecords
+      - PreValidateFileRows
+      - ValidateOnly
+      type: string
+      description: "Controls how the import engine validates and writes the records in an import job.<p>Members:</p><ul><li><i>WriteAllValidRecords</i>\
+        \ - Writes every valid record without first checking the validity of the other records on\n            the same file\
+        \ row.</li><li><i>PreValidateFileRows</i> - Runs a validation pass over all the records on a file row before then\
+        \ writing records\n            for file rows where all the records are valid, greatly increasing the likelihood (but\n\
+        \            not guaranteeing) that all the records on that row will be written.</li><li><i>ValidateOnly</i> - Validates\
+        \ the file without writing any records, producing an exception file with all of the\n            original file's data\
+        \ along with any found exceptions.</li></ul>"
+    JsonimportschemaGet200ApplicationSchema-jsonResponse:
+      x-apim-inline: true
+    JobsGetRequest:
+      type: string
+      format: string
+      x-apim-inline: true
+    JobsGetRequest-1:
+      maximum: 10000
+      minimum: 1
+      type: integer
+      format: int32
+      default: 100
+      x-apim-inline: true
+    Jobs-job_id-DeleteRequest:
+      type: string
+      x-apim-inline: true
+    Jobs-job_id-PatchRequest:
+      type: string
+      x-apim-inline: true
+    Jobs-job_id-GetRequest:
+      type: string
+      x-apim-inline: true
+    Jobs-job_id-UploaduriGetRequest:
+      type: string
+      x-apim-inline: true
+    Jobs-job_id-UploadrequestGetRequest:
+      type: string
+      x-apim-inline: true
+    Jobs-job_id-ExceptionfiledownloadinfoGetRequest:
+      type: string
+      x-apim-inline: true
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []

@@ -1,0 +1,1418 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: School Content API'
+  description: This API is used to provide access to school information such as users, academics, admissions, athletics, content, lists, and general school info.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/school
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/school
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Content
+paths:
+  /v1/content/announcements:
+    get:
+      operationId: V1ContentAnnouncementsGet
+      summary: Content announcements
+      description: 'Returns a list of announcements for the user.
+
+
+        Requires at least one of the following roles in the Education Management System:
+
+
+        Parent
+
+
+        Faculty
+
+
+        Student'
+      parameters:
+      - name: category_type
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Provide the offering type for the categories filter. Defaults to PageContent. Allowed values: PageContent, Academics, Activity, Advisory, Athletics, Dorm, Community'
+      - name: categoryIds
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Provide a comma-delimited set of IDs.
+      - name: school_year
+        in: query
+        required: false
+        schema:
+          type: string
+        description: The ID or label of the school year. Defaults to current school year.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentAnnouncementCollection'
+              example:
+                count: 1
+                value:
+                - id: 1
+                  headline: Amazing Marconi to Visit
+                  author: John Smith
+                  description: Come see the Amazing Marconi’s act.
+                  categories:
+                  - id: 1
+                    name: History II – 1
+                    type: Academics
+                    primary: true
+                    publish_date: '2024-10-31T12:00:00Z'
+                    expire_date: '2024-10-31T12:00:00Z'
+      tags:
+      - Content
+  /v1/content/announcements/categories:
+    get:
+      operationId: V1ContentAnnouncementsCategoriesGet
+      summary: Content announcement categories
+      description: 'Returns a list of announcement categories for the user.
+
+
+        Requires at least one of the following roles in the Education Management System:
+
+
+        Parent
+
+
+        Faculty
+
+
+        Student'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentAnnouncementCategoryCollection'
+              example:
+                count: 1
+                value:
+                - category_id: 123
+                  category_name: All School Events
+      tags:
+      - Content
+  /v1/content/events:
+    get:
+      operationId: V1ContentEventsGet
+      summary: Content events
+      description: 'Returns a list of events for the user.
+
+
+        Requires at least one of the following roles in the Education Management System:
+
+
+        Parent
+
+
+        Faculty
+
+
+        Student'
+      parameters:
+      - name: category_type
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Provide the offering type for the categories filter. Defaults to PageContent. Allowed values: PageContent, Academics, Activity, Advisory, Athletics, Dorm, Community'
+      - name: categories
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Provide a comma-delimited set of IDs.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentEventCollection'
+              example:
+                count: 1
+                value:
+                - id: 1
+                  title: Welcome back party
+                  start_date: '2024-07-31T12:00:00Z'
+                  end_date: '2022-08-31T12:00:00Z'
+                  start_time: '2026-10-06'
+                  end_time: '2026-10-06'
+                  recurring: true
+                  recurring_event:
+                    id: 1
+                    start_time: '2026-10-06'
+                    end_time: '2026-10-06'
+                    recurrence:
+                      frequency: Weekly
+                      recur_every: 2
+                      recur_weekdays: false
+                      days:
+                        sunday: false
+                        monday: false
+                        tuesday: false
+                        wednesday: false
+                        thursday: false
+                        friday: false
+                        saturday: false
+                      month: July
+                      day_reference: Week
+                      specific_day: 4
+                      week: Fourth
+                      weekday: Thursday
+                    range:
+                      start_date: '2022-08-30'
+                      end_by: Count
+                      end_count: 10
+                      end_date: '2022-08-30'
+                  details: The Fall fun and games night
+                  description: A descriptive event.
+                  location:
+                    type: Existing
+                    room_id: 1
+                    name: Newspot
+                  contact:
+                    name: John Smith
+                    email: jsmith@examply.com
+                  registration:
+                    id: 1
+                    description: Open house
+                  categories:
+                  - id: 1
+                    name: History II – 1
+                    type: Academics
+                    primary: true
+                  created: '2024-07-31T12:00:00Z'
+                  created_by: 1
+                  modified: '2024-07-31T12:00:00Z'
+                  modified_by: 1
+      tags:
+      - Content
+  /v1/content/events/categories:
+    get:
+      operationId: V1ContentEventsCategoriesGet
+      summary: Content Events Categories
+      description: 'Returns a collection of Content Events Categories.
+
+
+        Requires at least one of the following roles in the Education Management System:
+
+
+        Parent
+
+
+        Faculty
+
+
+        Student'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventsCategoryCollection'
+              example:
+                count: 1
+                value:
+                - category_id: 123
+                  category_name: All School Events
+                  association_id: 0
+                  association_name: Page Content
+                  rss_ind: true
+                  rss_feed: https://school.myschoolapp.com/podium/feed/rss.rss?A1S2D3F4
+      tags:
+      - Content
+  /v1/content/news/categories:
+    get:
+      operationId: V1ContentNewsCategoriesGet
+      summary: Content News Categories
+      description: 'Returns a collection of Content News Categories.
+
+
+        Requires at least one of the following roles in the Education Management System:
+
+
+        Parent
+
+
+        Faculty
+
+
+        Student'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NewsCategoryCollection'
+              example:
+                count: 2
+                value:
+                - category_id: 1
+                  category_name: Featured News
+                  association_id: 1
+                  association_name: Push Page
+                  rss_ind: true
+                  rss_feed: www.notarealurl.com
+                - category_id: 2
+                  category_name: Important News
+                  association_id: 2
+                  association_name: Academics
+                  rss_ind: false
+                  rss_feed: ''
+      tags:
+      - Content
+  /v1/content/news/items:
+    get:
+      operationId: V1ContentNewsItemsGet
+      summary: Content News Items
+      description: 'Returns a collection of Content News Items.
+
+
+        Requires at least one of the following roles in the Education Management System:
+
+
+        Parent
+
+
+        Faculty
+
+
+        Student'
+      parameters:
+      - name: category_type
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Provide the offering type for the categories filter. Defaults to PageContent. Allowed values: PageContent, Academics, Activity, Advisory, Athletics, Dorm, Community'
+      - name: categories
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Provide a comma-delimited set of IDs.
+      - name: school_year
+        in: query
+        required: false
+        schema:
+          type: string
+        description: The ID or label of the school year. Defaults to current school year.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NewsItemCollection'
+              example:
+                count: 2
+                value:
+                - id: 1
+                  headline: News Story
+                  author: Gus I. Dunno
+                  short_description: Brief
+                  long_description: Loquacity
+                  featured: true
+                  media_item:
+                  - id: 1
+                    type: Photo
+                    title: Mighty Ducks
+                    caption: Photo
+                    is_cover: false
+                    url: www.notarealurl.com
+                  - id: 2
+                    type: Photo
+                    title: Climbing K2
+                    caption: Another
+                    is_cover: false
+                    url: www.notarealurl.com
+                  categories:
+                  - id: 2
+                    name: Featured News
+                    type: Push Page
+                    primary: true
+                    publish_date: '2023-12-12T12:00:00Z'
+                  - id: 3
+                    name: Important News
+                    type: Academics
+                    primary: false
+                    publish_date: '2024-01-01T12:00:00Z'
+                  send_notification: true
+                  show_brief_description: true
+                  show_long_description: true
+                  created_by: 123
+                  created_date: '2023-02-12T12:00:00Z'
+                  modified_by: 234
+                  modified_date: '2023-02-12T12:00:00Z'
+                - id: 2
+                  headline: Another Story
+                  author: Wile E. Coyote
+                  short_description: Brief
+                  long_description: Oratory
+                  featured: false
+                  media_item:
+                  - id: 3
+                    type: Photo
+                    title: Bruins at play
+                    caption: PhotoSet2
+                    is_cover: false
+                    url: www.notarealurl.com
+                  - id: 4
+                    type: Photo
+                    title: Everest at night
+                    caption: AnotherPhoto
+                    is_cover: false
+                    url: www.notarealurl.com
+                  categories:
+                  - id: 4
+                    name: Parents News
+                    type: Dorms
+                    primary: false
+                    publish_date: '2024-01-25T12:00:00Z'
+                  - id: 2
+                    name: Featured News
+                    type: Push Page
+                    primary: false
+                    publish_date: '2024-03-01T12:00:00Z'
+                    expire_date: '2024-06-30T12:00:00Z'
+                  send_notification: false
+                  show_brief_description: true
+                  show_long_description: true
+                  created_by: 234
+                  created_date: '2024-03-08T12:00:00Z'
+                  modified_by: 345
+                  modified_date: '2023-02-12T12:00:00Z'
+      tags:
+      - Content
+  /v1/content/resources:
+    get:
+      operationId: V1ContentResourcesGet
+      summary: Content Resource Board
+      description: 'Returns a collection of Resources.
+
+
+        Requires at least one of the following roles in the Education Management System:
+
+
+        Parent
+
+
+        Faculty
+
+
+        Student'
+      parameters:
+      - name: persona
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: 'Provide a code for which persona to return. Allowed values: 1 for parent, 2 for student, 3 for faculty.'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceCollection'
+              example:
+                count: 2
+                value:
+                - id: 1
+                  title: Example Resource
+                  description: Example resource for a user to see
+                  photo: https://example.com/photo.jpg
+                  type: Detail Page
+                  url: https://schoolurl.myschoolapp.com/app/faculty#resourceboard/1
+                - id: 2
+                  title: Example Link
+                  description: Example resource for a user to see, this is a link to an external site
+                  photo: https://example.com/photo.jpg
+                  type: Direct Link
+                  url: https://google.com/sso-example
+      tags:
+      - Content
+components:
+  schemas:
+    ContentAnnouncementCategoryCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items in the collection
+          format: int32
+          readOnly: true
+        next_link:
+          type:
+          - string
+          - 'null'
+          description: For paginated responses, the URI for the next page of results
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ContentAnnouncementCategory'
+          description: The set of items included in the response. This may be a subset of the items in the collection
+      additionalProperties: false
+      description: A Collection
+    EventContact:
+      type: object
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the event contact
+        email:
+          type:
+          - string
+          - 'null'
+          description: The email of the event contact
+      additionalProperties: false
+      description: An object for event contact information
+    MediaItem:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the photo, video or audio item
+          format: int32
+        type:
+          type:
+          - string
+          - 'null'
+          description: The type of media.
+        title:
+          type:
+          - string
+          - 'null'
+          description: The media item title.
+        caption:
+          type:
+          - string
+          - 'null'
+          description: The media item caption.
+        tags:
+          type:
+          - string
+          - 'null'
+          description: The tags of the media item.
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the media item.
+        is_cover:
+          type: boolean
+          description: True if this item is the cover.
+        url:
+          type:
+          - string
+          - 'null'
+          description: The URL of the media item.
+        thumbnail_url:
+          type:
+          - string
+          - 'null'
+          description: The URL of the media item thumbnail.
+      additionalProperties: false
+      description: Media Model
+    NewsItem:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the news item
+          format: int32
+        headline:
+          type:
+          - string
+          - 'null'
+          description: The news item title
+        author:
+          type:
+          - string
+          - 'null'
+          description: The author os the news item
+        short_description:
+          type:
+          - string
+          - 'null'
+          description: The short description field for the new item
+        long_description:
+          type:
+          - string
+          - 'null'
+          description: The long description field for the new item
+        featured:
+          type:
+          - boolean
+          - 'null'
+          description: Returns true if the news item is featured
+        media_item:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/MediaItem'
+          description: An object with media information
+        categories:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ContentCategory'
+          description: The list of categories the news item is published to
+        send_notification:
+          type:
+          - boolean
+          - 'null'
+          description: True if news item is set to send a notification
+        show_brief_description:
+          type:
+          - boolean
+          - 'null'
+          description: True if primary category is set to show brief description
+        show_long_description:
+          type:
+          - boolean
+          - 'null'
+          description: True if primary category is set to show long description
+        created_by:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the user that created the news item
+          format: int32
+        created_date:
+          type:
+          - string
+          - 'null'
+          description: The date the news item was created.
+          format: date-time
+        modified_by:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the user that last modified the news item
+          format: int32
+        modified_date:
+          type:
+          - string
+          - 'null'
+          description: The date of the news item was last modified
+          format: date-time
+        public_url:
+          type:
+          - string
+          - 'null'
+          description: The public URL of the news item
+      additionalProperties: false
+      description: NewsItem Model
+    RecurringEvent:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the recurring event template
+          format: int32
+        start_time:
+          type:
+          - string
+          - 'null'
+          description: The start time of the event
+        end_time:
+          type:
+          - string
+          - 'null'
+          description: The end time of the event
+        recurrence:
+          $ref: '#/components/schemas/RecurringEventRecurrence'
+        range:
+          $ref: '#/components/schemas/RecurringEventRange'
+      additionalProperties: false
+      description: An object with recurring event information
+    NewsCategory:
+      type: object
+      properties:
+        category_id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the category
+          format: int32
+        category_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the category
+        allow_user_management:
+          type:
+          - boolean
+          - 'null'
+          description: True if user allowed to manage notification setting
+        show_brief_description:
+          type:
+          - boolean
+          - 'null'
+          description: True if category is set to show brief description
+        show_long_description:
+          type:
+          - boolean
+          - 'null'
+          description: True if category is set to show long description
+        association_id:
+          type:
+          - integer
+          - 'null'
+          description: ''
+          format: int32
+        association_name:
+          type:
+          - string
+          - 'null'
+          description: ''
+        rss_ind:
+          type:
+          - boolean
+          - 'null'
+          description: True if RSS feed is enabled
+        allow_comments:
+          type:
+          - string
+          - 'null'
+          description: Whether the category allows comments
+        comment_approval:
+          type:
+          - string
+          - 'null'
+          description: The type of comment approval required.
+        rss_feed:
+          type:
+          - string
+          - 'null'
+          description: The RSS feed for the category
+        is_public:
+          type:
+          - boolean
+          - 'null'
+          description: True if category is public
+        access_roles:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/RoleModel'
+          description: An array of roles with access to the category
+        image_settings:
+          $ref: '#/components/schemas/ImageSettings'
+      additionalProperties: false
+      description: NewsCategory Model
+    BaseRole:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the role
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the role
+      additionalProperties: false
+      description: An object with base role information
+    ContentEvent:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the event
+          format: int32
+        title:
+          type:
+          - string
+          - 'null'
+          description: The event title
+        start_date:
+          type:
+          - string
+          - 'null'
+          description: The start date of the event
+          format: date-time
+        end_date:
+          type:
+          - string
+          - 'null'
+          description: The end date of the event
+          format: date-time
+        start_time:
+          type:
+          - string
+          - 'null'
+          description: The start time of the event
+          format: date-span
+        end_time:
+          type:
+          - string
+          - 'null'
+          description: The end time of the event
+          format: date-span
+        recurring:
+          type: boolean
+          description: True if this is an instance of a recurring event
+        recurring_event:
+          $ref: '#/components/schemas/RecurringEvent'
+        details:
+          type:
+          - string
+          - 'null'
+          description: The details of the event
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the event
+        location:
+          $ref: '#/components/schemas/EventLocation'
+        contact:
+          $ref: '#/components/schemas/EventContact'
+        registration:
+          $ref: '#/components/schemas/EventRegistration'
+        categories:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ContentCategory'
+          description: An object with category information
+        created:
+          type:
+          - string
+          - 'null'
+          description: The date and time the event was created
+          format: date-time
+        created_by:
+          type:
+          - integer
+          - 'null'
+          description: The id of the user that created the event
+          format: int32
+        modified:
+          type:
+          - string
+          - 'null'
+          description: The date and time the event was last modified
+          format: date-time
+        modified_by:
+          type:
+          - integer
+          - 'null'
+          description: The id of the user that modified the event
+          format: int32
+      additionalProperties: false
+      description: An array of ContentEvent objects
+    EventsCategoryCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items in the collection
+          format: int32
+          readOnly: true
+        next_link:
+          type:
+          - string
+          - 'null'
+          description: For paginated responses, the URI for the next page of results
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/EventsCategory'
+          description: The set of items included in the response. This may be a subset of the items in the collection
+      additionalProperties: false
+      description: A Collection
+    RecurringEventDays:
+      type: object
+      properties:
+        sunday:
+          type:
+          - boolean
+          - 'null'
+          description: True if the event recurs weekly on Sundays.
+        monday:
+          type:
+          - boolean
+          - 'null'
+          description: True if the event recurs weekly on Mondays.
+        tuesday:
+          type:
+          - boolean
+          - 'null'
+          description: True if the event recurs weekly on Tuesdays.
+        wednesday:
+          type:
+          - boolean
+          - 'null'
+          description: True if the event recurs weekly on Wednesdays.
+        thursday:
+          type:
+          - boolean
+          - 'null'
+          description: True if the event recurs weekly on Thursdays.
+        friday:
+          type:
+          - boolean
+          - 'null'
+          description: True if the event recurs weekly on Fridays.
+        saturday:
+          type:
+          - boolean
+          - 'null'
+          description: True if the event recurs weekly on Saturdays.
+      additionalProperties: false
+      description: An object with weekly recurring day information. Only used when frequency is weekly.
+    ContentAnnouncementCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items in the collection
+          format: int32
+          readOnly: true
+        next_link:
+          type:
+          - string
+          - 'null'
+          description: For paginated responses, the URI for the next page of results
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ContentAnnouncement'
+          description: The set of items included in the response. This may be a subset of the items in the collection
+      additionalProperties: false
+      description: A Collection
+    ImageDimension:
+      type: object
+      properties:
+        include:
+          type:
+          - boolean
+          - 'null'
+          description: True if image type allowed
+        max_width:
+          type:
+          - integer
+          - 'null'
+          description: The maximum width allowed for the image type
+          format: int32
+        max_height:
+          type:
+          - integer
+          - 'null'
+          description: The maximum height allowed for the image type
+          format: int32
+      additionalProperties: false
+      description: An object with image restriction information
+    ResourceCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items in the collection
+          format: int32
+          readOnly: true
+        next_link:
+          type:
+          - string
+          - 'null'
+          description: For paginated responses, the URI for the next page of results
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Resource'
+          description: The set of items included in the response. This may be a subset of the items in the collection
+      additionalProperties: false
+      description: A Collection
+    ContentEventCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items in the collection
+          format: int32
+          readOnly: true
+        next_link:
+          type:
+          - string
+          - 'null'
+          description: For paginated responses, the URI for the next page of results
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ContentEvent'
+          description: The set of items included in the response. This may be a subset of the items in the collection
+      additionalProperties: false
+      description: A Collection
+    ContentAnnouncement:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the announcement
+          format: int32
+        headline:
+          type:
+          - string
+          - 'null'
+          description: The headline of the announcement
+        author:
+          type:
+          - string
+          - 'null'
+          description: The author of the announcement
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the announcement
+        send_notification:
+          type:
+          - boolean
+          - 'null'
+          description: True if announcement item is set to send a notification
+        created_date:
+          type:
+          - string
+          - 'null'
+          description: The date the announcement what created
+          format: date-time
+        modified_date:
+          type:
+          - string
+          - 'null'
+          description: The date of the announcement item was last modified
+          format: date-time
+        created_by:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the user that created the announcement item
+          format: int32
+        modified_by:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the user that last modified the announcement item
+          format: int32
+        categories:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ContentCategory'
+          description: An array of announcement categories
+      additionalProperties: false
+      description: ''
+    ContentAnnouncementCategory:
+      type: object
+      properties:
+        category_id:
+          type: integer
+          description: The ID for the category
+          format: int32
+        category_name:
+          type:
+          - string
+          - 'null'
+          description: The name for the category
+        allow_user_management:
+          type:
+          - boolean
+          - 'null'
+          description: True if user allowed to manage notification setting
+        rss_enabled:
+          type:
+          - boolean
+          - 'null'
+          description: True if RSS feed enabled
+        rss_feed:
+          type:
+          - string
+          - 'null'
+          description: The RSS feed for the category
+        is_public:
+          type:
+          - boolean
+          - 'null'
+          description: True if category is public
+        access_roles:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/RoleModel'
+          description: An array of roles with access to the category
+      additionalProperties: false
+      description: Content Announcement Category
+    EventRegistration:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the table value
+          format: int32
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the table value
+      additionalProperties: false
+      description: An object for event registration information
+    ImageSettings:
+      type: object
+      properties:
+        max_allowed:
+          type:
+          - integer
+          - 'null'
+          description: The maximum number of images allowed
+          format: int32
+        allow_title:
+          type:
+          - boolean
+          - 'null'
+          description: True if category allows titles on images
+        allow_captions:
+          type:
+          - boolean
+          - 'null'
+          description: True if category allows image captions
+        allow_descriptions:
+          type:
+          - boolean
+          - 'null'
+          description: True if category allows image descriptions
+        standard:
+          $ref: '#/components/schemas/ImageDimension'
+        zoom:
+          $ref: '#/components/schemas/ImageDimension'
+        thumbnail:
+          $ref: '#/components/schemas/ImageDimension'
+      additionalProperties: false
+      description: An object with image settings information
+    EventsCategory:
+      type: object
+      properties:
+        category_id:
+          type: integer
+          description: The ID for the category
+          format: int32
+        category_name:
+          type:
+          - string
+          - 'null'
+          description: The name for the category
+        association_id:
+          type: integer
+          description: The ID for the association
+          format: int32
+        association_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the association
+        rss_ind:
+          type: boolean
+          description: RSS indicator
+        rss_feed:
+          type:
+          - string
+          - 'null'
+          description: RSS feed URL
+      additionalProperties: false
+      description: Events Category Model
+    ContentCategory:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the category, section or group
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the category, section or group
+        type:
+          type:
+          - string
+          - 'null'
+          description: The type of category, section or group
+        primary:
+          type:
+          - boolean
+          - 'null'
+          description: Set to true if this is the primary category, section or group
+        publish_date:
+          type:
+          - string
+          - 'null'
+          description: The publish date
+          format: date-time
+        expire_date:
+          type:
+          - string
+          - 'null'
+          description: The date of expiration
+          format: date-time
+      additionalProperties: false
+      description: Category Model
+    NewsItemCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items in the collection
+          format: int32
+          readOnly: true
+        next_link:
+          type:
+          - string
+          - 'null'
+          description: For paginated responses, the URI for the next page of results
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/NewsItem'
+          description: The set of items included in the response. This may be a subset of the items in the collection
+      additionalProperties: false
+      description: A Collection
+    Resource:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ''
+          format: int32
+        title:
+          type:
+          - string
+          - 'null'
+          description: ''
+        description:
+          type:
+          - string
+          - 'null'
+          description: ''
+        photo:
+          type:
+          - string
+          - 'null'
+          description: ''
+        type:
+          type:
+          - string
+          - 'null'
+          description: ''
+        url:
+          type:
+          - string
+          - 'null'
+          description: ''
+        category:
+          type:
+          - string
+          - 'null'
+          description: ''
+      additionalProperties: false
+      description: ''
+    RoleModel:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the role
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the role
+        base_role:
+          $ref: '#/components/schemas/BaseRole'
+      additionalProperties: false
+      description: An object with role information
+    RecurringEventRange:
+      type: object
+      properties:
+        start_date:
+          type:
+          - string
+          - 'null'
+          description: The start date of the event recurrence date range
+        end_by:
+          type:
+          - string
+          - 'null'
+          description: The manner used to end recurrence, either by count or by date.
+        end_count:
+          type:
+          - integer
+          - 'null'
+          description: The number of times the event will recur
+          format: int32
+        end_date:
+          type:
+          - string
+          - 'null'
+          description: The end date of the event recurrence date range
+      additionalProperties: false
+      description: An object with date range information. Required if recurring is true.
+    NewsCategoryCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items in the collection
+          format: int32
+          readOnly: true
+        next_link:
+          type:
+          - string
+          - 'null'
+          description: For paginated responses, the URI for the next page of results
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/NewsCategory'
+          description: The set of items included in the response. This may be a subset of the items in the collection
+      additionalProperties: false
+      description: A Collection
+    EventLocation:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: 'Whether the location is an existing room or the name of a new location. Allowed values: Existing, New'
+        room_id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the location. Must be in a building that allows events.
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the location
+      additionalProperties: false
+      description: An object for event location information
+    RecurringEventRecurrence:
+      type: object
+      properties:
+        frequency:
+          type:
+          - string
+          - 'null'
+          description: The frequency of event recurrence
+        recur_every:
+          type:
+          - integer
+          - 'null'
+          description: The number of days/weeks/months between recurring events. This is ignored if recur_weekdays is true. Excluded when recur_weekdays is true or frequency is yearly
+          format: int32
+        recur_weekdays:
+          type:
+          - boolean
+          - 'null'
+          description: True if event recurs every weekday. Only used when frequency is daily.
+        days:
+          $ref: '#/components/schemas/RecurringEventDays'
+        month:
+          type:
+          - string
+          - 'null'
+          description: The month of the year the event recurs. Only used when frequency is yearly.
+        day_reference:
+          type:
+          - string
+          - 'null'
+          description: Whether the event recurs on a specific day of the month or a given week and weekday. Only used when frequency is monthly or yearly.
+        specific_day:
+          type:
+          - integer
+          - 'null'
+          description: The specific day of the month the event recurs. Only used when day_reference is “specific day”.
+          format: int32
+        week:
+          type:
+          - string
+          - 'null'
+          description: 'The week of the month the event recurs. Only used when day_reference is “week/weekday”. Allowed values: First, Second, Third, Fourth, Last.'
+        weekday:
+          type:
+          - string
+          - 'null'
+          description: 'The day of the week the event recurs. Only used when day_reference is “week/weekday”. Allowed values: Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday.'
+      additionalProperties: false
+      description: An object with recurrence information. Required if recurring is true.
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

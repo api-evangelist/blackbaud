@@ -1,0 +1,590 @@
+openapi: 3.2.0
+info:
+  title: Blackbaud Volunteerassignments API
+  version: '1.0'
+  x-refined-note:
+  - x-apievangelist-provenance differs across the merged source definitions and was not carried
+  description: 'Operations tagged Volunteerassignments across 2 of this provider''s published API definitions: blackbaud-altru-volunteer-api-openapi.yml, blackbaud-crm-volunteer-api-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.sky.blackbaud.com/alt-volmg
+- url: https://api.sky.blackbaud.com/crm-volmg
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Volunteerassignments
+paths:
+  /volunteerassignments:
+    post:
+      operationId: CreateAssignment
+      summary: Create an assignment
+      description: Assign job occurrences to a volunteer on a specific day.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewAssignment'
+            example:
+              volunteer_id: ''
+              name: ''
+              date: ''
+              assignments:
+              - id: ''
+                job_occurrence_id: ''
+                start_time: ''
+                end_time: ''
+                match: ''
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully creates the resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to create the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Volunteerassignments
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-volmg
+  /volunteerassignments/search:
+    get:
+      operationId: SearchAssignments
+      summary: Search for assignments
+      description: This search is for finding constituents who are volunteers but not assigned to a job on a date.
+      parameters:
+      - name: constituent_type
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: constituent type
+      - name: keyname
+        in: query
+        required: false
+        schema:
+          type: string
+        description: last/org name
+      - name: firstname
+        in: query
+        required: false
+        schema:
+          type: string
+        description: first name
+      - name: lookup_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: lookup id
+      - name: addressblock
+        in: query
+        required: false
+        schema:
+          type: string
+        description: address
+      - name: city
+        in: query
+        required: false
+        schema:
+          type: string
+        description: city
+      - name: state
+        in: query
+        required: false
+        schema:
+          type: string
+        description: state SimpleDataListID=7fa91401-596c-4f7c-936d-6e41683121d7.
+      - name: post_code
+        in: query
+        required: false
+        schema:
+          type: string
+        description: zip/postal code
+      - name: country
+        in: query
+        required: false
+        schema:
+          type: string
+        description: country SimpleDataListID=c9649672-353d-42e8-8c25-4d34bbabfbba.
+      - name: includeinactive
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: include inactive
+      - name: includedeceased
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: include deceased
+      - name: onlyprimaryaddress
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: only search primary addresses
+      - name: exactmatchonly
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: match all criteria exactly
+      - name: onlyprospects
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: onlyprospects
+      - name: onlyfundraisers
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: onlyfundraisers
+      - name: onlystaff
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: onlystaff
+      - name: onlyvolunteers
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: onlyvolunteers
+      - name: excludejoboccurrenceid
+        in: query
+        required: false
+        schema:
+          type: string
+        description: excludejoboccurrenceid
+      - name: excludejobassignmentdate
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Format - date (as full-date in RFC3339). excludejobassignmentdate
+      - name: ssn
+        in: query
+        required: false
+        schema:
+          type: string
+        description: ssn
+      - name: checknickname
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: check nickname
+      - name: checkaliases
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: check aliases
+      - name: checkmergedconstituents
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: check merged constituents
+      - name: minimumdate
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Format - date (as full-date in RFC3339). minimum date
+      - name: includeindividuals
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: individuals
+      - name: includeorganizations
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: organizations
+      - name: includegroups
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: groups/households
+      - name: checkalternatelookupids
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: check alternate lookup ids
+      - name: fuzzysearchonname
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: include fuzzy search on name
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Limits the number of records to return.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of result entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssignmentSearchCollection'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to view the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+      tags:
+      - Volunteerassignments
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-volmg
+  /volunteerassignments/{volunteer_assignment_id}:
+    delete:
+      operationId: DeleteAssignment
+      summary: Delete an assignment
+      description: Remove a volunteer from a job.
+      parameters:
+      - name: volunteer_assignment_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The volunteer assignment id
+      responses:
+        '200':
+          description: Returned when the operation successfully deletes the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to delete the resource.
+      tags:
+      - Volunteerassignments
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-volmg
+  /volunteerassignments/{volunteer_id}/list:
+    get:
+      operationId: ListAssignments
+      summary: List assignments
+      description: This operation returns all assignments for a volunteer on a specified day.
+      parameters:
+      - name: volunteer_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The volunteer id.
+      - name: day
+        in: query
+        required: true
+        schema:
+          type: string
+        description: Format - date (as full-date in RFC3339). day
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Limits the number of records to return.
+      - name: session_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: A unique key provided by user for paging results. The same key will be returned in a successful response.
+      - name: infinity_session
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Values for cookies related to the Infinity load balancer session.
+      - name: more_rows_range_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Key for accessing cached results on subsequent calls to this data list.
+      - name: start_row_index
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Number of rows to skip,get result after these rows.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of result entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssignmentListCollection'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to view the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+      tags:
+      - Volunteerassignments
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-volmg
+components:
+  schemas:
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type: integer
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type: string
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: false
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-display-name: Problem details
+      x-display-id: ProblemDetails
+    AssignmentListCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items available for retrieval into the collection after applying any request parameters.
+          format: int32
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/AssignmentListSummary'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+        infinity_session:
+          type: string
+          description: Values for cookies related to the Infinity load balancer session.
+          format: string
+        session_key:
+          type: string
+          description: Session key for paging provided by user in request query parameter.
+          format: string
+        total_available_rows:
+          type: integer
+          description: The number of total rows available.
+          format: int32
+        more_rows_range_key:
+          type: string
+          description: Key for accessing cached results on subsequent calls to this data list.
+          format: string
+        data_no_longer_available:
+          type: boolean
+          description: Indicates data is no longer available in the context of this session.
+          format: boolean
+      additionalProperties: false
+      description: A collection of items. Data lists can contain paginated results.
+    NewAssignmentAssignments:
+      required:
+      - job_occurrence_id
+      type: object
+      properties:
+        id:
+          type: string
+          description: id
+        job_occurrence_id:
+          type: string
+          description: job occurrence
+        start_time:
+          $ref: '#/components/schemas/HourMinute'
+        end_time:
+          $ref: '#/components/schemas/HourMinute'
+        match:
+          type: string
+          description: match
+      description: NewAssignmentAssignments
+      x-display-name: assignments
+      x-display-id: assignments
+    HourMinute:
+      type: object
+      properties:
+        hour:
+          type: integer
+          description: The hour.
+          format: int32
+        minute:
+          type: integer
+          description: The minute.
+          format: int32
+      description: HourMinute
+      x-display-name: Hour Minute
+      x-display-id: Hour Minute
+    AssignmentListSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID.
+        description:
+          type: string
+          description: The description.
+        start_time:
+          $ref: '#/components/schemas/HourMinute'
+        end_time:
+          $ref: '#/components/schemas/HourMinute'
+      additionalProperties: false
+      description: ListAssignments
+      x-display-name: Volunteer Assignment Day List
+      x-display-id: Volunteer Assignment Day List
+    AssignmentSearchCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items available for retrieval into the collection after applying any request parameters.
+          format: int32
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/AssignmentSearchSummary'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+      additionalProperties: false
+      description: A collection of items. Data lists can contain paginated results.
+    PostResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The newly created ID.
+      additionalProperties: false
+      description: Defines the shape of a post response object.
+    AssignmentSearchSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID.
+        name:
+          type: string
+          description: The name.
+        address:
+          type: string
+          description: The address.
+        city:
+          type: string
+          description: The city.
+        state:
+          type: string
+          description: The state.
+        post_code:
+          type: string
+          description: The zip/postal code.
+        lookup_id:
+          type: string
+          description: The lookup ID.
+        constituent_type:
+          type: string
+          description: The constituent type.
+        sort_constituent_name:
+          type: string
+          description: The name.
+      additionalProperties: false
+      description: SearchAssignments
+      x-display-name: Volunteer Exclude Job Search
+      x-display-id: Volunteer Exclude Job Search
+    NewAssignment:
+      required:
+      - volunteer_id
+      - date
+      type: object
+      properties:
+        volunteer_id:
+          type: string
+          description: The volunteer ID.
+        name:
+          maxLength: 700
+          minLength: 0
+          type: string
+          description: The volunteer. Read-only in the SOAP API.
+        date:
+          type: string
+          description: 'The date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        assignments:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewAssignmentAssignments'
+          description: Assignments.
+      additionalProperties: false
+      description: CreateAssignment
+      example:
+        volunteer_id: ''
+        name: ''
+        date: ''
+        assignments:
+        - id: ''
+          job_occurrence_id: ''
+          start_time: ''
+          end_time: ''
+          match: ''
+      x-display-name: VolunteerAssignmentsDayView Add Data Form
+      x-display-id: VolunteerAssignmentsDayView Add Data Form
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+x-refined-from:
+- blackbaud-altru-volunteer-api-openapi.yml
+- blackbaud-crm-volunteer-api-openapi.yml

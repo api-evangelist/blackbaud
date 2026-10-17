@@ -1,0 +1,3348 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: CSRconnect Employees API'
+  description: This API is for YourCause CSRconnect from Blackbaud.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/csr-connect
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/csr-connect
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Employees
+paths:
+  /v1/employees:
+    post:
+      operationId: GetEmployeeDetailsByEmployeeId
+      summary: Get employee details for special character IDs (PREVIEW)
+      description: 'Returns details for an employee by employee ID. Use this endpoint if the employee ID contains special characters.
+
+
+        This endpoint returns a high level profile for the employee in CSRconnect. Passing the employee ID as listed on the HR file will return a basic user profile. The affiliateEmployee ID returned will be used in other endpoints when fetching participation related data.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmployeeDetailsRequest'
+            example:
+              employee_id: john+doe@example.com
+        description: The request containing the employee ID
+      responses:
+        '401':
+          description: Unauthorized
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: Authentication credentials were missing or invalid.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '400':
+          description: Returned when the specified request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request was invalid or missing required parameters.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of employee details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmployeeDetailsResponse'
+              example:
+                affiliate_employee_id: 12345
+                first_name: Jane
+                last_name: Doe
+                email: jane.doe@example.com
+                zip_code: '02101'
+                city: Boston
+                state: MA
+                country_code: US
+        '403':
+          description: Returned when the user does not have rights to view employee details.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: You do not have permission to access this resource.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '404':
+          description: Returned when the specified employee is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Not Found
+                status: 404
+                detail: The requested resource could not be found.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+      tags:
+      - Employees
+  /v1/employees/affiliateemployeeid/{affiliate_employee_id}:
+    get:
+      operationId: GetEmployeeDetailsById
+      summary: Get employee details by affiliate employee ID (PREVIEW)
+      description: 'Returns details of an employee using the employee''s affiliate employee ID.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: affiliate_employee_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The employee ID from the affiliate’s system.
+      responses:
+        '401':
+          description: Unauthorized
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: Authentication credentials were missing or invalid.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '400':
+          description: Returned when the specified request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request was invalid or missing required parameters.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of employee details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmployeeDetailsByIdResponse'
+              example:
+                employee_id: EMP-98765
+                first_name: John
+                last_name: Smith
+                email: john.smith@example.com
+                zip_code: '94105'
+                city: San Francisco
+                state: CA
+                country_code: US
+        '403':
+          description: Returned when the user does not have rights to view employee details.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: You do not have permission to access this resource.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '404':
+          description: Returned when the specified employee is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Not Found
+                status: 404
+                detail: The requested resource could not be found.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+      tags:
+      - Employees
+  /v1/employees/{affiliate_employee_id}/buckets/give:
+    get:
+      operationId: GetEmployeeGiveCharityBucket
+      summary: Get an employee’s Give charity bucket (PREVIEW)
+      description: 'Returns the Give charity bucket for an employee. Employees may have different sets of charities eligible for donations. You can pass this ID to the charity search endpoint to find eligible organizations for that employee''s donations.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: affiliate_employee_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The employee ID from the affiliate’s system.
+      responses:
+        '401':
+          description: Unauthorized
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: Authentication credentials were missing or invalid.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '400':
+          description: Returned when the specified request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request was invalid or missing required parameters.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '200':
+          description: Returned when the operation succeeds. The response contains the charity bucket.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CharityBucketResponse'
+              example:
+                bucket_id: a3f1e2d4-bc09-4e5f-9a87-1234567890ab
+        '403':
+          description: Returned when the user does not have rights to view the charity bucket.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: You do not have permission to access this resource.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '404':
+          description: Returned when the charity bucket is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Not Found
+                status: 404
+                detail: The requested resource could not be found.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+      tags:
+      - Employees
+  /v1/employees/{affiliate_employee_id}/buckets/volunteer:
+    get:
+      operationId: GetEmployeeVolunteerCharityBucket
+      summary: Get an employee’s Volunteer charity bucket (PREVIEW)
+      description: 'Returns the Volunteer charity bucket for an employee. Employees may have different sets of charities eligible for volunteering. You can pass this ID to the charity search endpoint to find eligible organizations for that employee’s volunteering activity.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: affiliate_employee_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The employee ID from the affiliate’s system.
+      responses:
+        '401':
+          description: Unauthorized
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: Authentication credentials were missing or invalid.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '400':
+          description: Returned when the specified request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request was invalid or missing required parameters.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '200':
+          description: Returned when the operation succeeds. The response contains the charity bucket.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CharityBucketResponse'
+              example:
+                bucket_id: a3f1e2d4-bc09-4e5f-9a87-1234567890ab
+        '403':
+          description: Returned when the user does not have rights to view the charity bucket.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: You do not have permission to access this resource.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '404':
+          description: Returned when the charity bucket is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Not Found
+                status: 404
+                detail: The requested resource could not be found.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+      tags:
+      - Employees
+  /v1/employees/{affiliate_employee_id}/customquestions/{response_id}:
+    get:
+      operationId: GetEmployeeCustomQuestions
+      summary: Get an employee's custom question responses (PREVIEW)
+      description: 'Returns an employee’s responses to a custom question set.
+
+
+        When an employee signs up for an event or records individual volunteer activity, they may be prompted to answer a set of questions related to their participation. This endpoint returns an array of the questions and responses for a given employee and responseId.
+
+
+        The responseId can be obtained from the participation or RIA entry payload via the customQuestionSetResponseId property. See the Volunteer section in this reference for details on retrieving participation and RIA entry information.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: affiliate_employee_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The employee ID from the affiliate’s system
+      - name: response_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The ID of the Custom Question set response
+      responses:
+        '401':
+          description: Unauthorized
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: Authentication credentials were missing or invalid.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '400':
+          description: Returned when the specified request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request was invalid or missing required parameters.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '200':
+          description: Returned when the operation succeeds. The response body contains the questions and the employee's response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomQuestionsResponse'
+              example:
+                questions:
+                - question: What is your t-shirt size?
+                  answer: Large
+                - question: Do you have any dietary restrictions?
+                  answer: Vegetarian
+        '403':
+          description: Returned when the user does not have rights to view custom question responses.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: You do not have permission to access this resource.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '404':
+          description: Returned when the specified custom question response is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Not Found
+                status: 404
+                detail: The requested resource could not be found.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+      tags:
+      - Employees
+  /v1/employees/{affiliate_employee_id}/givecampaigns/{campaign_id}:
+    get:
+      operationId: GetEmployeeGiveCampaignMetricsById
+      summary: Get giving campaign participation for an employee (PREVIEW)
+      description: 'Returns an employee’s participation data for a specific giving campaign
+
+
+        You can use the v1/metrics/give/campaigns endpoint defined in the metrics reference to pull all available campaign identifiers.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: affiliate_employee_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The employee ID from the affiliate’s system
+      - name: campaign_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The ID of the giving campaign
+      responses:
+        '401':
+          description: Unauthorized
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: Authentication credentials were missing or invalid.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '400':
+          description: Returned when the specified request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request was invalid or missing required parameters.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of donations
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmployeeGiveCampaignMetricsResponse'
+              example:
+                campaign_name: Annual Giving Campaign 2025
+                campaign_start_date_utc: '2025-01-01T12:00:00Z'
+                campaign_end_date_utc: '2025-12-31T11:59:59Z'
+                data:
+                - donation_type: OneTime
+                  total_amount: 250
+                  total_transactions: 2
+                - donation_type: Recurring
+                  total_amount: 600
+                  total_transactions: 12
+        '403':
+          description: Returned when the user does not have rights to view giving campaign participation metrics.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: You do not have permission to access this resource.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '404':
+          description: Returned when the specified employee or giving campaign is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Not Found
+                status: 404
+                detail: The requested resource could not be found.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+      tags:
+      - Employees
+  /v1/employees/{affiliate_employee_id}/groups:
+    get:
+      operationId: ListEmployeeGroups
+      summary: Get all groups by employee (PREVIEW)
+      description: 'Returns all of the groups for a single employee. Passing the affiliate_employee_id returns a paginated set of results containing the information for each group the employee is associated with. limit is the number of results per page, capped at 25.
+
+
+        In the response, group_admin and group_member identify the employee''s level of association with the group. creator_affiliate_employee_id exposes the employee that created the group page.
+
+
+        show_membership indicates a user decision to have their name shown as a member on the group page for other group members to see.
+
+
+        has_pending_membership indicates that the user requested to join the group but the request has not been accepted by the group admin.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: affiliate_employee_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The employee ID from the affiliate's system.
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: '1'
+        description: The number of the result's page to return.
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: '10'
+        description: The maximum number of groups to include per page. Maximum value is 25.
+      responses:
+        '400':
+          description: Returned when the specified request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request was invalid or missing required parameters.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '401':
+          description: Unauthorized
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: Authentication credentials were missing or invalid.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '403':
+          description: Forbidden
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: You do not have permission to access this resource.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '404':
+          description: Returned when the specified employee is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Not Found
+                status: 404
+                detail: The requested resource could not be found.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '200':
+          description: Returned when the operation succeeds. The response body contains a paginated collection of groups.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmployeeGroupsResponse'
+              example:
+                page: 1
+                limit: 10
+                page_count: 1
+                total_count: 2
+                groups:
+                - group_id: 101
+                  creator_affiliate_employee_id: 5001
+                  name: Atlanta Volunteers
+                  description: A group for Atlanta-based volunteers.
+                  image_url: https://example.com/images/group.png
+                  address1: 285 Peachtree Center Ave NE
+                  city: Atlanta
+                  state: GA
+                  postal_code: '30303'
+                  latitude: 33.759
+                  longitude: -84.387
+                  open: true
+                  tags: volunteer,community
+                  date_added: '2024-01-15T12:00:00Z'
+                  group_program_id: a3f1e2d4-bc09-4e5f-9a87-1234567890ab
+                  total_members: 42
+                  group_admin: false
+                  group_member: true
+                  has_pending_membership: false
+                  show_membership: true
+      tags:
+      - Employees
+  /v1/employees/{affiliate_employee_id}/metrics:
+    get:
+      operationId: GetEmployeeMetrics
+      summary: Get participation data for an employee (PREVIEW)
+      description: 'Returns giving and volunteering participation metrics for a specific employee.
+
+
+        The start and end params control the date range for the metrics summary. Pass standard date format (mm/dd/yy). Data is available for records created after 2014.
+
+
+        The dateType param should be defined as "donated" or "created" and applies only to donation metrics. This controls which donations are included in the metrics summary by the date the record was created or the date of the actual donation. For example a user can record an offline donation on 01/01/19 but the donation date of that offline donation was 12/15/18. The created date is 01/01/19 and the donation date was 12/15/18. For a company match or incentive request that requires approval, the date the employee submits the request will be the create date and the date the request is approved and becomes a donation is the donation date.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: affiliate_employee_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The employee ID from the affiliate’s system
+      responses:
+        '401':
+          description: Unauthorized
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: Authentication credentials were missing or invalid.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '400':
+          description: Returned when the specified request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request was invalid or missing required parameters.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of participation totals for giving and volunteering activity.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmployeeMetricsResponse'
+              example:
+                employee_donations:
+                - donation_type: OneTime
+                  total_amount: 500
+                  total_transactions: 3
+                company_donations:
+                - donation_type: Match
+                  total_amount: 500
+                  total_transactions: 3
+                volunteer_participations:
+                  events:
+                    total_hours: 8.5
+                    total_events: 2
+                  activities:
+                    total_hours: 4
+                    total_activities: 1
+                  npo_events:
+                    total_hours: 3
+                    total_events: 1
+        '403':
+          description: Returned when the user does not have rights to view participation metrics.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: You do not have permission to access this resource.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '404':
+          description: Returned when the specified employee is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Not Found
+                status: 404
+                detail: The requested resource could not be found.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+      tags:
+      - Employees
+  /v1/employees/{affiliate_employee_id}/volunteer/events/{event_type}/{event_id}/participations:
+    get:
+      operationId: GetEmployeeEventParticipationsSummary
+      summary: Get an employee's participations for an event (PREVIEW)
+      description: 'Returns all participations for a given employee and event.
+
+
+        This endpoint returns a paginated set of all the participations (shifts) for a given employee and event. You will pass the employee identifier as well as the event type and event ID. The type and ID can be obtained by using the /scheduled and /history endpoints above. When using the query params, be aware that pageSize is limited to 25 results.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: affiliate_employee_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The employee ID from the affiliate’s system
+      - name: event_type
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: 'The event type. Available values: 1 – an employee-created event; 2 – an NPO-created event.'
+      - name: event_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The event ID
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: The number of the result's page to return
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: '10'
+        description: The maximum number of participations to include per page. Maximum value is 25.
+      responses:
+        '400':
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request was invalid or missing required parameters.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '401':
+          description: Unauthorized
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: Authentication credentials were missing or invalid.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '403':
+          description: Returned when the user does not have rights to view event participation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: You do not have permission to access this resource.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '404':
+          description: Returned when the specified employee or event is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Not Found
+                status: 404
+                detail: The requested resource could not be found.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of shifts.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmployeeEventParticipationsResponse'
+              example:
+                total_count: 3000000000
+                limit: 10
+                page_count: 3000000000
+                page: 1
+                participations:
+                - participation_id: 3001
+                  event_shift_id: 801
+                  event_shift_name: Morning Shift
+                  occurrence_number: 1
+                  participation_date: '2025-03-15T09:00:00Z'
+                  hours: 4
+                  wait_list: false
+      tags:
+      - Employees
+  /v1/employees/{affiliate_employee_id}/volunteer/events/{event_type}/{event_id}/participations/{participation_id}:
+    delete:
+      operationId: DeleteEventParticipation
+      summary: Delete a participation (PREVIEW)
+      description: 'Deletes a participation for a given employee and event. You cannot delete participations tied to Grant, Incentive, or VTO requests.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: affiliate_employee_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The employee ID from the affiliate’s system
+      - name: event_type
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: 'The event type. Available values: 1 – an employee-created event; 2 – an NPO-created event'
+      - name: event_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The event ID
+      - name: participation_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The participation ID
+      responses:
+        '400':
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request was invalid or missing required parameters.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '401':
+          description: Unauthorized
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: Authentication credentials were missing or invalid.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '403':
+          description: Returned when the user does not have permission to delete a participation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: You do not have permission to access this resource.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '404':
+          description: Returned when the specified participation is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Not Found
+                status: 404
+                detail: The requested resource could not be found.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '200':
+          description: Returned when the operation succeeds.
+      tags:
+      - Employees
+    patch:
+      operationId: EditEventParticipation
+      summary: Edit a participation (PREVIEW)
+      description: 'Edits an employee’s participation for a given event and shift.
+
+
+        This endpoint allows you to edit/update a single participation record (shift) for the given employee and event. In the body, you will pass hours. This is the amount of time that the employee will volunteer for this shift. The hours value can not exceed the length of the shift plus 10 hours.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: affiliate_employee_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The employee ID from the affiliate’s system
+      - name: event_type
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: 'The event type. Available values: 1 – an employee-created event; 2 – an NPO-created event.'
+      - name: event_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The event ID
+      - name: participation_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The participation ID
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateEventParticipationRequest'
+            example:
+              hours: 4
+        description: The request body containing the updated participation details.
+      responses:
+        '400':
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request was invalid or missing required parameters.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '401':
+          description: Unauthorized
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: Authentication credentials were missing or invalid.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '403':
+          description: Returned when the user does not have permission to edit the participation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: You do not have permission to access this resource.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '404':
+          description: Returned when the specified participation is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Not Found
+                status: 404
+                detail: The requested resource could not be found.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '200':
+          description: Returned when the operation succeeds.
+      tags:
+      - Employees
+    get:
+      operationId: GetEmployeeEventParticipationDetails
+      summary: Get details for a participation (PREVIEW)
+      description: 'Returns a participation record for a specific employee, event, and shift. If this is a guest participation, the response contains a guest ID and name.
+
+
+        Note the customQuestionSetResponseId . If the user was required to answer any questions while adding this shift, the value is the unique identifier for their responses. See the Custom Questions section above in this reference for more information on fetching these responses.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: affiliate_employee_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The ID of the employee from the affiliate’s system
+      - name: event_type
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: 'The event type. Available values: 1 – an employee-created event; 2 – an NPO-created event.'
+      - name: event_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The event ID
+      - name: participation_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The participation ID
+      responses:
+        '400':
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request was invalid or missing required parameters.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '401':
+          description: Unauthorized
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: Authentication credentials were missing or invalid.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '403':
+          description: Returned when the user does not have rights to view event participation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: You do not have permission to access this resource.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '404':
+          description: Returned when the specified participation is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Not Found
+                status: 404
+                detail: The requested resource could not be found.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '200':
+          description: Returned when the operation succeeds. The response contains details about this participation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventParticipationsResponse'
+              example:
+                participation_id: 3001
+                event_shift_id: 801
+                event_shift_name: Morning Shift
+                occurrence_number: 1
+                participation_date: '2025-03-15T09:00:00Z'
+                hours: 4
+                wait_list: false
+      tags:
+      - Employees
+  /v1/employees/{affiliate_employee_id}/volunteer/history/events:
+    get:
+      operationId: GetEmployeeHistoryVolunteerEvents
+      summary: Get past events for an employee (PREVIEW)
+      description: 'Returns past events an employee has signed up for or been added to. Only past participations are included.
+
+
+        This endpoint returns a paginated set of the events that an employee has signed up for, or been added to, where their assigned shifts are all in the past. When using the query params, be aware that pageSize is limited to 25 results.
+
+
+        events.type indicates the origin of the event. A value of "1" indicates that an employee created the event. A value of "2" indicates that an NPO created the event.
+
+
+        has_wait_list will be true if any of the employees shifts are currently in the waitlisted state.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: affiliate_employee_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The employee ID from the affiliate’s system
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: The number of the result's page to return
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: '10'
+        description: The maximum number of events to include per page. Maximum value is 25.
+      responses:
+        '400':
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request was invalid or missing required parameters.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '401':
+          description: Unauthorized
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: Authentication credentials were missing or invalid.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '403':
+          description: Returned when the user does not have rights to view event participation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: You do not have permission to access this resource.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '404':
+          description: Returned when the specified employee is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Not Found
+                status: 404
+                detail: The requested resource could not be found.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of events.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VolunteerEventsResponse'
+              example:
+                total_count: 3000000000
+                limit: 10
+                page_count: 3000000000
+                page: 1
+                events:
+                - event_id: 1001
+                  type: 1
+                  event_name: Community Park Cleanup
+                  charity_id: 501
+                  affiliate_organization_id: 200
+                  benefitting_organization: Green Earth Foundation
+                  total_shifts: 3
+                  total_hours: 12.5
+                  total_guests: 4
+                  has_wait_list: false
+      tags:
+      - Employees
+  /v1/employees/{affiliate_employee_id}/volunteer/ria:
+    post:
+      operationId: CreateRia
+      summary: Create an individual activity (PREVIEW)
+      description: 'Creates a new individual activity for an employee. As mentioned above, an Activity is a description of volunteerism that hours of participation are added to as "entries". The body of this post contains all the required values for an Activity.
+
+
+        charity_id is the unique identifier for the charity that the participation benefits. See the Charities section above in this reference to learn more about this identifier and how to search the eligible organizations for this user and feature.
+
+
+        If the isVirtual param is true, it means that there is no location for the Activity. This could be something like a phone call or web based event. The address will not be required.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: affiliate_employee_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The employee ID from the affiliate’s system.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmployeeRiaRequest'
+            example:
+              name: Local Food Bank Volunteering
+              description: Sorting and packing food donations at the local food bank.
+              location:
+                combined_address: ''
+                address1: 123 Main St
+                address2: ''
+                address3: ''
+                city: Atlanta
+                state: GA
+                zip: '30301'
+                country: ''
+                country_code: US
+                county: ''
+                census_msa_code: ''
+                census_tract_code: ''
+                census_county_code: ''
+                census_state_code: ''
+              charity_id: 1001
+              virtual: false
+        description: The request body containing the details of the individual activity to create.
+      responses:
+        '400':
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request was invalid or missing required parameters.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '401':
+          description: Unauthorized
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: Authentication credentials were missing or invalid.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '403':
+          description: Returned when the user does not have permission to create an individual activity.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: You do not have permission to access this resource.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '404':
+          description: Returned when the specified employee is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Not Found
+                status: 404
+                detail: The requested resource could not be found.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '200':
+          description: Returned when the operation succeeds. The response body contains the activity ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SavedRiaResponse'
+              example:
+                ria_id: 301
+      tags:
+      - Employees
+  /v1/employees/{affiliate_employee_id}/volunteer/ria/activities:
+    get:
+      operationId: GetEmployeeRiaSummary
+      summary: Get individual activities (PREVIEW)
+      description: 'Returns a list of individual activities for an employee.
+
+
+        Record Individual Activity or "RIA" is a feature in CSRconnect that allows an employee to track volunteering that is not tied to an event in the system.
+
+        Users create Activities that explain the nature and location of the volunteer participation. Each Activity will have one or many entries.
+
+        Each entry is a date and number of hours participated.
+
+
+        This endpoint returns a paginated set of all the activities and entries for a given employee. When using the query params, be aware that pageSize is limited to 25 results.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: affiliate_employee_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The employee ID from the affiliate’s system
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: '1'
+        description: The number of the result's page to return
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: '10'
+        description: The maximum number of activities to include per page. Maximum value is 25.
+      responses:
+        '400':
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request was invalid or missing required parameters.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '401':
+          description: Unauthorized
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: Authentication credentials were missing or invalid.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '403':
+          description: Returned when the user does not have permission to view individual activity participation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: You do not have permission to access this resource.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '404':
+          description: Returned when the specified employee is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Not Found
+                status: 404
+                detail: The requested resource could not be found.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of individual activities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmployeeRiaResponse'
+              example:
+                total_count: 3000000000
+                limit: 10
+                page_count: 3000000000
+                page: 1
+                activities:
+                - id: 301
+                  name: Local Food Bank Volunteering
+                  description: Sorting and packing food donations at the local food bank.
+                  total_entries: 3
+                  total_hours: 9.5
+                  charity_id: 1001
+                  affiliate_organization_id: 200
+                  benefitting_organization: City Food Bank
+                  entries:
+                  - entry_id: 5001
+                    date: '2025-03-10T12:00:00Z'
+                    hours: 3.5
+      tags:
+      - Employees
+  /v1/employees/{affiliate_employee_id}/volunteer/ria/{ria_id}:
+    delete:
+      operationId: DeleteIndividualActivity
+      summary: Delete an individual activity (PREVIEW)
+      description: 'Delete an employee’s individual activity.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: affiliate_employee_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The employee ID from the affiliate’s system
+      - name: ria_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The ID of the individual activity
+      responses:
+        '400':
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request was invalid or missing required parameters.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '401':
+          description: Unauthorized
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: Authentication credentials were missing or invalid.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '403':
+          description: Returned when the user does not have permission to delete an individual activity.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: You do not have permission to access this resource.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '404':
+          description: Returned when the specified employee or individual activity is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Not Found
+                status: 404
+                detail: The requested resource could not be found.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '200':
+          description: Returned when the operation succeeds.
+      tags:
+      - Employees
+    patch:
+      operationId: EditRia
+      summary: Edit an individual activity (PREVIEW)
+      description: 'This endpoint allows you to edit/update an Activity for the given employee by passing the unique identifier of the Activity. The body of this post contains all the required values for an Activity. See the /ria post method above for more information on the details of an Activity.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: affiliate_employee_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The employee ID from the affiliate’s system
+      - name: ria_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The ID of the individual activity
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmployeeRiaRequest'
+            example:
+              name: Local Food Bank Volunteering
+              description: Sorting and packing food donations at the local food bank.
+              location:
+                combined_address: ''
+                address1: 123 Main St
+                address2: ''
+                address3: ''
+                city: Atlanta
+                state: GA
+                zip: '30301'
+                country: ''
+                country_code: US
+                county: ''
+                census_msa_code: ''
+                census_tract_code: ''
+                census_county_code: ''
+                census_state_code: ''
+              charity_id: 1001
+              virtual: false
+        description: The request body containing the details of the individual activity to update.
+      responses:
+        '400':
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request was invalid or missing required parameters.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '401':
+          description: Unauthorized
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: Authentication credentials were missing or invalid.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '403':
+          description: Returned when the user does not have permission to edit individual activity.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: You do not have permission to access this resource.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '404':
+          description: Returned when the specified employee or individual activity is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Not Found
+                status: 404
+                detail: The requested resource could not be found.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '200':
+          description: Returned when the operation succeeds. The response body contains the updated individual activity details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SavedRiaResponse'
+              example:
+                ria_id: 301
+      tags:
+      - Employees
+    get:
+      operationId: GetEmployeeRiaDetails
+      summary: Get individual activity details (PREVIEW)
+      description: 'Returns details about an employee individual activity. See above for information of how to obtain riaId.
+
+
+        The projectTypeId will display a value of "1" if this Activity is associated with a Volunteer Match event. Volunteer Match events are sourced from a 3rd party and do not have set times or shifts. Activities are used to capture hours related to the Volunteer Match opportunity. If null, the Activity was employee created and has no relationship to any event.
+
+
+        Note the customQuestionSetResponseId . If the user was required to answer any questions while adding entries, the value is the unique identifier for their responses. See the Custom Questions section above in this reference for more information on fetching these responses.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: affiliate_employee_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The employee ID from the affiliate’s system
+      - name: ria_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The ID of the individual activity
+      responses:
+        '400':
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request was invalid or missing required parameters.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '401':
+          description: Unauthorized
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: Authentication credentials were missing or invalid.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '403':
+          description: Returned when the user does not have permission to view individual activity.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: You do not have permission to access this resource.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '404':
+          description: Returned when the specified employee or activity is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Not Found
+                status: 404
+                detail: The requested resource could not be found.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '200':
+          description: Returned when the operation succeeds. The response body contains individual activity details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmployeeRiaDetailsResponse'
+              example:
+                id: 301
+                affiliate_employee_id: 101
+                name: Local Food Bank Volunteering
+                description: Sorting and packing food donations at the local food bank.
+                charity_id: 1001
+                affiliate_organization_id: 200
+                benefiting_organization: City Food Bank
+                virtual: false
+                address:
+                  combined_address: ''
+                  address1: 123 Main St
+                  address2: ''
+                  address3: ''
+                  city: Atlanta
+                  state: GA
+                  zip: '30301'
+                  country: ''
+                  country_code: US
+                  county: ''
+                  census_msa_code: ''
+                  census_tract_code: ''
+                  census_county_code: ''
+                  census_state_code: ''
+                tags: community,food
+                types: in-person
+                categories: hunger-relief
+                entries:
+                - id: 5001
+                  date: '2025-03-10T12:00:00Z'
+                  hours: 3.5
+                date_added: '2025-01-10T12:00:00Z'
+                date_modified: '2025-03-15T12:00:00Z'
+                project_type_id: 5
+      tags:
+      - Employees
+  /v1/employees/{affiliate_employee_id}/volunteer/ria/{ria_id}/entries:
+    post:
+      operationId: CreateRiaEntries
+      summary: Create new individual activity hours (PREVIEW)
+      description: 'Add new hour entries for an employee activity.
+
+        See the sections above for more information on obtaining the riaId or creating new Activities.
+
+        In the body of this post, you will pass the date and number of hours for each date. A single date should not contain more than 24 hours.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: affiliate_employee_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The employee ID from the affiliate’s system.
+      - name: ria_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The ID of the individual activity
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/V1Employees-affiliate_employee_id-VolunteerRia-ria_id-EntriesPostRequest-2'
+            example:
+            - date: '2025-03-10T12:00:00Z'
+              hours: 3.5
+            - date: '2025-03-17T12:00:00Z'
+              hours: 2
+        description: The request body containing the details of the hour entries to create.
+      responses:
+        '400':
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request was invalid or missing required parameters.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '401':
+          description: Unauthorized
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: Authentication credentials were missing or invalid.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '403':
+          description: Returned when the user does not have permission to edit individual activity.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: You do not have permission to access this resource.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '404':
+          description: Returned when the specified employee or individual activity is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Not Found
+                status: 404
+                detail: The requested resource could not be found.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '200':
+          description: Returned when the operation succeeds. The response body contains the hours entries.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmployeeRiaEntriesRecordedResponse'
+              example:
+                recorded_entries:
+                - entry_id: 5001
+                  hours: 3.5
+                  participation_date: '2025-03-10T12:00:00Z'
+                - entry_id: 5002
+                  hours: 2
+                  participation_date: '2025-03-17T12:00:00Z'
+      tags:
+      - Employees
+  /v1/employees/{affiliate_employee_id}/volunteer/ria/{ria_id}/entries/{entry_id}:
+    delete:
+      operationId: DeleteRiaEntry
+      summary: Delete individual activity hours (PREVIEW)
+      description: 'Deletes an hours entry for an employee’s individual activity. See the sections above for more information on obtaining the entryId or creating new Entries.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: affiliate_employee_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The employee ID from the affiliate's system
+      - name: ria_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The ID of the individual activity
+      - name: entry_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The hours entry ID
+      responses:
+        '400':
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request was invalid or missing required parameters.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '401':
+          description: Unauthorized
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: Authentication credentials were missing or invalid.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '403':
+          description: Returned when the user does not have permission to delete individual activity hours.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: You do not have permission to access this resource.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '404':
+          description: Returned when the specified hours entry is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Not Found
+                status: 404
+                detail: The requested resource could not be found.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '200':
+          description: Returned when the operation succeeds.
+      tags:
+      - Employees
+    patch:
+      operationId: EditRiaEntry
+      summary: Edit individual activity hours (PREVIEW)
+      description: 'Edits hour entries for an employee’s individual activity.
+
+        See the sections above for more information on obtaining the entryId or creating new Entries.
+
+        In the body of this post, you will pass the date and number of hours for each date. A single date should not contain more than 24 hours.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: affiliate_employee_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The employee ID from the affiliate’s system.
+      - name: ria_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The ID of the individual activity
+      - name: entry_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The hours entry ID
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RiaEntryRequest'
+            example:
+              date: '2025-03-10T12:00:00Z'
+              hours: 3.5
+        description: The request body containing the details of the hour entries to update.
+      responses:
+        '400':
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request was invalid or missing required parameters.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '401':
+          description: Unauthorized
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: Authentication credentials were missing or invalid.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '403':
+          description: Returned when the user does not have permission to edit individual activity.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: You do not have permission to access this resource.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '404':
+          description: Returned when the specified employee or individual activity is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Not Found
+                status: 404
+                detail: The requested resource could not be found.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '200':
+          description: Returned when the operation succeeds. The response body contains the updated hour entry.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmployeeRiaEntryRecorded'
+              example:
+                entry_id: 5001
+                hours: 3.5
+                participation_date: '2025-03-10T12:00:00Z'
+      tags:
+      - Employees
+  /v1/employees/{affiliate_employee_id}/volunteer/scheduled/events:
+    get:
+      operationId: GetEmployeeScheduledVolunteerEvents
+      summary: Get upcoming events for an employee (PREVIEW)
+      description: 'Returns events that an employee has signed up for or been added to. Only upcoming participations are included.
+
+
+        This endpoint returns a paginated set of the events that an employee has signed up for, or been added to, where their assigned shifts are still in the future. Once all of the employees shifts are in the past, the event will move to the history collection. See /history below for more information. When using the query params, be aware that pageSize is limited to 25 results.
+
+
+        events.type indicates the origin of the event. A value of "1" indicates that an employee created the event. A value of "2" indicates that an NPO created the event.
+
+
+        has_wait_list will be true if any of the employees shifts are currently in the waitlisted state.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: affiliate_employee_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The employee ID from the affiliate’s system
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: The number of the result's page to return
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: '10'
+        description: The maximum number of events to include per page. Maximum value is 25.
+      responses:
+        '400':
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request was invalid or missing required parameters.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '401':
+          description: Unauthorized
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: Authentication credentials were missing or invalid.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '403':
+          description: Returned when the user does not have rights to view event participation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: You do not have permission to access this resource.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '404':
+          description: Returned when the specified employee is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Not Found
+                status: 404
+                detail: The requested resource could not be found.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of events.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VolunteerEventsResponse'
+              example:
+                total_count: 3000000000
+                limit: 10
+                page_count: 3000000000
+                page: 1
+                events:
+                - event_id: 1001
+                  type: 1
+                  event_name: Community Park Cleanup
+                  charity_id: 501
+                  affiliate_organization_id: 200
+                  benefitting_organization: Green Earth Foundation
+                  total_shifts: 3
+                  total_hours: 12.5
+                  total_guests: 4
+                  has_wait_list: false
+      tags:
+      - Employees
+  /v1/employees/{employee_id}:
+    get:
+      operationId: GetEmployeeDetails
+      summary: Get employee details by employee ID (PREVIEW)
+      description: 'Returns the details of an employee.
+
+
+        This endpoint returns a high level profile for the employee in CSRconnect. Passing the employee ID as listed on the HR file will return a basic user profile. The affiliateEmployeeId returned will be used in other endpoints when fetching participation related data.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: employee_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The ID of the employee.
+      responses:
+        '401':
+          description: Unauthorized
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: Authentication credentials were missing or invalid.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '400':
+          description: Returned when the specified request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request was invalid or missing required parameters.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of employee details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmployeeDetailsResponse'
+              example:
+                affiliate_employee_id: 12345
+                first_name: Jane
+                last_name: Doe
+                email: jane.doe@example.com
+                zip_code: '02101'
+                city: Boston
+                state: MA
+                country_code: US
+        '403':
+          description: Returned when the user does not have rights to view employee details.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: You do not have permission to access this resource.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '404':
+          description: Returned when the specified employee is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Not Found
+                status: 404
+                detail: The requested resource could not be found.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+      tags:
+      - Employees
+components:
+  schemas:
+    EmployeeMetricsResponse:
+      type: object
+      properties:
+        employee_donations:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/EmployeeDonations'
+          description: The collection of donation records for this employee.
+        company_donations:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/EmployeeDonations'
+          description: The collection of company donation records, such as matches or incentives for this employee.
+        volunteer_participations:
+          $ref: '#/components/schemas/EmployeeParticipations'
+      additionalProperties: false
+      description: Represents the response containing donation and participation metrics for an employee.
+    EventParticipationsResponse:
+      type: object
+      properties:
+        participation_id:
+          type:
+          - integer
+          - 'null'
+          description: The participation record ID.
+          format: int32
+        event_shift_id:
+          type: integer
+          description: The event shift ID.
+          format: int32
+        event_shift_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the event shift.
+        occurrence_number:
+          type: integer
+          description: The occurrence number of this shift within a recurring event series.
+          format: int32
+        event_recurrence_id:
+          type:
+          - integer
+          - 'null'
+          description: The identifier of the event recurrence this participation belongs to, if applicable.
+          format: int32
+        participation_date:
+          type: string
+          description: The participation date.
+          format: date-time
+        hours:
+          type: number
+          description: The number of volunteer hours logged for this participation.
+          format: double
+        volunteer_guest_id:
+          type:
+          - integer
+          - 'null'
+          description: The volunteer guest ID associated with this participation, if any.
+          format: int32
+        wait_list:
+          type: boolean
+          description: Indicates whether this participation is in a waitlisted state.
+      additionalProperties: false
+      description: Represents a single employee participation record for a volunteer event shift.
+    VolunteerEventsResponse:
+      required:
+      - limit
+      type: object
+      properties:
+        total_count:
+          type: integer
+          description: The total number of volunteer events matching the query.
+          format: int64
+        limit:
+          type: integer
+          description: The maximum number of events returned per page.
+          format: int32
+        page_count:
+          type: integer
+          description: The total number of pages available.
+          format: int64
+        page:
+          type: integer
+          description: The current page number of the results.
+          format: int32
+        events:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/EventDetailsResponse'
+          description: The list of volunteer events returned for the current page.
+        continuation_token:
+          type:
+          - string
+          - 'null'
+          description: 'A token to retrieve the next page of results. null when no further results are available.
+
+            Currently always null as the upstream API does not yet support cursor-based pagination.'
+      additionalProperties: false
+      description: Represents a paginated list of volunteer events.
+    EmployeeDonations:
+      type: object
+      properties:
+        donation_type:
+          type:
+          - string
+          - 'null'
+          description: The donation type.
+        total_amount:
+          type: number
+          description: The total donation amount.
+          format: double
+        total_transactions:
+          type: integer
+          description: The total number of transactions.
+          format: int32
+      additionalProperties: false
+      description: Represents the donation metrics for an employee, including the type of donation, total amount, and number of transactions.
+    RiaEntryDetailsResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the hour entry.
+          format: int32
+        date:
+          type: string
+          description: The date on which the hour entry was performed.
+          format: date-time
+        hours:
+          type: number
+          description: The number of hours logged for this hour entry.
+          format: double
+        custom_question_set_response_id:
+          type:
+          - integer
+          - 'null'
+          description: The custom question set response ID associated with this hour entry, if any.
+          format: int32
+        cra_question_set_response_id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the CRA (Community Reinvestment Act) question set response associated with this hour entry, if any.
+          format: int32
+      additionalProperties: false
+      description: Represents a single hour entry within an individual activity (RIA), including question set response references.
+    RiaResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The individual activity ID.
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the individual activity.
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the individual activity.
+        total_entries:
+          type: integer
+          description: The total number of hour entries recorded for this activity.
+          format: int32
+        total_hours:
+          type: number
+          description: The total number of hours logged across all hour entries for this activity.
+          format: double
+        charity_id:
+          type:
+          - integer
+          - 'null'
+          description: The charity ID associated with this activity, if any.
+          format: int32
+        affiliate_organization_id:
+          type:
+          - integer
+          - 'null'
+          description: The affiliate organization ID associated with this activity, if any.
+          format: int32
+        benefitting_organization:
+          type:
+          - string
+          - 'null'
+          description: The name of the benefiting organization.
+        entries:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/EmployeeRiaEntryResponse'
+          description: The individual hour entries recorded for this activity.
+      additionalProperties: false
+      description: Represents an individual activity (RIA) associated with an employee.
+    EmployeeRiaEntryResponse:
+      type: object
+      properties:
+        entry_id:
+          type:
+          - integer
+          - 'null'
+          description: The hour entry ID.
+          format: int32
+        date:
+          type: string
+          description: The hour entry participation date.
+          format: date-time
+        hours:
+          type: number
+          description: The number of hours for this hour entry.
+          format: double
+      additionalProperties: false
+      description: Represents a single hour entry for an individual activity (RIA).
+    EventDetailsResponse:
+      required:
+      - benefitting_organization
+      - event_name
+      type: object
+      properties:
+        event_id:
+          type: integer
+          description: The volunteer event ID.
+          format: int32
+        type:
+          type: integer
+          description: 'The volunteer event type. Available Values: 1: Employee, 2: NPO, 3: Project, 4: Employee Individual Activity, 5: VolunteerMatch.'
+          format: int32
+        event_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the volunteer event.
+        charity_id:
+          type:
+          - integer
+          - 'null'
+          description: The benefiting charity ID.
+          format: int32
+        affiliate_organization_id:
+          type:
+          - integer
+          - 'null'
+          description: The affiliate organization ID associated with this event, if any.
+          format: int32
+        benefitting_organization:
+          type:
+          - string
+          - 'null'
+          description: The benefiting charity name.
+        total_shifts:
+          type: integer
+          description: The total number of shifts available for this event.
+          format: int32
+        total_hours:
+          type: number
+          description: The total number of volunteer hours logged for this event.
+          format: double
+        total_guests:
+          type: integer
+          description: The total number of guests who participated in this event.
+          format: int32
+        has_wait_list:
+          type: boolean
+          description: Indicates whether this event has a waitlist.
+      additionalProperties: false
+      description: Represents the details of a volunteer event.
+    V1Employees-affiliate_employee_id-VolunteerRia-ria_id-EntriesPostRequest-2:
+      type: array
+      items:
+        $ref: '#/components/schemas/RiaEntryRequest'
+      x-apim-inline: true
+    EmployeeGiveCampaignMetricsResponse:
+      type: object
+      properties:
+        campaign_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the Give Campaign.
+        campaign_start_date_utc:
+          type: string
+          description: The UTC date and time when the campaign starts.
+          format: date-time
+        campaign_end_date_utc:
+          type: string
+          description: The UTC date and time when the campaign ends.
+          format: date-time
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/EmployeeDonations'
+          description: The list of donation records associated with the employee for this campaign.
+      additionalProperties: false
+      description: Represents the Give Campaign metrics for an employee, including campaign dates and a breakdown of donations.
+    EmployeeDetailsRequest:
+      required:
+      - employee_id
+      type: object
+      properties:
+        employee_id:
+          type:
+          - string
+          - 'null'
+          description: The employee ID.
+      additionalProperties: false
+      description: Represents a request to retrieve details for a specific employee.
+    EmployeeRiaEntryRecorded:
+      type: object
+      properties:
+        entry_id:
+          type: integer
+          description: The recorded hour entry ID.
+          format: int32
+        hours:
+          type: number
+          description: The number of hours for this hour entry.
+          format: double
+        participation_date:
+          type: string
+          description: The hour entry participation date.
+          format: date-time
+      additionalProperties: false
+      description: Represents a recorded hour entry of an employee's individual activity, including the entry ID, hours volunteered, and the participation date.
+    EmployeeDetailsByIdResponse:
+      type: object
+      properties:
+        employee_id:
+          type:
+          - string
+          - 'null'
+          description: The employee ID.
+        first_name:
+          type:
+          - string
+          - 'null'
+          description: The employee's first name.
+        last_name:
+          type:
+          - string
+          - 'null'
+          description: The employee's last name.
+        email:
+          type:
+          - string
+          - 'null'
+          description: The employee's email address.
+        zip_code:
+          type:
+          - string
+          - 'null'
+          description: The ZIP or postal code of the employee's address.
+        city:
+          type:
+          - string
+          - 'null'
+          description: The city of the employee's address.
+        state:
+          type:
+          - string
+          - 'null'
+          description: The state or province of the employee's address.
+        country_code:
+          type:
+          - string
+          - 'null'
+          description: The ISO 3166-1 alpha-2 country code of the employee's address (e.g. "US", "CA").
+      additionalProperties: false
+      description: Represents the employee details returned when looking up an employee by their affiliate employee ID.
+    EmployeeRiaDetailsResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The individual activity ID.
+          format: int32
+        affiliate_employee_id:
+          type: integer
+          description: The affiliate employee ID of the employee for this activity.
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the individual activity.
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the individual activity.
+        charity_id:
+          type:
+          - integer
+          - 'null'
+          description: The benefiting charity ID associated for this activity.
+          format: int32
+        affiliate_organization_id:
+          type:
+          - integer
+          - 'null'
+          description: The affiliate organization ID for this activity.
+          format: int32
+        benefiting_organization:
+          type:
+          - string
+          - 'null'
+          description: The name of the benefiting charity.
+        virtual:
+          type: boolean
+          description: Indicates whether the activity is virtual.
+        address:
+          $ref: '#/components/schemas/Address'
+        tags:
+          type:
+          - string
+          - 'null'
+          description: Comma-separated individual tags.
+        types:
+          type:
+          - string
+          - 'null'
+          description: Comma-separated individual activity types.
+        categories:
+          type:
+          - string
+          - 'null'
+          description: Comma-separated individual activity categories.
+        entries:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/RiaEntryDetailsResponse'
+          description: The individual hour entries recorded for this activity.
+        date_added:
+          type: string
+          description: The date and time when the activity was created.
+          format: date-time
+        date_modified:
+          type: string
+          description: The date and time when the activity was last updated.
+          format: date-time
+        project_type_id:
+          type:
+          - integer
+          - 'null'
+          description: The type identifier associated with this activity, if any. A value of "1" indicates this is a VolunteerMatch opportunity.
+          format: int32
+        npo_event_id:
+          type:
+          - integer
+          - 'null'
+          description: The NPO event ID linked to this activity, if any.
+          format: int32
+      additionalProperties: false
+      description: Represents the details of an individual activity (RIA) for an employee.
+    CustomQuestionsResponse:
+      required:
+      - questions
+      type: object
+      properties:
+        questions:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomQuestion'
+          description: The list of questions and their corresponding employee responses.
+      additionalProperties: false
+      description: Represents the response containing the custom questions and an employee's responses for a given custom question set response.
+    UpdateEventParticipationRequest:
+      required:
+      - hours
+      type: object
+      properties:
+        hours:
+          type: number
+          description: The number of volunteer hours update for this participant and event.
+          format: double
+      additionalProperties: false
+      description: Represents a request to update the participation details of an event.
+    SavedRiaResponse:
+      type: object
+      properties:
+        ria_id:
+          type: integer
+          description: The individual activity ID.
+          format: int32
+      additionalProperties: false
+      description: Represents the response returned after successfully saving an individual activity (RIA).
+    RiaEntryRequest:
+      type: object
+      properties:
+        date:
+          type: string
+          description: The date the individual activity volunteer hours were completed.
+          format: date-time
+        hours:
+          type: number
+          description: The number of individual activity hours volunteered on the given date.
+          format: double
+      additionalProperties: false
+      description: Represents a request to add a volunteer hour entry for an individual activity.
+    EmployeeGroupResponse:
+      type: object
+      properties:
+        group_id:
+          type: integer
+          description: The unique identifier of the group page.
+          format: int32
+        creator_affiliate_employee_id:
+          type: integer
+          description: The affiliate employee ID of the employee who created the group.
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the group.
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the group.
+        image_url:
+          type:
+          - string
+          - 'null'
+          description: The URL of the group's image.
+        address1:
+          type:
+          - string
+          - 'null'
+          description: The first line of the group's address.
+        address2:
+          type:
+          - string
+          - 'null'
+          description: The second line of the group's address.
+        city:
+          type:
+          - string
+          - 'null'
+          description: The city of the group's address.
+        state:
+          type:
+          - string
+          - 'null'
+          description: The state or province of the group's address.
+        postal_code:
+          type:
+          - string
+          - 'null'
+          description: The postal or ZIP code of the group's address.
+        latitude:
+          type:
+          - number
+          - 'null'
+          description: The latitude of the group's location.
+          format: double
+        longitude:
+          type:
+          - number
+          - 'null'
+          description: The longitude of the group's location.
+          format: double
+        open:
+          type: boolean
+          description: 'Indicates whether the group can be joined freely. When false, employees must
+
+            request to join and be approved by the group administrator.'
+        tags:
+          type:
+          - string
+          - 'null'
+          description: The tags associated with the group.
+        date_added:
+          type: string
+          description: The date and time the group was added to the system.
+          format: date-time
+        group_program_id:
+          type:
+          - string
+          - 'null'
+          description: The unique identifier of the group program the group belongs to.
+        total_members:
+          type: integer
+          description: The total number of members in the group.
+          format: int32
+        group_admin:
+          type: boolean
+          description: Indicates whether the employee is an administrator of the group.
+        group_member:
+          type: boolean
+          description: Indicates whether the employee is a member of the group.
+        has_pending_membership:
+          type: boolean
+          description: 'Indicates whether the employee has requested to join the group but the request has not yet been
+
+            accepted by the group administrator.'
+        show_membership:
+          type: boolean
+          description: 'Indicates the employee''s decision to have their name shown as a member on the group page for
+
+            other group members to see.'
+      additionalProperties: false
+      description: Represents a group an employee is associated with, including the employee's membership status.
+    EmployeeParticipations:
+      type: object
+      properties:
+        events:
+          $ref: '#/components/schemas/EmployeeEvents'
+        activities:
+          $ref: '#/components/schemas/EmployeeActivities'
+        npo_events:
+          $ref: '#/components/schemas/EmployeeEvents'
+      additionalProperties: false
+      description: Represents the volunteer participation metrics for an employee.
+    EmployeeEventParticipationsResponse:
+      required:
+      - limit
+      type: object
+      properties:
+        total_count:
+          type: integer
+          description: The total number of participations matching the query.
+          format: int64
+        limit:
+          type: integer
+          description: The maximum number of participations returned per page.
+          format: int32
+        page_count:
+          type: integer
+          description: The total number of pages available.
+          format: int64
+        page:
+          type: integer
+          description: The current page number of the results.
+          format: int32
+        participations:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/EventParticipationsResponse'
+          description: The list of event participations returned for the current page.
+        continuation_token:
+          type:
+          - string
+          - 'null'
+          description: 'A token to retrieve the next page of results. null when no further results are available.
+
+            Currently always null as the upstream API does not yet support cursor-based pagination.'
+      additionalProperties: false
+      description: Represents a paginated list of an employee's event participations.
+    EmployeeActivities:
+      type: object
+      properties:
+        total_hours:
+          type: number
+          description: The total number of volunteer hours.
+          format: double
+        total_activities:
+          type: integer
+          description: The total number of volunteer participations.
+          format: int32
+      additionalProperties: false
+      description: 'Represents a summary of an employee''s activities, including total hours worked and the number of instances
+
+        performed.'
+    CustomQuestion:
+      type: object
+      properties:
+        question:
+          type:
+          - string
+          - 'null'
+          description: The display text of the question.
+        answer:
+          type:
+          - string
+          - 'null'
+          description: The employee's response to the question.
+      additionalProperties: false
+      description: Represents a single custom question and the employee's response to it.
+    EmployeeGroupsResponse:
+      type: object
+      properties:
+        page:
+          type: integer
+          description: The current page number of the results.
+          format: int32
+        limit:
+          type: integer
+          description: The number of groups returned per page.
+          format: int32
+        page_count:
+          type: integer
+          description: The total number of pages in the results.
+          format: int64
+        total_count:
+          type: integer
+          description: The total number of groups the employee is associated with.
+          format: int64
+        groups:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/EmployeeGroupResponse'
+          description: The list of groups returned for the current page.
+        continuation_token:
+          type:
+          - string
+          - 'null'
+          description: 'A token to retrieve the next page of results. Currently always null as the upstream API does
+
+            not support cursor-based pagination.'
+      additionalProperties: false
+      description: Represents the paginated collection of groups an employee is associated with.
+    EmployeeRiaResponse:
+      required:
+      - limit
+      type: object
+      properties:
+        total_count:
+          type: integer
+          description: The total number of individual activities matching the request.
+          format: int64
+        limit:
+          type: integer
+          description: The maximum number of activities returned per page.
+          format: int32
+        page_count:
+          type: integer
+          description: The total number of pages available.
+          format: int64
+        page:
+          type: integer
+          description: The current page number of the results.
+          format: int32
+        activities:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/RiaResponse'
+          description: The list of individual activities returned for the current page.
+        continuation_token:
+          type:
+          - string
+          - 'null'
+          description: 'A token to retrieve the next page of results. null when no further results are available.
+
+            Currently always null as the upstream API does not yet support cursor-based pagination.'
+      additionalProperties: false
+      description: Represents the paginated list of individual activities (RIAs) for an employee.
+    EmployeeRiaRequest:
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the individual activity.
+        description:
+          type:
+          - string
+          - 'null'
+          description: A description of the individual activity.
+        location:
+          $ref: '#/components/schemas/Address'
+        charity_id:
+          type: integer
+          description: The benefiting charity ID.
+          format: int32
+        virtual:
+          type: boolean
+          description: Indicates whether the activity is virtual.
+      additionalProperties: false
+      description: Represents the request body for creating an individual activity (RIA) for an employee.
+    EmployeeDetailsResponse:
+      type: object
+      properties:
+        affiliate_employee_id:
+          type: integer
+          description: The employee ID from the affiliate's system.
+          format: int32
+        first_name:
+          type:
+          - string
+          - 'null'
+          description: The employee's first name.
+        last_name:
+          type:
+          - string
+          - 'null'
+          description: The employee's last name.
+        email:
+          type:
+          - string
+          - 'null'
+          description: The employee's email address.
+        zip_code:
+          type:
+          - string
+          - 'null'
+          description: The ZIP or postal code of the employee's address.
+        city:
+          type:
+          - string
+          - 'null'
+          description: The city of the employee's address.
+        state:
+          type:
+          - string
+          - 'null'
+          description: The state or province of the employee's address.
+        country_code:
+          type:
+          - string
+          - 'null'
+          description: The ISO 3166-1 alpha-2 country code of the employee's address (e.g. "US", "CA").
+      additionalProperties: false
+      description: Represents the employee details returned.
+    Address:
+      type: object
+      properties:
+        combined_address:
+          type:
+          - string
+          - 'null'
+          description: The full address combined into a single string.
+        address1:
+          type:
+          - string
+          - 'null'
+          description: The first line of the street address.
+        address2:
+          type:
+          - string
+          - 'null'
+          description: The second line of the street address (e.g. apartment or suite number).
+        address3:
+          type:
+          - string
+          - 'null'
+          description: The third line of the street address.
+        city:
+          type:
+          - string
+          - 'null'
+          description: The city of the address.
+        state:
+          type:
+          - string
+          - 'null'
+          description: The state or province of the address.
+        zip:
+          type:
+          - string
+          - 'null'
+          description: The ZIP or postal code of the address.
+        country_id:
+          type:
+          - integer
+          - 'null'
+          description: The numeric ID of the country, if available.
+          format: int32
+        country:
+          type:
+          - string
+          - 'null'
+          description: The full name of the country.
+        country_code:
+          type:
+          - string
+          - 'null'
+          description: The ISO 3166-1 alpha-2 country code (e.g. "US", "CA").
+        county:
+          type:
+          - string
+          - 'null'
+          description: The county of the address.
+        latitude:
+          type:
+          - number
+          - 'null'
+          description: The latitude coordinate of the address, if available.
+          format: double
+        longitude:
+          type:
+          - number
+          - 'null'
+          description: The longitude coordinate of the address, if available.
+          format: double
+        census_msa_code:
+          type:
+          - string
+          - 'null'
+          description: The Census Metropolitan Statistical Area (MSA) code for the address.
+        census_tract_code:
+          type:
+          - string
+          - 'null'
+          description: The Census tract code for the address.
+        census_county_code:
+          type:
+          - string
+          - 'null'
+          description: The Census county code for the address.
+        census_state_code:
+          type:
+          - string
+          - 'null'
+          description: The Census state code for the address.
+        census_msa_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the Census Metropolitan Statistical Area (MSA), if available.
+        census_tract_income_level:
+          type:
+          - string
+          - 'null'
+          description: The Census tract income level designation for the address, if available.
+        census_under_served_or_distressed_tract:
+          type:
+          - boolean
+          - 'null'
+          description: Indicates whether the Census tract is classified as underserved or distressed, if determined.
+      additionalProperties: false
+      description: Represents a physical address.
+    EmployeeRiaEntriesRecordedResponse:
+      type: object
+      properties:
+        recorded_entries:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/EmployeeRiaEntryRecorded'
+          description: The collection of RIA hour entries for the employee.
+      additionalProperties: false
+      description: Represents the response returned after recording hour entries for an individual activity.
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference (RFC 3986) that identifies the problem type. When dereferenced, it should provide human-readable documentation for the problem. Defaults to "about:blank" when not present.<br/><br/>Available values:<table><tr><th>type</th><th>detail</th></tr><tr><td>about:blank</td><td>Type is not defined</td></tr></table>
+        title:
+          type:
+          - string
+          - 'null'
+          description: A short, human-readable summary of the problem type.
+        status:
+          type:
+          - integer
+          - 'null'
+          description: The HTTP status code for this occurrence of the problem.
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: {}
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+    EmployeeEvents:
+      type: object
+      properties:
+        total_hours:
+          type: number
+          description: The total number of event participation hours.
+          format: double
+        total_events:
+          type: integer
+          description: The total number of events participated in.
+          format: int32
+      additionalProperties: false
+      description: Represents volunteer metrics for an employee, including total hours and event count.
+    CharityBucketResponse:
+      type: object
+      properties:
+        bucket_id:
+          type:
+          - string
+          - 'null'
+          description: Charity bucket ID.
+      additionalProperties: false
+      description: Represents the response containing the charity bucket ID.
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

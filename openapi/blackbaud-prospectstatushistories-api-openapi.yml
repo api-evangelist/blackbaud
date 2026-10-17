@@ -1,0 +1,188 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Prospect Prospectstatushistories API'
+  description: This API enables you to manage prospects, track cultivation stages, and monitor prospect status to drive fundraising outcomes.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/prospect
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/prospect
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Prospectstatushistories
+paths:
+  /v1/prospectstatushistories/{id}:
+    delete:
+      operationId: DeleteProspectStatusHistory
+      summary: Delete a prospect status history record (PREVIEW)
+      description: 'Deletes a prospect status history record.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The immutable system record ID of the prospect status history record.
+      responses:
+        '200':
+          description: OK
+      tags:
+      - Prospectstatushistories
+    patch:
+      operationId: EditProspectStatusHistory
+      summary: Edit a prospect status history record (PREVIEW)
+      description: 'Updates a prospect status history record.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The immutable system record ID of the prospect status history record.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProspectStatusHistoryWrite'
+            example:
+              status: Cultivation
+              start_date: '2024-01-15T12:00:00Z'
+              comments: Updated status
+        description: The prospect status history details to update.
+      responses:
+        '200':
+          description: OK
+      tags:
+      - Prospectstatushistories
+    get:
+      operationId: GetProspectStatusHistory
+      summary: Get a prospect status history record (PREVIEW)
+      description: 'Returns a single prospect status history record.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The immutable system record ID of the prospect status history record.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProspectStatusHistoryRead'
+              example:
+                author_id: 899e035e-91ab-49df-bb15-5dad17bef5b2
+                author_name: John Smith
+                comments: Moved to cultivation phase
+                constituent_id: '280'
+                days_elapsed: 503
+                id: '123'
+                is_past_due: false
+                start_date: '2024-01-15T12:00:00Z'
+                status_id: '2'
+                status_description: Cultivation
+      tags:
+      - Prospectstatushistories
+components:
+  schemas:
+    ProspectStatusHistoryWrite:
+      required:
+      - start_date
+      - status
+      type: object
+      properties:
+        status:
+          minLength: 1
+          type: string
+          description: The prospect status description (e.g. "Active", "Cultivation").
+        start_date:
+          type: string
+          description: The start date of the status.
+          format: date-time
+        comments:
+          type:
+          - string
+          - 'null'
+          description: Comments about the status.
+      additionalProperties: false
+      description: Represents a write model for updating a prospect status history record.
+    ProspectStatusHistoryRead:
+      type: object
+      properties:
+        author_id:
+          type:
+          - string
+          - 'null'
+          description: The author ID of the status history record.
+        author_name:
+          type:
+          - string
+          - 'null'
+          description: The author name of the status history record.
+        comments:
+          type:
+          - string
+          - 'null'
+          description: The comments for the prospect status history.
+        constituent_id:
+          type:
+          - string
+          - 'null'
+          description: The constituent identifier for the prospect status history.
+        days_elapsed:
+          type: integer
+          description: The number of days elapsed in this prospect status.
+          format: int32
+        id:
+          type:
+          - string
+          - 'null'
+          description: The primary identifier for the prospect status history.
+        is_past_due:
+          type: boolean
+          description: Whether the status is past due.
+        start_date:
+          type:
+          - string
+          - 'null'
+          description: The status start date for the prospect status history.
+          format: date-time
+        status_id:
+          type:
+          - string
+          - 'null'
+          description: The status identifier for the prospect status history.
+        status_description:
+          type:
+          - string
+          - 'null'
+          description: The status description for the prospect status history.
+      additionalProperties: false
+      description: A specific part of a prospect's status history.
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

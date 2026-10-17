@@ -1,0 +1,1704 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Constituent Actions API'
+  description: This API manages constituent information and related entities such as addresses, phones, emails, and notes.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/56b76470069a0509c8f1c5b3
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/constituent/v1
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Actions
+paths:
+  /actions:
+    post:
+      operationId: CreateAction
+      summary: Action (Create)
+      description: Creates a constituent action.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ActionAdd'
+            example:
+              author: John Doe
+              category: Meeting
+              completed: true
+              completed_date: '2015-08-26T00:00:00Z'
+              constituent_id: '280'
+              date: '2015-08-26T00:00:00Z'
+              description: Had dinner with Dr. Hernandez at Rafferty's
+              direction: Outbound
+              end_time: '21:30'
+              fundraisers:
+              - '252'
+              location: Rafferty's
+              opportunity_id: '23'
+              outcome: Successful
+              priority: Normal
+              start_time: '18:30'
+              status: Closed
+              summary: Sushi dinner celebration
+              type: Dinner Meeting
+        description: An object that represents the action to create.
+      responses:
+        '200':
+          description: Returned when the operation successfully creates an action. The response body contains the ID of the new action.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse'
+              example:
+                id: '1281'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+        '403':
+          description: Returned when the user does not have permission to create the action.
+        '404':
+          description: Returned when the specified constituent is not found.
+      tags:
+      - Actions
+    get:
+      operationId: ListActionsAllConstituents
+      summary: Action list (All constituents)
+      description: 'Returns a paginated list of actions.
+
+
+        The default sorting behavior is to list actions in ascending order based on when they were created.
+
+
+        However, the last_modified parameter overrides the default sorting behavior to list actions in ascending order based on when they were last modified. The last_modified parameter also adds the sort_token parameter to the next_link URL to ensure that actions are stably sorted and that order persists when changes occur while working through a paginated list.
+
+
+        If the last_modified and date_added parameters are both specified, the sorting behavior is to list actions based on when they were last modified.'
+      parameters:
+      - name: computed_status
+        in: query
+        required: false
+        schema:
+          type: array
+        description: Represents a filter for results based on the computed action status. Available values are 'Open', 'Completed', or 'PastDue'.  Currently, only a single value can be supplied in the filter.
+      - name: date_added
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Represents a filter for results created on or after the specified date. Adds the sort_token parameter to the next_link URL to ensure that actions are stably sorted. The filter respects time offsets from UTC per the ISO-8601 format: 2016-05-05T17:59:31.1600745-04:00.'
+      - name: last_modified
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Represents a filter for results modified on or after the specified date. Adds the sort_token parameter to the next_link URL to ensure that actions are stably sorted. The filter respects time offsets from UTC per the ISO-8601 format: 2016-05-05T17:59:31.1600745-04:00.'
+      - name: sort_token
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Represents a token filter to provide the next stable-sorted list of actions and to ensure that the order persists even if changes occur while working through a paginated list. The token is provided on the next_link collection response property when the request specifies the sort_token filter. The last_modified, date_added, and sort parameters also add the token to the next_link URL, although the sort parameter only adds the token when it sorts by just the date_added field or just the date_modified field.
+      - name: status_code
+        in: query
+        required: false
+        schema:
+          type: array
+        description: Represents a filter for results based on the action status. Returns actions if any of the specified status codes match any of their status codes. For example, "status_code=Closed&amp;status_code=Pending" returns actions with a status of either "Closed" or "Pending".
+      - name: list_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Defines a list identifier used to filter the set of actions to those included in the specified list. If this value is set, other specified filters will be ignored.
+      - name: continuation_token
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Defines a continuation token for the current result set that should be used when fetching the next page of results from list platform.
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Represents the number of records to skip. For use with pagination. Deprecated for environments with access to new Action lists.
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Represents the number of records to return. The default is 500. The maximum is 5000.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a <a href="https://developer.blackbaud.com/skyapi/api/entity-reference/constituent#Collection">collection</a> of <a href="https://developer.blackbaud.com/skyapi/api/entity-reference/constituent#Action">action</a> entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiCollectionOfActionRead'
+              example:
+                count: 878
+                next_link: https://api.sky.blackbaud.com/constituent/v1/actions?offset=3&limit=3
+                value:
+                - id: '1'
+                  category: Meeting
+                  completed: false
+                  computed_status: PastDue
+                  constituent_id: '185'
+                  date: '2008-10-10T00:00:00Z'
+                  date_added: '1999-06-17T19:34:16Z'
+                  date_modified: '2008-01-23T16:30:17.707Z'
+                  description: Reservations at Rafferty's.  Will review agenda for Capital Campaign.
+                  direction: Outbound
+                  end_time: '21:30'
+                  location: Rafferty's
+                  outcome: Successful
+                  priority: Normal
+                  start_time: '18:30'
+                  status: Past due
+                  status_code: Pending
+                  summary: Reservations at Rafferty's.  Will review agenda for Capital Campaign.
+                  type: Lunch Meeting
+                - id: '2'
+                  category: Task/Other
+                  completed: false
+                  computed_status: PastDue
+                  constituent_id: '191'
+                  date: '2010-01-01T00:00:00Z'
+                  date_added: '1999-06-25T19:40:22Z'
+                  date_modified: '2008-02-07T13:50:06.067Z'
+                  description: Send Birthday Card annually the first week in January.
+                  direction: Outbound
+                  end_time: '16:00'
+                  location: Hilton Hotel
+                  outcome: Successful
+                  priority: Normal
+                  start_time: '12:00'
+                  status: Past due
+                  status_code: Pending
+                  summary: Send Birthday Card annually the first week in January.
+                  type: Birthday
+                - id: '3'
+                  category: Meeting
+                  completed: true
+                  completed_date: '2003-07-10T00:00:00Z'
+                  computed_status: Completed
+                  constituent_id: '265'
+                  date: '2003-07-10T00:00:00Z'
+                  date_added: '1999-06-28T18:18:25Z'
+                  date_modified: '2004-02-27T18:18:50.257Z'
+                  description: Discuss possible appointment to the Board of Directors for the 2003 term.
+                  direction: Outbound
+                  end_time: '14:00'
+                  location: Arthur's Restaurant
+                  outcome: Successful
+                  priority: Normal
+                  start_time: '12:00'
+                  status: Completed
+                  status_code: Closed
+                  summary: Discuss possible appointment to the Board of Directors for the 2003 term.
+                  type: Lunch Meeting
+        '400':
+          description: Returned when the specified request parameters are not in the appropriate format.
+        '403':
+          description: Returned when the user does not have permission to view the actions.
+      tags:
+      - Actions
+  /actions/attachments:
+    post:
+      operationId: CreateActionAttachment
+      summary: Action attachment (Create)
+      description: Creates an action attachment.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AttachmentAdd'
+            example:
+              date: '2017-07-21T04:00:00Z'
+              name: Lunch Menu
+              parent_id: '412'
+              tags:
+              - Lunch
+              type: Link
+              url: http://www.example.com/lunchmeeting/menu
+        description: An object that represents the attachment to create.
+      responses:
+        '200':
+          description: Returned when the operation successfully creates an attachment. The response body contains the ID of the new attachment.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse'
+              example:
+                id: '1281'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+        '403':
+          description: Returned when the user does not have permission to create the attachment.
+        '404':
+          description: Returned when the specified action is not found.
+      tags:
+      - Actions
+  /actions/attachments/{attachment_id}:
+    delete:
+      operationId: DeleteActionAttachment
+      summary: Action attachment (Delete)
+      description: Deletes an action attachment.
+      parameters:
+      - name: attachment_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The immutable system record ID of the attachment to delete.
+      responses:
+        '200':
+          description: Returned when the operation successfully deletes the attachment.
+        '400':
+          description: Returned when the specified attachment ID in the request URL is not in the appropriate format.
+        '403':
+          description: Returned when the user does not have permission to delete the attachment.
+      tags:
+      - Actions
+    patch:
+      operationId: EditActionAttachment
+      summary: Action attachment (Edit)
+      description: Edits an action attachment.
+      parameters:
+      - name: attachment_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The immutable system record ID of the attachment to edit.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AttachmentEdit'
+            example:
+              date: '2015-01-25T04:00:00Z'
+              tags:
+              - Gluten Free
+              - Lunch
+              url: www.example.com/updatedLunchMenu
+        description: An object that represents the properties of the attachment to edit.
+      responses:
+        '200':
+          description: Returned when the operation successfully edits the attachment.
+        '400':
+          description: Returned when the specified attachment ID in the request URL or the specified request parameters are not in the appropriate format.
+        '403':
+          description: Returned when the user does not have permission to edit the attachment.
+        '404':
+          description: Returned when the specified attachment is not found.
+      tags:
+      - Actions
+  /actions/customfields:
+    post:
+      operationId: CreateActionCustomField
+      summary: Action custom field (Create)
+      description: Creates an action custom field.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomFieldAdd'
+            example:
+              category: Left Message?
+              comment: We left a message not expecting a response
+              date: '2016-07-21T00:00:00Z'
+              parent_id: '1370'
+              value: true
+        description: An object that represents the custom field to create.
+      responses:
+        '200':
+          description: Returned when the operation successfully creates a custom field. The response body contains the ID of the new custom field.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse'
+              example:
+                id: '1281'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+        '403':
+          description: Returned when the user does not have permission to create the custom field.
+        '404':
+          description: Returned when the specified action is not found.
+      tags:
+      - Actions
+  /actions/customfields/categories:
+    get:
+      operationId: ListActionCustomFieldCategories
+      summary: Action custom field categories
+      description: Returns a list of custom field categories. This endpoint is deprecated. For more detailed custom field category information, use the Custom field category details endpoint instead.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a <a href="https://developer.blackbaud.com/skyapi/api/entity-reference/constituent#Collection">collection</a> of string custom field categories.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiCollectionOfString'
+              example:
+                count: 6
+                value:
+                - Attended?
+                - Guest Name
+                - Interest Generated?
+                - Left Message?
+                - Responded?
+                - Talking Points
+        '403':
+          description: Returned when the user does not have permission to view the custom field categories.
+      tags:
+      - Actions
+  /actions/customfields/categories/details:
+    get:
+      operationId: ListActionCustomFieldCategoryDetails
+      summary: Action custom field category details
+      description: Returns a list of custom field category details.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a <a href="https://developer.blackbaud.com/skyapi/api/entity-reference/constituent#Collection">collection</a> of <a href="https://developer.blackbaud.com/skyapi/api/entity-reference/constituent#CustomFieldCategory">custom field categories</a>.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiCollectionOfCustomFieldCategoryRead'
+              example:
+                count: 8
+                value:
+                - name: '# of Family Members'
+                  type: Number
+                - name: Anniversary
+                  type: Date
+                - name: Interest Generated?
+                  type: CodeTableEntry
+                - name: Business Hours
+                  type: Text
+                - name: Staff Manager
+                  type: ConstituentId
+                - name: Attended?
+                  type: Boolean
+                - name: Member Since
+                  type: FuzzyDate
+                - name: Net Worth
+                  type: Currency
+        '403':
+          description: Returned when the user does not have permission to view the custom field category details.
+      tags:
+      - Actions
+  /actions/customfields/categories/values:
+    get:
+      operationId: ListActionCustomFieldCategoryValues
+      summary: Action custom field category values
+      description: Returns a list of custom field values for code table categories.
+      parameters:
+      - name: category_name
+        in: query
+        required: false
+        schema:
+          type: string
+        description: The name of the code table category to return values for.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a <a href="https://developer.blackbaud.com/skyapi/api/entity-reference/constituent#Collection">collection</a> of string custom field category values.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiCollectionOfString'
+              example:
+                count: 3
+                value:
+                - 'Yes'
+                - 'No'
+                - At a later date
+        '400':
+          description: Returned when the specified request parameter is not in the appropriate format.
+        '403':
+          description: Returned when the user does not have permission to view the custom field category values.
+      tags:
+      - Actions
+  /actions/customfields/{custom_field_id}:
+    delete:
+      operationId: DeleteActionCustomField
+      summary: Action custom field (Delete)
+      description: Deletes an action custom field.
+      parameters:
+      - name: custom_field_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The immutable system record ID of the custom field to delete.
+      responses:
+        '200':
+          description: Returned when the operation successfully deletes the custom field.
+        '400':
+          description: Returned when the specified custom field ID in the request URL is not in the appropriate format.
+        '403':
+          description: Returned when the user does not have permission to delete the custom field.
+      tags:
+      - Actions
+    patch:
+      operationId: EditActionCustomField
+      summary: Action custom field (Edit)
+      description: Edits an action custom field.
+      parameters:
+      - name: custom_field_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The immutable system record ID of the custom field to edit.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomFieldEdit'
+            example:
+              comment: He requested to not be contacted
+              date: '2016-07-21T00:00:00Z'
+              value: false
+        description: An object that represents the properties of the custom field to edit.
+      responses:
+        '200':
+          description: Returned when the operation successfully edits the custom field.
+        '400':
+          description: Returned when the specified custom field ID in the request URL or the specified request parameters are not in the appropriate format.
+        '403':
+          description: Returned when the user does not have permission to edit the custom field.
+        '404':
+          description: Returned when the specified custom field is not found.
+      tags:
+      - Actions
+  /actions/notes:
+    post:
+      operationId: CreateActionNote
+      summary: Action note (Create)
+      description: Creates an action note.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ParentedNoteAdd'
+            example:
+              constituent_id: '280'
+              date:
+                d: 25
+                m: 8
+                y: 2015
+              summary: Trivia
+              text: Dr. Hernandez is an avid Trekkie who frequently quotes Captain Kirk in his lectures.
+              type: Personal
+        description: An object that represents the note to create.
+      responses:
+        '200':
+          description: Returned when the operation successfully creates a note. The response body contains the ID of the new note.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse'
+              example:
+                id: '1281'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+        '403':
+          description: Returned when the user does not have permission to create the note.
+        '404':
+          description: Returned when the specified action is not found.
+      tags:
+      - Actions
+  /actions/notes/{note_id}:
+    delete:
+      operationId: DeleteActionNote
+      summary: Action note (Delete)
+      description: Deletes an action note.
+      parameters:
+      - name: note_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The immutable system record ID of the note to delete.
+      responses:
+        '200':
+          description: Returned when the operation successfully deletes the note.
+        '400':
+          description: Returned when the specified note ID in the request URL is not in the appropriate format.
+        '403':
+          description: Returned when the user does not have permission to delete the note.
+      tags:
+      - Actions
+    patch:
+      operationId: EditActionNote
+      summary: Action note (Edit)
+      description: Edits an action note.
+      parameters:
+      - name: note_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The immutable system record ID of the note to edit.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ParentedNoteEdit'
+            example:
+              date:
+                d: 25
+                m: 8
+                y: 2015
+              summary: Trivia
+              text: Dr. Hernandez is an avid Trekkie who frequently quotes Mister Spock in his lectures.
+              type: Personal
+        description: An object that represents the properties of the note to edit.
+      responses:
+        '200':
+          description: Returned when the operation successfully edits the note.
+        '400':
+          description: Returned when the specified note ID in the request URL or the specified request parameters are not in the appropriate format.
+        '403':
+          description: Returned when the user does not have permission to edit the note.
+        '404':
+          description: Returned when the specified note is not found.
+      tags:
+      - Actions
+    get:
+      operationId: GetActionNote
+      summary: Action note (Get)
+      description: Returns information about an action note.
+      parameters:
+      - name: note_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The immutable system record ID of the note to retrieve information for.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the specified <a href="https://developer.blackbaud.com/skyapi/api/entity-reference/constituent#ParentedNote">note</a> entity.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ParentedNoteRead'
+              example:
+                id: '14'
+                parent_id: '280'
+                date:
+                  d: 5
+                  m: 5
+                  y: 2005
+                summary: Chair selections for next year
+                text: Possible that Dr. Hernandez may step down from the board next year to pursue additional medical research activities.  Schedule lunch date to discuss options.
+                type: Director's Notes
+                type_id: '2'
+        '400':
+          description: Returned when the specified note ID in the request URL is not in the appropriate format.
+        '403':
+          description: Returned when the user does not have permission to view the note.
+        '404':
+          description: Returned when the specified note is not found.
+      tags:
+      - Actions
+  /actions/{action_id}:
+    delete:
+      operationId: DeleteAction
+      summary: Action (Delete)
+      description: Deletes a constituent action.
+      parameters:
+      - name: action_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The immutable system record ID of the action to delete.
+      responses:
+        '200':
+          description: Returned when the operation successfully deletes the action.
+        '400':
+          description: Returned when the specified action ID in the request URL is not in the appropriate format.
+        '403':
+          description: Returned when the user does not have permission to delete the action.
+      tags:
+      - Actions
+    patch:
+      operationId: EditAction
+      summary: Action (Edit)
+      description: Edits a constituent action.
+      parameters:
+      - name: action_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The immutable system record ID of the action to edit.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ActionEdit'
+            example:
+              category: Meeting
+              completed: true
+              completed_date: '2015-08-26T00:00:00Z'
+              date: '2015-08-26T00:00:00Z'
+              description: Had dinner with Dr. Hernandez at Rafferty's
+              direction: Outbound
+              end_time: '21:30'
+              fundraisers:
+              - '252'
+              location: Rafferty's
+              outcome: Successful
+              priority: Normal
+              start_time: '18:30'
+              status: Closed
+              summary: Sushi dinner celebration
+              type: Dinner Meeting
+        description: An object that represents the properties of the action to edit.
+      responses:
+        '200':
+          description: Returned when the operation successfully edits the action.
+        '400':
+          description: Returned when the specified action ID in the request URL body or the specified request parameters are not in the appropriate format.
+        '403':
+          description: Returned when the user does not have permission to edit the action.
+        '404':
+          description: Returned when the specified action is not found.
+      tags:
+      - Actions
+    get:
+      operationId: GetAction
+      summary: Action (Get)
+      description: Returns information about an action.
+      parameters:
+      - name: action_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The immutable system record ID of the action to retrieve information for.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the specified <a href="https://developer.blackbaud.com/skyapi/api/entity-reference/constituent#Action">action</a> entity.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActionRead'
+              example:
+                id: '410'
+                category: Mailing
+                completed: true
+                completed_date: '2009-02-24T00:00:00Z'
+                computed_status: Completed
+                constituent_id: '280'
+                date: '2009-02-19T00:00:00Z'
+                date_added: '1999-10-26T15:45:27.463Z'
+                date_modified: '2004-02-27T18:46:06.237Z'
+                description: Send invitation for Dr. Hernandez to attend our board meetings.  Send schedule of meetings.
+                direction: Outbound
+                end_time: '13:30'
+                fundraisers:
+                - '252'
+                location: Rafferty's
+                outcome: Successful
+                priority: Normal
+                start_time: '12:00'
+                status: Closed
+                status_code: Closed
+                summary: Sent invitation for Dr. Hernandez to attend our board meetings.  Sent schedule of meetings.
+                type: Brochure/Invitation
+        '400':
+          description: Returned when the specified constituent ID in the request URL is not in the appropriate format.
+        '403':
+          description: Returned when the user does not have permission to view the action.
+        '404':
+          description: Returned when the specified action is not found.
+      tags:
+      - Actions
+  /actions/{action_id}/attachments:
+    get:
+      operationId: ListActionAttachmentsSingleAction
+      summary: Action attachment list (Single action)
+      description: Returns a list of attachments for an action.
+      parameters:
+      - name: action_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The immutable system record ID of the action to retrieve attachments for.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a <a href="https://developer.blackbaud.com/skyapi/api/entity-reference/constituent#Collection">collection</a> of <a href="https://developer.blackbaud.com/skyapi/api/entity-reference/constituent#Attachment">attachment</a> entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiCollectionOfAttachmentRead'
+              example:
+                count: 2
+                value:
+                - id: F7AEAD3D-7F86-4B8D-909B-B76706C0DB04
+                  date: '2017-07-21T04:00:00Z'
+                  name: Meeting minutes
+                  parent_id: '1'
+                  tags:
+                  - Document
+                  type: Link
+                  url: http://www.example.com/Meetings/20170721/Notes.docx
+                - id: 5B094C8B-5961-4E7F-B1FE-F13ECFC6F82E
+                  content_type: image/jpeg
+                  date: '2015-01-22T04:00:00Z'
+                  file_id: 5B094C8B-5961-4E7F-B1FE-F13ECFC6F82E
+                  file_name: ActionEvent_Snapshot.jpg
+                  file_size: 125436
+                  name: Action Event Picture
+                  parent_id: '412'
+                  thumbnail_id: 4DF6B36A-3058-4FA9-ACA5-4BCD08E67ACF
+                  thumbnail_url: http://prodsarnxdocmn002blkbrdo.blob.core.windows.net/blackbauddocumentsvc/tenants/a486g1de-73f5-4a81-a4b1-ff353509fbde/documents/4DF6B36A-3058-4FA9-ACA5-4BCD08E67ACF/ActionEvent_Snapshot_thumbnail.jpg?sv=2015-05-17&sr=b&sig=HI0UTKNjiCVB6AtGHBVuCdhgnETbRPYegwb7%2FQyjI%2FU%3D&se=2015-10-15T18%3A25%3A30Z&sp=r
+                  type: Physical
+                  url: http://prodsarnxdocmn002blkbrdo.blob.core.windows.net/blackbauddocumentsvc/tenants/a486g1de-73f5-4a81-a4b1-ff353509fbde/documents/5B094C8B-5961-4E7F-B1FE-F13ECFC6F82E/ActionEvent_Snapshot.jpg?sv=2015-05-17&sr=b&sig=HI0UTKNjiCVB6AtGHBVuCdhgnETbRPYegwb7%2FQyjI%2FU%3D&se=2015-10-15T18%3A25%3A30Z&sp=r
+        '400':
+          description: Returned when the specified action ID in the request URL is not in the appropriate format.
+        '403':
+          description: Returned when the user does not have permission to view the attachments.
+        '404':
+          description: Returned when the specified action is not found.
+      tags:
+      - Actions
+  /actions/{action_id}/customfields:
+    get:
+      operationId: ListActionCustomFieldsSingleAction
+      summary: Action custom field list (Single action)
+      description: Returns a list of custom fields for an action.
+      parameters:
+      - name: action_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The immutable system record ID of the action to retrieve the custom fields for.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a <a href="https://developer.blackbaud.com/skyapi/api/entity-reference/constituent#Collection">collection</a> of <a href="https://developer.blackbaud.com/skyapi/api/entity-reference/constituent#CustomField">custom field</a> entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiCollectionOfCustomFieldRead'
+              example:
+                count: 4
+                value:
+                - id: '281'
+                  category: Interest Generated?
+                  comment: Clearly stated
+                  date: '2016-07-21T00:00:00Z'
+                  parent_id: '1370'
+                  type: CodeTableEntry
+                  value: 'Yes'
+                - id: '282'
+                  category: Attended?
+                  comment: Attends every year
+                  date: '2016-07-21T00:00:00Z'
+                  parent_id: '1370'
+                  type: Boolean
+                  value: true
+                - id: '283'
+                  category: Responded?
+                  comment: Stated previously that he may not reply
+                  date: '2016-07-21T00:00:00Z'
+                  parent_id: '1370'
+                  type: Boolean
+                  value: false
+                - id: '284'
+                  category: Left Message?
+                  comment: We left a message not expecting a response
+                  date: '2016-07-21T00:00:00Z'
+                  parent_id: '1370'
+                  type: Boolean
+                  value: true
+        '400':
+          description: Returned when the specified action ID in the request URL is not in the appropriate format.
+        '403':
+          description: Returned when the user does not have permission to view the custom fields.
+        '404':
+          description: Returned when the specified action is not found.
+      tags:
+      - Actions
+  /actions/{action_id}/notes:
+    get:
+      operationId: ListActionNotesSingleAction
+      summary: Action note list (Single action)
+      description: Returns a list of notes for an action.
+      parameters:
+      - name: action_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The immutable system record ID of the action to retrieve notes for.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a <a href="https://developer.blackbaud.com/skyapi/api/entity-reference/constituent#Collection">collection</a> of <a href="https://developer.blackbaud.com/skyapi/api/entity-reference/constituent#ParentedNote">note</a> entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiCollectionOfParentedNoteRead'
+              example:
+                count: 6
+                value:
+                - id: '12'
+                  parent_id: '280'
+                  date:
+                    m: 6
+                    y: 2007
+                  summary: Vacation
+                  text: Dr. Hernandez has purchased a vacation home in Arizona.  He plans to spend some of the winter months at the home and in addition will open a part-time pediatric clinic in Arizona.
+                  type_id: '5'
+                  type: Address Changes
+                - id: '10'
+                  parent_id: '280'
+                  date:
+                    d: 11
+                    m: 6
+                    y: 2006
+                  summary: Opening of Pediatric Clinic with Partner
+                  text: Dr. Hernandez plans to leave the pharmaceutical company to open a practice with his former colleague and friend.  There will be an opening day that he will offer free pediatric exams to certain areas of town.
+                  type_id: '3'
+                  type: Career
+                - id: '14'
+                  parent_id: '280'
+                  date:
+                    d: 5
+                    m: 6
+                    y: 2005
+                  summary: Chair selections for next year
+                  text: Possible that Dr. Hernandez may step down from the board next year to pursue additional medical research activities.  Schedule lunch date to discuss options.
+                  type_id: '1'
+                  type: Director's Notes
+                - id: '13'
+                  parent_id: '280'
+                  date:
+                    d: 30
+                    m: 8
+                    y: 2003
+                  summary: Lunch with Wendy (Dr. Hernandez's wife)
+                  text: Saw Wendy downtown at a conference this afternoon.  Asked her to lunch.  We ate at The Macaroni Grill.
+                  type_id: '6'
+                  type: Personal
+                - id: '11'
+                  parent_id: '280'
+                  date:
+                    m: 6
+                    y: 2002
+                  summary: Volunteer solicitors vs. Staff
+                  text: Lane is a golfing parter with Dr. Hernandez and they have established a friendly relationship.  He will take over as the main solicitor for this account next year.  Audrey will still be the staff solicitor.
+                  type_id: '9'
+                  type: Prospect
+                - id: '9'
+                  parent_id: '280'
+                  date:
+                    d: 6
+                    m: 1
+                    y: 2000
+                  summary: Possible Major Donor
+                  text: Dr. Hernandez spoke at the North American Pediatric Society in San Francisco.  Fifteen minutes of his speech was devoted to medical research and his effort to make donations of time or money for hospitals and charitable societies to continue the research trend.  He will be in town in two months and will speak at The Children's Hospital.
+                  type_id: '9'
+                  type: Prospect
+        '400':
+          description: Returned when the specified action ID in the request URL is not in the appropriate format.
+        '403':
+          description: Returned when the user does not have permission to view the notes.
+        '404':
+          description: Returned when the specified action is not found.
+      tags:
+      - Actions
+components:
+  schemas:
+    CustomFieldAdd:
+      description: While records provide many fields to track information, organizations often require additional details. To track this specialized information, use custom fields.
+      required:
+      - category
+      type: object
+      properties:
+        category:
+          description: The custom field category. Available values are the entries in the <b>Custom Field Categories</b> table of the parent object.
+          type: string
+        comment:
+          description: 'The comment on the custom field. Character limit: 50.'
+          maxLength: 50
+          minLength: 0
+          type: string
+        date:
+          format: date-time
+          description: The date on the custom field. Uses <a href="https://tools.ietf.org/html/rfc3339">ISO-8601 format:</a><i>1969-11-21T10:29:43</i>.
+          type: string
+          x-supports-datetime-offset: false
+        parent_id:
+          description: The parent object's immutable system record ID.
+          type: string
+        value:
+          description: The value of the custom field. The <code>type</code> property determines the format. Character limit depends on data type. Number types only support values greater than 0.
+          type: object
+      x-hidden: true
+      x-display-name: Create custom field
+      x-display-id: CreateCustomField
+      x-additional-info: "<a name=\"CustomFieldTypes\"></a>\n<p>&nbsp;</p>\n<p>\n    Available values for the <b>type</b> of a <b>custom field</b>:\n</p>\n\n<div class=\"table-responsive\">\n    <table class=\"table table-striped table-hover\">\n        <thead>\n            <tr>\n                <th class=\"col-xs-3\"><strong>Type</strong></th>\n                <th class=\"col-xs-9\"><strong>Description</strong></th>\n            </tr>\n        </thead>\n        <tbody>\n            <tr>\n                <td>Boolean</td>\n                <td>Defines the custom field as a boolean value.</td>\n            </tr>\n            <tr>\n                <td>CodeTableEntry</td>\n                <td>Defines the custom field as a string value that represents a code table entry description.</td>\n            </tr>\n            <tr>\n                <td>ConstituentId</td>\n                <td>Defines the custom field as a constituent identifier value.</td>\n            </tr>\n            <tr>\n                <td>Currency</td>\n                <td>Defines the custom field as a decimal value.</td>\n            </tr>\n            <tr>\n                <td>Date</td>\n                <td>\n                    Defines the custom field as a date value in <a href=\"https://tools.ietf.org/html/rfc3339\">ISO-8601 format:</a> <i>1969-11-21T10:29:43</i>.\n                </td>\n            </tr>\n            <tr>\n                <td>FuzzyDate</td>\n                <td>\n                    Defines the custom field as a fuzzy date value.\n                </td>\n            </tr>\n            <tr>\n                <td>Number</td>\n                <td>Defines the custom field as an integer value.</td>\n            </tr>\n            <tr>\n                <td>Text</td>\n                <td>Defines the custom field as a string value. Character limit: 255.</td>\n            </tr>\n        </tbody>\n    </table>\n</div>"
+    ApiCollectionOfCustomFieldCategoryRead:
+      description: Fetching data all at once quickly becomes unmanageable. The collection entity helps by returning paginated chunks of large data sets. This entity includes helpful metadata and properties to paginate and iterate through the data.
+      type: object
+      properties:
+        count:
+          format: int32
+          description: The number of items available for retrieval into the collection after applying any request parameters. The <b>limit</b> and <b>offset</b> parameters do not affect the <b>count</b>, but to facilitate paging, they may affect the number of items in the <b>value</b> result set.
+          type: integer
+        next_link:
+          description: For paginated responses, the URI for the next page of results.
+          type: string
+        value:
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomFieldCategoryRead'
+      x-hidden: true
+      x-base-type: '#/definitions/ApiCollection'
+    ActionEdit:
+      description: Actions track the interactions and tasks that are required to secure gifts and cultivate relationships with constituents.
+      type: object
+      properties:
+        category:
+          description: The channel or intent of the constituent interaction. Available values are <i>Phone Call</i>, <i>Meeting</i>, <i>Mailing</i>, <i>Email</i>, and <i>Task/Other</i>. This property cannot be set to null.
+          type: string
+        completed:
+          description: Indicates whether the action is complete. If the system is configured to use custom action statuses, this value is based on the action status value. This property defaults to <i>false</i> if no value is provided.
+          type: boolean
+        completed_date:
+          format: date-time
+          description: 'The date when the action was completed. Uses <a href="https://tools.ietf.org/html/rfc3339">ISO-8601 format: </a><i>1969-11-21T10:29:43</i>.'
+          type: string
+          x-supports-datetime-offset: false
+        date:
+          format: date-time
+          description: 'The action date. Uses <a href="https://tools.ietf.org/html/rfc3339">ISO-8601 format: </a><i>1969-11-21T10:29:43</i>. This property cannot be set to null.'
+          type: string
+          x-supports-datetime-offset: false
+        description:
+          description: The detailed explanation that elaborates on the action summary.
+          type: string
+        direction:
+          description: The direction of the action. Available values are <i>Inbound</i> and <i>Outbound</i>.
+          enum:
+          - Inbound
+          - Outbound
+          type: string
+        end_time:
+          description: The end time of the action. Uses 24-hour time in the <i>HH:mm</i> format. For example, 17:30 represents 5:30 p.m.
+          type: string
+        fundraisers:
+          description: The set of immutable constituent system record IDs for the fundraisers associated with the action.
+          type: array
+          items:
+            type: string
+        location:
+          description: The location of the action. Available values are the entries in the <a href="https://developer.sky.blackbaud.com/docs/services/56b76470069a0509c8f1c5b3/operations/ListActionLocations"><b>Action Locations</b></a> table.
+          type: string
+        opportunity_id:
+          description: The immutable system record ID of the opportunity associated with the action.
+          type: string
+        outcome:
+          description: The outcome of the action. Available values are <i>Successful</i> and <i>Unsuccessful</i>.
+          enum:
+          - Successful
+          - Unsuccessful
+          type: string
+        priority:
+          description: The priority of the action. Available values are <i>Normal</i>, <i>High</i>, and <i>Low</i>. The default is <i>Normal</i>.
+          enum:
+          - Normal
+          - High
+          - Low
+          type: string
+        start_time:
+          description: The start time of the action. Uses 24-hour time in the <i>HH:mm</i> format. For example, 17:30 represents 5:30 p.m.
+          type: string
+        status:
+          description: 'The action status. If the system is configured to use custom action statuses, available values are the entries in the <a href="https://developer.sky.blackbaud.com/docs/services/56b76470069a0509c8f1c5b3/operations/ListActionStatusTypes"><b>Action Status</b></a> table. If not, this field computes the status based on the <code>completed</code> and <code>date</code> properties: If an action is not completed and has a current or future date, the status is Open; if an action is not completed and has a past date, the status is Past due; and if an action is completed, the status is Completed.'
+          type: string
+        summary:
+          description: 'The short description of the action that appears at the top of the record. Character limit: 255.'
+          maxLength: 255
+          minLength: 0
+          type: string
+        type:
+          description: Additional description of the action to complement the category. Available values are the entries in the <a href="https://developer.sky.blackbaud.com/docs/services/56b76470069a0509c8f1c5b3/operations/ListActionTypes"><b>Actions</b></a> table.
+          type: string
+        campaign_id:
+          description: The immutable system record ID of the campaign associated with the action. For a list of valid campaigns, see the <a href="https://developer.sky.blackbaud.com/docs/services/58bdd6b2d7dcde06046081d7/operations/ListCampaigns"><b>Fundraising (Campaign)</b></a> API.
+          type: string
+        fund_id:
+          description: The immutable system record ID of the fund associated with the action. For a list of valid funds, see the <a href="https://developer.sky.blackbaud.com/docs/services/58bdd6b2d7dcde06046081d7/operations/ListFunds"><b>Fundraising (Fund)</b></a> API.
+          type: string
+        appeal_id:
+          description: The immutable system record ID of the appeal associated with the action. For a list of valid appeals, see the <a href="https://developer.sky.blackbaud.com/docs/services/58bdd6b2d7dcde06046081d7/operations/ListAppeals"><b>Fundraising (Appeal)</b></a> API.
+          type: string
+        issue:
+          description: The issue associated with the action. Available values are the entries in the <a href="https://developer.sky.blackbaud.com/docs/services/56b76470069a0509c8f1c5b3/operations/ListCodeTableEntries"><b>Action Issues</b></a> code table.
+          type: string
+        letter_code:
+          description: The letter code associated with the action. Available values are the entries in the <a href="https://developer.sky.blackbaud.com/docs/services/56b76470069a0509c8f1c5b3/operations/ListCodeTableEntries"><b>Action Letter Codes</b></a> code table.
+          type: string
+      x-hidden: true
+      x-display-name: Edit action
+      x-display-id: EditAction
+    ApiCollectionOfParentedNoteRead:
+      description: Fetching data all at once quickly becomes unmanageable. The collection entity helps by returning paginated chunks of large data sets. This entity includes helpful metadata and properties to paginate and iterate through the data.
+      type: object
+      properties:
+        count:
+          format: int32
+          description: The number of items available for retrieval into the collection after applying any request parameters. The <b>limit</b> and <b>offset</b> parameters do not affect the <b>count</b>, but to facilitate paging, they may affect the number of items in the <b>value</b> result set.
+          type: integer
+        next_link:
+          description: For paginated responses, the URI for the next page of results.
+          type: string
+        value:
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+          type: array
+          items:
+            $ref: '#/components/schemas/ParentedNoteRead'
+      x-hidden: true
+      x-base-type: '#/definitions/ApiCollection'
+    FuzzyDate:
+      description: Fuzzy dates provide a versatile date type to create partial dates such as February 9 (with no year indicated).
+      type: object
+      properties:
+        d:
+          format: int32
+          description: The day in the fuzzy date.
+          type: integer
+        m:
+          format: int32
+          description: The month in the fuzzy date.
+          type: integer
+        y:
+          format: int32
+          description: The year in the fuzzy date.
+          type: integer
+      x-display-name: Fuzzy date
+      x-display-id: FuzzyDate
+    ActionRead:
+      description: Actions track the interactions and tasks that are required to secure gifts and cultivate relationships with constituents.
+      type: object
+      properties:
+        id:
+          description: The immutable system record ID of the action.
+          type: string
+        category:
+          description: The channel or intent of the constituent interaction. Available values are <i>Phone Call</i>, <i>Meeting</i>, <i>Mailing</i>, <i>Email</i>, and <i>Task/Other</i>.
+          type: string
+        completed:
+          description: Indicates whether the action is complete. If the system is configured to use custom action statuses, this value is based on the action status value. This property defaults to <i>false</i> if no value is provided.
+          type: boolean
+        completed_date:
+          format: date-time
+          description: 'The date when the action was completed. Uses <a href="https://tools.ietf.org/html/rfc3339">ISO-8601 format: </a><i>1969-11-21T10:29:43</i>.'
+          type: string
+          x-supports-datetime-offset: false
+        computed_status:
+          description: The computed action status. If the system is not configured to use custom action statuses, this field computes the status based on the <code>completed</code> and <code>date</code> properties. If not, the field calculates the status based on the action's date property and whether action's <code>Action Status</code> property is configured as completed.
+          enum:
+          - Open
+          - Completed
+          - PastDue
+          type: string
+        constituent_id:
+          description: The immutable system record ID of the constituent associated with the action.
+          type: string
+        date:
+          format: date-time
+          description: 'The action date. Uses <a href="https://tools.ietf.org/html/rfc3339">ISO-8601 format: </a><i>1969-11-21T10:29:43</i>.'
+          type: string
+          x-supports-datetime-offset: false
+        date_added:
+          format: date-time
+          description: 'The date when the action was created. Includes an offset from UTC in <a href="https://tools.ietf.org/html/rfc3339">ISO-8601 format: </a><i>1969-11-21T10:29:43-04:00</i>.'
+          type: string
+          x-supports-datetime-offset: true
+        date_modified:
+          format: date-time
+          description: 'The date when the action was last modified. Includes an offset from UTC in <a href="https://tools.ietf.org/html/rfc3339">ISO-8601 format: </a><i>1969-11-21T10:29:43-04:00</i>.'
+          type: string
+          x-supports-datetime-offset: true
+        description:
+          description: The detailed explanation that elaborates on the action summary.
+          type: string
+        direction:
+          description: The direction of the action. Available values are <i>Inbound</i> and <i>Outbound</i>.
+          enum:
+          - Inbound
+          - Outbound
+          type: string
+        end_time:
+          description: The end time of the action. Uses 24-hour time in the <i>HH:mm</i> format. For example, 17:30 represents 5:30 p.m.
+          type: string
+        fundraisers:
+          description: The set of immutable constituent system record IDs for the fundraisers associated with the action.
+          type: array
+          items:
+            type: string
+        location:
+          description: The location of the action. Available values are the entries in the <a href="https://developer.sky.blackbaud.com/docs/services/56b76470069a0509c8f1c5b3/operations/ListActionLocations"><b>Action Locations</b></a> table.
+          type: string
+        opportunity_id:
+          description: The immutable system record ID of the opportunity associated with the action.
+          type: string
+        outcome:
+          description: The outcome of the action. Available values are <i>Successful</i> and <i>Unsuccessful</i>.
+          enum:
+          - Successful
+          - Unsuccessful
+          type: string
+        priority:
+          description: The priority of the action. Available values are <i>Normal</i>, <i>High</i>, and <i>Low</i>. The default is <i>Normal</i>.
+          enum:
+          - Normal
+          - High
+          - Low
+          type: string
+        start_time:
+          description: The start time of the action. Uses 24-hour time in the <i>HH:mm</i> format. For example, 17:30 represents 5:30 p.m.
+          type: string
+        status:
+          description: 'The action status. If the system is configured to use custom action statuses, available values are the entries in the <a href="https://developer.sky.blackbaud.com/docs/services/56b76470069a0509c8f1c5b3/operations/ListActionStatusTypes"><b>Action Status</b></a> table. If not, this field computes the status based on the <code>completed</code> and <code>date</code> properties: If an action is not completed and has a current or future date, the status is Open; if an action is not completed and has a past date, the status is Past due; and if an action is completed, the status is Completed.'
+          type: string
+        status_code:
+          description: The action status code. Available values are in the <a href="https://developer.sky.blackbaud.com/docs/services/56b76470069a0509c8f1c5b3/operations/ListActionStatusTypes"><b>Action Status</b></a> table. This property is only returned when the system is configured to use custom action statuses.
+          type: string
+        summary:
+          description: The short description of the action that appears at the top of the record.
+          type: string
+        type:
+          description: Additional description of the action to complement the category. Available values are the entries in the <a href="https://developer.sky.blackbaud.com/docs/services/56b76470069a0509c8f1c5b3/operations/ListActionTypes"><b>Actions</b></a> table.
+          type: string
+        campaign_id:
+          description: The immutable system record ID of the campaign associated with the action. For a list of valid campaigns, see the <a href="https://developer.sky.blackbaud.com/docs/services/58bdd6b2d7dcde06046081d7/operations/ListCampaigns"><b>Fundraising (Campaign)</b></a> API.
+          type: string
+        fund_id:
+          description: The immutable system record ID of the fund associated with the action. For a list of valid funds, see the <a href="https://developer.sky.blackbaud.com/docs/services/58bdd6b2d7dcde06046081d7/operations/ListFunds"><b>Fundraising (Fund)</b></a> API.
+          type: string
+        appeal_id:
+          description: The immutable system record ID of the appeal associated with the action. For a list of valid appeals, see the <a href="https://developer.sky.blackbaud.com/docs/services/58bdd6b2d7dcde06046081d7/operations/ListAppeals"><b>Fundraising (Appeal)</b></a> API.
+          type: string
+        issue:
+          description: The issue associated with the action. Available values are the entries in the <a href="https://developer.sky.blackbaud.com/docs/services/56b76470069a0509c8f1c5b3/operations/ListCodeTableEntries"><b>Action Issues</b></a> code table.
+          type: string
+        letter_code:
+          description: The letter code associated with the action. Available values are the entries in the <a href="https://developer.sky.blackbaud.com/docs/services/56b76470069a0509c8f1c5b3/operations/ListCodeTableEntries"><b>Action Letter Codes</b></a> code table.
+          type: string
+      x-display-name: Action
+      x-display-id: Action
+    AttachmentAdd:
+      description: Many cultivation activities collect related collateral, such as correspondence and prospect research. Attachments can save this data on the appropriate record to maintain a complete view of those activities.
+      required:
+      - parent_id
+      - type
+      type: object
+      properties:
+        date:
+          format: date-time
+          description: The date of the attachment. Uses <a href="https://tools.ietf.org/html/rfc3339">ISO-8601 format:</a><i>1969-11-21T10:29:43-04:00</i>. This property defaults to the current date and time if not supplied.
+          type: string
+          x-supports-datetime-offset: true
+        file_id:
+          description: 'The identifier of the file. Character limit: 36. For physical attachments only.'
+          maxLength: 36
+          minLength: 0
+          type: string
+        file_name:
+          description: The name of the file. For physical attachments only.
+          type: string
+        name:
+          description: 'The name of the attachment. Character limit: 150.'
+          maxLength: 150
+          minLength: 0
+          type: string
+        parent_id:
+          description: The parent object's immutable system record ID.
+          type: string
+        tags:
+          description: 'The tags associated with the attachment. Tags supplement the attachment’s name and description and identify it based on how an organization categorizes attachments. Available values are the entries in the <b>Document Tags</b> table. Character limit: 100.'
+          type: array
+          items:
+            type: string
+        thumbnail_id:
+          description: 'The identifier of the thumbnail. Character limit: 36. For physical attachments only.'
+          maxLength: 36
+          minLength: 0
+          type: string
+        type:
+          description: The attachment type. Available values are <i>Link</i> and <i>Physical</i>. Physical attachments are uploaded files such as images, PDFs, or Word documents that are saved locally or on the network. They are stored and managed in the system. Link attachments are links to files such as images, blog posts, or YouTube videos that are online or in a cloud storage account. They are stored and managed externally.
+          enum:
+          - Link
+          - Physical
+          type: string
+        url:
+          description: The URL for the attachment. This is required for link attachments but does not apply to physical attachments.
+          type: string
+      x-hidden: true
+      x-display-name: Add attachment
+      x-display-id: AddAttachment
+    ParentedNoteAdd:
+      description: Notes track helpful or important details about constituents, gifts, or actions, such as specific interests and special instructions for donations. Notes connect you with donors at a more personal level as you cultivate relationships and track lessons learned for more effective fundraising.
+      required:
+      - parent_id
+      - date
+      - type
+      type: object
+      properties:
+        parent_id:
+          description: The immutable system record ID of the record associated with the note.
+          type: string
+        date:
+          $ref: '#/components/schemas/FuzzyDate'
+          description: The note date.
+        summary:
+          description: 'The note summary. Character limit: 255.'
+          maxLength: 255
+          minLength: 0
+          type: string
+        text:
+          description: The note's contents.
+          type: string
+        type:
+          description: The note type. Available values are the entries in the <a href="https://developer.sky.blackbaud.com/docs/services/56b76470069a0509c8f1c5b3/operations/codetables_gettableentriesbyid">Code table API using the <b>Notepad Types</b> table ID</a>.
+          type: string
+        author:
+          description: 'The note author. If not supplied, will have a default set based on the user''s account. Character limit: 50.'
+          maxLength: 50
+          minLength: 0
+          type: string
+      x-hidden: true
+      x-display-name: Create record note
+      x-display-id: CreateRecordNote
+    ApiCollectionOfString:
+      description: Fetching data all at once quickly becomes unmanageable. The collection entity helps by returning paginated chunks of large data sets. This entity includes helpful metadata and properties to paginate and iterate through the data.
+      type: object
+      properties:
+        count:
+          format: int32
+          description: The number of items available for retrieval into the collection after applying any request parameters. The <b>limit</b> and <b>offset</b> parameters do not affect the <b>count</b>, but to facilitate paging, they may affect the number of items in the <b>value</b> result set.
+          type: integer
+        next_link:
+          description: For paginated responses, the URI for the next page of results.
+          type: string
+        value:
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+          type: array
+          items:
+            type: string
+      x-hidden: true
+      x-base-type: '#/definitions/ApiCollection'
+    CustomFieldRead:
+      description: While records provide many fields to track information, organizations often require additional details. To track this specialized information, use custom fields.
+      type: object
+      properties:
+        id:
+          description: The immutable system record ID of the custom field.
+          type: string
+        category:
+          description: The custom field category. Available values are the entries in the <b>Custom Field Categories</b> table of the parent object.
+          type: string
+        comment:
+          description: The comment on the custom field.
+          type: string
+        date:
+          format: date-time
+          description: The date on the custom field. Uses <a href="https://tools.ietf.org/html/rfc3339">ISO-8601 format:</a><i>1969-11-21T10:29:43</i>.
+          type: string
+          x-supports-datetime-offset: false
+        date_added:
+          format: date-time
+          description: The date when the custom field was created. The date includes an offset from UTC in <a href="https://tools.ietf.org/html/rfc3339">ISO-8601 format:</a><i>1969-11-21T10:29:43-04:00</i>.
+          type: string
+          x-supports-datetime-offset: true
+        date_modified:
+          format: date-time
+          description: The date when the custom field was last modified. The date includes an offset from UTC in <a href="https://tools.ietf.org/html/rfc3339">ISO-8601 format:</a><i>1969-11-21T10:29:43-04:00</i>.
+          type: string
+          x-supports-datetime-offset: true
+        parent_id:
+          description: The parent object's immutable system record ID.
+          type: string
+        type:
+          description: The type of data that the custom field represents. Available values are listed below.
+          enum:
+          - Text
+          - Number
+          - Date
+          - Currency
+          - Boolean
+          - CodeTableEntry
+          - ConstituentId
+          - FuzzyDate
+          type: string
+        value:
+          description: The value of the custom field. The <code>type</code> property determines the format.
+          type: object
+      x-display-name: Custom field
+      x-display-id: CustomField
+      x-additional-info: "<a name=\"CustomFieldTypes\"></a>\n<p>&nbsp;</p>\n<p>\n    Available values for the <b>type</b> of a <b>custom field</b>:\n</p>\n\n<div class=\"table-responsive\">\n    <table class=\"table table-striped table-hover\">\n        <thead>\n            <tr>\n                <th class=\"col-xs-3\"><strong>Type</strong></th>\n                <th class=\"col-xs-9\"><strong>Description</strong></th>\n            </tr>\n        </thead>\n        <tbody>\n            <tr>\n                <td>Boolean</td>\n                <td>Defines the custom field as a boolean value.</td>\n            </tr>\n            <tr>\n                <td>CodeTableEntry</td>\n                <td>Defines the custom field as a string value that represents a code table entry description.</td>\n            </tr>\n            <tr>\n                <td>ConstituentId</td>\n                <td>Defines the custom field as a constituent identifier value.</td>\n            </tr>\n            <tr>\n                <td>Currency</td>\n                <td>Defines the custom field as a decimal value.</td>\n            </tr>\n            <tr>\n                <td>Date</td>\n                <td>\n                    Defines the custom field as a date value in <a href=\"https://tools.ietf.org/html/rfc3339\">ISO-8601 format:</a> <i>1969-11-21T10:29:43</i>.\n                </td>\n            </tr>\n            <tr>\n                <td>FuzzyDate</td>\n                <td>\n                    Defines the custom field as a fuzzy date value.\n                </td>\n            </tr>\n            <tr>\n                <td>Number</td>\n                <td>Defines the custom field as an integer value.</td>\n            </tr>\n            <tr>\n                <td>Text</td>\n                <td>Defines the custom field as a string value. Character limit: 255.</td>\n            </tr>\n        </tbody>\n    </table>\n</div>"
+    ActionAdd:
+      description: Actions track the interactions and tasks that are required to secure gifts and cultivate relationships with constituents.
+      required:
+      - category
+      - constituent_id
+      - date
+      type: object
+      properties:
+        category:
+          description: The channel or intent of the constituent interaction. Available values are <i>Phone Call</i>, <i>Meeting</i>, <i>Mailing</i>, <i>Email</i>, and <i>Task/Other</i>.
+          type: string
+        completed:
+          description: Indicates whether the action is complete. If the system is configured to use custom action statuses, this value is based on the action status value. This property defaults to <i>false</i> if no value is provided.
+          type: boolean
+        completed_date:
+          format: date-time
+          description: 'The date when the action was completed. Uses <a href="https://tools.ietf.org/html/rfc3339">ISO-8601 format: </a><i>1969-11-21T10:29:43</i>.'
+          type: string
+          x-supports-datetime-offset: false
+        constituent_id:
+          description: The immutable system record ID of the constituent associated with the action.
+          type: string
+        date:
+          format: date-time
+          description: 'The action date. Uses <a href="https://tools.ietf.org/html/rfc3339">ISO-8601 format: </a><i>1969-11-21T10:29:43</i>.'
+          type: string
+          x-supports-datetime-offset: false
+        description:
+          description: The detailed explanation that elaborates on the action summary.
+          type: string
+        direction:
+          description: The direction of the action. Available values are <i>Inbound</i> and <i>Outbound</i>.
+          enum:
+          - Inbound
+          - Outbound
+          type: string
+        end_time:
+          description: The end time of the action. Uses 24-hour time in the <i>HH:mm</i> format. For example, 17:30 represents 5:30 p.m.
+          type: string
+        fundraisers:
+          description: The set of immutable constituent system record IDs for the fundraisers associated with the action.
+          type: array
+          items:
+            type: string
+        location:
+          description: The location of the action. Available values are the entries in the <a href="https://developer.sky.blackbaud.com/docs/services/56b76470069a0509c8f1c5b3/operations/ListActionLocations"><b>Action Locations</b></a> table.
+          type: string
+        opportunity_id:
+          description: The immutable system record ID of the opportunity associated with the action.
+          type: string
+        outcome:
+          description: The outcome of the action. Available values are <i>Successful</i> and <i>Unsuccessful</i>.
+          enum:
+          - Successful
+          - Unsuccessful
+          type: string
+        priority:
+          description: The priority of the action. Available values are <i>Normal</i>, <i>High</i>, and <i>Low</i>. The default is <i>Normal</i>.
+          enum:
+          - Normal
+          - High
+          - Low
+          type: string
+        start_time:
+          description: The start time of the action. Uses 24-hour time in the <i>HH:mm</i> format. For example, 17:30 represents 5:30 p.m.
+          type: string
+        status:
+          description: 'The action status. If the system is configured to use custom action statuses, available values are the entries in the <a href="https://developer.sky.blackbaud.com/docs/services/56b76470069a0509c8f1c5b3/operations/ListActionStatusTypes"><b>Action Status</b></a> table. If not, this field computes the status based on the <code>completed</code> and <code>date</code> properties: If an action is not completed and has a current or future date, the status is Open; if an action is not completed and has a past date, the status is Past due; and if an action is completed, the status is Completed.'
+          type: string
+        summary:
+          description: 'The short description of the action that appears at the top of the record. Character limit: 255.'
+          maxLength: 255
+          minLength: 0
+          type: string
+        type:
+          description: Additional description of the action to complement the category. Available values are the entries in the <a href="https://developer.sky.blackbaud.com/docs/services/56b76470069a0509c8f1c5b3/operations/ListActionTypes"><b>Actions</b></a> table.
+          type: string
+        author:
+          description: 'The author of the action''s summary and description. If not supplied, will have a default set based on the user''s account. Character limit: 50.'
+          maxLength: 50
+          minLength: 0
+          type: string
+        campaign_id:
+          description: The immutable system record ID of the campaign associated with the action. For a list of valid campaigns, see the <a href="https://developer.sky.blackbaud.com/docs/services/58bdd6b2d7dcde06046081d7/operations/ListCampaigns"><b>Fundraising (Campaign)</b></a> API.
+          type: string
+        fund_id:
+          description: The immutable system record ID of the fund associated with the action. For a list of valid funds, see the <a href="https://developer.sky.blackbaud.com/docs/services/58bdd6b2d7dcde06046081d7/operations/ListFunds"><b>Fundraising (Fund)</b></a> API.
+          type: string
+        appeal_id:
+          description: The immutable system record ID of the appeal associated with the action. For a list of valid appeals, see the <a href="https://developer.sky.blackbaud.com/docs/services/58bdd6b2d7dcde06046081d7/operations/ListAppeals"><b>Fundraising (Appeal)</b></a> API.
+          type: string
+        issue:
+          description: The issue associated with the action. Available values are the entries in the <a href="https://developer.sky.blackbaud.com/docs/services/56b76470069a0509c8f1c5b3/operations/ListCodeTableEntries"><b>Action Issues</b></a> code table.
+          type: string
+        letter_code:
+          description: The letter code associated with the action. Available values are the entries in the <a href="https://developer.sky.blackbaud.com/docs/services/56b76470069a0509c8f1c5b3/operations/ListCodeTableEntries"><b>Action Letter Codes</b></a> code table.
+          type: string
+      x-hidden: true
+      x-display-name: Create action
+      x-display-id: CreateAction
+    ApiCollectionOfAttachmentRead:
+      description: Fetching data all at once quickly becomes unmanageable. The collection entity helps by returning paginated chunks of large data sets. This entity includes helpful metadata and properties to paginate and iterate through the data.
+      type: object
+      properties:
+        count:
+          format: int32
+          description: The number of items available for retrieval into the collection after applying any request parameters. The <b>limit</b> and <b>offset</b> parameters do not affect the <b>count</b>, but to facilitate paging, they may affect the number of items in the <b>value</b> result set.
+          type: integer
+        next_link:
+          description: For paginated responses, the URI for the next page of results.
+          type: string
+        value:
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+          type: array
+          items:
+            $ref: '#/components/schemas/AttachmentRead'
+      x-hidden: true
+      x-base-type: '#/definitions/ApiCollection'
+    CustomFieldEdit:
+      description: While records provide many fields to track information, organizations often require additional details. To track this specialized information, use custom fields.
+      type: object
+      properties:
+        comment:
+          description: 'The comment on the custom field. Character limit: 50.'
+          maxLength: 50
+          minLength: 0
+          type: string
+        date:
+          format: date-time
+          description: The date on the custom field. Uses <a href="https://tools.ietf.org/html/rfc3339">ISO-8601 format:</a><i>1969-11-21T10:29:43</i>.
+          type: string
+          x-supports-datetime-offset: false
+        value:
+          description: The value of the custom field. The <code>type</code> property determines the format. Character limit depends on data type.
+          type: object
+      x-hidden: true
+      x-display-name: Edit custom field
+      x-display-id: EditCustomField
+      x-additional-info: "<a name=\"CustomFieldTypes\"></a>\n<p>&nbsp;</p>\n<p>\n    Available values for the <b>type</b> of a <b>custom field</b>:\n</p>\n\n<div class=\"table-responsive\">\n    <table class=\"table table-striped table-hover\">\n        <thead>\n            <tr>\n                <th class=\"col-xs-3\"><strong>Type</strong></th>\n                <th class=\"col-xs-9\"><strong>Description</strong></th>\n            </tr>\n        </thead>\n        <tbody>\n            <tr>\n                <td>Boolean</td>\n                <td>Defines the custom field as a boolean value.</td>\n            </tr>\n            <tr>\n                <td>CodeTableEntry</td>\n                <td>Defines the custom field as a string value that represents a code table entry description.</td>\n            </tr>\n            <tr>\n                <td>ConstituentId</td>\n                <td>Defines the custom field as a constituent identifier value.</td>\n            </tr>\n            <tr>\n                <td>Currency</td>\n                <td>Defines the custom field as a decimal value.</td>\n            </tr>\n            <tr>\n                <td>Date</td>\n                <td>\n                    Defines the custom field as a date value in <a href=\"https://tools.ietf.org/html/rfc3339\">ISO-8601 format:</a> <i>1969-11-21T10:29:43</i>.\n                </td>\n            </tr>\n            <tr>\n                <td>FuzzyDate</td>\n                <td>\n                    Defines the custom field as a fuzzy date value.\n                </td>\n            </tr>\n            <tr>\n                <td>Number</td>\n                <td>Defines the custom field as an integer value.</td>\n            </tr>\n            <tr>\n                <td>Text</td>\n                <td>Defines the custom field as a string value. Character limit: 255.</td>\n            </tr>\n        </tbody>\n    </table>\n</div>"
+    AttachmentRead:
+      description: Many cultivation activities collect related collateral, such as correspondence and prospect research. Attachments can save this data on the appropriate record to maintain a complete view of those activities.
+      type: object
+      properties:
+        id:
+          description: The immutable system record ID of the attachment.
+          type: string
+        content_type:
+          description: The content type. For physical attachments only.
+          type: string
+        date:
+          format: date-time
+          description: The date of the attachment. Uses <a href="https://tools.ietf.org/html/rfc3339">ISO-8601 format:</a><i>1969-11-21T10:29:43-04:00</i>.
+          type: string
+          x-supports-datetime-offset: true
+        file_id:
+          description: The identifier of the file.
+          type: string
+        file_name:
+          description: The file name. For physical attachments only.
+          type: string
+        file_size:
+          format: int64
+          description: The file size in bytes. For physical attachments only.
+          type: integer
+        name:
+          description: The name of the attachment.
+          type: string
+        parent_id:
+          description: The parent object's immutable system record ID.
+          type: string
+        tags:
+          description: The tags associated with the attachment. Tags supplement the attachment’s name and description and identify it based on how an organization categorizes attachments. Available values are the entries in the <b>Document Tags</b> table.
+          type: array
+          items:
+            type: string
+        thumbnail_id:
+          description: The identifier of the thumbnail. For physical attachments that are images only.
+          maxLength: 36
+          minLength: 0
+          type: string
+        thumbnail_url:
+          description: The URL for a thumbnail. For physical attachments that are images only. Contains a time-bound signature that limits access to 30 minutes.
+          type: string
+        type:
+          description: The attachment type. Available values are <i>Link</i> and <i>Physical</i>. Physical attachments are uploaded files such as images, PDFs, or Word documents that are saved locally or on the network. They are stored and managed in the system. Link attachments are links to files such as images, blog posts, or YouTube videos that are online or in a cloud storage account. They are stored and managed externally.
+          enum:
+          - Link
+          - Physical
+          type: string
+        url:
+          description: The URL for the attachment. The URL for a physical attachment contains a time-bound signature that limits access to 30 minutes.
+          type: string
+      x-display-name: Attachment
+      x-display-id: Attachment
+    ApiCollectionOfCustomFieldRead:
+      description: Fetching data all at once quickly becomes unmanageable. The collection entity helps by returning paginated chunks of large data sets. This entity includes helpful metadata and properties to paginate and iterate through the data.
+      type: object
+      properties:
+        count:
+          format: int32
+          description: The number of items available for retrieval into the collection after applying any request parameters. The <b>limit</b> and <b>offset</b> parameters do not affect the <b>count</b>, but to facilitate paging, they may affect the number of items in the <b>value</b> result set.
+          type: integer
+        next_link:
+          description: For paginated responses, the URI for the next page of results.
+          type: string
+        value:
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomFieldRead'
+      x-hidden: true
+      x-base-type: '#/definitions/ApiCollection'
+    ParentedNoteEdit:
+      description: Notes track helpful or important details about constituents, gifts, or actions, such as specific interests and special instructions for donations. Notes connect you with donors at a more personal level as you cultivate relationships and track lessons learned for more effective fundraising.
+      type: object
+      properties:
+        date:
+          $ref: '#/components/schemas/FuzzyDate'
+          description: The note date. This property cannot be set to null.
+        summary:
+          description: 'The note summary. Character limit: 255.'
+          maxLength: 255
+          minLength: 0
+          type: string
+        text:
+          description: The note's contents.
+          type: string
+        type:
+          description: The note type. Available values are the entries in the <a href="https://developer.sky.blackbaud.com/docs/services/56b76470069a0509c8f1c5b3/operations/codetables_gettableentriesbyid">Code table API using the <b>Notepad Types</b> table ID</a>. This property cannot be set to null.
+          type: string
+      x-hidden: true
+      x-display-name: Edit record note
+      x-display-id: EditRecordNote
+    ParentedNoteRead:
+      description: Notes track helpful or important details about constituents, gifts, or actions, such as specific interests and special instructions for donations. Notes connect you with donors at a more personal level as you cultivate relationships and track lessons learned for more effective fundraising.
+      type: object
+      properties:
+        id:
+          description: The immutable system record ID of the note.
+          type: string
+        parent_id:
+          description: The immutable system record ID of the constituent associated with the note.
+          type: string
+        date:
+          $ref: '#/components/schemas/FuzzyDate'
+          description: The note date.
+        summary:
+          description: The note summary. Maximum length is 255 characters.
+          type: string
+        text:
+          description: The note's contents.
+          type: string
+        type:
+          description: The note type. Available values are the entries in the <a href="https://developer.sky.blackbaud.com/docs/services/56b76470069a0509c8f1c5b3/operations/ListNoteTypes"><b>Notepad Types</b></a> table.
+          type: string
+        type_id:
+          description: The ID of the note type. Available values are the entries in the <a href="https://developer.sky.blackbaud.com/docs/services/56b76470069a0509c8f1c5b3/operations/ListNoteTypes"><b>Notepad Types</b></a> table.
+          type: string
+      x-display-name: ParentedNote
+      x-display-id: Parentednote
+    CustomFieldCategoryRead:
+      description: The system includes many different types of custom fields. Custom field categories store the metadata to appropriately match how you use a given custom field with an available type.
+      type: object
+      properties:
+        name:
+          description: The name of the custom field category.
+          type: string
+        type:
+          description: The type of data that custom fields with this category represent. Available values are listed below.
+          enum:
+          - Text
+          - Number
+          - Date
+          - Currency
+          - Boolean
+          - CodeTableEntry
+          - ConstituentId
+          - FuzzyDate
+          type: string
+        code_table_id:
+          description: The code table identifier when the custom field category DataType is CodeTableEntry.
+          type: string
+        one_per_record:
+          description: Flag indicating that only one value for the custom field category is allowed per record.
+          type: boolean
+      x-display-name: Custom field category
+      x-display-id: CustomFieldCategory
+      x-additional-info: "<a name=\"CustomFieldTypes\"></a>\n<p>&nbsp;</p>\n<p>\n    Available values for the <b>type</b> of a <b>custom field</b>:\n</p>\n\n<div class=\"table-responsive\">\n    <table class=\"table table-striped table-hover\">\n        <thead>\n            <tr>\n                <th class=\"col-xs-3\"><strong>Type</strong></th>\n                <th class=\"col-xs-9\"><strong>Description</strong></th>\n            </tr>\n        </thead>\n        <tbody>\n            <tr>\n                <td>Boolean</td>\n                <td>Defines the custom field as a boolean value.</td>\n            </tr>\n            <tr>\n                <td>CodeTableEntry</td>\n                <td>Defines the custom field as a string value that represents a code table entry description.</td>\n            </tr>\n            <tr>\n                <td>ConstituentId</td>\n                <td>Defines the custom field as a constituent identifier value.</td>\n            </tr>\n            <tr>\n                <td>Currency</td>\n                <td>Defines the custom field as a decimal value.</td>\n            </tr>\n            <tr>\n                <td>Date</td>\n                <td>\n                    Defines the custom field as a date value in <a href=\"https://tools.ietf.org/html/rfc3339\">ISO-8601 format:</a> <i>1969-11-21T10:29:43</i>.\n                </td>\n            </tr>\n            <tr>\n                <td>FuzzyDate</td>\n                <td>\n                    Defines the custom field as a fuzzy date value.\n                </td>\n            </tr>\n            <tr>\n                <td>Number</td>\n                <td>Defines the custom field as an integer value.</td>\n            </tr>\n            <tr>\n                <td>Text</td>\n                <td>Defines the custom field as a string value. Character limit: 255.</td>\n            </tr>\n        </tbody>\n    </table>\n</div>"
+    ApiCollectionOfActionRead:
+      description: Fetching data all at once quickly becomes unmanageable. The collection entity helps by returning paginated chunks of large data sets. This entity includes helpful metadata and properties to paginate and iterate through the data.
+      type: object
+      properties:
+        count:
+          format: int32
+          description: The number of items available for retrieval into the collection after applying any request parameters. The <b>limit</b> and <b>offset</b> parameters do not affect the <b>count</b>, but to facilitate paging, they may affect the number of items in the <b>value</b> result set.
+          type: integer
+        next_link:
+          description: For paginated responses, the URI for the next page of results.
+          type: string
+        value:
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+          type: array
+          items:
+            $ref: '#/components/schemas/ActionRead'
+      x-hidden: true
+      x-base-type: '#/definitions/ApiCollection'
+    AttachmentEdit:
+      description: Many cultivation activities collect related collateral, such as correspondence and prospect research. Attachments can save this data on the appropriate record to maintain a complete view of those activities.
+      type: object
+      properties:
+        date:
+          format: date-time
+          description: The date of the attachment. Uses <a href="https://tools.ietf.org/html/rfc3339">ISO-8601 format:</a><i>1969-11-21T10:29:43-04:00</i>. This property cannot be set to null.
+          type: string
+          x-supports-datetime-offset: true
+        name:
+          description: 'The name of the attachment. Character limit: 150.'
+          maxLength: 150
+          minLength: 0
+          type: string
+        tags:
+          description: 'The tags associated with the attachment. Tags supplement the attachment’s name and description and identify it based on how an organization categorizes attachments. Available values are the entries in the <b>Document Tags</b> table. Character limit: 100.'
+          type: array
+          items:
+            type: string
+        url:
+          description: The URL for the attachment. You can only edit the URL for link attachments. This property cannot be set to null.
+          type: string
+      x-hidden: true
+      x-display-name: Edit attachment
+      x-display-id: EditAttachment
+    PostResponse:
+      description: Defines the shape of a post response object.
+      type: object
+      properties:
+        id:
+          description: The newly created ID
+          type: string
+      x-hidden: true
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

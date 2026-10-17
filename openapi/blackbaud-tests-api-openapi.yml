@@ -1,0 +1,505 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Enrollment Management Tests API'
+  description: Blackbaud Education Management API for Enrollment Management
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/afe-edems
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/afe-edems
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Tests
+paths:
+  /v1/tests:
+    get:
+      operationId: V1TestsGet
+      summary: Test list (Get)
+      description: 'Returns tests scores for candidates.
+
+
+        Requires the following role in the Education Management system:
+
+
+        Admissions Manager
+
+
+        Admissions Staff'
+      parameters:
+      - name: size
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: '100'
+        description: The number of records per page (Default record size is 100).
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: '1'
+        description: The page of results to start from (Default start page is 1).
+      - name: test_type
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Provide the ID or name of a test type to limit results to that test type.
+      - name: start_date
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Limits results to tests with a test date on or after the specified date. Use ISO 8601 date format.
+      - name: end_date
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Limits results to tests with a test date on or before the specified date. Use ISO 8601 date format.
+      - name: last_modified
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Limits results to tests created or modified after the specified date.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CandidateTestReadCollection'
+              example:
+                count: 1
+                value:
+                - id: 1
+                  user:
+                    id: 1
+                    prefix: Mrs.
+                    first_name: Sally
+                    middle_name: ''
+                    last_name: Greene
+                    suffix: Jr.
+                    preferred_name: Sally
+                    preferred_last_name: L
+                    maiden_name: ''
+                    email: sally@example.com
+                  type:
+                    id: 11
+                    description: Test1
+                  test_date: '2024-08-31T12:00:00Z'
+                  registered_date: '2024-08-31T12:00:00Z'
+                  location: Brannon Center � auditiorium
+                  proctor_by:
+                    id: 1
+                    prefix: Mr.
+                    first_name: Kianna
+                    middle_name: Mark
+                    last_name: Reed
+                    suffix: Jr.
+                    preferred_name: ''
+                    preferred_last_name: Reed
+                    maiden_name: ''
+                    email: kianna@example.com
+                  proctor_by_other: Joanne Smith
+                  was_rescheduled: false
+                  did_not_show: false
+                  score: 1200
+                  comment: A testy subject
+                  sub_tests:
+                  - type:
+                      id: 111
+                      description: SubTest1
+                    score: 150.5
+                    percentile: 99.5
+                    scale: 300
+                    stanine: 10.5
+                  last_modified: '2024-08-31T12:00:00Z'
+      tags:
+      - Tests
+  /v1/tests/{candidate_id}:
+    post:
+      operationId: V1TestsByCandidate_idPost
+      summary: Test (Create)
+      description: 'Add test for candidate.
+
+
+        Requires one of the following roles in the Education Management system:
+
+
+        Admissions Manager
+
+
+        Admissions Staff'
+      parameters:
+      - name: candidate_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The user ID of the candidate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CandidateTestAdd'
+            example:
+              type: ISEE
+              test_date: '2024-06-20T12:00:00Z'
+              registered_date: '2024-06-20T12:00:00Z'
+              location: Brannon Center � auditiorium
+              proctor_by: 1
+              proctor_by_other: Joanne Smith
+              was_rescheduled: false
+              did_not_show: false
+              score: 1200
+              comment: A testy subject.
+              attachment:
+                temp_name: x1z9_hin334922xd_a91e.pdf
+                original_name: MyFile.pdf
+              sub_tests:
+              - type: Verbal Reasoning
+                score: 150.5
+                percentile: 99.9
+                scale: 300
+                stanie: 10.5
+        description: The request containing the test details.
+      responses:
+        '200':
+          description: Returns test score id on success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Tests-candidate_id-Post200ApplicationJsonResponse'
+              example: 0
+      tags:
+      - Tests
+components:
+  schemas:
+    UserBaseRead:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The user ID of the user
+          format: int32
+        prefix:
+          type:
+          - string
+          - 'null'
+          description: The prefix of the user
+        first_name:
+          type:
+          - string
+          - 'null'
+          description: The first name of the user
+        middle_name:
+          type:
+          - string
+          - 'null'
+          description: The middle name of the user
+        last_name:
+          type:
+          - string
+          - 'null'
+          description: The last name of the user
+        suffix:
+          type:
+          - string
+          - 'null'
+          description: The suffix of the user
+        preferred_name:
+          type:
+          - string
+          - 'null'
+          description: The preferred first name of the user
+        preferred_last_name:
+          type:
+          - string
+          - 'null'
+          description: The preferred last name of the user
+        maiden_name:
+          type:
+          - string
+          - 'null'
+          description: The former or maiden name of the user
+        email:
+          type:
+          - string
+          - 'null'
+          description: The email of the user
+      additionalProperties: false
+      description: User base model
+    TableValueBase:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the table value
+          format: int32
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the table value
+      additionalProperties: false
+      description: 'Table value base model. Used for table entry fields (i.e. dropdown controls) to provide both ID and Description information for the selected value. General system tables can be retrieved by School API endpoints: GET Types table types and GET Types table values.'
+    CandidateTestAdd:
+      required:
+      - test_date
+      - type
+      type: object
+      properties:
+        type:
+          minLength: 1
+          type: string
+          description: The name or ID of the test type. Values returned by GET Test and Subtest types.
+        test_date:
+          type: string
+          description: The date and time of the test.
+          format: date-time
+        registered_date:
+          type:
+          - string
+          - 'null'
+          description: The registered date and time of the test.
+          format: date-time
+        location:
+          type:
+          - string
+          - 'null'
+          description: The register location of the test.
+        proctor_by:
+          type:
+          - integer
+          - 'null'
+          description: The user ID of the proctor.
+          format: int32
+        proctor_by_other:
+          type:
+          - string
+          - 'null'
+          description: The proctor’s name when not a user.
+        was_rescheduled:
+          type: boolean
+          description: Set to true if the test was rescheduled.
+        did_not_show:
+          type: boolean
+          description: Set to true if the candidate did not show for test.
+        score:
+          type:
+          - number
+          - 'null'
+          description: The overall score for the test.
+          format: double
+        comment:
+          type:
+          - string
+          - 'null'
+          description: The comment for the test. Limit is 4000 characters.
+        attachment:
+          $ref: '#/components/schemas/NewAttachment'
+        sub_tests:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CandidateSubTestEdit'
+          description: List of subtests.
+      additionalProperties: false
+      description: An object with candidate test information.
+    CandidateTestRead:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the candidate’s test
+          format: int32
+        user:
+          $ref: '#/components/schemas/UserBaseRead'
+        type:
+          $ref: '#/components/schemas/TableValueBase'
+        test_date:
+          type:
+          - string
+          - 'null'
+          description: The date and time of the test.
+          format: date-time
+        registered_date:
+          type:
+          - string
+          - 'null'
+          description: The registered date and time of the test.
+          format: date-time
+        location:
+          type:
+          - string
+          - 'null'
+          description: The register location of the test.
+        proctor_by:
+          $ref: '#/components/schemas/UserBaseRead'
+        proctor_by_other:
+          type:
+          - string
+          - 'null'
+          description: The proctor’s name when not a user.
+        was_rescheduled:
+          type: boolean
+          description: Set to true if the test was rescheduled.
+        did_not_show:
+          type: boolean
+          description: Set to true if the candidate did not show for test.
+        score:
+          type:
+          - number
+          - 'null'
+          description: The overall score for the test.
+          format: double
+        comment:
+          type:
+          - string
+          - 'null'
+          description: The comment for the test. Limit is 4000 characters.
+        sub_tests:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CandidateSubtestRead'
+          description: List of subtests.
+        last_modified:
+          type:
+          - string
+          - 'null'
+          description: The date the test was last modified
+          format: date-time
+      additionalProperties: false
+      description: An object with candidate test information.
+    CandidateSubtestRead:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/TableValueBase'
+        score:
+          type:
+          - number
+          - 'null'
+          description: The score of the subtest.
+          format: float
+        percentile:
+          type:
+          - number
+          - 'null'
+          description: The percentile of the subtest.
+          format: float
+        scale:
+          type:
+          - number
+          - 'null'
+          description: The scale of the subtest.
+          format: float
+        stanine:
+          type:
+          - number
+          - 'null'
+          description: The stanine of the subtest.
+          format: float
+      additionalProperties: false
+      description: An object with sub test information.
+    CandidateSubTestEdit:
+      required:
+      - type
+      type: object
+      properties:
+        type:
+          minLength: 1
+          type: string
+          description: The name or ID of the subtest type.
+        score:
+          type:
+          - number
+          - 'null'
+          description: The score of the subtest.
+          format: double
+        percentile:
+          type:
+          - number
+          - 'null'
+          description: The percentile of the subtest.
+          format: double
+        scale:
+          type:
+          - number
+          - 'null'
+          description: The scale of the subtest.
+          format: double
+        stanie:
+          type:
+          - number
+          - 'null'
+          description: The stanine of the subtest.
+          format: double
+      additionalProperties: false
+      description: An object with sub test information.
+    V1Tests-candidate_id-Post200ApplicationJsonResponse:
+      type:
+      - integer
+      - 'null'
+      format: int32
+      x-apim-inline: true
+    NewAttachment:
+      type: object
+      properties:
+        temp_name:
+          type:
+          - string
+          - 'null'
+          description: The temporary file location provided by the Attachment (Create) process.
+        original_name:
+          type:
+          - string
+          - 'null'
+          description: The original name of the file that may be shown in the UI.
+      additionalProperties: false
+      description: 'An object with attachment file name information, including the reference name for the attachment’s temporary storage location. and the original file name. The file''s reference information is produced using the upload process that begins with the Attachment (Create) endpoint. See also Creating physical attachments.
+
+        This field is in Preview.'
+    CandidateTestReadCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items in the collection
+          format: int32
+          readOnly: true
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CandidateTestRead'
+          description: The set of items included in the response. This may be a subset of the items in the collection
+      additionalProperties: false
+      description: A Collection
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

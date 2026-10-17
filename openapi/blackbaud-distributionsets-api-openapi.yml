@@ -1,0 +1,1217 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: General Ledger Distributionsets API'
+  description: This API is used to manage the general ledger, including accounts, projects, and journal entries. This API has a maximum request size limit of 8mb.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/56eb17a0a9db9516c46bff6f
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/generalledger/v1
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Distributionsets
+paths:
+  /distributionsets/cashmanagement:
+    post:
+      operationId: CreateCashManagementDistributionSet
+      summary: Cash management distribution set (Create)
+      description: Returns the identifier of the new created cash management distribution set.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCashManagementDistributionSet'
+            example:
+              name: Distribution E1
+              line_items:
+              - percent: 100
+                row_number: 1
+                account_id: 372
+                custom_fields: []
+                project_line_items:
+                - percent: 70
+                  line_number: 1
+                  project_id: 7
+                  transaction_code_values:
+                  - name: Grants
+                    value: None
+                    id: 0
+                  - name: Spendable/Non-Spendable
+                    value: Spendable
+                    id: 233
+                  account_class: Unrestricted Net Assets
+                - percent: 30
+                  line_number: 2
+                  project_id: 3
+                  transaction_code_values:
+                  - name: Grants
+                    value: None
+                    id: 0
+                  account_class: Unrestricted Net Assets
+        description: The cash management distribution set to add.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the identifier for the newly created cash management distribution set.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreatedResult_Int32'
+              example:
+                record_id: 843
+        '400':
+          description: Returned when the request is not in the correct format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DomainErrorMessage'
+              example:
+                Error: Invalid Request
+                Details:
+                - The value 'fake' is not valid for transaction_status.
+                ErrorPath: null
+        '403':
+          description: Returned when the user does not have permission to create cash management distribution sets.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Distributionsets
+    get:
+      operationId: ListCashManagementDistributionSets
+      summary: Cash management distribution set (List)
+      description: Returns the list of cash management distribution sets.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the list of all available cash management distribution sets.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CashManagementDistributionSetArray'
+              example:
+                count: 3
+                value:
+                - set_id: 6
+                  name: Distribution E1
+                  line_items:
+                  - percent: 100
+                    row_number: 1
+                    account_id: 372
+                    custom_fields: []
+                    project_line_items:
+                    - percent: 70
+                      line_number: 1
+                      project_id: 7
+                      transaction_code_values:
+                      - name: Grants
+                        value: None
+                        id: 0
+                      - name: Spendable/Non-Spendable
+                        value: Spendable
+                        id: 233
+                      account_class: Unrestricted Net Assets
+                    - percent: 30
+                      line_number: 2
+                      project_id: 3
+                      transaction_code_values:
+                      - name: Grants
+                        value: None
+                        id: 0
+                      account_class: Unrestricted Net Assets
+        '403':
+          description: Returned when the user does not have permission to view cash management distribution sets.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Distributionsets
+  /distributionsets/cashmanagement/{set_id}:
+    delete:
+      operationId: DeleteCashManagementDistributionSet
+      summary: Cash management distribution set (Delete)
+      description: Removes the cash management distribution set.
+      parameters:
+      - name: set_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The identifier of the cash management distribution set to delete.
+      responses:
+        '200':
+          description: Returned when the operation is successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+              example: {}
+        '400':
+          description: Returned when the request is not in the correct format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DomainErrorMessage'
+              example:
+                Error: Invalid Request
+                Details:
+                - The value 'fake' is not valid for transaction_status.
+                ErrorPath: null
+        '403':
+          description: Returned when the user does not have permission to delete cash management distribution sets.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+        '404':
+          description: Returned when the specified cash management distribution set could not be found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Distributionsets
+    patch:
+      operationId: EditCashManagementDistributionSet
+      summary: Cash management distribution set (Edit)
+      description: Returns the identifier of the edited cash management distribution set.
+      parameters:
+      - name: set_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The identifier of the cash management distribution set to edit.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditCashManagementDistributionSet'
+            example:
+              name: Distribution E1
+              line_items:
+              - percent: 100
+                row_number: 1
+                account_id: 372
+                custom_fields: []
+                project_line_items:
+                - percent: 70
+                  line_number: 1
+                  project_id: 7
+                  transaction_code_values:
+                  - name: Grants
+                    value: None
+                    id: 0
+                  - name: Spendable/Non-Spendable
+                    value: Spendable
+                    id: 233
+                  account_class: Unrestricted Net Assets
+                - percent: 30
+                  line_number: 2
+                  project_id: 3
+                  transaction_code_values:
+                  - name: Grants
+                    value: None
+                    id: 0
+                  account_class: Unrestricted Net Assets
+        description: The changes for the cash management distribution set.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the identifier for the cash management distribution set.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreatedResult_Int32'
+              example:
+                record_id: 843
+        '400':
+          description: Returned when the request is not in the correct format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DomainErrorMessage'
+              example:
+                Error: Invalid Request
+                Details:
+                - The value 'fake' is not valid for transaction_status.
+                ErrorPath: null
+        '403':
+          description: Returned when the user does not have permission to edit cash management distribution sets.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+        '404':
+          description: Returned when the specified cash management distribution set could not be found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Distributionsets
+    get:
+      operationId: GetCashManagementDistributionSet
+      summary: Cash management distribution set (Get)
+      description: Returns the cash management distribution set details.
+      parameters:
+      - name: set_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The cash management distribution set identifier.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the specified cash management distribution set.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CashManagementDistributionSet'
+              example:
+                set_id: 6
+                name: Distribution E1
+                line_items:
+                - percent: 100
+                  row_number: 1
+                  account_id: 372
+                  custom_fields: []
+                  project_line_items:
+                  - percent: 70
+                    line_number: 1
+                    project_id: 7
+                    transaction_code_values:
+                    - name: Grants
+                      value: None
+                      id: 0
+                    - name: Spendable/Non-Spendable
+                      value: Spendable
+                      id: 233
+                    account_class: Unrestricted Net Assets
+                  - percent: 30
+                    line_number: 2
+                    project_id: 3
+                    transaction_code_values:
+                    - name: Grants
+                      value: None
+                      id: 0
+                    account_class: Unrestricted Net Assets
+        '400':
+          description: Returned when the request is not in the correct format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DomainErrorMessage'
+              example:
+                Error: Invalid Request
+                Details:
+                - The value 'fake' is not valid for transaction_status.
+                ErrorPath: null
+        '403':
+          description: Returned when the user does not have permission to view cash management distribution sets.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+        '404':
+          description: Returned when the specified cash management distribution set could not be found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Distributionsets
+  /distributionsets/transaction:
+    post:
+      operationId: CreateTransactionDistributionSet
+      summary: Transaction distribution set (Create)
+      description: Returns the identifier of the new created transaction distribution set.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTransactionDistributionSet'
+            example:
+              name: Distribution EP
+              line_items:
+              - percent: 34
+                line_number: 0
+                project_id: 23
+                transaction_code_values:
+                - name: Grants
+                  value: Helping Hands
+                  id: 4
+                - name: Spendable/Non-Spendable
+                  value: Non-Spendable
+                  id: 0
+                account_class: Unrestricted Net Assets
+              - percent: 66
+                line_number: 1
+                project_id: 24
+                transaction_code_values:
+                - name: Grants
+                  value: Helping Hands
+                  id: 4
+                - name: Spendable/Non-Spendable
+                  value: Spendable
+                  id: 0
+                account_class: Unrestricted Net Assets
+        description: The transaction distribution set to add.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the identifier for the newly created transaction distribution set.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreatedResult_Int32'
+              example:
+                record_id: 843
+        '400':
+          description: Returned when the request is not in the correct format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DomainErrorMessage'
+              example:
+                Error: Invalid Request
+                Details:
+                - The value 'fake' is not valid for transaction_status.
+                ErrorPath: null
+        '403':
+          description: Returned when the user does not have permission to create transaction distribution sets.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Distributionsets
+    get:
+      operationId: ListTransactionDistributionSets
+      summary: Transaction distribution set (List)
+      description: Returns the list of transaction distribution sets.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the list of all available transaction distribution sets.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionDistributionSetArray'
+              example:
+                count: 1
+                value:
+                - set_id: 6
+                  name: Distribution EP
+                  line_items:
+                  - percent: 34
+                    line_number: 1
+                    project_id: 23
+                    transaction_code_values:
+                    - name: Grants
+                      value: Helping Hands
+                      id: 4
+                    - name: Spendable/Non-Spendable
+                      value: Non-Spendable
+                      id: 0
+                    - name: Performance
+                      value: None
+                      id: 0
+                    - name: The Raiser's Edge
+                      value: Edge
+                      id: 0
+                    - name: (TC3) Region
+                      value: Region
+                      id: 0
+                    account_class: Unrestricted Net Assets
+                  - percent: 66
+                    line_number: 2
+                    project_id: 24
+                    transaction_code_values:
+                    - name: Grants
+                      value: Helping Hands
+                      id: 4
+                    - name: Spendable/Non-Spendable
+                      value: Spendable
+                      id: 0
+                    - name: Performance
+                      value: None
+                      id: 0
+                    - name: The Raiser's Edge
+                      value: Edge
+                      id: 0
+                    - name: (TC5) A
+                      value: A
+                      id: 0
+                    account_class: Unrestricted Net Assets
+        '403':
+          description: Returned when the user does not have permission to view transaction distribution sets.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Distributionsets
+  /distributionsets/transaction/{set_id}:
+    delete:
+      operationId: DeleteTransactionDistributionSet
+      summary: Transaction distribution set (Delete)
+      description: Removes the transaction distribution set.
+      parameters:
+      - name: set_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The identifier of the transaction distribution set to delete.
+      responses:
+        '200':
+          description: Returned when the operation is successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+              example: {}
+        '400':
+          description: Returned when the request is not in the correct format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DomainErrorMessage'
+              example:
+                Error: Invalid Request
+                Details:
+                - The value 'fake' is not valid for transaction_status.
+                ErrorPath: null
+        '403':
+          description: Returned when the user does not have permission to delete transaction distribution sets.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+        '404':
+          description: Returned when the specified transaction distribution set could not be found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Distributionsets
+    patch:
+      operationId: EditTransactionDistributionSet
+      summary: Transaction distribution set (Edit)
+      description: Returns the identifier of the edited transaction distribution set.
+      parameters:
+      - name: set_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The identifier of the transaction distribution set to edit.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditTransactionDistributionSet'
+            example:
+              name: Distribution EP
+              line_items:
+              - percent: 34
+                line_number: 1
+                project_id: 23
+                transaction_code_values:
+                - name: Grants
+                  value: Helping Hands
+                  id: 4
+                - name: Spendable/Non-Spendable
+                  value: Non-Spendable
+                  id: 0
+                account_class: Unrestricted Net Assets
+              - percent: 66
+                line_number: 2
+                project_id: 24
+                transaction_code_values:
+                - name: Grants
+                  value: Helping Hands
+                  id: 4
+                - name: Spendable/Non-Spendable
+                  value: Spendable
+                  id: 0
+                account_class: Unrestricted Net Assets
+        description: The changes for the transaction distribution set.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the identifier for the transaction distribution set.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreatedResult_Int32'
+              example:
+                record_id: 843
+        '400':
+          description: Returned when the request is not in the correct format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DomainErrorMessage'
+              example:
+                Error: Invalid Request
+                Details:
+                - The value 'fake' is not valid for transaction_status.
+                ErrorPath: null
+        '403':
+          description: Returned when the user does not have permission to edit transaction distribution sets.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+        '404':
+          description: Returned when the specified transaction distribution set could not be found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Distributionsets
+    get:
+      operationId: GetTransactionDistributionSet
+      summary: Transaction distribution set (Get)
+      description: Returns the transaction distribution set details.
+      parameters:
+      - name: set_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The transaction distribution set identifier.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the specified transaction distribution set.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionDistributionSet'
+              example:
+                set_id: 6
+                name: Distribution EP
+                line_items:
+                - percent: 34
+                  line_number: 1
+                  project_id: 23
+                  transaction_code_values:
+                  - name: Grants
+                    value: Helping Hands
+                    id: 4
+                  - name: Spendable/Non-Spendable
+                    value: Non-Spendable
+                    id: 0
+                  - name: Performance
+                    value: None
+                    id: 0
+                  - name: The Raiser's Edge
+                    value: Edge
+                    id: 0
+                  - name: (TC3) Region
+                    value: Region
+                    id: 0
+                  account_class: Unrestricted Net Assets
+                - percent: 66
+                  line_number: 2
+                  project_id: 24
+                  transaction_code_values:
+                  - name: Grants
+                    value: Helping Hands
+                    id: 4
+                  - name: Spendable/Non-Spendable
+                    value: Spendable
+                    id: 0
+                  - name: Performance
+                    value: None
+                    id: 0
+                  - name: The Raiser's Edge
+                    value: Edge
+                    id: 0
+                  - name: (TC5) A
+                    value: A
+                    id: 0
+                  account_class: Unrestricted Net Assets
+        '400':
+          description: Returned when the request is not in the correct format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DomainErrorMessage'
+              example:
+                Error: Invalid Request
+                Details:
+                - The value 'fake' is not valid for transaction_status.
+                ErrorPath: null
+        '403':
+          description: Returned when the user does not have permission to view transaction distribution sets.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+        '404':
+          description: Returned when the specified transaction distribution set could not be found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Distributionsets
+components:
+  schemas:
+    EditDistributionSetProjectLineItem:
+      description: Cash management distribution set line item.
+      required:
+      - percent
+      - transaction_code_values
+      type: object
+      properties:
+        percent:
+          format: double
+          description: The percent of the cash management distribution set the line item represents.
+          type: number
+          x-ms-summary: Percent
+        project_id:
+          format: int32
+          description: The idenifier of the project for the line item.
+          type: integer
+          x-ms-summary: Project id
+        transaction_code_values:
+          description: The transaction code values for the line item. The values should be in the same order as the codes defined in the database.
+          type: array
+          items:
+            $ref: '#/components/schemas/TransactionCodeValue'
+          x-ms-summary: Transaction code values
+        account_class:
+          description: The class of the account for the line item.
+          type: string
+          x-ms-summary: Account class
+      x-display-name: Edit distribution set project line item
+      x-ms-summary: Edit distribution set project line item
+    DomainErrorMessage:
+      type: object
+      properties:
+        Error:
+          type: string
+          x-ms-summary: Error
+        Details:
+          type: array
+          items:
+            type: string
+          x-ms-summary: Details
+        ErrorPath:
+          type: string
+          x-ms-summary: Error path
+      x-display-name: Domain error message
+      x-ms-summary: Domain error message
+    CreateTransactionDistributionSet:
+      description: Transaction distribution set.
+      type: object
+      properties:
+        name:
+          description: The name of the transaction distribution set.
+          type: string
+          x-ms-summary: Name
+        line_items:
+          description: The project line items for the transaction distribution set.
+          type: array
+          items:
+            $ref: '#/components/schemas/CreateDistributionSetProjectLineItem'
+          x-ms-summary: Line items
+      example:
+        name: Distribution EP
+        line_items:
+        - percent: 34
+          line_number: 0
+          project_id: 23
+          transaction_code_values:
+          - name: Grants
+            value: Helping Hands
+            id: 4
+          - name: Spendable/Non-Spendable
+            value: Non-Spendable
+            id: 0
+          account_class: Unrestricted Net Assets
+        - percent: 66
+          line_number: 1
+          project_id: 24
+          transaction_code_values:
+          - name: Grants
+            value: Helping Hands
+            id: 4
+          - name: Spendable/Non-Spendable
+            value: Spendable
+            id: 0
+          account_class: Unrestricted Net Assets
+      x-display-name: Create transaction distribution set
+      x-ms-summary: Create transaction distribution set
+    BasicErrorMessage:
+      type: object
+      properties:
+        Error:
+          type: string
+          x-ms-summary: Error
+      x-display-name: Basic error message
+      x-ms-summary: Basic error message
+    Void:
+      type: object
+      properties: {}
+      x-display-name: Void
+      x-ms-summary: Void
+    CreateCashManagementDistributionSet:
+      description: Cash management distribution set.
+      required:
+      - name
+      - line_items
+      type: object
+      properties:
+        name:
+          description: The name of the cash management distribution set.
+          type: string
+          x-ms-summary: Name
+        line_items:
+          description: The line items for the cash management distribution set.
+          type: array
+          items:
+            $ref: '#/components/schemas/CreateCashManagementDistributionSetLineItem'
+          x-ms-summary: Line items
+      example:
+        name: Distribution E1
+        line_items:
+        - percent: 100
+          row_number: 1
+          account_id: 372
+          custom_fields: []
+          project_line_items:
+          - percent: 70
+            line_number: 1
+            project_id: 7
+            transaction_code_values:
+            - name: Grants
+              value: None
+              id: 0
+            - name: Spendable/Non-Spendable
+              value: Spendable
+              id: 233
+            account_class: Unrestricted Net Assets
+          - percent: 30
+            line_number: 2
+            project_id: 3
+            transaction_code_values:
+            - name: Grants
+              value: None
+              id: 0
+            account_class: Unrestricted Net Assets
+      x-display-name: Create cash management distribution set
+      x-ms-summary: Create cash management distribution set
+    TransactionDistributionSet:
+      description: Transaction distribution set.
+      type: object
+      properties:
+        set_id:
+          format: int32
+          description: The identifier for the transaction distribution set.
+          type: integer
+          x-ms-summary: Set id
+        name:
+          description: The name of the transaction distribution set.
+          type: string
+          x-ms-summary: Name
+        line_items:
+          description: The project line items for the transaction distribution set.
+          type: array
+          items:
+            $ref: '#/components/schemas/DistributionSetProjectLineItem'
+          x-ms-summary: Line items
+      x-display-name: Transaction distribution set
+      x-ms-summary: Transaction distribution set
+    EditCashManagementDistributionSetLineItem:
+      description: Cash management distribution set line item.
+      required:
+      - percent
+      - account_id
+      - project_line_items
+      type: object
+      properties:
+        percent:
+          format: double
+          description: The percent of the cash management distribution set the line item represents.
+          type: number
+          x-ms-summary: Percent
+        account_id:
+          format: int32
+          description: The identifier of the account for the line item.
+          type: integer
+          x-ms-summary: Account id
+        custom_fields:
+          description: Custom fields for the line item.
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomField'
+          x-ms-summary: Custom fields
+        project_line_items:
+          description: The project distribution for the line item.
+          type: array
+          items:
+            $ref: '#/components/schemas/EditDistributionSetProjectLineItem'
+          x-ms-summary: Project line items
+      x-display-name: Edit cash management distribution set line item
+      x-ms-summary: Edit cash management distribution set line item
+    EditCashManagementDistributionSet:
+      description: Cash management distribution set.
+      type: object
+      properties:
+        name:
+          description: The name of the cash management distribution set.
+          type: string
+          x-ms-summary: Name
+        line_items:
+          description: The line items for the cash management distribution set.
+          type: array
+          items:
+            $ref: '#/components/schemas/EditCashManagementDistributionSetLineItem'
+          x-ms-summary: Line items
+      example:
+        name: Distribution E1
+        line_items:
+        - percent: 100
+          row_number: 1
+          account_id: 372
+          custom_fields: []
+          project_line_items:
+          - percent: 70
+            line_number: 1
+            project_id: 7
+            transaction_code_values:
+            - name: Grants
+              value: None
+              id: 0
+            - name: Spendable/Non-Spendable
+              value: Spendable
+              id: 233
+            account_class: Unrestricted Net Assets
+          - percent: 30
+            line_number: 2
+            project_id: 3
+            transaction_code_values:
+            - name: Grants
+              value: None
+              id: 0
+            account_class: Unrestricted Net Assets
+      x-display-name: Edit cash management distribution set
+      x-ms-summary: Edit cash management distribution set
+    TransactionDistributionSetArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/TransactionDistributionSet'
+    CreateCashManagementDistributionSetLineItem:
+      description: Cash management distribution set line item.
+      required:
+      - percent
+      - account_id
+      - project_line_items
+      type: object
+      properties:
+        percent:
+          format: double
+          description: The percentage of the total distribution set the line item represents.
+          type: number
+          x-ms-summary: Percent
+        account_id:
+          format: int32
+          description: The identifier of the account for the line item.
+          type: integer
+          x-ms-summary: Account id
+        custom_fields:
+          description: Custom fields for the line item.
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomField'
+          x-ms-summary: Custom fields
+        project_line_items:
+          description: The project distribution for the line item.
+          type: array
+          items:
+            $ref: '#/components/schemas/CreateDistributionSetProjectLineItem'
+          x-ms-summary: Project line items
+      x-display-name: Create cash management distribution set line item
+      x-ms-summary: Create cash management distribution set line item
+    TransactionCodeValue:
+      description: Transaction code value
+      required:
+      - value
+      - id
+      type: object
+      properties:
+        name:
+          description: The transaction code name.
+          type: string
+          x-ms-summary: Name
+        value:
+          description: The transaction code value.
+          type: string
+          x-ms-summary: Value
+        id:
+          format: int32
+          description: The transaction code value id.
+          type: integer
+          x-ms-summary: Id
+        inactive:
+          description: Indicate if record is inactive or not.
+          type: boolean
+          x-ms-summary: Inactive
+      x-display-name: Transaction code value
+      x-ms-summary: Transaction code value
+    CreatedResult_Int32:
+      type: object
+      properties:
+        record_id:
+          format: int32
+          type: integer
+          x-ms-summary: Record id
+      x-hidden: true
+      x-display-name: Created result `1
+      x-ms-summary: Created result `1
+    CashManagementDistributionSetLineItem:
+      description: Cash management distribution set line item.
+      type: object
+      properties:
+        percent:
+          format: double
+          description: The percentage of the total distribution set the line item represents.
+          type: number
+          x-ms-summary: Percent
+        row_number:
+          format: int32
+          description: The row number for the line item.
+          type: integer
+          x-ms-summary: Row number
+        account_id:
+          format: int32
+          description: The identifier of the account for the line item.
+          type: integer
+          x-ms-summary: Account id
+        custom_fields:
+          description: Custom fields for the line item.
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomField'
+          x-ms-summary: Custom fields
+        project_line_items:
+          description: The project distribution for the line item.
+          type: array
+          items:
+            $ref: '#/components/schemas/DistributionSetProjectLineItem'
+          x-ms-summary: Project line items
+      x-display-name: Cash management distribution set line item
+      x-ms-summary: Cash management distribution set line item
+    DistributionSetProjectLineItem:
+      description: Distribution set project line item.
+      type: object
+      properties:
+        percent:
+          format: double
+          description: The pecentage the distribution the line item represents.
+          type: number
+          x-ms-summary: Percent
+        line_number:
+          format: int32
+          description: The line number for the line item.
+          type: integer
+          x-ms-summary: Line number
+        project_id:
+          format: int32
+          description: The identifier of the project for the line item.
+          type: integer
+          x-ms-summary: Project id
+        transaction_code_values:
+          description: The transaction code values for the line item.
+          type: array
+          items:
+            $ref: '#/components/schemas/TransactionCodeValue'
+          x-ms-summary: Transaction code values
+        account_class:
+          description: The class of the account for the line item.
+          type: string
+          x-ms-summary: Account class
+      x-display-name: Distribution set project line item
+      x-ms-summary: Distribution set project line item
+    CashManagementDistributionSetArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/CashManagementDistributionSet'
+    CreateDistributionSetProjectLineItem:
+      description: Distribution set project line item.
+      required:
+      - percent
+      type: object
+      properties:
+        percent:
+          format: double
+          description: The percentage of the distribution the line item represents.
+          type: number
+          x-ms-summary: Percent
+        project_id:
+          format: int32
+          description: The identifier of the project for the line item.
+          type: integer
+          x-ms-summary: Project id
+        transaction_code_values:
+          description: The transaction code values for the line item. The values should be in the same order as the codes defined in the database.
+          type: array
+          items:
+            $ref: '#/components/schemas/TransactionCodeValue'
+          x-ms-summary: Transaction code values
+        account_class:
+          description: The class of the account for the line item.
+          type: string
+          x-ms-summary: Account class
+      x-display-name: Create distribution set project line item
+      x-ms-summary: Create distribution set project line item
+    CashManagementDistributionSet:
+      description: Cash management distribution set.
+      type: object
+      properties:
+        set_id:
+          format: int32
+          description: The identifier of the cash management distribution set.
+          type: integer
+          x-ms-summary: Set id
+        name:
+          description: The name of the cash management distribution set.
+          type: string
+          x-ms-summary: Name
+        line_items:
+          description: The account line items for the cash management distribution set.
+          type: array
+          items:
+            $ref: '#/components/schemas/CashManagementDistributionSetLineItem'
+          x-ms-summary: Line items
+      x-display-name: Cash management distribution set
+      x-ms-summary: Cash management distribution set
+    CustomField:
+      description: Custom field definition.
+      type: object
+      properties:
+        custom_field_id:
+          format: int32
+          description: The identifier for this custom field.
+          type: integer
+          x-ms-summary: Custom field id
+        field_name:
+          description: The name of the custom field.
+          type: string
+          x-ms-summary: Field name
+        value:
+          description: The value for this custom field.
+          type: string
+          x-ms-summary: Value
+        comments:
+          description: The description for this custom field.
+          type: string
+          x-ms-summary: Comments
+        type:
+          description: The type of this custom field.
+          enum:
+          - Text
+          - Number
+          - DateTime
+          - Currency
+          - Boolean
+          - Table
+          - FuzzyDate
+          type: string
+          x-ms-summary: Type
+        date:
+          format: date-time
+          description: The date on this custom field.
+          type: string
+          x-ms-summary: Date
+      x-display-name: Custom field
+      x-ms-summary: Custom field
+    EditTransactionDistributionSet:
+      type: object
+      properties:
+        name:
+          type: string
+          x-ms-summary: Name
+        line_items:
+          type: array
+          items:
+            $ref: '#/components/schemas/EditDistributionSetProjectLineItem'
+          x-ms-summary: Line items
+      example:
+        name: Distribution EP
+        line_items:
+        - percent: 34
+          line_number: 1
+          project_id: 23
+          transaction_code_values:
+          - name: Grants
+            value: Helping Hands
+            id: 4
+          - name: Spendable/Non-Spendable
+            value: Non-Spendable
+            id: 0
+          account_class: Unrestricted Net Assets
+        - percent: 66
+          line_number: 2
+          project_id: 24
+          transaction_code_values:
+          - name: Grants
+            value: Helping Hands
+            id: 4
+          - name: Spendable/Non-Spendable
+            value: Spendable
+            id: 0
+          account_class: Unrestricted Net Assets
+      x-display-name: Edit transaction distribution set
+      x-ms-summary: Edit transaction distribution set
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

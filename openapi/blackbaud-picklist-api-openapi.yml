@@ -1,0 +1,548 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: GrantsConnect Picklist API'
+  description: This API provides access to read and update data within GrantsConnect.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/grants-connect
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/grants-connect
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Picklist
+paths:
+  /v1/picklist:
+    get:
+      operationId: GetPicklists
+      summary: Get picklists (PREVIEW)
+      description: 'Retrieves information about all picklists.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetPicklistsResult'
+              example:
+                picklists:
+                - id: 1
+                  name: Example Picklist
+                  guid: 0c6ba7e6-c032-4f56-9b78-1c4dc4799a5d
+                  date_added: '2025-01-01T12:00:00Z'
+                  date_modified: '2025-02-01T12:00:00Z'
+                  added_by: test created by
+                  modified_by_email: test updated by
+                  impersonated_by: test impersonated by
+                  create_impersonated_by: test created impersonated by
+                  system_picklist: false
+                  has_options: true
+                  default_language_id: en-US
+                  parent_picklist_id: 4
+                  data_type: Text
+      tags:
+      - Picklist
+  /v1/picklist/picklistoptions/{picklist_option_id}:
+    patch:
+      operationId: EditPicklistOption
+      summary: Edit a picklist option (PREVIEW)
+      description: 'Edits an existing picklist option.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: picklist_option_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: Identifier of the picklist to add or update options for.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditPicklistOption'
+            example:
+              value: testValue
+              sort_order: 1
+              parent_keys:
+              - parentKey1
+              - parentKey2
+              in_use: true
+        description: Specifies the picklist option information for update.
+      responses:
+        '200':
+          description: OK
+      tags:
+      - Picklist
+  /v1/picklist/{picklist_id}/addeditpicklistoptionsbulk:
+    post:
+      operationId: AddEditPicklistOptionsBulk
+      summary: Bulk add or edit picklist options (PREVIEW)
+      description: 'Adds or edits multiple picklist options at the same time.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: picklist_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: Identifier of the picklist to add or update options for.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BulkCreateUpdatePicklistOptions'
+            example:
+              picklist_options:
+              - parent_keys: []
+                sort_order: 0
+                inactive: false
+                key: option1
+                value: Option 1
+              - parent_keys: []
+                sort_order: 0
+                inactive: false
+                key: option2
+                value: Option 2
+        description: Specifies the picklist option information for bulk create/update.
+      responses:
+        '200':
+          description: OK
+      tags:
+      - Picklist
+  /v1/picklist/{picklist_id}/picklistoptions:
+    post:
+      operationId: AddPicklistOption
+      summary: Add a picklist option (PREVIEW)
+      description: 'Adds a new picklist option to an existing picklist.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: picklist_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The identifier of the picklist to add an option to.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddPicklistOption'
+            example:
+              key: testKey
+              value: Test Value
+              sort_order: 1
+              parent_keys:
+              - parentKey1
+              - parentKey2
+        description: Specifies the picklist option information for creation.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SkyApiPicklistOptionId'
+              example:
+                picklist_option_id: 456
+      tags:
+      - Picklist
+    get:
+      operationId: GetPicklistOption
+      summary: Get picklist options (PREVIEW)
+      description: 'Retrieves information about all picklist options for the specified picklist.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: picklist_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The identifier of the picklist to retrieve options for.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResultGetPicklistOptions'
+              example:
+                picklist_options:
+                - id: 1
+                  key: exampleKey1
+                  values:
+                  - language_id: en-US
+                    text: text1
+                  in_use: true
+                  sort_order: 1
+                  date_added: '2025-01-01T12:00:00Z'
+                  date_modified: '2025-02-01T12:00:00Z'
+                  picklist_option_dependent_picklists:
+                  - parent_picklist_id: 1
+                    parent_picklist_option_id: 1
+                    parent_picklist_option_key: parentKey
+                    parent_picklist_guid: e3e754a5-2e48-40b0-9f14-a92ab1545e1e
+                    dependent_picklist_id: 2
+                    dependent_picklist_option_id: 3
+                    dependent_picklist_option_key: dependentKey
+                    dependent_picklist_guid: 585a635b-5255-47ae-873c-60dd4727e231
+                  numeric_value: 4
+                - id: 2
+                  key: exampleKey2
+                  values:
+                  - language_id: en-US
+                    text: text2
+                  in_use: true
+                  sort_order: 1
+                  date_added: '2025-01-01T12:00:00Z'
+                  date_modified: '2025-02-01T12:00:00Z'
+                  picklist_option_dependent_picklists:
+                  - parent_picklist_id: 8
+                    parent_picklist_option_id: 9
+                    parent_picklist_option_key: parentKey
+                    parent_picklist_guid: bea26530-6803-48b4-b851-7d9bd76c16c4
+                    dependent_picklist_id: 6
+                    dependent_picklist_option_id: 7
+                    dependent_picklist_option_key: dependentKey
+                    dependent_picklist_guid: 633d8418-1357-437f-bb40-91da05c6023c
+                  numeric_value: 5
+      tags:
+      - Picklist
+components:
+  schemas:
+    GetPicklistOption:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID of the picklist option.
+          format: int32
+        key:
+          type:
+          - string
+          - 'null'
+          description: Key of the picklist option.
+        values:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/PicklistOptionTranslationText'
+          description: Values of the picklist option for each language where it has data.
+        in_use:
+          type: boolean
+          description: Determines if the picklist option is in use.
+        sort_order:
+          type: integer
+          description: Sort order of the picklist option.
+          format: int32
+        date_added:
+          type: string
+          description: Date and time the picklist option was created. Time zone is UTC.
+          format: date-time
+        date_modified:
+          type: string
+          description: The date and time the picklist option was last modified. Time zone is UTC.
+          format: date-time
+        picklist_option_dependent_picklists:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/PicklistOptionDependentPicklist'
+          description: Dependent picklists that use this picklist option as a parent option.
+        numeric_value:
+          type:
+          - number
+          - 'null'
+          description: Numeric value of the picklist option if it has one.
+          format: double
+      additionalProperties: false
+      description: Model for getting picklist option details.
+    SkyApiPicklistOptionId:
+      type: object
+      properties:
+        picklist_option_id:
+          type: integer
+          description: The ID of the picklist option.
+          format: int32
+      additionalProperties: false
+      description: Represents a model for a picklist option's ID.
+    AddPicklistOption:
+      type: object
+      properties:
+        key:
+          type:
+          - string
+          - 'null'
+          description: Key for the new picklist option.
+        value:
+          type:
+          - string
+          - 'null'
+          description: Value for the new picklist option.
+        sort_order:
+          type: integer
+          description: Sort order for the new picklist option.
+          format: int32
+        parent_keys:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: Parent keys for the new picklist option if this is a dependent picklist.
+      additionalProperties: false
+      description: Model for adding a new picklist option.
+    GetPicklist:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID of the picklist.
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: Name of the picklist.
+        guid:
+          type: string
+          description: Guid of the picklist.
+          format: uuid
+          x-bb-suppressions:
+          - parameter_property_name
+        date_added:
+          type: string
+          description: Date and time the picklist was created. Time zone is UTC.
+          format: date-time
+        date_modified:
+          type: string
+          description: The date and time the picklist was last modified. Time zone is UTC.
+          format: date-time
+        added_by:
+          type:
+          - string
+          - 'null'
+          description: The user that initially created the picklist.
+        modified_by_email:
+          type:
+          - string
+          - 'null'
+          description: Email of the user who last modified the field response.
+          x-bb-suppressions:
+          - parameter_property_name
+        impersonated_by:
+          type:
+          - string
+          - 'null'
+          description: The user that last performed an action (insert/update) on the picklist when impersonated.
+        create_impersonated_by:
+          type:
+          - string
+          - 'null'
+          description: The user that initially created the picklist when impersonated.
+        system_picklist:
+          type: boolean
+          description: Determines if the picklist is a system picklist or a client specific picklist.
+        has_options:
+          type: boolean
+          description: Determines if the picklist has options.
+        default_language_id:
+          type:
+          - string
+          - 'null'
+          description: Default language ID of the picklist.
+        parent_picklist_id:
+          type:
+          - integer
+          - 'null'
+          description: Parent picklist ID if this is a dependent picklist.
+          format: int32
+        data_type:
+          $ref: '#/components/schemas/PicklistDataTypes'
+      additionalProperties: false
+      description: Model for getting picklist details.
+    PicklistOptionKeyValue:
+      type: object
+      properties:
+        parent_keys_string:
+          type:
+          - string
+          - 'null'
+          description: Parent keys of the picklist option as a comma delimited string if this is a dependent picklist.
+        parent_keys:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: Parent keys of the picklist option if this is a dependent picklist.
+        sort_order:
+          type: integer
+          description: Sort order of the picklist option.
+          format: int32
+        inactive:
+          type: boolean
+          description: Indicates whether the picklist option is inactive.
+        key:
+          type:
+          - string
+          - 'null'
+          description: Key of the picklist option.
+        value:
+          type:
+          - string
+          - 'null'
+          description: Value of the picklist option.
+      additionalProperties: false
+      description: Returns data for picklist options, including parent information.
+    PicklistOptionTranslationText:
+      type: object
+      properties:
+        language_id:
+          type:
+          - string
+          - 'null'
+          description: Language ID of the translation.
+        text:
+          type:
+          - string
+          - 'null'
+          description: Text of the translation.
+      additionalProperties: false
+      description: Represents a simple language translation model containing the language identifier and the translated text.
+    EditPicklistOption:
+      type: object
+      properties:
+        value:
+          type:
+          - string
+          - 'null'
+          description: The value of the picklist option to edit.
+        sort_order:
+          type: integer
+          description: The sort order of the picklist option to edit.
+          format: int32
+        parent_keys:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: The parent keys of the picklist option to edit if this is a dependent picklist.
+        in_use:
+          type: boolean
+          description: Determines if the picklist option is active.
+      additionalProperties: false
+      description: Represents a model for editing a picklist option.
+    PicklistDataTypes:
+      enum:
+      - Text
+      - Numeric
+      type: string
+      description: Determines the data type of the options in a picklist.<p>Available values:</p><ul><li><i>Text</i></li><li><i>Numeric</i></li></ul>
+    GetPicklistsResult:
+      type: object
+      properties:
+        picklists:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/GetPicklist'
+          description: List of information for picklists returned.
+      additionalProperties: false
+      description: Return model for getting picklists.
+    ResultGetPicklistOptions:
+      type: object
+      properties:
+        picklist_options:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/GetPicklistOption'
+          description: Picklist option data results.
+      additionalProperties: false
+      description: Picklist Options result model.
+    PicklistOptionDependentPicklist:
+      type: object
+      properties:
+        parent_picklist_id:
+          type: integer
+          description: ID of the Parent picklist.
+          format: int32
+        parent_picklist_option_id:
+          type: integer
+          description: ID of the parent picklist option.
+          format: int32
+        parent_picklist_option_key:
+          type:
+          - string
+          - 'null'
+          description: Key of the parent picklist option.
+        parent_picklist_guid:
+          type: string
+          description: Guid of the parent picklist.
+          format: uuid
+          x-bb-suppressions:
+          - parameter_property_name
+        dependent_picklist_id:
+          type: integer
+          description: ID of the dependent picklist.
+          format: int32
+        dependent_picklist_option_id:
+          type: integer
+          description: ID of the Dependent picklist option.
+          format: int32
+        dependent_picklist_option_key:
+          type:
+          - string
+          - 'null'
+          description: Key of the Dependent picklist option.
+        dependent_picklist_guid:
+          type: string
+          description: Guid of the Dependent picklist.
+          format: uuid
+          x-bb-suppressions:
+          - parameter_property_name
+      additionalProperties: false
+      description: Represents the relationship between a parent picklist option and its dependent picklist.
+    BulkCreateUpdatePicklistOptions:
+      type: object
+      properties:
+        picklist_options:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/PicklistOptionKeyValue'
+          description: Data for the picklist options.
+      additionalProperties: false
+      description: Represents a list of picklist options, where each option is defined by a key-value pair.
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

@@ -1,0 +1,1108 @@
+openapi: 3.2.0
+info:
+  title: Blackbaud Emailaddresses API
+  version: '1.0'
+  x-refined-note:
+  - x-apievangelist-provenance differs across the merged source definitions and was not carried
+  description: 'Operations tagged Emailaddresses across 3 of this provider''s published API definitions: blackbaud-altru-constituent-api-openapi.yml, blackbaud-constituent-api-openapi.yml, blackbaud-crm-constituent-api-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.sky.blackbaud.com/alt-conmg
+- url: https://api.sky.blackbaud.com/constituent/v1
+- url: https://api.sky.blackbaud.com/crm-conmg
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Emailaddresses
+paths:
+  /emailaddresses:
+    post:
+      operationId: CreateConstituentEmailAddress
+      summary: Create a constituent email address
+      description: This operation is used to add email addresses.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewConstituentEmailAddress'
+            example:
+              constituent_id: 11163BAF-07CF-40A1-AA54-E5F2C2F3AECC
+              email_address_type: Email
+              email_address: tmv@groupmail.net
+              primary: true
+              spouse_name: ''
+              update_matching_spouse_email_address: false
+              household: false
+              household_member: false
+              update_matching_household_email_address: false
+              do_not_email: false
+              info_source: ''
+              info_source_comments: ''
+              constituent_data_review_rollback_reason: ''
+              forced_primary: false
+              can_edit_primary: false
+              invalid_fields: ''
+              origin: User
+              start_date: '2015-09-18T12:00:00Z'
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully creates the resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to create the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Emailaddresses
+    get:
+      operationId: ListConstituentEmailAddressesAllConstituents
+      summary: Email address list (All constituents)
+      description: 'Returns a paginated list of email addresses.
+
+
+        The default sorting behavior is to list email addresses in ascending order based on when they were created.
+
+
+        However, the last_modified parameter overrides the default sorting behavior to list email addresses in ascending order based on when they were last modified. The last_modified parameter also adds the sort_token parameter to the next_link URL to ensure that email addresses are stably sorted and that order persists when changes occur while working through a paginated list.
+
+
+        If the last_modified and date_added parameters are both specified, the sorting behavior is to list email addresses based on when they were last modified.
+
+
+        Note: This endpoint returns data with an average latency of about 30 minutes. In addition, historic records have a default date_added timestamp of 1600-01-01 00:00:00.000 +00:00. The timestamp for newer records reflects when the records were added.'
+      parameters:
+      - name: date_added
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Represents a filter for email addresses created on or after the specified date. The filter respects time offsets from UTC per the ISO-8601 format: 2016-05-05T17:59:31.1600745-04:00.'
+      - name: last_modified
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Represents a filter for email addresses modified on or after the specified date. The filter respects time offsets from UTC per the ISO-8601 format: 2016-05-05T17:59:31.1600745-04:00.'
+      - name: include_inactive
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: Set this parameter to "true" to include inactive email addresses in the response.
+      - name: sort_token
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Represents a token filter to provide the next stable-sorted list of email addresses. This will be provided on the next_link collection response property when last_modified or sort_token filters are specified on the request.
+      - name: constituent_id
+        in: query
+        required: false
+        schema:
+          type: array
+        description: Represents a list of constituent identifiers. Returns email addresses if any of the specified constituent identifiers match any of the email addresses' associated constituents. For example, "constituent_id=280&amp;constituent_id=1232" returns email addresses with either "280" or "1232" constituent identifiers.
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Represents the number of records to return. The default is 500. The maximum is 5000.
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Represents the number of records to skip. For use with pagination.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a <a href="https://developer.blackbaud.com/skyapi/api/entity-reference/constituent#Collection">collection</a> of <a href="https://developer.blackbaud.com/skyapi/api/entity-reference/constituent#EmailAddress">email address</a> entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiCollectionOfEmailAddressRead'
+              example:
+                count: 52
+                next_link: https://api.sky.blackbaud.com/constituent/v1/emailaddresses?offset=4&limit=4
+                value:
+                - id: '131'
+                  address: JPdiresta@net.com
+                  constituent_id: '185'
+                  date_added: '1600-01-01T00:00:00Z'
+                  date_modified: '2016-10-19T19:42:38.775Z'
+                  do_not_email: false
+                  inactive: false
+                  primary: false
+                  type: Email
+                - id: '135'
+                  address: adiresta@aol.net.com
+                  constituent_id: '333'
+                  date_added: '1600-01-01T00:00:00Z'
+                  date_modified: '2016-10-19T19:42:38.775Z'
+                  do_not_email: false
+                  inactive: false
+                  primary: false
+                  type: Email
+                - id: '283'
+                  address: robertcarloshernandez@gmail.com
+                  constituent_id: '280'
+                  date_added: '1600-01-01T00:00:00Z'
+                  date_modified: '2016-10-19T19:42:38.775Z'
+                  do_not_email: false
+                  inactive: false
+                  primary: false
+                  type: Email
+                - id: '289'
+                  address: AEA@anet.com
+                  constituent_id: '188'
+                  date_added: '1600-01-01T00:00:00Z'
+                  date_modified: '2016-10-19T19:42:38.775Z'
+                  do_not_email: false
+                  inactive: false
+                  primary: false
+                  type: Email
+        '400':
+          description: Returned when the specified request parameters are not in the appropriate format.
+        '403':
+          description: Returned when the user does not have permission to view the email addresses.
+      tags:
+      - Emailaddresses
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-conmg
+  /emailaddresses/{email_address_id}:
+    delete:
+      operationId: DeleteConstituentEmailAddress
+      summary: Delete a constituent email address
+      description: This deletion handles only the basic deletion rules for an email address (currently none).
+      parameters:
+      - name: email_address_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The email address id
+      responses:
+        '200':
+          description: Returned when the operation successfully deletes the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to delete the resource.
+      tags:
+      - Emailaddresses
+    patch:
+      operationId: EditConstituentEmailAddress
+      summary: Edit a constituent email address
+      description: This operation is used to edit email addresses.
+      parameters:
+      - name: email_address_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The email address id.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditConstituentEmailAddress'
+            example:
+              email_address_type: Email
+              email_address: jules@att.com
+              primary: false
+              do_not_email: false
+              spouse_name: ''
+              spouse_has_matching_email_address: false
+              update_matching_spouse_email_address: false
+              household: false
+              household_member: false
+              update_matching_household_email_address: false
+              matching_household_members:
+              - constituent_id: ''
+                name: ''
+                relationship_to_primary: ''
+              info_source: ''
+              info_source_comments: ''
+              constituent_data_review_rollback_reason: ''
+              forced_primary: false
+              can_edit_primary: false
+              invalid_fields: ''
+              origin: User
+              start_date: '2016-02-18T12:00:00Z'
+              end_date: '2017-06-12T12:00:00Z'
+              invalid_email: false
+              email_bounced_date: '2018-01-03T12:00:00Z'
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully edits the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to edit the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Emailaddresses
+    get:
+      operationId: GetConstituentEmailAddress
+      summary: Get a constituent email address
+      description: This operation is used to edit email addresses.
+      parameters:
+      - name: email_address_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The email address id.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the specified resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConstituentEmailAddress'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to get the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Emailaddresses
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-conmg
+components:
+  schemas:
+    EditConstituentEmailAddressMatchingHouseholdMembers:
+      type: object
+      properties:
+        constituent_id:
+          type: string
+          description: constituent id
+        name:
+          type: string
+          description: household member
+        relationship_to_primary:
+          type: string
+          description: relationship to primary
+      description: EditConstituentEmailAddressMatchingHouseholdMembers
+      x-display-name: matching_household_members
+      x-display-id: matching_household_members
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type: integer
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type: string
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: false
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-display-name: Problem details
+      x-display-id: ProblemDetails
+    ConstituentEmailAddress:
+      required:
+      - email_address
+      type: object
+      properties:
+        email_address_type:
+          type: string
+          description: The type. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/emailaddresstypecode/entries
+        email_address:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The email address.
+        primary:
+          type: boolean
+          description: Indicates whether set as primary email address.
+        do_not_email:
+          type: boolean
+          description: Indicates whether do not send email to this address.
+        spouse_name:
+          maxLength: 154
+          minLength: 0
+          type: string
+          description: The spouse name. Read-only in the SOAP API.
+        spouse_has_matching_email_address:
+          type: boolean
+          description: Indicates whether spouse has matching email address. Read-only in the SOAP API.
+        update_matching_spouse_email_address:
+          type: boolean
+          description: Indicates whether update matching email information for spouse.
+        household:
+          type: boolean
+          description: Indicates whether household. Read-only in the SOAP API.
+        household_member:
+          type: boolean
+          description: Indicates whether household member. Read-only in the SOAP API.
+        update_matching_household_email_address:
+          type: boolean
+          description: Indicates whether update matching email addresses in household.
+        matching_household_members:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConstituentEmailAddressMatchingHouseholdMembers'
+          description: Matching household members.
+        info_source:
+          type: string
+          description: The information source. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/infosourcecode/entries
+        info_source_comments:
+          maxLength: 256
+          minLength: 0
+          type: string
+          description: The comments.
+        constituent_data_review_rollback_reason:
+          type: string
+          description: The reason. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/484441bc-f0e6-4f5f-a6bf-49f02881dd13.
+        forced_primary:
+          type: boolean
+          description: Indicates whether forced primary. Read-only in the SOAP API.
+        can_edit_primary:
+          type: boolean
+          description: Indicates whether can edit primary. Read-only in the SOAP API.
+        invalid_fields:
+          maxLength: 256
+          minLength: 0
+          type: string
+          description: The invalid fields. Read-only in the SOAP API.
+        origin:
+          type: string
+          description: The origin. Read-only in the SOAP API. Available values are <i>user</i>, <i>web forms</i>
+        start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        end_date:
+          type: string
+          description: 'The end date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        invalid_email:
+          type: boolean
+          description: Indicates whether invalid email. Read-only in the SOAP API.
+        email_bounced_date:
+          type: string
+          description: 'The email bounced date. Read-only in the SOAP API. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+      additionalProperties: false
+      description: GetConstituentEmailAddress
+      x-display-name: Email Address Edit Form 2
+      x-display-id: Email Address Edit Form 2
+    ConstituentEmailAddressMatchingHouseholdMembers:
+      type: object
+      properties:
+        constituent_id:
+          type: string
+          description: constituent id
+        name:
+          type: string
+          description: household member
+        relationship_to_primary:
+          type: string
+          description: relationship to primary
+      description: ConstituentEmailAddressMatchingHouseholdMembers
+      x-display-name: matching_household_members
+      x-display-id: matching_household_members
+    NewConstituentEmailAddress:
+      required:
+      - constituent_id
+      - email_address
+      type: object
+      properties:
+        constituent_id:
+          type: string
+          description: The constituent ID.
+        email_address_type:
+          type: string
+          description: The type. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/emailaddresstypecode/entries
+        email_address:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The email address.
+        primary:
+          type: boolean
+          description: Indicates whether set as primary email address.
+        spouse_name:
+          maxLength: 154
+          minLength: 0
+          type: string
+          description: The spouse name. Read-only in the SOAP API.
+        update_matching_spouse_email_address:
+          type: boolean
+          description: Indicates whether update matching email information for spouse.
+        household:
+          type: boolean
+          description: Indicates whether household. Read-only in the SOAP API.
+        household_member:
+          type: boolean
+          description: Indicates whether household member. Read-only in the SOAP API.
+        update_matching_household_email_address:
+          type: boolean
+          description: Indicates whether copy email address information to household members.
+        do_not_email:
+          type: boolean
+          description: Indicates whether do not send email to this address.
+        info_source:
+          type: string
+          description: The information source. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/infosourcecode/entries
+        info_source_comments:
+          maxLength: 256
+          minLength: 0
+          type: string
+          description: The comments.
+        constituent_data_review_rollback_reason:
+          type: string
+          description: The reason. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/484441bc-f0e6-4f5f-a6bf-49f02881dd13.
+        forced_primary:
+          type: boolean
+          description: Indicates whether forced primary. Read-only in the SOAP API.
+        can_edit_primary:
+          type: boolean
+          description: Indicates whether can edit primary. Read-only in the SOAP API.
+        invalid_fields:
+          maxLength: 256
+          minLength: 0
+          type: string
+          description: The invalid fields. Read-only in the SOAP API.
+        origin:
+          type: string
+          description: The origin. Available values are <i>user</i>, <i>web forms</i>
+        start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+      additionalProperties: false
+      description: CreateConstituentEmailAddress
+      example:
+        constituent_id: 11163BAF-07CF-40A1-AA54-E5F2C2F3AECC
+        email_address_type: Email
+        email_address: tmv@groupmail.net
+        primary: true
+        spouse_name: ''
+        update_matching_spouse_email_address: false
+        household: false
+        household_member: false
+        update_matching_household_email_address: false
+        do_not_email: false
+        info_source: ''
+        info_source_comments: ''
+        constituent_data_review_rollback_reason: ''
+        forced_primary: false
+        can_edit_primary: false
+        invalid_fields: ''
+        origin: User
+        start_date: '2015-09-18T12:00:00Z'
+      x-display-name: Email Address Add Form
+      x-display-id: Email Address Add Form
+    PostResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The newly created ID.
+      additionalProperties: false
+      description: Defines the shape of a post response object.
+    EditConstituentEmailAddress:
+      type: object
+      properties:
+        email_address_type:
+          type: string
+          description: The type. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/emailaddresstypecode/entries
+        email_address:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The email address.
+        primary:
+          type: boolean
+          description: Indicates whether set as primary email address.
+        do_not_email:
+          type: boolean
+          description: Indicates whether do not send email to this address.
+        spouse_name:
+          maxLength: 154
+          minLength: 0
+          type: string
+          description: The spouse name. Read-only in the SOAP API.
+        spouse_has_matching_email_address:
+          type: boolean
+          description: Indicates whether spouse has matching email address. Read-only in the SOAP API.
+        update_matching_spouse_email_address:
+          type: boolean
+          description: Indicates whether update matching email information for spouse.
+        household:
+          type: boolean
+          description: Indicates whether household. Read-only in the SOAP API.
+        household_member:
+          type: boolean
+          description: Indicates whether household member. Read-only in the SOAP API.
+        update_matching_household_email_address:
+          type: boolean
+          description: Indicates whether update matching email addresses in household.
+        matching_household_members:
+          type: array
+          items:
+            $ref: '#/components/schemas/EditConstituentEmailAddressMatchingHouseholdMembers'
+          description: Matching household members.
+        info_source:
+          type: string
+          description: The information source. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/infosourcecode/entries
+        info_source_comments:
+          maxLength: 256
+          minLength: 0
+          type: string
+          description: The comments.
+        constituent_data_review_rollback_reason:
+          type: string
+          description: The reason. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/484441bc-f0e6-4f5f-a6bf-49f02881dd13.
+        forced_primary:
+          type: boolean
+          description: Indicates whether forced primary. Read-only in the SOAP API.
+        can_edit_primary:
+          type: boolean
+          description: Indicates whether can edit primary. Read-only in the SOAP API.
+        invalid_fields:
+          maxLength: 256
+          minLength: 0
+          type: string
+          description: The invalid fields. Read-only in the SOAP API.
+        origin:
+          type: string
+          description: The origin. Read-only in the SOAP API. Available values are <i>user</i>, <i>web forms</i>
+        start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        end_date:
+          type: string
+          description: 'The end date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        invalid_email:
+          type: boolean
+          description: Indicates whether invalid email. Read-only in the SOAP API.
+        email_bounced_date:
+          type: string
+          description: 'The email bounced date. Read-only in the SOAP API. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+      additionalProperties: false
+      description: EditConstituentEmailAddress
+      example:
+        email_address_type: Email
+        email_address: jules@att.com
+        primary: false
+        do_not_email: false
+        spouse_name: ''
+        spouse_has_matching_email_address: false
+        update_matching_spouse_email_address: false
+        household: false
+        household_member: false
+        update_matching_household_email_address: false
+        matching_household_members:
+        - constituent_id: ''
+          name: ''
+          relationship_to_primary: ''
+        info_source: ''
+        info_source_comments: ''
+        constituent_data_review_rollback_reason: ''
+        forced_primary: false
+        can_edit_primary: false
+        invalid_fields: ''
+        origin: User
+        start_date: '2016-02-18T12:00:00Z'
+        end_date: '2017-06-12T12:00:00Z'
+        invalid_email: false
+        email_bounced_date: '2018-01-03T12:00:00Z'
+      x-display-name: Email Address Edit Form 2
+      x-display-id: Email Address Edit Form 2
+    EmailAddressRead:
+      description: Email addresses store information about constituent email accounts and where to send email correspondences for individuals and organizations.
+      type: object
+      properties:
+        id:
+          description: The immutable system record ID of the email address.
+          type: string
+        address:
+          description: The email address.
+          type: string
+        constituent_id:
+          description: The immutable system record ID of the constituent associated with the email address.
+          type: string
+        date_added:
+          format: date-time
+          description: 'The date when the email address was created. Includes an offset from UTC in <a href="https://tools.ietf.org/html/rfc3339">ISO-8601 format: </a><i>1969-11-21T10:29:43-04:00</i>.'
+          type: string
+          x-supports-datetime-offset: true
+        date_modified:
+          format: date-time
+          description: 'The date when the email address was last modified. Includes an offset from UTC in <a href="https://tools.ietf.org/html/rfc3339">ISO-8601 format: </a><i>1969-11-21T10:29:43-04:00</i>.'
+          type: string
+          x-supports-datetime-offset: true
+        do_not_email:
+          description: Indicates whether the constituent requests not to be contacted at this email address.
+          type: boolean
+        inactive:
+          description: Indicates whether the email address is inactive.
+          type: boolean
+        primary:
+          description: Indicates whether this is the constituent's primary email address.
+          type: boolean
+        type:
+          description: The type of email address. Available values are the entries in the <a href="https://developer.sky.blackbaud.com/docs/services/56b76470069a0509c8f1c5b3/operations/ListEmailAddressTypes"><b>Phone Types</b></a> table.
+          type: string
+      x-display-name: Email address
+      x-display-id: EmailAddress
+    EmailAddressAdd:
+      description: Email addresses store information about constituent email accounts and where to send email correspondences for individuals and organizations.
+      required:
+      - address
+      - constituent_id
+      - type
+      type: object
+      properties:
+        address:
+          description: The email address.
+          type: string
+        constituent_id:
+          description: The immutable system record ID of the constituent associated with the email address.
+          type: string
+        do_not_email:
+          description: Indicates whether the constituent requests not to be contacted at this email address.
+          type: boolean
+        inactive:
+          description: Indicates whether the email address is inactive.
+          type: boolean
+        primary:
+          description: Indicates whether this is the constituent's primary email address.
+          type: boolean
+        type:
+          description: The type of email address. Available values are the entries in the <a href="https://developer.sky.blackbaud.com/docs/services/56b76470069a0509c8f1c5b3/operations/ListEmailAddressTypes"><b>Phone Types</b></a> table.
+          type: string
+      x-hidden: true
+      x-display-name: Create email address
+      x-display-id: CreateEmailAddress
+    ApiCollectionOfEmailAddressRead:
+      description: Fetching data all at once quickly becomes unmanageable. The collection entity helps by returning paginated chunks of large data sets. This entity includes helpful metadata and properties to paginate and iterate through the data.
+      type: object
+      properties:
+        count:
+          format: int32
+          description: The number of items available for retrieval into the collection after applying any request parameters. The <b>limit</b> and <b>offset</b> parameters do not affect the <b>count</b>, but to facilitate paging, they may affect the number of items in the <b>value</b> result set.
+          type: integer
+        next_link:
+          description: For paginated responses, the URI for the next page of results.
+          type: string
+        value:
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailAddressRead'
+      x-hidden: true
+      x-base-type: '#/definitions/ApiCollection'
+    PostResponse_2:
+      description: Defines the shape of a post response object.
+      type: object
+      properties:
+        id:
+          description: The newly created ID
+          type: string
+      x-hidden: true
+    EmailAddressEdit:
+      description: Email addresses store information about constituent email accounts and where to send email correspondences for individuals and organizations.
+      type: object
+      properties:
+        address:
+          description: The email address.
+          type: string
+        do_not_email:
+          description: Indicates whether the constituent requests not to be contacted at this email address.
+          type: boolean
+        inactive:
+          description: Indicates whether the email address is inactive.
+          type: boolean
+        primary:
+          description: Indicates whether this is the constituent's primary email address.
+          type: boolean
+        type:
+          description: The type of email address. Available values are the entries in the <a href="https://developer.sky.blackbaud.com/docs/services/56b76470069a0509c8f1c5b3/operations/ListEmailAddressTypes"><b>Phone Types</b></a> table. This property cannot be set to null.
+          type: string
+      x-hidden: true
+      x-display-name: Edit email address
+      x-display-id: EditEmailAddress
+    ConstituentEmailAddress_2:
+      required:
+      - email_address
+      type: object
+      properties:
+        email_address_type:
+          type: string
+          description: The type. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/emailaddresstypecode/entries
+        email_address:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The email address.
+        primary:
+          type: boolean
+          description: Indicates whether set as primary email address.
+        do_not_email:
+          type: boolean
+          description: Indicates whether do not send email to this address.
+        spouse_name:
+          maxLength: 154
+          minLength: 0
+          type: string
+          description: The spouse name. Read-only in the SOAP API.
+        spouse_has_matching_email_address:
+          type: boolean
+          description: Indicates whether spouse has matching email address. Read-only in the SOAP API.
+        update_matching_spouse_email_address:
+          type: boolean
+          description: Indicates whether update matching email information for spouse.
+        household:
+          type: boolean
+          description: Indicates whether household. Read-only in the SOAP API.
+        household_member:
+          type: boolean
+          description: Indicates whether household member. Read-only in the SOAP API.
+        update_matching_household_email_address:
+          type: boolean
+          description: Indicates whether update matching email addresses in household.
+        matching_household_members:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConstituentEmailAddressMatchingHouseholdMembers'
+          description: Matching household members.
+        info_source:
+          type: string
+          description: The information source. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/infosourcecode/entries
+        info_source_comments:
+          maxLength: 256
+          minLength: 0
+          type: string
+          description: The comments.
+        constituent_data_review_rollback_reason:
+          type: string
+          description: The reason. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/484441bc-f0e6-4f5f-a6bf-49f02881dd13.
+        forced_primary:
+          type: boolean
+          description: Indicates whether forced primary. Read-only in the SOAP API.
+        can_edit_primary:
+          type: boolean
+          description: Indicates whether can edit primary. Read-only in the SOAP API.
+        invalid_fields:
+          maxLength: 256
+          minLength: 0
+          type: string
+          description: The invalid fields. Read-only in the SOAP API.
+        origin:
+          type: string
+          description: The origin. Read-only in the SOAP API. Available values are <i>user</i>, <i>web forms</i>
+        start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        end_date:
+          type: string
+          description: 'The end date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        invalid_email:
+          type: boolean
+          description: Indicates whether invalid email. Read-only in the SOAP API.
+        email_bounced_date:
+          type: string
+          description: 'The email bounced date. Read-only in the SOAP API. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        emailisconfidential:
+          type: boolean
+          description: Indicates whether this email is confidential.
+        donotemailreason:
+          type: string
+          description: The reason. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/donotemailreasoncode/entries
+      additionalProperties: false
+      description: GetConstituentEmailAddress
+      x-display-name: Email Address Edit Form 2
+      x-display-id: Email Address Edit Form 2
+    NewConstituentEmailAddress_2:
+      required:
+      - constituent_id
+      - email_address
+      type: object
+      properties:
+        constituent_id:
+          type: string
+          description: The constituent ID.
+        email_address_type:
+          type: string
+          description: The type. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/emailaddresstypecode/entries
+        email_address:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The email address.
+        primary:
+          type: boolean
+          description: Indicates whether set as primary email address.
+        spouse_name:
+          maxLength: 154
+          minLength: 0
+          type: string
+          description: The spouse name. Read-only in the SOAP API.
+        update_matching_spouse_email_address:
+          type: boolean
+          description: Indicates whether update matching email information for spouse.
+        household:
+          type: boolean
+          description: Indicates whether household. Read-only in the SOAP API.
+        household_member:
+          type: boolean
+          description: Indicates whether household member. Read-only in the SOAP API.
+        update_matching_household_email_address:
+          type: boolean
+          description: Indicates whether copy email address information to household members.
+        do_not_email:
+          type: boolean
+          description: Indicates whether do not send email to this address.
+        info_source:
+          type: string
+          description: The information source. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/infosourcecode/entries
+        info_source_comments:
+          maxLength: 256
+          minLength: 0
+          type: string
+          description: The comments.
+        constituent_data_review_rollback_reason:
+          type: string
+          description: The reason. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/484441bc-f0e6-4f5f-a6bf-49f02881dd13.
+        forced_primary:
+          type: boolean
+          description: Indicates whether forced primary. Read-only in the SOAP API.
+        can_edit_primary:
+          type: boolean
+          description: Indicates whether can edit primary. Read-only in the SOAP API.
+        invalid_fields:
+          maxLength: 256
+          minLength: 0
+          type: string
+          description: The invalid fields. Read-only in the SOAP API.
+        origin:
+          type: string
+          description: The origin. Available values are <i>user</i>, <i>web forms</i>
+        start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        emailisconfidential:
+          type: boolean
+          description: Indicates whether this email is confidential.
+        donotemailreason:
+          type: string
+          description: The reason. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/donotemailreasoncode/entries
+      additionalProperties: false
+      description: CreateConstituentEmailAddress
+      example:
+        constituent_id: 11163BAF-07CF-40A1-AA54-E5F2C2F3AECC
+        email_address_type: Email
+        email_address: tmv@groupmail.net
+        primary: true
+        spouse_name: ''
+        update_matching_spouse_email_address: false
+        household: false
+        household_member: false
+        update_matching_household_email_address: false
+        do_not_email: false
+        info_source: ''
+        info_source_comments: ''
+        constituent_data_review_rollback_reason: ''
+        forced_primary: false
+        can_edit_primary: false
+        invalid_fields: ''
+        origin: User
+        start_date: '2015-09-18T12:00:00Z'
+      x-display-name: Email Address Add Form
+      x-display-id: Email Address Add Form
+    EditConstituentEmailAddress_2:
+      type: object
+      properties:
+        email_address_type:
+          type: string
+          description: The type. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/emailaddresstypecode/entries
+        email_address:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The email address.
+        primary:
+          type: boolean
+          description: Indicates whether set as primary email address.
+        do_not_email:
+          type: boolean
+          description: Indicates whether do not send email to this address.
+        spouse_name:
+          maxLength: 154
+          minLength: 0
+          type: string
+          description: The spouse name. Read-only in the SOAP API.
+        spouse_has_matching_email_address:
+          type: boolean
+          description: Indicates whether spouse has matching email address. Read-only in the SOAP API.
+        update_matching_spouse_email_address:
+          type: boolean
+          description: Indicates whether update matching email information for spouse.
+        household:
+          type: boolean
+          description: Indicates whether household. Read-only in the SOAP API.
+        household_member:
+          type: boolean
+          description: Indicates whether household member. Read-only in the SOAP API.
+        update_matching_household_email_address:
+          type: boolean
+          description: Indicates whether update matching email addresses in household.
+        matching_household_members:
+          type: array
+          items:
+            $ref: '#/components/schemas/EditConstituentEmailAddressMatchingHouseholdMembers'
+          description: Matching household members.
+        info_source:
+          type: string
+          description: The information source. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/infosourcecode/entries
+        info_source_comments:
+          maxLength: 256
+          minLength: 0
+          type: string
+          description: The comments.
+        constituent_data_review_rollback_reason:
+          type: string
+          description: The reason. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/484441bc-f0e6-4f5f-a6bf-49f02881dd13.
+        forced_primary:
+          type: boolean
+          description: Indicates whether forced primary. Read-only in the SOAP API.
+        can_edit_primary:
+          type: boolean
+          description: Indicates whether can edit primary. Read-only in the SOAP API.
+        invalid_fields:
+          maxLength: 256
+          minLength: 0
+          type: string
+          description: The invalid fields. Read-only in the SOAP API.
+        origin:
+          type: string
+          description: The origin. Read-only in the SOAP API. Available values are <i>user</i>, <i>web forms</i>
+        start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        end_date:
+          type: string
+          description: 'The end date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        invalid_email:
+          type: boolean
+          description: Indicates whether invalid email. Read-only in the SOAP API.
+        email_bounced_date:
+          type: string
+          description: 'The email bounced date. Read-only in the SOAP API. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        emailisconfidential:
+          type: boolean
+          description: Indicates whether this email is confidential.
+        donotemailreason:
+          type: string
+          description: The reason. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/donotemailreasoncode/entries
+      additionalProperties: false
+      description: EditConstituentEmailAddress
+      example:
+        email_address_type: Email
+        email_address: jules@att.com
+        primary: false
+        do_not_email: false
+        spouse_name: ''
+        spouse_has_matching_email_address: false
+        update_matching_spouse_email_address: false
+        household: false
+        household_member: false
+        update_matching_household_email_address: false
+        matching_household_members:
+        - constituent_id: ''
+          name: ''
+          relationship_to_primary: ''
+        info_source: ''
+        info_source_comments: ''
+        constituent_data_review_rollback_reason: ''
+        forced_primary: false
+        can_edit_primary: false
+        invalid_fields: ''
+        origin: User
+        start_date: '2016-02-18T12:00:00Z'
+        end_date: '2017-06-12T12:00:00Z'
+        invalid_email: false
+        email_bounced_date: '2018-01-03T12:00:00Z'
+      x-display-name: Email Address Edit Form 2
+      x-display-id: Email Address Edit Form 2
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+x-refined-from:
+- blackbaud-altru-constituent-api-openapi.yml
+- blackbaud-constituent-api-openapi.yml
+- blackbaud-crm-constituent-api-openapi.yml

@@ -1,0 +1,142 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Constituent Relationshiptypes API'
+  description: This API manages constituent information and related entities such as addresses, phones, emails, and notes.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/56b76470069a0509c8f1c5b3
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/constituent/v1
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Relationshiptypes
+paths:
+  /relationshiptypes:
+    get:
+      operationId: ListRelationshipTypes
+      summary: Relationship types
+      description: Returns a list of relationship types.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a <a href="https://developer.blackbaud.com/skyapi/api/entity-reference/constituent#Collection">collection</a> of string relationship types.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiCollectionOfString'
+              example:
+                count: 74
+                value:
+                - Attorney
+                - Aunt
+                - Benefactor
+                - Benefit Provider
+                - Benefit Recipient
+                - Board Member
+                - Brother
+                - Brother-in-law
+                - Business Partner
+                - Charitable Society
+                - Church
+                - Client
+                - Club
+                - Co-worker
+                - Consultant
+                - Cousin
+                - Daughter
+                - Daughter-in-law
+                - Donor Advised Scholarship Fund
+                - Employee
+                - Employer
+                - Ex-husband
+                - Ex-wife
+                - Executor
+                - Father
+                - Father-in-law
+                - Former Employee
+                - Former Employer
+                - Friend
+                - Golf Partner
+                - Grandchild
+                - Granddaughter
+                - Grandfather
+                - Grandmother
+                - Grandson
+                - Half-Brother
+                - Half-Sister
+                - Healthcare
+                - Husband
+                - Insurance Agent
+                - Intern
+                - Member
+                - Mother
+                - Mother-in-law
+                - Nephew
+                - Niece
+                - Nonprofit Organization
+                - Owner
+                - Parent Corporation
+                - Partner
+                - Patron
+                - Professional Organization
+                - Religious Organization
+                - Scholarship Fund
+                - Scholarship Recipient
+                - School
+                - Sister
+                - Sister-in-law
+                - Son
+                - Son-in-law
+                - Spouse
+                - Stepbrother
+                - Stepchild
+                - Stepdaughter
+                - Stepfather
+                - Stepmother
+                - Stepparent
+                - Stepsister
+                - Stepson
+                - Subsidiary
+                - Uncle
+                - Volunteer
+                - Widow
+                - Wife
+        '403':
+          description: Returned when the user does not have permission to view the relationship types.
+      tags:
+      - Relationshiptypes
+components:
+  schemas:
+    ApiCollectionOfString:
+      description: Fetching data all at once quickly becomes unmanageable. The collection entity helps by returning paginated chunks of large data sets. This entity includes helpful metadata and properties to paginate and iterate through the data.
+      type: object
+      properties:
+        count:
+          format: int32
+          description: The number of items available for retrieval into the collection after applying any request parameters. The <b>limit</b> and <b>offset</b> parameters do not affect the <b>count</b>, but to facilitate paging, they may affect the number of items in the <b>value</b> result set.
+          type: integer
+        next_link:
+          description: For paginated responses, the URI for the next page of results.
+          type: string
+        value:
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+          type: array
+          items:
+            type: string
+      x-hidden: true
+      x-base-type: '#/definitions/ApiCollection'
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

@@ -1,0 +1,503 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: School Degrees API'
+  description: This API is used to provide access to school information such as users, academics, admissions, athletics, content, lists, and general school info.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/school
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/school
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Degrees
+paths:
+  /v1/degrees/studentdegrees/{student_id}:
+    get:
+      operationId: V1DegreesStudentdegreesByStudent_idGet
+      summary: Degrees student degrees by ID
+      description: 'Returns a collection of degree/diplomas assigned to the student.
+
+
+        Each degree/diploma has a collection of majors, minors and/or concentrations as appropriate for that degree or diploma.
+
+
+        Requires the following role in the Education Management system:
+
+
+        Degree Manager
+
+
+        Diploma Manager
+
+
+        Student
+
+
+        Parent'
+      parameters:
+      - name: student_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: user Id
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDegreeOutputModelCollection'
+              example:
+                count: 1
+                value:
+                - user_id: 12345
+                  first_name: Harold
+                  last_name: Ramis
+                  preferred_name: Harry
+                  student_degrees:
+                  - id: 6789
+                    declared_on: '2018-08-30T12:00:00Z'
+                    completed_on: '2018-08-30T12:00:00Z'
+                    conferred_on: '2018-08-30T12:00:00Z'
+                    created_by: 6ca45ee4-58eb-43b3-ae30-b01db74c0e1c
+                    modified_by: 6ca45ee4-58eb-43b3-ae30-b01db74c0e1c
+                    created: '2018-08-30T12:00:00Z'
+                    modified: '2018-08-30T12:00:00Z'
+                    requirement_set:
+                    - id: 98765
+                      description: A liberally artistic degree
+                      award_level: 5
+                      type: Undergraduate
+                      degree:
+                        id: 0
+                        name: Bachelor of Science
+                        abbreviation: BS
+                      cip_prefix: '11'
+                      cip_suffix: '1111'
+                      valid_from: '2018-08-30T12:00:00Z'
+                      valid_to: '2022-08-30T12:00:00Z'
+                      credit_needed: 120
+                      credit_from_institution: 65
+                    majors:
+                    - id: 55555
+                      declared_on: '2018-08-30T12:00:00Z'
+                      requirement_set:
+                        id: 6
+                        major:
+                          id: 1234
+                          name: GhostBusting
+                          abbreviation: GhostBusting
+                        cip_prefix: '99'
+                        cip_suffix: '9999'
+                      concentrations:
+                        id: 7
+                        declared_on: '2018-08-30T12:00:00Z'
+                        requirement_set:
+                          concentration:
+                            id: 8
+                            name: Nuclear Proton Field Generation
+                            abbreviation: NPFG
+                    minors:
+                    - id: 77777
+                      declared_on: '2018-08-30T12:00:00Z'
+                      requirement_set:
+                        id: 45
+                        minor:
+                          id: 0
+                          name: Quantum Field Theory
+                          abbreviation: QFT
+                    concentrations:
+                    - id: 88888
+                      declared_on: '2018-08-30T12:00:00Z'
+                      requirement_set:
+                        id: 60
+                        concentration:
+                          id: 0
+                          name: Gardening
+                          abbreviation: ''
+      tags:
+      - Degrees
+components:
+  schemas:
+    Major:
+      type: object
+      properties:
+        cip_prefix:
+          type:
+          - string
+          - 'null'
+          description: ''
+        cip_suffix:
+          type:
+          - string
+          - 'null'
+          description: ''
+        id:
+          type: integer
+          description: The Id of the Degree, Major, Minor, or Concentration
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the Degree, Major, Minor, or Concentration
+        abbreviation:
+          type:
+          - string
+          - 'null'
+          description: The abbreviation of the Degree, Major, Minor, or Concentration
+      additionalProperties: false
+      description: ''
+    Minor:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The Id of the Degree, Major, Minor, or Concentration
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the Degree, Major, Minor, or Concentration
+        abbreviation:
+          type:
+          - string
+          - 'null'
+          description: The abbreviation of the Degree, Major, Minor, or Concentration
+      additionalProperties: false
+      description: ''
+    DegreeOutputModel:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The Id of the area of study
+          format: int32
+        declared_on:
+          type:
+          - string
+          - 'null'
+          description: From User Area of Study Reference
+          format: date-time
+        completed_on:
+          type:
+          - string
+          - 'null'
+          description: From User Area of Study Group
+          format: date-time
+        conferred_on:
+          type:
+          - string
+          - 'null'
+          description: From User Area of Study Group
+          format: date-time
+        credits_completed:
+          type:
+          - number
+          - 'null'
+          description: From User Area of Study Reference
+          format: double
+        credits_in_progress:
+          type:
+          - number
+          - 'null'
+          description: From User Area of Study Reference
+          format: double
+        credits_remaining:
+          type:
+          - number
+          - 'null'
+          description: From User Area of Study Reference
+          format: double
+        created_by:
+          type:
+          - string
+          - 'null'
+          description: The BBID of the user who created the area of study
+        modified_by:
+          type:
+          - string
+          - 'null'
+          description: The BBID of the user who last modified the area of study
+        created:
+          type:
+          - string
+          - 'null'
+          description: The date the area of study was created
+          format: date-time
+        modified:
+          type:
+          - string
+          - 'null'
+          description: The date the area of study was last modified
+          format: date-time
+        requirement_set:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/AreaOfStudyOutputModel'
+          description: ''
+        majors:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UserAreaOfStudyReferenceOutputModel'
+          description: ''
+        minors:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UserAreaOfStudyReferenceOutputModel'
+          description: ''
+        concentrations:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UserAreaOfStudyReferenceOutputModel'
+          description: ''
+      additionalProperties: false
+      description: ''
+    Degree:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The Id of the Degree, Major, Minor, or Concentration
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the Degree, Major, Minor, or Concentration
+        abbreviation:
+          type:
+          - string
+          - 'null'
+          description: The abbreviation of the Degree, Major, Minor, or Concentration
+      additionalProperties: false
+      description: ''
+    UserMajorMinorConcentrationOutputModel:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The Id of the user for whom this data belongs
+          format: int32
+        parent_id:
+          type:
+          - integer
+          - 'null'
+          description: ''
+          format: int32
+        major:
+          $ref: '#/components/schemas/Major'
+        minor:
+          $ref: '#/components/schemas/Minor'
+        concentration:
+          $ref: '#/components/schemas/Concentration'
+        cip_prefix:
+          type:
+          - string
+          - 'null'
+          description: ''
+        cip_suffix:
+          type:
+          - string
+          - 'null'
+          description: ''
+      additionalProperties: false
+      description: ''
+    UserDegreeOutputModel:
+      type: object
+      properties:
+        user_id:
+          type: integer
+          description: The Id of the user for whom this data belongs
+          format: int32
+        first_name:
+          type:
+          - string
+          - 'null'
+          description: ''
+        last_name:
+          type:
+          - string
+          - 'null'
+          description: ''
+        preferred_name:
+          type:
+          - string
+          - 'null'
+          description: ''
+        student_degrees:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/DegreeOutputModel'
+          description: The list of degrees for the user
+      additionalProperties: false
+      description: ''
+    AreaOfStudyOutputModel:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The Id of the area of study
+          format: int32
+        primary_area_of_study_id:
+          type:
+          - integer
+          - 'null'
+          description: ''
+          format: int32
+        description:
+          type:
+          - string
+          - 'null'
+          description: The long description of the area of study
+        award_level:
+          type:
+          - integer
+          - 'null'
+          description: The designated award level for this area of study
+          format: int32
+        type:
+          type:
+          - string
+          - 'null'
+          description: ''
+        degree:
+          $ref: '#/components/schemas/Degree'
+        cip_prefix:
+          type:
+          - string
+          - 'null'
+          description: The CIP code prefix
+        cip_suffix:
+          type:
+          - string
+          - 'null'
+          description: The CIP code suffix
+        valid_from:
+          type:
+          - string
+          - 'null'
+          description: The start date when this set of degree requirements is valid
+          format: date-time
+        valid_to:
+          type:
+          - string
+          - 'null'
+          description: The end date when this set of degree requirements is valid
+          format: date-time
+        credit_needed:
+          type:
+          - number
+          - 'null'
+          description: The total credits needed to earn the degree
+          format: double
+        credit_from_institution:
+          type:
+          - number
+          - 'null'
+          description: The credits that must be earned at the institution
+          format: double
+      additionalProperties: false
+      description: An object with information about the date-specific version of the degree and it's set of requirements, including it's CIP code, valid date range and credit requirements.
+    Concentration:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The Id of the Degree, Major, Minor, or Concentration
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the Degree, Major, Minor, or Concentration
+        abbreviation:
+          type:
+          - string
+          - 'null'
+          description: The abbreviation of the Degree, Major, Minor, or Concentration
+      additionalProperties: false
+      description: ''
+    UserAreaOfStudyReferenceOutputModel:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: ''
+          format: int32
+        declared_on:
+          type:
+          - string
+          - 'null'
+          description: ''
+          format: date-time
+        area_of_study_id:
+          type:
+          - integer
+          - 'null'
+          description: ''
+          format: int32
+        requirement_set:
+          $ref: '#/components/schemas/UserMajorMinorConcentrationOutputModel'
+        concentrations:
+          $ref: '#/components/schemas/UserAreaOfStudyReferenceOutputModel'
+      additionalProperties: false
+      description: ''
+    UserDegreeOutputModelCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items in the collection
+          format: int32
+          readOnly: true
+        next_link:
+          type:
+          - string
+          - 'null'
+          description: For paginated responses, the URI for the next page of results
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UserDegreeOutputModel'
+          description: The set of items included in the response. This may be a subset of the items in the collection
+      additionalProperties: false
+      description: A Collection
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

@@ -1,0 +1,929 @@
+openapi: 3.2.0
+info:
+  title: Blackbaud Batchtemplates API
+  version: '1.0'
+  x-refined-note:
+  - x-apievangelist-provenance differs across the merged source definitions and was not carried
+  description: 'Operations tagged Batchtemplates across 2 of this provider''s published API definitions: blackbaud-altru-administration-api-openapi.yml, blackbaud-crm-administration-api-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.sky.blackbaud.com/alt-adnmg
+- url: https://api.sky.blackbaud.com/crm-adnmg
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Batchtemplates
+paths:
+  /batchtemplates/list:
+    get:
+      operationId: ListBatchTemplates
+      summary: List batch templates
+      description: Returns a list of all batch templates
+      parameters:
+      - name: category
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Category. SimpleDataListID=8853a1a4-9046-4bba-8385-ed4d6e7793de.
+      - name: include_inactive
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: Indicates whether to include inactive records.
+      - name: site_filter_mode
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - All sites
+          - My site
+          - My site's branch
+          - Selected sites
+        description: Sites filter mode.
+      - name: sites_selected
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Sites selected. Format - XML.
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Limits the number of records to return.
+      - name: session_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: A unique key provided by user for paging results. The same key will be returned in a successful response.
+      - name: infinity_session
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Values for cookies related to the Infinity load balancer session.
+      - name: more_rows_range_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Key for accessing cached results on subsequent calls to this data list.
+      - name: start_row_index
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Number of rows to skip,get result after these rows.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of result entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchTemplateListCollection'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to view the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+      tags:
+      - Batchtemplates
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-adnmg
+  /batchtemplates/{batch_template_id}:
+    patch:
+      operationId: EditBatchTemplate
+      summary: Edit a batch template
+      description: Edit dataoperation design for adding batch instances
+      parameters:
+      - name: batch_template_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The batch template ID.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditBatchTemplate'
+            example:
+              name: ''
+              description: ''
+              batch_work_flow: ''
+              numbering_scheme: ''
+              auto_save_on_row_change: false
+              create_exception_batch: false
+              purge_batch: false
+              check_for_duplicate_records: false
+              batch_supports_checking_for_duplicate_records: false
+              validate_batch: false
+              create_control_report: false
+              batch_type_catalog: ''
+              import_only: false
+              template_use: Batch entry and import
+              batch_fields:
+              - {}
+              template_permissions:
+              - id: ''
+                system_role_id: ''
+                name: ''
+                grant_or_deny: ''
+              customize_permissions:
+              - id: ''
+                system_role_id: ''
+                name: ''
+                grant_or_deny: ''
+              site_id: ''
+              add_row_data_form_instance_id: ''
+              edit_row_data_form_instance_id: ''
+              commit_row_add_data_form_instance_id: ''
+              commit_row_edit_data_form_instance_id: ''
+              default_template: false
+              auto_match_threshold: 0
+              overall_match_threshold: 0
+              parameters_xml:
+              - {}
+              use_global_match_settings: false
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully edits the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to edit the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Batchtemplates
+    get:
+      operationId: GetBatchTemplate
+      summary: Get a batch template
+      description: Edit dataoperation design for adding batch instances
+      parameters:
+      - name: batch_template_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The batch template ID.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the specified resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchTemplate'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to get the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Batchtemplates
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-adnmg
+components:
+  schemas:
+    EditBatchTemplateTemplatePermissions:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID.
+        system_role_id:
+          type: string
+          description: The system role ID.
+        name:
+          type: string
+          description: The system role.
+        grant_or_deny:
+          type: string
+          description: The priveledge. Available values are <i></i>, <i>granted</i>, <i>denied</i>
+      description: EditBatchTemplateTemplatePermissions
+      x-display-name: template_permissions
+      x-display-id: template_permissions
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type: integer
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type: string
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: false
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-display-name: Problem details
+      x-display-id: ProblemDetails
+    EditBatchTemplate:
+      type: object
+      properties:
+        name:
+          maxLength: 60
+          minLength: 0
+          type: string
+          description: The batch template name.
+        description:
+          maxLength: 1000
+          minLength: 0
+          type: string
+          description: The description.
+        batch_work_flow:
+          type: string
+          description: The workflow name. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/99ccdb4b-8698-4eff-bb96-5a240e702c09.
+        numbering_scheme:
+          type: string
+          description: The numbering scheme. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/8ee0de7e-75e0-499f-9702-13d87234ebee.
+        auto_save_on_row_change:
+          type: boolean
+          description: Indicates whether enable auto-save.
+        create_exception_batch:
+          type: boolean
+          description: Indicates whether create exception batch.
+        purge_batch:
+          type: boolean
+          description: Indicates whether delete batch after committing.
+        check_for_duplicate_records:
+          type: boolean
+          description: Indicates whether check for duplicate constituents.
+        batch_supports_checking_for_duplicate_records:
+          type: boolean
+          description: Indicates whether batch supports checking for duplicate records. Read-only in the SOAP API.
+        validate_batch:
+          type: boolean
+          description: Indicates whether validate batch before committing.
+        create_control_report:
+          type: boolean
+          description: Indicates whether create control report.
+        batch_type_catalog:
+          type: string
+          description: The select a batch type. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/fff24238-bb8a-4046-9204-ea4b11581b76?parameters=batchtypecatalogid,{batchtypecatalogid}.
+        import_only:
+          type: boolean
+          description: Indicates whether this template is only used for importing data.
+        template_use:
+          type: string
+          description: The template use. Available values are <i>batch entry and import</i>, <i>batch entry only</i>, <i>import only</i>, <i>system-defined</i>
+        batch_fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/EditBatchTemplateBatchFields'
+          description: Batch fields.
+        template_permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/EditBatchTemplateTemplatePermissions'
+          description: Template permissions.
+        customize_permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/EditBatchTemplateCustomizePermissions'
+          description: Customize permissions.
+        site_id:
+          type: string
+          description: The site.
+        add_row_data_form_instance_id:
+          type: string
+          description: The add row data form instance ID. Read-only in the SOAP API.
+        edit_row_data_form_instance_id:
+          type: string
+          description: The edit row data form instance ID. Read-only in the SOAP API.
+        commit_row_add_data_form_instance_id:
+          type: string
+          description: The commit row add data form instance ID. Read-only in the SOAP API.
+        commit_row_edit_data_form_instance_id:
+          type: string
+          description: The commit row edit data form instance ID. Read-only in the SOAP API.
+        default_template:
+          type: boolean
+          description: Indicates whether default template. Read-only in the SOAP API.
+        auto_match_threshold:
+          type: integer
+          description: The matched records threshold.
+          format: int32
+        overall_match_threshold:
+          type: integer
+          description: The possible matches threshold.
+          format: int32
+        parameters_xml:
+          type: array
+          items:
+            $ref: '#/components/schemas/EditBatchTemplateParametersXml'
+          description: Parameters xml.
+        use_global_match_settings:
+          type: boolean
+          description: Indicates whether use global settings.
+      additionalProperties: false
+      description: EditBatchTemplate
+      example:
+        name: ''
+        description: ''
+        batch_work_flow: ''
+        numbering_scheme: ''
+        auto_save_on_row_change: false
+        create_exception_batch: false
+        purge_batch: false
+        check_for_duplicate_records: false
+        batch_supports_checking_for_duplicate_records: false
+        validate_batch: false
+        create_control_report: false
+        batch_type_catalog: ''
+        import_only: false
+        template_use: Batch entry and import
+        batch_fields:
+        - {}
+        template_permissions:
+        - id: ''
+          system_role_id: ''
+          name: ''
+          grant_or_deny: ''
+        customize_permissions:
+        - id: ''
+          system_role_id: ''
+          name: ''
+          grant_or_deny: ''
+        site_id: ''
+        add_row_data_form_instance_id: ''
+        edit_row_data_form_instance_id: ''
+        commit_row_add_data_form_instance_id: ''
+        commit_row_edit_data_form_instance_id: ''
+        default_template: false
+        auto_match_threshold: 0
+        overall_match_threshold: 0
+        parameters_xml:
+        - {}
+        use_global_match_settings: false
+      x-display-name: Batch Template Edit Form
+      x-display-id: Batch Template Edit Form
+    BatchTemplateParametersXml:
+      type: object
+      description: BatchTemplateParametersXml
+      x-display-name: parameters_xml
+      x-display-id: parameters_xml
+    EditBatchTemplateBatchFields:
+      type: object
+      description: EditBatchTemplateBatchFields
+      x-display-name: batch_fields
+      x-display-id: batch_fields
+    BatchTemplateListCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items available for retrieval into the collection after applying any request parameters.
+          format: int32
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/BatchTemplateListSummary'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+        infinity_session:
+          type: string
+          description: Values for cookies related to the Infinity load balancer session.
+          format: string
+        session_key:
+          type: string
+          description: Session key for paging provided by user in request query parameter.
+          format: string
+        total_available_rows:
+          type: integer
+          description: The number of total rows available.
+          format: int32
+        more_rows_range_key:
+          type: string
+          description: Key for accessing cached results on subsequent calls to this data list.
+          format: string
+        data_no_longer_available:
+          type: boolean
+          description: Indicates data is no longer available in the context of this session.
+          format: boolean
+      additionalProperties: false
+      description: A collection of items. Data lists can contain paginated results.
+    EditBatchTemplateCustomizePermissions:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID.
+        system_role_id:
+          type: string
+          description: The system role ID.
+        name:
+          type: string
+          description: The system role.
+        grant_or_deny:
+          type: string
+          description: The priveledge. Available values are <i></i>, <i>granted</i>, <i>denied</i>
+      description: EditBatchTemplateCustomizePermissions
+      x-display-name: customize_permissions
+      x-display-id: customize_permissions
+    BatchTemplateBatchFields:
+      type: object
+      description: BatchTemplateBatchFields
+      x-display-name: batch_fields
+      x-display-id: batch_fields
+    EditBatchTemplateParametersXml:
+      type: object
+      description: EditBatchTemplateParametersXml
+      x-display-name: parameters_xml
+      x-display-id: parameters_xml
+    BatchTemplateListSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID.
+        name:
+          type: string
+          description: The name.
+        description:
+          type: string
+          description: The description.
+        category:
+          type: string
+          description: The category.
+        type:
+          type: string
+          description: The type.
+        inactive:
+          type: boolean
+          description: Indicates whether inactive.
+        site:
+          type: string
+          description: The site.
+        batch_workflow_id:
+          type: string
+          description: The workflow.
+        batch_numbering_scheme_id:
+          type: string
+          description: The numbering scheme.
+        active:
+          type: boolean
+          description: Indicates whether active.
+        import_only:
+          type: boolean
+          description: Indicates whether import only.
+        template_use_code:
+          type: integer
+          description: The template use.
+          format: int32
+        in_use:
+          type: boolean
+          description: Indicates whether template is in use.
+        allows_import:
+          type: boolean
+          description: Indicates whether allow import.
+      additionalProperties: false
+      description: ListBatchTemplates
+      x-display-name: Batch Template List
+      x-display-id: Batch Template List
+    BatchTemplateTemplatePermissions:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID.
+        system_role_id:
+          type: string
+          description: The system role ID.
+        name:
+          type: string
+          description: The system role.
+        grant_or_deny:
+          type: string
+          description: The priveledge. Available values are <i></i>, <i>granted</i>, <i>denied</i>
+      description: BatchTemplateTemplatePermissions
+      x-display-name: template_permissions
+      x-display-id: template_permissions
+    BatchTemplateCustomizePermissions:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID.
+        system_role_id:
+          type: string
+          description: The system role ID.
+        name:
+          type: string
+          description: The system role.
+        grant_or_deny:
+          type: string
+          description: The priveledge. Available values are <i></i>, <i>granted</i>, <i>denied</i>
+      description: BatchTemplateCustomizePermissions
+      x-display-name: customize_permissions
+      x-display-id: customize_permissions
+    BatchTemplate:
+      required:
+      - name
+      - batch_work_flow
+      - numbering_scheme
+      - template_use
+      type: object
+      properties:
+        name:
+          maxLength: 60
+          minLength: 0
+          type: string
+          description: The batch template name.
+        description:
+          maxLength: 1000
+          minLength: 0
+          type: string
+          description: The description.
+        batch_work_flow:
+          type: string
+          description: The workflow name. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/99ccdb4b-8698-4eff-bb96-5a240e702c09.
+        numbering_scheme:
+          type: string
+          description: The numbering scheme. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/8ee0de7e-75e0-499f-9702-13d87234ebee.
+        auto_save_on_row_change:
+          type: boolean
+          description: Indicates whether enable auto-save.
+        create_exception_batch:
+          type: boolean
+          description: Indicates whether create exception batch.
+        purge_batch:
+          type: boolean
+          description: Indicates whether delete batch after committing.
+        check_for_duplicate_records:
+          type: boolean
+          description: Indicates whether check for duplicate constituents.
+        batch_supports_checking_for_duplicate_records:
+          type: boolean
+          description: Indicates whether batch supports checking for duplicate records. Read-only in the SOAP API.
+        validate_batch:
+          type: boolean
+          description: Indicates whether validate batch before committing.
+        create_control_report:
+          type: boolean
+          description: Indicates whether create control report.
+        batch_type_catalog:
+          type: string
+          description: The select a batch type. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/fff24238-bb8a-4046-9204-ea4b11581b76?parameters=batchtypecatalogid,{batchtypecatalogid}.
+        import_only:
+          type: boolean
+          description: Indicates whether this template is only used for importing data.
+        template_use:
+          type: string
+          description: The template use. Available values are <i>batch entry and import</i>, <i>batch entry only</i>, <i>import only</i>, <i>system-defined</i>
+        batch_fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/BatchTemplateBatchFields'
+          description: Batch fields.
+        template_permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/BatchTemplateTemplatePermissions'
+          description: Template permissions.
+        customize_permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/BatchTemplateCustomizePermissions'
+          description: Customize permissions.
+        site_id:
+          type: string
+          description: The site.
+        add_row_data_form_instance_id:
+          type: string
+          description: The add row data form instance ID. Read-only in the SOAP API.
+        edit_row_data_form_instance_id:
+          type: string
+          description: The edit row data form instance ID. Read-only in the SOAP API.
+        commit_row_add_data_form_instance_id:
+          type: string
+          description: The commit row add data form instance ID. Read-only in the SOAP API.
+        commit_row_edit_data_form_instance_id:
+          type: string
+          description: The commit row edit data form instance ID. Read-only in the SOAP API.
+        default_template:
+          type: boolean
+          description: Indicates whether default template. Read-only in the SOAP API.
+        auto_match_threshold:
+          type: integer
+          description: The matched records threshold.
+          format: int32
+        overall_match_threshold:
+          type: integer
+          description: The possible matches threshold.
+          format: int32
+        parameters_xml:
+          type: array
+          items:
+            $ref: '#/components/schemas/BatchTemplateParametersXml'
+          description: Parameters xml.
+        use_global_match_settings:
+          type: boolean
+          description: Indicates whether use global settings.
+      additionalProperties: false
+      description: GetBatchTemplate
+      x-display-name: Batch Template Edit Form
+      x-display-id: Batch Template Edit Form
+    EditBatchTemplate_2:
+      type: object
+      properties:
+        name:
+          maxLength: 60
+          minLength: 0
+          type: string
+          description: The batch template name.
+        description:
+          maxLength: 1000
+          minLength: 0
+          type: string
+          description: The description.
+        batch_work_flow:
+          type: string
+          description: The workflow name. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/99ccdb4b-8698-4eff-bb96-5a240e702c09.
+        numbering_scheme:
+          type: string
+          description: The numbering scheme. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/8ee0de7e-75e0-499f-9702-13d87234ebee.
+        auto_save_on_row_change:
+          type: boolean
+          description: Indicates whether enable auto-save.
+        create_exception_batch:
+          type: boolean
+          description: Indicates whether create exception batch.
+        purge_batch:
+          type: boolean
+          description: Indicates whether delete batch after committing.
+        check_for_duplicate_records:
+          type: boolean
+          description: Indicates whether check for duplicate constituents.
+        batch_supports_checking_for_duplicate_records:
+          type: boolean
+          description: Indicates whether batch supports checking for duplicate records. Read-only in the SOAP API.
+        validate_batch:
+          type: boolean
+          description: Indicates whether validate batch before committing.
+        create_control_report:
+          type: boolean
+          description: Indicates whether create control report.
+        batch_type_catalog:
+          type: string
+          description: The select a batch type. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/fff24238-bb8a-4046-9204-ea4b11581b76?parameters=batchtypecatalogid,{batchtypecatalogid}.
+        import_only:
+          type: boolean
+          description: Indicates whether this template is only used for importing data.
+        template_use:
+          type: string
+          description: The template use. Available values are <i>batch entry and import</i>, <i>batch entry only</i>, <i>import only</i>, <i>system-defined</i>
+        batch_fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/EditBatchTemplateBatchFields'
+          description: Batch fields.
+        template_permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/EditBatchTemplateTemplatePermissions'
+          description: Template permissions.
+        customize_permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/EditBatchTemplateCustomizePermissions'
+          description: Customize permissions.
+        site_id:
+          type: string
+          description: The site.
+        add_row_data_form_instance_id:
+          type: string
+          description: The add row data form instance ID. Read-only in the SOAP API.
+        edit_row_data_form_instance_id:
+          type: string
+          description: The edit row data form instance ID. Read-only in the SOAP API.
+        commit_row_add_data_form_instance_id:
+          type: string
+          description: The commit row add data form instance ID. Read-only in the SOAP API.
+        commit_row_edit_data_form_instance_id:
+          type: string
+          description: The commit row edit data form instance ID. Read-only in the SOAP API.
+        default_template:
+          type: boolean
+          description: Indicates whether default template. Read-only in the SOAP API.
+        auto_match_threshold:
+          type: integer
+          description: The matched records threshold.
+          format: int32
+        overall_match_threshold:
+          type: integer
+          description: The possible matches threshold.
+          format: int32
+        parameters_xml:
+          type: array
+          items:
+            $ref: '#/components/schemas/EditBatchTemplateParametersXml'
+          description: Parameters xml.
+        use_global_match_settings:
+          type: boolean
+          description: Indicates whether use global settings.
+      additionalProperties: false
+      description: EditBatchTemplate
+      example:
+        name: ''
+        description: ''
+        batch_work_flow: ''
+        numbering_scheme: ''
+        auto_save_on_row_change: false
+        create_exception_batch: false
+        purge_batch: false
+        check_for_duplicate_records: false
+        batch_supports_checking_for_duplicate_records: false
+        validate_batch: false
+        create_control_report: false
+        batch_type_catalog: ''
+        import_only: false
+        template_use: Batch entry and import
+        batch_fields:
+        - {}
+        template_permissions:
+        - id: ''
+          system_role_id: ''
+          name: ''
+          grant_or_deny: ''
+        customize_permissions:
+        - id: ''
+          system_role_id: ''
+          name: ''
+          grant_or_deny: ''
+        site_id: ''
+        add_row_data_form_instance_id: ''
+        edit_row_data_form_instance_id: ''
+        commit_row_add_data_form_instance_id: ''
+        commit_row_edit_data_form_instance_id: ''
+        default_template: false
+        auto_match_threshold: 0
+        overall_match_threshold: 0
+        parameters_xml:
+        - {}
+        use_global_match_settings: false
+      x-display-name: Batch Template Edit Form
+      x-display-id: Batch Template Edit Form
+    BatchTemplate_2:
+      required:
+      - name
+      - batch_work_flow
+      - numbering_scheme
+      - template_use
+      type: object
+      properties:
+        name:
+          maxLength: 60
+          minLength: 0
+          type: string
+          description: The batch template name.
+        description:
+          maxLength: 1000
+          minLength: 0
+          type: string
+          description: The description.
+        batch_work_flow:
+          type: string
+          description: The workflow name. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/99ccdb4b-8698-4eff-bb96-5a240e702c09.
+        numbering_scheme:
+          type: string
+          description: The numbering scheme. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/8ee0de7e-75e0-499f-9702-13d87234ebee.
+        auto_save_on_row_change:
+          type: boolean
+          description: Indicates whether enable auto-save.
+        create_exception_batch:
+          type: boolean
+          description: Indicates whether create exception batch.
+        purge_batch:
+          type: boolean
+          description: Indicates whether delete batch after committing.
+        check_for_duplicate_records:
+          type: boolean
+          description: Indicates whether check for duplicate constituents.
+        batch_supports_checking_for_duplicate_records:
+          type: boolean
+          description: Indicates whether batch supports checking for duplicate records. Read-only in the SOAP API.
+        validate_batch:
+          type: boolean
+          description: Indicates whether validate batch before committing.
+        create_control_report:
+          type: boolean
+          description: Indicates whether create control report.
+        batch_type_catalog:
+          type: string
+          description: The select a batch type. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/fff24238-bb8a-4046-9204-ea4b11581b76?parameters=batchtypecatalogid,{batchtypecatalogid}.
+        import_only:
+          type: boolean
+          description: Indicates whether this template is only used for importing data.
+        template_use:
+          type: string
+          description: The template use. Available values are <i>batch entry and import</i>, <i>batch entry only</i>, <i>import only</i>, <i>system-defined</i>
+        batch_fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/BatchTemplateBatchFields'
+          description: Batch fields.
+        template_permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/BatchTemplateTemplatePermissions'
+          description: Template permissions.
+        customize_permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/BatchTemplateCustomizePermissions'
+          description: Customize permissions.
+        site_id:
+          type: string
+          description: The site.
+        add_row_data_form_instance_id:
+          type: string
+          description: The add row data form instance ID. Read-only in the SOAP API.
+        edit_row_data_form_instance_id:
+          type: string
+          description: The edit row data form instance ID. Read-only in the SOAP API.
+        commit_row_add_data_form_instance_id:
+          type: string
+          description: The commit row add data form instance ID. Read-only in the SOAP API.
+        commit_row_edit_data_form_instance_id:
+          type: string
+          description: The commit row edit data form instance ID. Read-only in the SOAP API.
+        default_template:
+          type: boolean
+          description: Indicates whether default template. Read-only in the SOAP API.
+        auto_match_threshold:
+          type: integer
+          description: The matched records threshold.
+          format: int32
+        overall_match_threshold:
+          type: integer
+          description: The possible matches threshold.
+          format: int32
+        parameters_xml:
+          type: array
+          items:
+            $ref: '#/components/schemas/BatchTemplateParametersXml'
+          description: Parameters xml.
+        use_global_match_settings:
+          type: boolean
+          description: Indicates whether use global settings.
+      additionalProperties: false
+      description: GetBatchTemplate
+      x-display-name: Batch Template Edit Form
+      x-display-id: Batch Template Edit Form
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+x-refined-from:
+- blackbaud-altru-administration-api-openapi.yml
+- blackbaud-crm-administration-api-openapi.yml

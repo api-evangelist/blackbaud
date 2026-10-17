@@ -1,0 +1,2310 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: General Ledger Journalentrybatches API'
+  description: This API is used to manage the general ledger, including accounts, projects, and journal entries. This API has a maximum request size limit of 8mb.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/56eb17a0a9db9516c46bff6f
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/generalledger/v1
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Journalentrybatches
+paths:
+  /journalentrybatches:
+    post:
+      operationId: CreateJournalEntryBatch
+      summary: Journal entry batch (Create) (Deprecated)
+      description: This endpoint has been deprecated. While it remains available for existing integrations, it is no longer supported and will not receive updates or enhancements. To improve performance and reliability, this endpoint has been replaced by CreateJournalEntryBatchProcess.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateJournalEntryBatch'
+            example:
+              description: New Batch
+              batch_status: Open
+              create_interfund_sets: true
+              create_bank_account_adjustments: true
+              journal_entries:
+              - type_code: Debit
+                account_number: 01-1000-00
+                post_date: '2018-07-02T00:00:00Z'
+                encumbrance: Regular
+                reverse_date: '2020-04-03T00:00:00Z'
+                journal: Journal Entry
+                reference: Debit reference
+                amount: 10
+                notes: New Note
+                tax_entity_id: 427
+                distributions:
+                - ui_project_id: '1100'
+                  account_class: Unrestricted Net Assets
+                  transaction_code_values:
+                  - name: Grants
+                    value: None
+                    id: 0
+                  amount: 10
+                  percent: 100
+              - type_code: Credit
+                account_number: 01-1000-00
+                post_date: '2018-07-02T00:00:00Z'
+                encumbrance: Regular
+                reverse_date: '2020-04-03T00:00:00Z'
+                journal: Journal Entry
+                reference: Credit reference
+                amount: 10
+                notes: Credit Note
+                tax_entity_id: 427
+                distributions:
+                - ui_project_id: '1100'
+                  account_class: Unrestricted Net Assets
+                  transaction_code_values:
+                  - name: Grants
+                    value: None
+                    id: 0
+                  amount: 10
+                  percent: 100
+                custom_fields:
+                - field_name: Unique Auth Text
+                  value: My text
+                  comments: a comment
+                  date: '2018-07-02T00:00:00Z'
+        description: The journal entry batch to add.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the identifier of the created batch.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreatedResult_Int32'
+              example:
+                record_id: 843
+        '400':
+          description: Returned when the request is not in the correct format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DomainErrorMessage'
+              example:
+                Error: Invalid Request
+                Details:
+                - The value 'fake' is not valid for transaction_status.
+                ErrorPath: null
+        '403':
+          description: Returned when the user does not have permission to view journal entry batches.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Journalentrybatches
+    get:
+      operationId: ListJournalEntryBatches
+      summary: Journal entry batch (List)
+      description: Returned when the operation is successful. The response body contains a list of journal entry batch summaries. However, journal_entries values are always empty.
+      parameters:
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: 'Represents the number of records to skip.
+
+          For use with pagination.'
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: "Represents the number of records to return. \nThe default is 100. \nThe maximum allowed value is 500."
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: string
+        description: The batch status.
+      - name: last_modified
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Returns modified records based on or after a specified date.
+      - name: search_text
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Text to match. Can match ui_batch_id or description. A blank search will match all journal entry batches.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains list of journal entry batches.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiCollection_JournalEntryBatch'
+              example:
+                count: 1632
+                value:
+                - batch_id: 2239
+                  ui_batch_id: '1632'
+                  description: Etap JE Import
+                  batch_status: Open
+                  create_interfund_sets: true
+                  create_bank_account_adjustments: true
+                  date_added: '2018-07-03T14:24:03.493Z'
+                  added_by: James Bradley
+                  date_modified: '2018-07-03T14:24:03.73Z'
+                  modified_by: James Bradley
+                - batch_id: 2238
+                  ui_batch_id: '1631'
+                  description: Test-SwordKnight
+                  batch_status: Open
+                  create_interfund_sets: false
+                  create_bank_account_adjustments: false
+                  date_added: '2018-07-02T15:53:55.083Z'
+                  added_by: Stacy Carlos
+                  date_modified: '2018-07-02T15:53:55.083Z'
+                  modified_by: Stacy Carlos
+        '400':
+          description: Returned when the request is not in the correct format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DomainErrorMessage'
+              example:
+                Error: Invalid Request
+                Details:
+                - The value 'fake' is not valid for transaction_status.
+                ErrorPath: null
+        '403':
+          description: Returned when the user does not have permission to view journal entry batches.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Journalentrybatches
+  /journalentrybatches/attachments:
+    post:
+      operationId: CreateJournalEntryBatchAttachment
+      summary: Journal entry batch attachment (Create)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAttachment'
+            example:
+              parent_id: 1
+              name: Attachment Name
+              url: https://www.google.com
+              type: Link
+              media_type: Manual
+          multipart/form-data: {}
+        description: The attachment to create.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the file id of the saved attachment.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreatedResult_Int32'
+              example:
+                record_id: 843
+        '400':
+          description: Returned when the request is not in the correct format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DomainErrorMessage'
+              example:
+                Error: Invalid Request
+                Details:
+                - The value 'fake' is not valid for transaction_status.
+                ErrorPath: null
+        '403':
+          description: Returned when the user does not have permission to add attachments.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+        '404':
+          description: Returned when no journal entry batch is found with the specified ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Journalentrybatches
+  /journalentrybatches/customfields:
+    get:
+      operationId: ListJournalEntryCustomFields
+      summary: Journal entry custom field (List)
+      description: Returns a list of custom field options.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the list of custom fields.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedResponse_CustomFieldOptions'
+              example:
+                count: 6
+                results:
+                - custom_field_id: 4
+                  name: 'Reference Account #'
+                  type: Number
+                  is_required: false
+                  table_values:
+                  - Test user 1
+                - custom_field_id: 5
+                  name: Budget Manager
+                  type: Table
+                  is_required: false
+                  table_values:
+                  - Bill Smith
+                  - David Kilmer
+                - custom_field_id: 10
+                  name: Accountability Grouping
+                  type: Table
+                  is_required: false
+                  table_values:
+                  - Education
+                  - Food
+                  - Adminstrative Costs
+                  - Shelter
+                  - Supplies
+      tags:
+      - Journalentrybatches
+  /journalentrybatches/process:
+    post:
+      operationId: CreateJournalEntryBatchProcess
+      summary: Journal entry batch process (Create)
+      description: Returns the process id of the request to create a new journal entry batch.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateJournalEntryBatchProcess'
+            example:
+              description: New Batch
+              batch_status: Open
+              create_interfund_sets: true
+              create_bank_account_adjustments: true
+              journal_entries:
+              - type_code: Debit
+                account_number: 01-1000-00
+                post_date: '2018-07-02T00:00:00Z'
+                encumbrance: Regular
+                reverse_date: '2020-04-03T00:00:00Z'
+                journal: Journal Entry
+                reference: Debit reference
+                amount: 10
+                notes: New Note
+                tax_entity_id: 427
+                distributions:
+                - ui_project_id: '1100'
+                  account_class: Unrestricted Net Assets
+                  transaction_code_values:
+                  - name: Grants
+                    value: None
+                    id: 0
+                  amount: 10
+                  percent: 100
+              - type_code: Credit
+                account_number: 01-1000-00
+                post_date: '2018-07-02T00:00:00Z'
+                encumbrance: Regular
+                reverse_date: '2020-04-03T00:00:00Z'
+                journal: Journal Entry
+                reference: Credit reference
+                amount: 10
+                notes: Credit Note
+                tax_entity_id: 427
+                distributions:
+                - ui_project_id: '1100'
+                  account_class: Unrestricted Net Assets
+                  transaction_code_values:
+                  - name: Grants
+                    value: None
+                    id: 0
+                  amount: 10
+                  percent: 100
+                custom_fields:
+                - field_name: Unique Auth Text
+                  value: My text
+                  comments: a comment
+                  date: '2018-07-02T00:00:00Z'
+        description: The process request to create a journal entry batch.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the process id of the request to create a new journal entry batch.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JournalEntryBatchProcessDetails'
+              example:
+                process_id: 843
+        '400':
+          description: Returned when the request is not in the correct format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DomainErrorMessage'
+              example:
+                Error: Invalid Request
+                Details:
+                - The value 'fake' is not valid for transaction_status.
+                ErrorPath: null
+        '403':
+          description: Returned when the user does not have permission to create an journal entry batch.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Journalentrybatches
+  /journalentrybatches/{batch_id}:
+    delete:
+      operationId: DeleteJournalEntryBatch
+      summary: Journal entry batch (Delete)
+      description: Removes a journal entry batch.
+      parameters:
+      - name: batch_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The identifier of the journal entry batch to delete.
+      responses:
+        '200':
+          description: Returned when the operation is successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+              example: {}
+        '400':
+          description: Returned when specified batch cannot be deleted in its current state.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DomainErrorMessage'
+              example:
+                Error: Invalid Request
+                Details:
+                - The value 'fake' is not valid for transaction_status.
+                ErrorPath: null
+        '403':
+          description: Returned when the user does not have permission to remove journal entry batches, the batch has been posted, or the batch has already been deleted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+        '404':
+          description: Returned when no journal entry batch is found with the specified ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Journalentrybatches
+    patch:
+      operationId: EditJournalEntryBatch
+      summary: Journal entry batch (Edit)
+      description: Returns the identifier of the edited batch
+      parameters:
+      - name: batch_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The identifier for journal entry batch to edit
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditJournalEntryBatch'
+            example:
+              description: edited description
+              create_interfund_sets: false
+              create_bank_account_adjustments: true
+              batch_status: Approved
+        description: The changes for the journal entry batch
+      responses:
+        '200':
+          description: Returned when the operation successfully edits the journal entry batch. The response body contains the journal entry batch id.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreatedResult_Int32'
+              example:
+                record_id: 843
+        '400':
+          description: Returned when the specified journal entry batch ID in the request URL body or the specified request parameters are not in the appropriate format, or the specified journal entry batch is already posted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DomainErrorMessage'
+              example:
+                Error: Invalid Request
+                Details:
+                - The value 'fake' is not valid for transaction_status.
+                ErrorPath: null
+        '403':
+          description: Returned when the user does not have permission to edit the journal entry batch.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+        '404':
+          description: Returned when the specified journal entry batch is not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Journalentrybatches
+    get:
+      operationId: GetJournalEntryBatch
+      summary: Journal entry batch (Get)
+      description: Returns the journal entry batch details. This endpoint is deprecated and is only suitable for batches with a low volume of journal entries. For more options getting journal entry batch information use the Journal entry batch summary (Get) and Journal entries (List) endpoints instead.
+      parameters:
+      - name: batch_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The journal entry batch identifier.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the journal entry batch details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JournalEntryBatch'
+              example:
+                batch_id: 2223
+                ui_batch_id: '1617'
+                description: SmartTuition - Cash - 05/18/2018
+                batch_status: Posted
+                create_interfund_sets: true
+                create_bank_account_adjustments: true
+                journal_entries:
+                - journal_entry_id: 319113
+                  type_code: Debit
+                  line_number: 1
+                  account_number: 01-1000-00
+                  post_date: '2018-05-18T00:00:00Z'
+                  encumbrance: Regular
+                  journal: eTapestry
+                  reference: SmartTuition - Late Fee Withheld Inschool
+                  amount: 1
+                  tax_entity_id: 427
+                  tax_entity_name: GST
+                  notes: ''
+                  distributions:
+                  - distribution_id: 414692
+                    ui_project_id: '1009'
+                    account_class: Unrestricted Net Assets
+                    transaction_code_values:
+                    - name: Jurisdiction
+                      value: ''
+                      id: 1
+                    - name: Spendable?
+                      value: ''
+                      id: 2
+                    - name: RE Appeals
+                      value: ''
+                      id: 3
+                    - name: Grant
+                      value: ''
+                      id: 4
+                    - name: Activities
+                      value: ''
+                      id: 5
+                    amount: 1
+                    percent: 100
+                  custom_fields: []
+                  reverse_date: '2018-08-02T00:00:00Z'
+                  reverse_transaction_id: 0
+                - journal_entry_id: 319114
+                  type_code: Credit
+                  line_number: 2
+                  account_number: 01-1210-00
+                  post_date: '2018-05-18T00:00:00Z'
+                  encumbrance: Regular
+                  journal: eTapestry
+                  reference: SmartTuition - Late Fee Withheld Inschool
+                  amount: 1
+                  tax_entity_id: 427
+                  tax_entity_name: GST
+                  notes: ''
+                  distributions:
+                  - distribution_id: 414693
+                    ui_project_id: '1009'
+                    account_class: Unrestricted Net Assets
+                    transaction_code_values:
+                    - name: Jurisdiction
+                      value: ''
+                      id: 1
+                    - name: Spendable?
+                      value: ''
+                      id: 2
+                    - name: RE Appeals
+                      value: ''
+                      id: 3
+                    - name: Grant
+                      value: ''
+                      id: 4
+                    - name: Activities
+                      value: ''
+                      id: 5
+                    amount: 1
+                    percent: 100
+                  custom_fields: []
+                  reverse_date: '2018-08-02T00:00:00Z'
+                  reverse_transaction_id: 786508
+                date_added: '2018-07-03T14:24:03.493Z'
+                added_by: James Bradley
+                date_modified: '2018-07-03T14:24:03.73Z'
+                modified_by: James Bradley
+        '400':
+          description: Returned when the request is not in the correct format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DomainErrorMessage'
+              example:
+                Error: Invalid Request
+                Details:
+                - The value 'fake' is not valid for transaction_status.
+                ErrorPath: null
+        '403':
+          description: Returned when the user does not have permission to view journal entry batches.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+        '404':
+          description: Returned when the specified journal entry batch could not be found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Journalentrybatches
+  /journalentrybatches/{batch_id}/journalentries:
+    get:
+      operationId: ListJournalEntriesSingleJournalEntryBatch
+      summary: Journal entries (List)
+      description: Returns a list of journal entries for a specified journal entry batch.
+      parameters:
+      - name: batch_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The journal entry batch identifier.
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: 'Represents the number of records to skip.
+
+          For use with pagination.'
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: "Represents the number of records to return. \nThe default is 100. \nThe maximum allowed value is 500."
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains a list of journal entries for a specified batch.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiCollection_JournalEntry'
+              example:
+                count: 2
+                value:
+                - journal_entry_id: 319113
+                  type_code: Debit
+                  line_number: 1
+                  account_number: 01-1000-00
+                  post_date: '2018-05-18T00:00:00Z'
+                  encumbrance: Regular
+                  journal: eTapestry
+                  reference: SmartTuition - Late Fee Withheld Inschool
+                  amount: 1
+                  tax_entity_id: 427
+                  tax_entity_name: GST
+                  notes: ''
+                  distributions:
+                  - distribution_id: 414692
+                    ui_project_id: '1009'
+                    account_class: Unrestricted Net Assets
+                    transaction_code_values:
+                    - name: Jurisdiction
+                      value: ''
+                      id: 1
+                    - name: Spendable?
+                      value: ''
+                      id: 2
+                    - name: RE Appeals
+                      value: ''
+                      id: 3
+                    - name: Grant
+                      value: ''
+                      id: 4
+                    - name: Activities
+                      value: ''
+                      id: 5
+                    amount: 1
+                    percent: 100
+                  custom_fields: []
+                  reverse_date: '2018-08-02T00:00:00Z'
+                  reverse_transaction_id: 0
+                - journal_entry_id: 319114
+                  type_code: Credit
+                  line_number: 2
+                  account_number: 01-1210-00
+                  post_date: '2018-05-18T00:00:00Z'
+                  encumbrance: Regular
+                  journal: eTapestry
+                  reference: SmartTuition - Late Fee Withheld Inschool
+                  amount: 1
+                  notes: ''
+                  distributions:
+                  - distribution_id: 414693
+                    ui_project_id: '1009'
+                    account_class: Unrestricted Net Assets
+                    transaction_code_values:
+                    - name: Jurisdiction
+                      value: ''
+                      id: 1
+                    - name: Spendable?
+                      value: ''
+                      id: 2
+                    - name: RE Appeals
+                      value: ''
+                      id: 3
+                    - name: Grant
+                      value: ''
+                      id: 4
+                    - name: Activities
+                      value: ''
+                      id: 5
+                    amount: 1
+                    percent: 100
+                  custom_fields: []
+                  reverse_date: '2020-08-01T00:00:00Z'
+                  reverse_transaction_id: 786508
+        '403':
+          description: Returned when the user does not have permission to view journal entry batches.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+        '404':
+          description: Returned when the specified journal entry batch could not be found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Journalentrybatches
+    delete:
+      operationId: ClearJournalEntries
+      summary: Journal entry (Clear) (Deprecated)
+      description: This endpoint has been deprecated. While it remains available for existing integrations, it is no longer supported and will not receive updates or enhancements. To improve performance and reliability, this endpoint has been replaced by ClearJournalEntriesProcess.
+      parameters:
+      - name: batch_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The identifier of the journal entry batch to which to clear journal entries.
+      responses:
+        '200':
+          description: Returned when the operation is successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+              example: {}
+        '403':
+          description: Returned when the user does not have permission to clear journal entries.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+        '404':
+          description: Returned when no journal entry batch is found with the specified ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Journalentrybatches
+    post:
+      operationId: CreateJournalEntries
+      summary: Journal entry (Create) (Deprecated)
+      description: This endpoint has been deprecated. While it remains available for existing integrations, it is no longer supported and will not receive updates or enhancements. To improve performance and reliability, this endpoint has been replaced by CreateJournalEntriesProcess.
+      parameters:
+      - name: batch_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The identifier of the journal entry batch to which to add journal entries.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateJournalEntryArray'
+            example:
+            - type_code: Debit
+              account_number: 01-1000-00
+              post_date: '2018-07-02T00:00:00Z'
+              encumbrance: Regular
+              journal: Journal Entry
+              reference: Debit reference
+              amount: 10
+              notes: New Note
+              distributions:
+              - ui_project_id: '1100'
+                account_class: Unrestricted Net Assets
+                transaction_code_values:
+                - name: Grants
+                  value: None
+                  id: 0
+                - name: Spendable?
+                  value: Spendable
+                  id: 0
+                amount: 5
+                percent: 50
+              - ui_project_id: '1200'
+                account_class: Unrestricted Net Assets
+                transaction_code_values:
+                - name: Grants
+                  value: None
+                  id: 0
+                - name: Spendable?
+                  value: Non spendable
+                  id: 0
+                amount: 5
+                percent: 50
+              custom_fields:
+              - field_name: Unique Auth Text
+                value: My text
+                comments: a comment
+                date: '2018-07-02T00:00:00Z'
+        description: The journal entries to add.
+      responses:
+        '200':
+          description: Returned when the operation is successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+              example: {}
+        '400':
+          description: Returned when specified journal entries are not in the correct format or are invalid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DomainErrorMessage'
+              example:
+                Error: Invalid Request
+                Details:
+                - The value 'fake' is not valid for transaction_status.
+                ErrorPath: null
+        '403':
+          description: Returned when the user does not have permission to add journal entries.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+        '404':
+          description: Returned when no journal entry batch is found with the specified ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Journalentrybatches
+  /journalentrybatches/{batch_id}/journalentries/process:
+    delete:
+      operationId: ClearJournalEntriesProcess
+      summary: Journal entry process (Clear)
+      description: Returns the process ID of the request to clear journal entries from a batch.
+      parameters:
+      - name: batch_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The journal entry batch ID to clear the journal entries from.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the process id of the request to clear journal entries.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JournalEntryBatchProcessDetails'
+              example:
+                process_id: 843
+        '400':
+          description: Returned when the request is not in the correct format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DomainErrorMessage'
+              example:
+                Error: Invalid Request
+                Details:
+                - The value 'fake' is not valid for transaction_status.
+                ErrorPath: null
+        '403':
+          description: Returned when the user does not have permission to clear journal entries.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+        '404':
+          description: Returned when no journal entry batch is found with the specified ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Journalentrybatches
+    post:
+      operationId: CreateJournalEntriesProcess
+      summary: Journal entry process (Create)
+      description: Returns the process ID of the request to add journal entries to a batch.
+      parameters:
+      - name: batch_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The journal entry batch ID to add journal entries.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateJournalEntryArray'
+            example:
+            - type_code: Debit
+              account_number: 01-1000-00
+              post_date: '2018-07-02T00:00:00Z'
+              encumbrance: Regular
+              journal: Journal Entry
+              reference: Debit reference
+              amount: 10
+              notes: New Note
+              distributions:
+              - ui_project_id: '1100'
+                account_class: Unrestricted Net Assets
+                transaction_code_values:
+                - name: Grants
+                  value: None
+                  id: 0
+                - name: Spendable?
+                  value: Spendable
+                  id: 0
+                amount: 5
+                percent: 50
+              - ui_project_id: '1200'
+                account_class: Unrestricted Net Assets
+                transaction_code_values:
+                - name: Grants
+                  value: None
+                  id: 0
+                - name: Spendable?
+                  value: Non spendable
+                  id: 0
+                amount: 5
+                percent: 50
+              custom_fields:
+              - field_name: Unique Auth Text
+                value: My text
+                comments: a comment
+                date: '2018-07-02T00:00:00Z'
+        description: The journal entries to add.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the process ID of the request to add journal entries.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JournalEntryBatchProcessDetails'
+              example:
+                process_id: 843
+        '400':
+          description: Returned when specified journal entries are not in the correct format or are invalid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DomainErrorMessage'
+              example:
+                Error: Invalid Request
+                Details:
+                - The value 'fake' is not valid for transaction_status.
+                ErrorPath: null
+        '403':
+          description: Returned when the user does not have permission to add journal entries.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+        '404':
+          description: Returned when no journal entry batch is found with the specified ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Journalentrybatches
+  /journalentrybatches/{batch_id}/journalentries/{journal_entry_id}:
+    patch:
+      operationId: EditJournalEntry
+      summary: Journal entry (Edit)
+      parameters:
+      - name: batch_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The identifier of the journal entry batch to which to edit journal entries.
+      - name: journal_entry_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The identifier of the journal entry to edit.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JournalEntry'
+            example:
+              type_code: Debit
+              account_number: 01-1000-00
+              post_date: '2018-07-02T00:00:00Z'
+              encumbrance: Regular
+              journal: Journal Entry
+              reference: Debit reference
+              amount: 10
+              notes: New Note
+              distributions:
+              - ui_project_id: '1100'
+                account_class: Unrestricted Net Assets
+                transaction_code_values:
+                - name: Grants
+                  value: None
+                  id: 1
+                - name: Spendable?
+                  value: Spendable
+                  id: 2
+                amount: 5
+                percent: 50
+              - ui_project_id: '1200'
+                account_class: Unrestricted Net Assets
+                transaction_code_values:
+                - name: Grants
+                  value: None
+                  id: 1
+                - name: Spendable?
+                  value: Non spendable
+                  id: 2
+                amount: 5
+                percent: 50
+              custom_fields:
+              - field_name: Unique Auth Text
+                value: My text
+                comments: a comment
+                date: '2018-07-02T00:00:00Z'
+              reverse_date: '2018-07-03T00:00:00Z'
+        description: The changes to apply to the journal entry.
+      responses:
+        '200':
+          description: Returned when the operation successfully edits the journal entry. The response body contains the journal entry batch id.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreatedResult_Int32'
+              example:
+                record_id: 0
+        '400':
+          description: Returned when the request is not in the correct format or are invalid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DomainErrorMessage'
+              example:
+                Error: Failed to save {record}
+                Details:
+                - The total percent distributed must equal 100%.
+                ErrorPath: null
+        '403':
+          description: Returned when the user does not have permission to edit journal entries.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+        '404':
+          description: Returned when no journal entry batch or journal entry is found with the specified ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Journalentrybatches
+  /journalentrybatches/{batch_id}/post:
+    post:
+      operationId: PostJournalEntryBatch
+      summary: Journal entry batch (Post)
+      description: Returns the results of batch validation.
+      parameters:
+      - name: batch_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The identifier of the journal entry batch to post.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the results of batch validation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationResult'
+              example:
+                is_valid: false
+                errors:
+                - '(Out Of Balance) - Class - Fund(Type): Unrestricted Net Assets - 01 (R); Fiscal year 2018, Period 6 (Debits = 10.0000; Credits = 0)'
+                - '(Out Of Balance) - Journal(Type): Journal Entry (R); Fiscal year 2018, Period 6 (Debits = 10.0000; Credits = 0)'
+                - '(Out Of Balance) - Fund(Type): 01 (R); Fiscal year 2018, Period 6 (Debits = 10.0000; Credits = 0)'
+        '400':
+          description: Returned when specified batch cannot be posted in its current state. The response body contains the results of batch validation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DomainErrorMessage'
+              example:
+                Error: Invalid Request
+                Details:
+                - The value 'fake' is not valid for transaction_status.
+                ErrorPath: null
+        '403':
+          description: Returned when the user does not have permission to post a batch.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+        '404':
+          description: Returned when the specified batch could not be found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Journalentrybatches
+  /journalentrybatches/{batch_id}/summary:
+    get:
+      operationId: GetJournalEntryBatchSummary
+      summary: Journal entry batch summary (Get)
+      description: Returns the journal entry batch summary.
+      parameters:
+      - name: batch_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The journal entry batch identifier.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the journal entry batch details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JournalEntryBatchSummary'
+              example:
+                BatchId: 2223
+                UiBatchId: '1617'
+                Description: SmartTuition - Cash - 05/18/2018
+                BatchStatus: Posted
+                CreateInterfundSets: true
+                CreateBankAccountAdjustments: true
+                SourceSystemName: Checkwriter
+                SourceBaseUrl: https://example.com
+                DateAdded: '2018-07-03T14:24:03.493Z'
+                AddedBy: James Bradley
+                DateModified: '2018-07-03T14:24:03.73Z'
+                ModifiedBy: James Bradley
+                TotalCredits: '25000.0000'
+                TotalDebits: '25000.0000'
+        '400':
+          description: Returned when the request is not in the correct format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DomainErrorMessage'
+              example:
+                Error: Invalid Request
+                Details:
+                - The value 'fake' is not valid for transaction_status.
+                ErrorPath: null
+        '403':
+          description: Returned when the user does not have permission to view journal entry batches.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+        '404':
+          description: Returned when the specified journal entry batch could not be found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Journalentrybatches
+  /journalentrybatches/{batch_id}/validate:
+    get:
+      operationId: ValidateJournalEntryBatch
+      summary: Journal entry batch (Validate)
+      description: Returns the results of batch validation.
+      parameters:
+      - name: batch_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The identifier of the journal entry batch to validate.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the results of batch validation. Note that the batch may be valid or invalid, but the validation proccess completed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationResult'
+              example:
+                is_valid: false
+                errors:
+                - '(Out Of Balance) - Class - Fund(Type): Unrestricted Net Assets - 01 (R); Fiscal year 2018, Period 6 (Debits = 10.0000; Credits = 0)'
+                - '(Out Of Balance) - Journal(Type): Journal Entry (R); Fiscal year 2018, Period 6 (Debits = 10.0000; Credits = 0)'
+                - '(Out Of Balance) - Fund(Type): 01 (R); Fiscal year 2018, Period 6 (Debits = 10.0000; Credits = 0)'
+        '403':
+          description: Returned when the user does not have permission to validate this batch.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+        '404':
+          description: Returned when the specified batch could not be found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Journalentrybatches
+components:
+  schemas:
+    CreateJournalEntryArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/CreateJournalEntry'
+      example:
+      - type_code: Debit
+        account_number: 01-1000-00
+        post_date: '2018-07-02T00:00:00Z'
+        encumbrance: Regular
+        journal: Journal Entry
+        reference: Debit reference
+        amount: 10
+        notes: New Note
+        distributions:
+        - ui_project_id: '1100'
+          account_class: Unrestricted Net Assets
+          transaction_code_values:
+          - name: Grants
+            value: None
+            id: 0
+          - name: Spendable?
+            value: Spendable
+            id: 0
+          amount: 5
+          percent: 50
+        - ui_project_id: '1200'
+          account_class: Unrestricted Net Assets
+          transaction_code_values:
+          - name: Grants
+            value: None
+            id: 0
+          - name: Spendable?
+            value: Non spendable
+            id: 0
+          amount: 5
+          percent: 50
+        custom_fields:
+        - field_name: Unique Auth Text
+          value: My text
+          comments: a comment
+          date: '2018-07-02T00:00:00Z'
+    PagedResponse_CustomFieldOptions:
+      type: object
+      properties:
+        count:
+          format: int32
+          type: integer
+          x-ms-summary: Count
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomFieldOptions'
+          x-ms-summary: Results
+      x-hidden: true
+      x-display-name: Paged response `1
+      x-ms-summary: Paged response `1
+    DomainErrorMessage:
+      type: object
+      properties:
+        Error:
+          type: string
+          x-ms-summary: Error
+        Details:
+          type: array
+          items:
+            type: string
+          x-ms-summary: Details
+        ErrorPath:
+          type: string
+          x-ms-summary: Error path
+      x-display-name: Domain error message
+      x-ms-summary: Domain error message
+    BasicErrorMessage:
+      type: object
+      properties:
+        Error:
+          type: string
+          x-ms-summary: Error
+      x-display-name: Basic error message
+      x-ms-summary: Basic error message
+    JournalEntry:
+      description: Journal entry.
+      required:
+      - type_code
+      - account_number
+      - post_date
+      - encumbrance
+      - journal
+      - reference
+      - amount
+      - distributions
+      type: object
+      properties:
+        journal_entry_id:
+          format: int32
+          description: The journal entry identifier.
+          type: integer
+          x-ms-summary: Journal entry id
+        type_code:
+          description: The journal entry transaction type (debit or credit).
+          enum:
+          - Debit
+          - Credit
+          type: string
+          x-ms-summary: Type code
+        tax_entity_id:
+          format: int32
+          description: The journal entry tax entity Id.
+          type: integer
+          x-ms-summary: Tax entity id
+        tax_entity_name:
+          description: The journal entry tax entity name.
+          type: string
+          x-ms-summary: Tax entity name
+        line_number:
+          format: int32
+          description: The journal entry line number.
+          type: integer
+          x-ms-summary: Line number
+        account_number:
+          description: The journal entry account number.
+          type: string
+          x-ms-summary: Account number
+        post_date:
+          format: date-time
+          description: 'The journal entry post date, in ISO 8601 format: 2016-03-14.'
+          type: string
+          x-ms-summary: Post date
+        encumbrance:
+          description: The journal entry encumbrance type.
+          enum:
+          - Regular
+          - Encumbrance
+          type: string
+          x-ms-summary: Encumbrance
+        journal:
+          description: The full name of the journal.
+          type: string
+          x-ms-summary: Journal
+        reference:
+          description: The journal entry reference.
+          type: string
+          x-ms-summary: Reference
+        amount:
+          format: double
+          description: The journal entry amount.
+          type: number
+          x-ms-summary: Amount
+        notes:
+          description: The journal entry notes.
+          type: string
+          x-ms-summary: Notes
+        relative_source_url:
+          description: Relative URL for the journal entry that appends to the batch source_base_url.
+          type: string
+          x-ms-summary: Relative source url
+        distributions:
+          description: The journal entry distributions.
+          type: array
+          items:
+            $ref: '#/components/schemas/Distribution'
+          x-ms-summary: Distributions
+        custom_fields:
+          description: The journal entry custom fields.
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomField'
+          x-ms-summary: Custom fields
+        reverse_date:
+          format: date-time
+          description: The journal entry reverse date.
+          type: string
+          x-ms-summary: Reverse date
+        reverse_transaction_id:
+          format: int32
+          description: The transaction id of the reversed journal entry.
+          type: integer
+          x-ms-summary: Reverse transaction id
+      example:
+        type_code: Debit
+        account_number: 01-1000-00
+        post_date: '2018-07-02T00:00:00Z'
+        encumbrance: Regular
+        journal: Journal Entry
+        reference: Debit reference
+        amount: 10
+        notes: New Note
+        distributions:
+        - ui_project_id: '1100'
+          account_class: Unrestricted Net Assets
+          transaction_code_values:
+          - name: Grants
+            value: None
+            id: 1
+          - name: Spendable?
+            value: Spendable
+            id: 2
+          amount: 5
+          percent: 50
+        - ui_project_id: '1200'
+          account_class: Unrestricted Net Assets
+          transaction_code_values:
+          - name: Grants
+            value: None
+            id: 1
+          - name: Spendable?
+            value: Non spendable
+            id: 2
+          amount: 5
+          percent: 50
+        custom_fields:
+        - field_name: Unique Auth Text
+          value: My text
+          comments: a comment
+          date: '2018-07-02T00:00:00Z'
+        reverse_date: '2018-07-03T00:00:00Z'
+      x-display-name: Journal entry
+      x-ms-summary: Journal entry
+    Void:
+      type: object
+      properties: {}
+      x-display-name: Void
+      x-ms-summary: Void
+    CreateJournalEntryBatchProcess:
+      description: Journal Entry Batch Process.
+      type: object
+      properties:
+        description:
+          description: The batch description.
+          type: string
+          x-ms-summary: Description
+        batch_status:
+          description: The batch status.
+          enum:
+          - Open
+          - PendingApproval
+          - Approved
+          - Posted
+          - Deleted
+          type: string
+          x-ms-summary: Batch status
+        create_interfund_sets:
+          description: Indicates if the batch should create interfund entries when posted.
+          type: boolean
+          x-ms-summary: Create interfund sets
+        create_bank_account_adjustments:
+          description: Indicates if the batch should create bank account adjustments when posted.
+          type: boolean
+          x-ms-summary: Create bank account adjustments
+        source_base_url:
+          description: The base URL for batch source system.
+          type: string
+          x-ms-summary: Source base url
+        source_system_name:
+          description: The source system name that created the batch.
+          type: string
+          x-ms-summary: Source system name
+        journal_entries:
+          description: The set of journal entries for the batch.
+          type: array
+          items:
+            $ref: '#/components/schemas/CreateJournalEntry'
+          x-ms-summary: Journal entries
+      example:
+        description: New Batch
+        batch_status: Open
+        create_interfund_sets: true
+        create_bank_account_adjustments: true
+        journal_entries:
+        - type_code: Debit
+          account_number: 01-1000-00
+          post_date: '2018-07-02T00:00:00Z'
+          encumbrance: Regular
+          reverse_date: '2020-04-03T00:00:00Z'
+          journal: Journal Entry
+          reference: Debit reference
+          amount: 10
+          notes: New Note
+          tax_entity_id: 427
+          distributions:
+          - ui_project_id: '1100'
+            account_class: Unrestricted Net Assets
+            transaction_code_values:
+            - name: Grants
+              value: None
+              id: 0
+            amount: 10
+            percent: 100
+        - type_code: Credit
+          account_number: 01-1000-00
+          post_date: '2018-07-02T00:00:00Z'
+          encumbrance: Regular
+          reverse_date: '2020-04-03T00:00:00Z'
+          journal: Journal Entry
+          reference: Credit reference
+          amount: 10
+          notes: Credit Note
+          tax_entity_id: 427
+          distributions:
+          - ui_project_id: '1100'
+            account_class: Unrestricted Net Assets
+            transaction_code_values:
+            - name: Grants
+              value: None
+              id: 0
+            amount: 10
+            percent: 100
+          custom_fields:
+          - field_name: Unique Auth Text
+            value: My text
+            comments: a comment
+            date: '2018-07-02T00:00:00Z'
+      x-display-name: Create journal entry batch process
+      x-ms-summary: Create journal entry batch process
+    HttpPostedFileBase:
+      type: object
+      properties:
+        ContentLength:
+          format: int32
+          type: integer
+          readOnly: true
+          x-ms-summary: Content length
+        ContentType:
+          type: string
+          readOnly: true
+          x-ms-summary: Content type
+        FileName:
+          type: string
+          readOnly: true
+          x-ms-summary: File name
+        InputStream:
+          $ref: '#/components/schemas/Stream'
+          readOnly: true
+          x-ms-summary: Input stream
+      x-display-name: Http posted file base
+      x-ms-summary: Http posted file base
+    JournalEntryBatch:
+      description: Journal Entry Batch.
+      required:
+      - description
+      - batch_status
+      type: object
+      properties:
+        batch_id:
+          format: int32
+          description: The batch identifier.
+          type: integer
+          x-ms-summary: Batch id
+        ui_batch_id:
+          description: The batch user-visible identifier.
+          type: string
+          x-ms-summary: Ui batch id
+        description:
+          description: The batch description.
+          type: string
+          x-ms-summary: Description
+        batch_status:
+          description: The batch status.
+          enum:
+          - Open
+          - PendingApproval
+          - Approved
+          - Posted
+          - Deleted
+          type: string
+          x-ms-summary: Batch status
+        create_interfund_sets:
+          description: Indicates if or not the batch should create interfund entries when posted.
+          type: boolean
+          x-ms-summary: Create interfund sets
+        create_bank_account_adjustments:
+          description: Indicates if or not the batch should create bank account adjustments when posted.
+          type: boolean
+          x-ms-summary: Create bank account adjustments
+        source_base_url:
+          description: Base url for batch source system.
+          type: string
+          x-ms-summary: Source base url
+        source_system_name:
+          description: Name of source system that created the batch.
+          type: string
+          x-ms-summary: Source system name
+        journal_entries:
+          description: The set of journal entries for the batch.
+          type: array
+          items:
+            $ref: '#/components/schemas/JournalEntry'
+          x-ms-summary: Journal entries
+        date_added:
+          format: date-time
+          description: The created date of the batch.
+          type: string
+          x-ms-summary: Date added
+        added_by:
+          description: The creator of the batch.
+          type: string
+          x-ms-summary: Added by
+        date_modified:
+          format: date-time
+          description: The modified date of the batch.
+          type: string
+          x-ms-summary: Date modified
+        modified_by:
+          description: The modifier of the batch.
+          type: string
+          x-ms-summary: Modified by
+      x-display-name: Journal entry batch
+      x-ms-summary: Journal entry batch
+    CreateJournalEntry:
+      description: Journal entry.
+      required:
+      - type_code
+      - account_number
+      - post_date
+      - encumbrance
+      - journal
+      - reference
+      - amount
+      - distributions
+      type: object
+      properties:
+        journal_entry_id:
+          format: int32
+          description: The journal entry identifier.
+          type: integer
+          x-ms-summary: Journal entry id
+        type_code:
+          description: The journal entry transaction type (debit or credit).
+          enum:
+          - Debit
+          - Credit
+          type: string
+          x-ms-summary: Type code
+        line_number:
+          format: int32
+          description: The journal entry line number.
+          type: integer
+          x-ms-summary: Line number
+        tax_entity_id:
+          format: int32
+          description: The journal entry tax entity id.
+          type: integer
+          x-ms-summary: Tax entity id
+        account_number:
+          description: The journal entry account number.
+          type: string
+          x-ms-summary: Account number
+        post_date:
+          format: date-time
+          description: 'The journal entry post date, in ISO 8601 format: 2016-03-14.'
+          type: string
+          x-ms-summary: Post date
+        encumbrance:
+          description: The journal entry encumbrance type.
+          enum:
+          - Regular
+          - Encumbrance
+          type: string
+          x-ms-summary: Encumbrance
+        journal:
+          description: The full name of the journal.
+          type: string
+          x-ms-summary: Journal
+        reference:
+          description: The journal entry reference.
+          type: string
+          x-ms-summary: Reference
+        amount:
+          format: double
+          description: The journal entry amount.
+          type: number
+          x-ms-summary: Amount
+        notes:
+          description: The journal entry notes.
+          type: string
+          x-ms-summary: Notes
+        relative_source_url:
+          description: Relative URL for the journal entry that appends to the batch source_base_url.
+          type: string
+          x-ms-summary: Relative source url
+        distributions:
+          description: The journal entry distributions.
+          type: array
+          items:
+            $ref: '#/components/schemas/Distribution'
+          x-ms-summary: Distributions
+        custom_fields:
+          description: The journal entry custom fields.
+          type: array
+          items:
+            $ref: '#/components/schemas/CreateCustomField'
+          x-ms-summary: Custom fields
+        reverse_date:
+          format: date-time
+          description: The journal entry reverse date.
+          type: string
+          x-ms-summary: Reverse date
+      x-hidden: true
+      x-display-name: Create journal entry
+      x-ms-summary: Create journal entry
+    TransactionCodeValue:
+      description: Transaction code value
+      required:
+      - value
+      - id
+      type: object
+      properties:
+        name:
+          description: The transaction code name.
+          type: string
+          x-ms-summary: Name
+        value:
+          description: The transaction code value.
+          type: string
+          x-ms-summary: Value
+        id:
+          format: int32
+          description: The transaction code value id.
+          type: integer
+          x-ms-summary: Id
+        inactive:
+          description: Indicate if record is inactive or not.
+          type: boolean
+          x-ms-summary: Inactive
+      x-display-name: Transaction code value
+      x-ms-summary: Transaction code value
+    CreatedResult_Int32:
+      type: object
+      properties:
+        record_id:
+          format: int32
+          type: integer
+          x-ms-summary: Record id
+      x-hidden: true
+      x-display-name: Created result `1
+      x-ms-summary: Created result `1
+    CustomFieldOptions:
+      type: object
+      properties:
+        custom_field_id:
+          format: int32
+          description: The identifier for this custom field.
+          type: integer
+          x-ms-summary: Custom field id
+        name:
+          description: The name of this custom field.
+          type: string
+          x-ms-summary: Name
+        type:
+          description: The type (boolean, table, etc) of this custom field.
+          enum:
+          - Text
+          - Number
+          - DateTime
+          - Currency
+          - Boolean
+          - Table
+          - FuzzyDate
+          type: string
+          x-ms-summary: Type
+        is_required:
+          description: If this custom field is required.
+          type: boolean
+          x-ms-summary: Is required
+        table_values:
+          description: 'List of table values.
+
+            Only applicable if type = ''Table''.'
+          type: array
+          items:
+            type: string
+          x-ms-summary: Table values
+      x-display-name: Custom field options
+      x-ms-summary: Custom field options
+    JournalEntryBatchSummary:
+      required:
+      - Description
+      - BatchStatus
+      type: object
+      properties:
+        BatchId:
+          format: int32
+          description: The batch identifier.
+          type: integer
+          x-ms-summary: Batch id
+        UiBatchId:
+          description: The batch user-visible identifier.
+          type: string
+          x-ms-summary: Ui batch id
+        Description:
+          description: The batch description.
+          type: string
+          x-ms-summary: Description
+        BatchStatus:
+          description: The batch status.
+          enum:
+          - Open
+          - PendingApproval
+          - Approved
+          - Posted
+          - Deleted
+          type: string
+          x-ms-summary: Batch status
+        CreateInterfundSets:
+          description: Indicates if or not the batch should create interfund entries when posted.
+          type: boolean
+          x-ms-summary: Create interfund sets
+        CreateBankAccountAdjustments:
+          description: Indicates if or not the batch should create bank account adjustments when posted.
+          type: boolean
+          x-ms-summary: Create bank account adjustments
+        SourceSystemName:
+          description: Name of source system that created the batch.
+          type: string
+          x-ms-summary: Source system name
+        SourceBaseUrl:
+          description: Base url for batch source system.
+          type: string
+          x-ms-summary: Source base url
+        DateAdded:
+          format: date-time
+          description: The created date of the batch.
+          type: string
+          x-ms-summary: Date added
+        AddedBy:
+          description: The creator of the batch.
+          type: string
+          x-ms-summary: Added by
+        DateModified:
+          format: date-time
+          description: The modified date of the batch.
+          type: string
+          x-ms-summary: Date modified
+        ModifiedBy:
+          description: The modifier of the batch.
+          type: string
+          x-ms-summary: Modified by
+        TotalCredits:
+          format: double
+          description: Total credits of the batch
+          type: number
+          x-ms-summary: Total credits
+        TotalDebits:
+          format: double
+          description: Total debits of the batch
+          type: number
+          x-ms-summary: Total debits
+      x-display-name: Journal entry batch summary
+      x-ms-summary: Journal entry batch summary
+    JournalEntryBatchProcessDetails:
+      type: object
+      properties:
+        process_id:
+          format: int32
+          description: The identifier for the journal entry batch proces.
+          type: integer
+          x-ms-summary: Process id
+      x-display-name: Journal entry batch process details
+      x-ms-summary: Journal entry batch process details
+    ValidationResult:
+      description: A result of an operation that may or may not succeed
+      type: object
+      properties:
+        is_valid:
+          description: Indicates if the request was valid.
+          type: boolean
+          x-ms-summary: Is valid
+        errors:
+          description: The list of errors received during validation.
+          type: array
+          items:
+            type: string
+          x-ms-summary: Errors
+      x-display-name: Validation result
+      x-ms-summary: Validation result
+    EditJournalEntryBatch:
+      type: object
+      properties:
+        description:
+          description: The batch description.
+          type: string
+          x-ms-summary: Description
+        create_interfund_sets:
+          description: Indicates if or not the batch should create interfund entries when posted.
+          type: boolean
+          x-ms-summary: Create interfund sets
+        create_bank_account_adjustments:
+          description: Indicates if or not the batch should create bank account adjustments when posted.
+          type: boolean
+          x-ms-summary: Create bank account adjustments
+        batch_status:
+          description: The batch status.
+          enum:
+          - Open
+          - PendingApproval
+          - Approved
+          - Posted
+          - Deleted
+          type: string
+          x-ms-summary: Batch status
+        source_base_url:
+          description: Base url for batch source system.
+          type: string
+          x-ms-summary: Source base url
+        source_system_name:
+          description: Name of source system that created the batch.
+          type: string
+          x-ms-summary: Source system name
+      example:
+        description: edited description
+        create_interfund_sets: false
+        create_bank_account_adjustments: true
+        batch_status: Approved
+      x-display-name: Edit journal entry batch
+      x-ms-summary: Edit journal entry batch
+    CreateAttachment:
+      required:
+      - parent_id
+      - name
+      - type
+      - media_type
+      type: object
+      properties:
+        parent_id:
+          format: int32
+          description: The identifier of the parent item for this attachment.
+          type: integer
+          x-ms-summary: Parent id
+        name:
+          description: The name of this attachment.
+          type: string
+          x-ms-summary: Name
+        url:
+          description: The URL of this attachment.
+          type: string
+          x-ms-summary: Url
+        type:
+          description: The attachment type. Available values are Link and Physical. Physical attachments are stored and managed in the system. Link attachments are stored and managed externally. Defaults to Link if not provided.
+          enum:
+          - Link
+          - Physical
+          type: string
+          x-ms-summary: Type
+        media_type:
+          description: User-defined category of this attachment. Available values are the entries in the Media Type table for the parent record. Use the value types defined in /mediaTypes
+          type: string
+          x-ms-summary: Media type
+        file:
+          $ref: '#/components/schemas/HttpPostedFileBase'
+          description: The uploaded file for this attachment.
+          x-ms-summary: File
+      example:
+        parent_id: 1
+        name: Attachment Name
+        url: https://www.google.com
+        type: Link
+        media_type: Manual
+      x-display-name: Create attachment
+      x-ms-summary: Create attachment
+    Stream:
+      type: object
+      properties:
+        CanRead:
+          type: boolean
+          readOnly: true
+          x-ms-summary: Can read
+        CanSeek:
+          type: boolean
+          readOnly: true
+          x-ms-summary: Can seek
+        CanTimeout:
+          type: boolean
+          readOnly: true
+          x-ms-summary: Can timeout
+        CanWrite:
+          type: boolean
+          readOnly: true
+          x-ms-summary: Can write
+        Length:
+          format: int64
+          type: integer
+          readOnly: true
+          x-ms-summary: Length
+        Position:
+          format: int64
+          type: integer
+          x-ms-summary: Position
+        ReadTimeout:
+          format: int32
+          type: integer
+          x-ms-summary: Read timeout
+        WriteTimeout:
+          format: int32
+          type: integer
+          x-ms-summary: Write timeout
+      x-display-name: Stream
+      x-ms-summary: Stream
+    CreateCustomField:
+      description: The create contract for custom fields.
+      type: object
+      properties:
+        field_name:
+          description: The name of the custom field. Can be retrieved from the /customfields endpoints.
+          type: string
+          x-ms-summary: Field name
+        value:
+          description: The value for this custom field.
+          type: string
+          x-ms-summary: Value
+        comments:
+          description: The description for this custom field.
+          type: string
+          x-ms-summary: Comments
+        date:
+          format: date-time
+          description: The date on this custom field.
+          type: string
+          x-ms-summary: Date
+      x-hidden: true
+      x-display-name: Create custom field
+      x-ms-summary: Create custom field
+    ApiCollection_JournalEntryBatch:
+      type: object
+      properties:
+        count:
+          format: int32
+          type: integer
+          x-ms-summary: Count
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/JournalEntryBatch'
+          x-ms-summary: Value
+      x-hidden: true
+      x-display-name: Api collection `1
+      x-ms-summary: Api collection `1
+    CustomField:
+      description: Custom field definition.
+      type: object
+      properties:
+        custom_field_id:
+          format: int32
+          description: The identifier for this custom field.
+          type: integer
+          x-ms-summary: Custom field id
+        field_name:
+          description: The name of the custom field.
+          type: string
+          x-ms-summary: Field name
+        value:
+          description: The value for this custom field.
+          type: string
+          x-ms-summary: Value
+        comments:
+          description: The description for this custom field.
+          type: string
+          x-ms-summary: Comments
+        type:
+          description: The type of this custom field.
+          enum:
+          - Text
+          - Number
+          - DateTime
+          - Currency
+          - Boolean
+          - Table
+          - FuzzyDate
+          type: string
+          x-ms-summary: Type
+        date:
+          format: date-time
+          description: The date on this custom field.
+          type: string
+          x-ms-summary: Date
+      x-display-name: Custom field
+      x-ms-summary: Custom field
+    ApiCollection_JournalEntry:
+      type: object
+      properties:
+        count:
+          format: int32
+          type: integer
+          x-ms-summary: Count
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/JournalEntry'
+          x-ms-summary: Value
+      x-hidden: true
+      x-display-name: Api collection `1
+      x-ms-summary: Api collection `1
+    Distribution:
+      description: Journal Entry Distribution.
+      required:
+      - transaction_code_values
+      type: object
+      properties:
+        distribution_id:
+          format: int32
+          description: The distribution identifier.
+          type: integer
+          x-ms-summary: Distribution id
+        ui_project_id:
+          description: The user-visible identifier of the project.
+          type: string
+          x-ms-summary: Ui project id
+        account_class:
+          description: The class for this distribution.
+          type: string
+          x-ms-summary: Account class
+        transaction_code_values:
+          description: The distribution transaction code values. The values should be in the same order as the codes defined in the database.
+          type: array
+          items:
+            $ref: '#/components/schemas/TransactionCodeValue'
+          x-ms-summary: Transaction code values
+        amount:
+          format: double
+          description: The distribution amount.
+          type: number
+          x-ms-summary: Amount
+        percent:
+          format: double
+          description: The distribution journal entry amount percentage.
+          type: number
+          x-ms-summary: Percent
+      x-display-name: Distribution
+      x-ms-summary: Distribution
+    CreateJournalEntryBatch:
+      description: The journal entry batch.
+      type: object
+      properties:
+        description:
+          description: The batch description.
+          type: string
+          x-ms-summary: Description
+        batch_status:
+          description: The batch status.
+          enum:
+          - Open
+          - PendingApproval
+          - Approved
+          - Posted
+          - Deleted
+          type: string
+          x-ms-summary: Batch status
+        create_interfund_sets:
+          description: Indicates if the batch should create interfund entries when posted.
+          type: boolean
+          x-ms-summary: Create interfund sets
+        create_bank_account_adjustments:
+          description: Indicates if the batch should create bank account adjustments when posted.
+          type: boolean
+          x-ms-summary: Create bank account adjustments
+        source_base_url:
+          description: The base URL for batch source system.
+          type: string
+          x-ms-summary: Source base url
+        source_system_name:
+          description: The source system name that created the batch.
+          type: string
+          x-ms-summary: Source system name
+        journal_entries:
+          description: The set of journal entries for the batch.
+          type: array
+          items:
+            $ref: '#/components/schemas/CreateJournalEntry'
+          x-ms-summary: Journal entries
+      example:
+        description: New Batch
+        batch_status: Open
+        create_interfund_sets: true
+        create_bank_account_adjustments: true
+        journal_entries:
+        - type_code: Debit
+          account_number: 01-1000-00
+          post_date: '2018-07-02T00:00:00Z'
+          encumbrance: Regular
+          reverse_date: '2020-04-03T00:00:00Z'
+          journal: Journal Entry
+          reference: Debit reference
+          amount: 10
+          notes: New Note
+          tax_entity_id: 427
+          distributions:
+          - ui_project_id: '1100'
+            account_class: Unrestricted Net Assets
+            transaction_code_values:
+            - name: Grants
+              value: None
+              id: 0
+            amount: 10
+            percent: 100
+        - type_code: Credit
+          account_number: 01-1000-00
+          post_date: '2018-07-02T00:00:00Z'
+          encumbrance: Regular
+          reverse_date: '2020-04-03T00:00:00Z'
+          journal: Journal Entry
+          reference: Credit reference
+          amount: 10
+          notes: Credit Note
+          tax_entity_id: 427
+          distributions:
+          - ui_project_id: '1100'
+            account_class: Unrestricted Net Assets
+            transaction_code_values:
+            - name: Grants
+              value: None
+              id: 0
+            amount: 10
+            percent: 100
+          custom_fields:
+          - field_name: Unique Auth Text
+            value: My text
+            comments: a comment
+            date: '2018-07-02T00:00:00Z'
+      x-display-name: Create journal entry batch
+      x-ms-summary: Create journal entry batch
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

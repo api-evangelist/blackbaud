@@ -1,0 +1,601 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Receivables Credits API'
+  description: This API manages receivables, including clients, billing items, credits, charges, and invoices.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/receivables
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/receivables
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Credits
+paths:
+  /v1/credits:
+    get:
+      operationId: ListCredits
+      summary: Get a list of credits by page
+      description: This returns a list of credits.
+      parameters:
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: '25'
+        description: The maximum number of items to return.
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: How many items to skip before returning the results.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a list of credits.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreditList'
+              example:
+                credits:
+                - id: '115'
+                  lookup_id: '123'
+                  credit_amount: 230
+                  balance: 230
+                  applied_amount: 0
+                  client:
+                    contact_id: 100cc153-56c9-4917-a123-da8d69a31adf
+                    name: test
+                    contact_type: Person
+                    third_party_billing: false
+                    client_status: Active
+                  credit_date: '2021-07-26T12:00:00Z'
+                  post_date: '2021-07-26T12:00:00Z'
+                  post_status: NotYetPosted
+                  print_status: NotYetPrinted
+                  description: This is an example credit.
+                  billing_item_id: '20'
+                  billing_item_name: Conference Room
+                  flat_rate:
+                    amount: 230
+                    allow_changes_to_amount: false
+                  variable_rate:
+                    unit_of_measure_entry:
+                      id: '1'
+                      value: Each
+                    quantity: 1
+                    quantity_decimals: 2
+                    unit_price: 230
+                    unit_price_decimals: 2
+                    allow_changes_quantity_and_unit_price: false
+                    trade_discount_percent: 0
+                    trade_discount_amount: 0
+                    amount: 230
+                  notes: note
+                  comment: comment
+                  added_by: Test
+                  date_added: '2020-02-24T12:00:00Z'
+                  last_changed_by: Test
+                  last_changed_date: '2020-02-24T12:00:00Z'
+                limit: 1
+                offset: 0
+        '400':
+          description: Returned when the request is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponseTypes'
+              example:
+                type: urn:blackbaud:validation-error
+                title: One or more validation errors occurred.
+                status: 400
+                detail: 'Transaction is missing required custom fields
+
+                  '
+                values:
+                  errors:
+                    property_name: custom_fields
+                    error_message: Transaction is missing required custom fields
+                    error_code: TransactionHasRequiredCustomFields
+                trace_id: e566235f7b89ec65570213e86c42b059
+                span_id: fda5afb92a47816e
+        '403':
+          description: Returned when the user does not have permission to view credits.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenProblemDetails'
+              example:
+                type: urn:blackbaud:forbidden
+                title: The requested action is forbidden.
+                status: 403
+                extensions: {}
+      tags:
+      - Credits
+  /v1/credits/{id}:
+    get:
+      operationId: GetCredits
+      summary: Get a credit
+      description: This gets a credit by ID.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The ID of the credit.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a credit.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreditListView'
+              example:
+                id: '115'
+                lookup_id: '123'
+                credit_amount: 230
+                balance: 230
+                applied_amount: 0
+                client:
+                  contact_id: 100cc153-56c9-4917-a123-da8d69a31adf
+                  name: test
+                  contact_type: Person
+                  third_party_billing: false
+                  client_status: Active
+                credit_date: '2021-07-26T12:00:00Z'
+                post_date: '2021-07-26T12:00:00Z'
+                post_status: NotYetPosted
+                print_status: NotYetPrinted
+                description: This is an example credit.
+                billing_item_id: '20'
+                billing_item_name: Conference Room
+                flat_rate:
+                  amount: 230
+                  allow_changes_to_amount: false
+                variable_rate:
+                  unit_of_measure_entry:
+                    id: '1'
+                    value: Each
+                  quantity: 1
+                  quantity_decimals: 2
+                  unit_price: 230
+                  unit_price_decimals: 2
+                  allow_changes_quantity_and_unit_price: false
+                  trade_discount_percent: 0
+                  trade_discount_amount: 0
+                  amount: 230
+                notes: note
+                comment: comment
+                added_by: Test
+                date_added: '2020-02-24T12:00:00Z'
+                last_changed_by: Test
+                last_changed_date: '2020-02-24T12:00:00Z'
+        '404':
+          description: Returned when the specified credit is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: urn:blackbaud:model-validation-error
+                title: One or more validation errors occurred.
+                status: 400
+                detail: Workflow Correlation Id was required but not supplied.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '400':
+          description: Returned when the request is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponseTypes'
+              example:
+                type: urn:blackbaud:validation-error
+                title: One or more validation errors occurred.
+                status: 400
+                detail: 'Transaction is missing required custom fields
+
+                  '
+                values:
+                  errors:
+                    property_name: custom_fields
+                    error_message: Transaction is missing required custom fields
+                    error_code: TransactionHasRequiredCustomFields
+                trace_id: e566235f7b89ec65570213e86c42b059
+                span_id: fda5afb92a47816e
+        '403':
+          description: Returned when the user does not have permission to view the credit.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenProblemDetails'
+              example:
+                type: urn:blackbaud:forbidden
+                title: The requested action is forbidden.
+                status: 403
+                extensions: {}
+      tags:
+      - Credits
+components:
+  schemas:
+    Contact:
+      required:
+      - contact_id
+      - contact_type
+      type: object
+      properties:
+        contact_id:
+          minLength: 1
+          type: string
+          description: The ID of the contact.
+        name:
+          type:
+          - string
+          - 'null'
+          description: The contact name.
+        contact_type:
+          $ref: '#/components/schemas/ContactType'
+        third_party_billing:
+          type: boolean
+          description: Whether the client is used for third-party billing.
+        client_status:
+          type:
+          - string
+          - 'null'
+          description: The client status.
+      additionalProperties: false
+      description: The contact.
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".
+        title:
+          type:
+          - string
+          - 'null'
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type:
+          - integer
+          - 'null'
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: {}
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+    ForbiddenProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".
+        title:
+          type:
+          - string
+          - 'null'
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type:
+          - integer
+          - 'null'
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: {}
+      description: Problem details for 403 Forbidden responses
+    ValidationErrorResponseTypes:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".<br/><br/>Available values:<table><tr><th>type</th><th>detail</th></tr><tr><td>urn:blackbaud:model-validation-error</td><td>A model validation rule was violated, such as a missing required field.</td></tr><tr><td>urn:blackbaud:validation-error</td><td>One or more validation errors occurred.</td></tr></table>
+        title:
+          type:
+          - string
+          - 'null'
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type:
+          - integer
+          - 'null'
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: {}
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-bb-error-types:
+      - urn:blackbaud:model-validation-error
+      - urn:blackbaud:validation-error
+    ContactType:
+      title: ContactType
+      enum:
+      - Unknown
+      - Person
+      - Organization
+      type: string
+      description: Contact type
+    FlatRate:
+      type: object
+      properties:
+        amount:
+          type:
+          - number
+          - 'null'
+          description: The default flat rate.
+          format: decimal
+        allow_changes_to_amount:
+          type: boolean
+          description: Whether the user can edit the billing item amount after it's applied. For example, on a charge.
+      additionalProperties: false
+      description: The flat rate item details.
+    VariableRate:
+      required:
+      - quantity
+      - quantity_decimals
+      - unit_price_decimals
+      type: object
+      properties:
+        unit_of_measure_entry:
+          $ref: '#/components/schemas/ReceivablesCodeTableEntry'
+        quantity:
+          type: number
+          description: The quantity sold for a specified unit.
+          format: decimal
+        quantity_decimals:
+          type: integer
+          description: The number of decimals to input and round the quantity.
+          format: int32
+        unit_price:
+          type:
+          - number
+          - 'null'
+          description: The price per unit.
+          format: decimal
+        unit_price_decimals:
+          type: integer
+          description: The number of decimals to input and round the unit price.
+          format: int32
+        allow_changes_quantity_and_unit_price:
+          type: boolean
+          description: The user is allowed to edit the Billing Item's unit price after it is applied, such as on a Charge.
+        trade_discount_percent:
+          type: number
+          description: Trade Discount Percentage for Charge and Line Item calculations.
+          format: decimal
+        trade_discount_amount:
+          type: number
+          description: Calculated Trade Discount Amount for Charge and Line Item calculations.
+          format: decimal
+          readOnly: true
+        amount:
+          type: number
+          description: Amount calculated from other property values
+          format: decimal
+          readOnly: true
+      additionalProperties: false
+      description: The details for an item with variable quantity.
+    CreditListView:
+      required:
+      - added_by
+      - applied_amount
+      - balance
+      - billing_item_id
+      - billing_item_name
+      - client
+      - credit_amount
+      - credit_date
+      - date_added
+      - id
+      - last_changed_by
+      - last_changed_date
+      - lookup_id
+      - post_date
+      - post_status
+      type: object
+      properties:
+        id:
+          minLength: 1
+          type: string
+          description: The ID.
+        lookup_id:
+          minLength: 1
+          type: string
+          description: The ID of the lookup.
+        credit_amount:
+          type: number
+          description: The credit amount.
+          format: decimal
+        balance:
+          type: number
+          description: The credit balance amount.
+          format: decimal
+        applied_amount:
+          type: number
+          description: The applied portion of the credit amount.
+          format: decimal
+        client:
+          $ref: '#/components/schemas/Contact'
+        credit_date:
+          type: string
+          description: The record create date.
+          format: date-time
+        post_date:
+          type: string
+          description: The post date.
+          format: date-time
+        post_status:
+          $ref: '#/components/schemas/PostStatus'
+        print_status:
+          $ref: '#/components/schemas/PrintStatus'
+        description:
+          type:
+          - string
+          - 'null'
+          description: The credit description.
+        billing_item_id:
+          minLength: 1
+          type: string
+          description: The ID of the billing item.
+        billing_item_name:
+          minLength: 1
+          type: string
+          description: The billing item name.
+        flat_rate:
+          $ref: '#/components/schemas/FlatRate'
+        variable_rate:
+          $ref: '#/components/schemas/VariableRate'
+        notes:
+          type:
+          - string
+          - 'null'
+          description: The credit notes.
+        comment:
+          type:
+          - string
+          - 'null'
+          description: The comment.
+        added_by:
+          minLength: 1
+          type: string
+          description: The user name who created the record.
+        date_added:
+          type: string
+          description: The record create date.
+          format: date-time
+        last_changed_by:
+          minLength: 1
+          type: string
+          description: The user name who last changed the record.
+        last_changed_date:
+          type: string
+          description: The record last changed date.
+          format: date-time
+      additionalProperties: false
+      description: The response containing info about each credit to display in a list.
+    PostStatus:
+      title: PostStatus
+      enum:
+      - DoNotPost
+      - NotYetPosted
+      - Posted
+      type: string
+      description: Post status
+    ReceivablesCodeTableEntry:
+      required:
+      - id
+      - value
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the code table entry.
+        value:
+          minLength: 1
+          type: string
+          description: The value of the code table entry.
+      additionalProperties: false
+      description: The request containing info for a code table entry.
+    CreditList:
+      required:
+      - credits
+      - limit
+      - offset
+      type: object
+      properties:
+        credits:
+          type: array
+          items:
+            $ref: '#/components/schemas/CreditListView'
+          description: The page of credits using list view
+        limit:
+          type: integer
+          description: The maximum number of items to return.
+          format: int32
+        offset:
+          type: integer
+          description: The number of items skipped before this list was created.
+          format: int32
+      additionalProperties: false
+      description: Paged list of credits
+      x-bb-suppressions:
+      - list_operation_pagination_style
+    PrintStatus:
+      title: PrintStatus
+      enum:
+      - NotYetPrinted
+      - Printed
+      - DoNotPrint
+      - RePrint
+      type: string
+      description: Print status
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

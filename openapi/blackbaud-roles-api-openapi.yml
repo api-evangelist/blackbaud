@@ -1,0 +1,272 @@
+openapi: 3.2.0
+info:
+  title: Blackbaud Roles API
+  version: '1.0'
+  x-refined-note:
+  - x-apievangelist-provenance differs across the merged source definitions and was not carried
+  description: 'Operations tagged Roles across 2 of this provider''s published API definitions: blackbaud-grantsconnect-api-openapi.yml, blackbaud-school-api-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.sky.blackbaud.com/grants-connect
+- url: https://api.sky.blackbaud.com/school
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Roles
+paths:
+  /v1/roles/search:
+    post:
+      operationId: SearchRoles
+      summary: Search roles (PREVIEW)
+      description: 'Search roles.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApplyRolesSearchFilters'
+            example:
+              limit: 10
+              page: 1
+              date_modified: '2025-01-01T12:00:00Z'
+              include_inactive: true
+        description: Specifies the conditions of the roles to search.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReturnPaginatedRolesRecords'
+              example:
+                records:
+                - role_id: 1
+                  role_name: Admin
+                  role_description: Admin role with all permissions.
+                  allowed_permissions:
+                  - permission_set_type: System
+                    allowed: true
+                    permission_type: 0
+                record_count: 1
+      tags:
+      - Roles
+    servers:
+    - url: https://api.sky.blackbaud.com/grants-connect
+  /v1/roles:
+    get:
+      operationId: v1rolesget
+      summary: Core roles
+      description: 'Returns a collection of core school user roles.
+
+
+        Requires at least one of the following roles in the Education Management system:
+
+
+        SKY API Data Sync
+
+
+        Any Manager Role'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoleCollection'
+              example:
+                count: 2
+                value:
+                - id: 1
+                  base_role_id: 14
+                  hidden: false
+                  name: Student
+                - id: 2
+                  base_role_id: 15
+                  hidden: false
+                  name: Teacher
+      tags:
+      - Roles
+    servers:
+    - url: https://api.sky.blackbaud.com/school
+components:
+  schemas:
+    RolesModel:
+      type: object
+      properties:
+        role_id:
+          type: integer
+          description: The identifier of the role.
+          format: int32
+        role_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the role.
+        role_description:
+          type:
+          - string
+          - 'null'
+          description: The desription of the role.
+        allowed_permissions:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/PermissionsAllowedModel'
+          description: The permissions allowed/disallowed by the role.
+      additionalProperties: false
+      description: Basic information about the client's roles.
+    ApplyRolesSearchFilters:
+      type: object
+      properties:
+        role_id:
+          type:
+          - integer
+          - 'null'
+          description: The identifier of the role.
+          format: int32
+        role_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the role.
+        role_description:
+          type:
+          - string
+          - 'null'
+          description: The desription of the role.
+        limit:
+          maximum: 500
+          minimum: 50
+          type: integer
+          description: Specifies the maximum number of records to return per page.
+          format: int32
+          default: 50
+        page:
+          maximum: 2147483647
+          minimum: 1
+          type: integer
+          description: Specifies the page number for pagination.
+          format: int32
+          default: 1
+        date_modified:
+          type:
+          - string
+          - 'null'
+          description: If provided, only records modified since the date and time specified will be returned. Time zone is UTC.
+          format: date-time
+        include_inactive:
+          type: boolean
+          description: Specifies if inactive records should be returned. Value is true or false.
+          default: false
+      additionalProperties: false
+      description: Filters to apply to the roles search. Specify conditions of the roles to return detailed information.
+    PermissionsAllowedModel:
+      type: object
+      properties:
+        permission_set_type:
+          $ref: '#/components/schemas/PermissionSetTypes'
+        allowed:
+          type: boolean
+          description: Determines if the user has this permission on this role. Value is true or false. If false, the user is not allowed this permission on this role.
+        permission_type:
+          type: integer
+          description: Type of permission (numeric representation).
+          format: int32
+      additionalProperties: false
+      description: Information about the role's permissions, determines which permissions the user is a part of on this role.
+    PermissionSetTypes:
+      enum:
+      - System
+      - GrantProgram
+      - GrantApplication
+      - Reporting
+      - Processing
+      - Insights
+      - GDPR
+      type: string
+      description: The types of permission sets that may be associated to a role.<p>Available values:</p><ul><li><i>System</i></li><li><i>GrantProgram</i></li><li><i>GrantApplication</i></li><li><i>Reporting</i></li><li><i>Processing</i></li><li><i>Insights</i></li><li><i>GDPR</i></li></ul>
+    ReturnPaginatedRolesRecords:
+      type: object
+      properties:
+        records:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/RolesModel'
+          description: The details returned for the current page.
+        record_count:
+          type:
+          - integer
+          - 'null'
+          description: The total number of records in the search result.
+          format: int32
+      additionalProperties: false
+      description: Returns a paginated view of the client's roles.
+    Role:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of a role
+          format: int32
+        base_role_id:
+          type:
+          - integer
+          - 'null'
+          description: The ID used to associate roles with the original role; all roles are based upon preexisting base role IDs
+          format: int32
+        hidden:
+          type:
+          - boolean
+          - 'null'
+          description: Returns True if the role is hidden
+        name:
+          type:
+          - string
+          - 'null'
+          description: The label used to identify a role
+      additionalProperties: false
+      description: Role Model
+    RoleCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items in the collection
+          format: int32
+          readOnly: true
+        next_link:
+          type:
+          - string
+          - 'null'
+          description: For paginated responses, the URI for the next page of results
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Role'
+          description: The set of items included in the response. This may be a subset of the items in the collection
+      additionalProperties: false
+      description: A Collection
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+x-refined-from:
+- blackbaud-grantsconnect-api-openapi.yml
+- blackbaud-school-api-openapi.yml

@@ -1,0 +1,266 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: GrantsConnect Fundingsources API'
+  description: This API provides access to read and update data within GrantsConnect.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/grants-connect
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/grants-connect
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Fundingsources
+paths:
+  /v1/fundingsources/search:
+    post:
+      operationId: SearchFundingSources
+      summary: Search funding sources (PREVIEW)
+      description: 'Retrieves information about funding sources.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApplyFundingSourceSearchFilters'
+            example:
+              id: 5001
+              name: Community Development Fund
+              funding_source_type: Cash
+              processing_type: Client
+              over_allocation_source: false
+              closed: false
+              limit: 50
+              page: 1
+              date_modified: '2025-01-01T12:00:00Z'
+              include_inactive: false
+        description: Specifies the conditions of the funding sources to search. If no filter is provided, the response will return all funding sources.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReturnPaginatedFundingSourceRecords'
+              example:
+                records:
+                - id: 2001
+                  name: General Fund
+                  funding_source_type: Cash
+                  total_amount: 50000
+                  inactive: false
+                  processing_type: Client
+                  total_amount_remaining: 25000
+                  total_amount_unallocated: 5000
+                  total_amount_allocated: 20000
+                  total_amount_unavailable: 1000
+                  closed: false
+                  eligible_for_removal: true
+                  total_payment_amount: 20000
+                  total_amount_reserved: 2000
+                record_count: 1
+      tags:
+      - Fundingsources
+components:
+  schemas:
+    ProcessingTypes:
+      enum:
+      - Client
+      - YourCause
+      type: string
+      description: The types of processing that can be done<p>Available values:</p><ul><li><i>Client</i></li><li><i>YourCause</i></li></ul>
+    ApplyFundingSourceSearchFilters:
+      type: object
+      properties:
+        id:
+          maximum: 2147483647
+          minimum: 1
+          type:
+          - integer
+          - 'null'
+          description: If provided, results will filter on the identifier of the funding source.
+          format: int32
+        name:
+          maxLength: 50
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: If provided, results will filter on the name of the funding source.
+        funding_source_type:
+          $ref: '#/components/schemas/FundingSourceTypes'
+        processing_type:
+          $ref: '#/components/schemas/ProcessingTypes'
+        over_allocation_source:
+          type:
+          - boolean
+          - 'null'
+          description: Specifies if funding sources used for budget overages should be returned. Value is true or false.
+        closed:
+          type:
+          - boolean
+          - 'null'
+          description: If provided, results will filter on if the funding source is closed. Value is true or false.
+        limit:
+          maximum: 500
+          minimum: 50
+          type: integer
+          description: Specifies the maximum number of records to return per page.
+          format: int32
+          default: 50
+        page:
+          maximum: 2147483647
+          minimum: 1
+          type: integer
+          description: Specifies the page number for pagination.
+          format: int32
+          default: 1
+        date_modified:
+          type:
+          - string
+          - 'null'
+          description: If provided, only records modified since the date and time specified will be returned. Time zone is UTC.
+          format: date-time
+        include_inactive:
+          type: boolean
+          description: Specifies if inactive records should be returned. Value is true or false.
+          default: false
+      additionalProperties: false
+      description: Filters to apply to the search. Specify conditions of the funding sources to return detailed information.
+    ReturnPaginatedFundingSourceRecords:
+      type: object
+      properties:
+        records:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ReturnFundingSourceQueryResults'
+          description: The details returned for the current page.
+        record_count:
+          type:
+          - integer
+          - 'null'
+          description: The total number of records in the search result.
+          format: int32
+      additionalProperties: false
+      description: Returns a paginated view of funding sources.
+    FundingSourceTypes:
+      enum:
+      - Cash
+      - InKind
+      type: string
+      description: The types of funding sources that may be used to fund awards and payments<p>Available values:</p><ul><li><i>Cash</i></li><li><i>InKind</i></li></ul>
+    ReturnFundingSourceQueryResults:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The identifier of the funding source.
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the funding source.
+        funding_source_type:
+          $ref: '#/components/schemas/FundingSourceTypes'
+        total_amount:
+          type: number
+          description: The total monetary amount of the funding source.
+          format: double
+        currency:
+          type:
+          - string
+          - 'null'
+          description: The currency of the funding source.
+        total_units:
+          type:
+          - integer
+          - 'null'
+          description: The total number of units for in-kind items in the funding source. In-kind funding sources only.
+          format: int32
+        total_unit_cost:
+          type:
+          - number
+          - 'null'
+          description: The total unit cost of the funding source. In-kind funding sources only.
+          format: double
+        total_unit_value:
+          type:
+          - number
+          - 'null'
+          description: The total monetary value of all units in the funding source. In-kind funding sources only.
+          format: double
+        inactive:
+          type: boolean
+          description: Indicates if the funding source is inactive. Value is true or false.
+        processing_type:
+          $ref: '#/components/schemas/ProcessingTypes'
+        total_amount_remaining:
+          type: number
+          description: The total monetary amount remaining for payments.
+          format: double
+        total_units_remaining:
+          type:
+          - integer
+          - 'null'
+          description: The total number of units remaining for payments. In-kind funding sources only.
+          format: int32
+        total_amount_unallocated:
+          type: number
+          description: The total monetary amount of the funding source not allocated towards payments.
+          format: double
+        total_amount_allocated:
+          type: number
+          description: The total monetary amount of the funding source allocated towards payments.
+          format: double
+        total_units_unallocated:
+          type:
+          - integer
+          - 'null'
+          description: The total number of units not allocated towards payments. In-kind funding sources only.
+          format: int32
+        total_amount_unavailable:
+          type:
+          - number
+          - 'null'
+          description: The total monetary amount of the funding source that cannot be used for payments. Funds can become unavailable if a funding source is closed or if the budget is closed without reallocating the funds.
+          format: double
+        closed:
+          type: boolean
+          description: Indicates if the funding source is closed. Value is true or false.
+        eligible_for_removal:
+          type: boolean
+          description: Indicates if the funding source can be deleted. It's eligible for removal if there are no voided payments or active budgets tied to it. Value is true or false.
+        total_payment_amount:
+          type:
+          - number
+          - 'null'
+          description: The total monetary amount of the funding source used for payments.
+          format: double
+        total_amount_reserved:
+          type:
+          - number
+          - 'null'
+          description: The total monetary amount reserved for applications based on amount requested.
+          format: double
+      additionalProperties: false
+      description: Detailed information about funding sources.
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

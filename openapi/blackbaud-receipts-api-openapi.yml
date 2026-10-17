@@ -1,0 +1,420 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Accounts Payable Receipts API'
+  description: This API is used to manage accounts payable, including vendors and invoices.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/57a342f1d7dcde1c28a749fe
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/accountspayable/v1
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Receipts
+paths:
+  /receipts:
+    get:
+      operationId: ListReceipts
+      summary: Receipt (List)
+      description: Returns a list of receipt summaries.
+      parameters:
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: "Represents the number of records to skip. \nFor use with pagination."
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: "Represents the number of records to return. \nThe default is 100. \nThe maximum allowed value is 500."
+      - name: search_text
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Text to match.
+
+          Can match receipt description, receipt number, receipt date, purchase order number, or invoice number.
+
+          A blank search will match all receipts.'
+      - name: vendor_name
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Vendor name associated with the receipt.
+      - name: purchase_order_id
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: The purchase order identifier associated with the receipt.
+      - name: received_by
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Who the receipt is marked as received by.
+      - name: from_date
+        in: query
+        required: false
+        schema:
+          type: string
+        description: The earliest date to include receipt records.
+      - name: to_date
+        in: query
+        required: false
+        schema:
+          type: string
+        description: The latest date to include receipt records.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains a list of receipts.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReceiptSummaryApiCollection'
+              example:
+                count: 245
+                value:
+                - receipt_id: 10
+                  receipt_number: 102
+                  purchase_order_number: '13371337'
+                  purchase_order_id: 20
+                  receipt_date: '2012-07-01T12:00:00Z'
+                  description: Descr
+                  received_by: Burns H.
+                  vendor_name: Computer Services, Inc.
+                  vendor_id: 17
+                  receipt_total: 4839.75
+                  invoice_number: '1337'
+                  invoice_id: 19
+                  date_added: '2012-10-12T12:26:20Z'
+                  added_by: Supervisor
+                  date_modified: '2012-10-12T01:12:01Z'
+                  modified_by: Supervisor
+                - receipt_id: 11
+                  receipt_number: 103
+                  purchase_order_number: '13371338'
+                  purchase_order_id: 21
+                  receipt_date: '2012-07-01T12:00:00Z'
+                  description: Description
+                  received_by: Burns H.
+                  vendor_name: Alpha Graphics
+                  vendor_id: 1
+                  receipt_total: 5000.25
+                  invoice_number: '2337'
+                  invoice_id: 5
+                  date_added: '2013-10-12T12:26:20Z'
+                  added_by: Supervisor
+                  date_modified: '2013-10-12T01:12:01Z'
+                  modified_by: Supervisor
+        '400':
+          description: Returned when the request is not in the correct format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DomainErrorMessage'
+              example:
+                Error: Invalid Request
+                Details:
+                - The value 'fake' is not valid for transaction_status.
+        '403':
+          description: Returned when the user does not have permission to view receipts.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                Error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Receipts
+  /receipts/{receipt_id}:
+    get:
+      operationId: GetReceipt
+      summary: Receipt (Get)
+      description: Returns the details of a receipt.
+      parameters:
+      - name: receipt_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The receipt identifier.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the specified receipt.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReceiptDetail'
+              example:
+                receipt_id: 10
+                receipt_number: 102
+                purchase_order_number: '13371337'
+                purchase_order_id: 20
+                receipt_date: '2012-07-01T12:00:00Z'
+                description: Descr
+                received_by: Burns H
+                vendor_name: Computer Services, Inc.
+                vendor_id: 17
+                receipt_total: 4839.75
+                invoice_number: '1337'
+                invoice_id: 19
+                date_added: '2012-10-12T12:26:20Z'
+                added_by: Supervisor
+                date_modified: '2012-10-12T01:12:01Z'
+                modified_by: Supervisor
+        '404':
+          description: Returned when the specified receipt could not be found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                Error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+        '403':
+          description: Returned when the user does not have permission to view receipts.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                Error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Receipts
+components:
+  schemas:
+    ReceiptSummaryApiCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ReceiptSummary'
+      additionalProperties: false
+      description: Collection Response
+    ReceiptDetail:
+      type: object
+      properties:
+        receipt_id:
+          type: integer
+          description: The receipt's identifier.
+          format: int32
+        receipt_number:
+          type:
+          - integer
+          - 'null'
+          description: The number of the receipt.
+          format: int64
+        purchase_order_number:
+          type:
+          - string
+          - 'null'
+          description: The purchase order number assocaited with the receipt.
+        purchase_order_id:
+          type: integer
+          description: The purchase order id assocaited with the receipt.
+          format: int32
+        receipt_date:
+          type:
+          - string
+          - 'null'
+          description: The date of the receipt.
+          format: date-time
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the receipt.
+        received_by:
+          type:
+          - string
+          - 'null'
+          description: The receiver of the receipt.
+        vendor_name:
+          type:
+          - string
+          - 'null'
+          description: The vendor name assocaited with the receipt.
+        vendor_id:
+          type:
+          - integer
+          - 'null'
+          description: The vendor id assocaited with the receipt.
+          format: int32
+        receipt_total:
+          type: number
+          description: The total of the receipt.
+          format: decimal
+        invoice_number:
+          type:
+          - string
+          - 'null'
+          description: The invoice number assocaited with the receipt.
+        invoice_id:
+          type:
+          - integer
+          - 'null'
+          description: The invoice id assocaited with the receipt.
+          format: int32
+        date_added:
+          type:
+          - string
+          - 'null'
+          description: The created date of the receipt.
+          format: date-time
+        added_by:
+          type:
+          - string
+          - 'null'
+          description: The creator of the receipt.
+        date_modified:
+          type:
+          - string
+          - 'null'
+          description: The modified date of the receipt.
+          format: date-time
+        modified_by:
+          type:
+          - string
+          - 'null'
+          description: The modifier of the receipt.
+      additionalProperties: false
+      description: Receipt detail
+    DomainErrorMessage:
+      type: object
+      properties:
+        Error:
+          type:
+          - string
+          - 'null'
+        Details:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+        ErrorPath:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    BasicErrorMessage:
+      type: object
+      properties:
+        Error:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ReceiptSummary:
+      type: object
+      properties:
+        receipt_id:
+          type: integer
+          description: The receipt's identifier.
+          format: int32
+        receipt_number:
+          type:
+          - integer
+          - 'null'
+          description: The number of the receipt.
+          format: int64
+        purchase_order_number:
+          type:
+          - string
+          - 'null'
+          description: The purchase order number assocaited with the receipt.
+        purchase_order_id:
+          type: integer
+          description: The purchase order id assocaited with the receipt.
+          format: int32
+        receipt_date:
+          type:
+          - string
+          - 'null'
+          description: The date of the receipt.
+          format: date-time
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the receipt.
+        received_by:
+          type:
+          - string
+          - 'null'
+          description: The receiver of the receipt.
+        vendor_name:
+          type:
+          - string
+          - 'null'
+          description: The vendor name assocaited with the receipt.
+        vendor_id:
+          type:
+          - integer
+          - 'null'
+          description: The vendor id assocaited with the receipt.
+          format: int32
+        receipt_total:
+          type: number
+          description: The total of the receipt.
+          format: decimal
+        invoice_number:
+          type:
+          - string
+          - 'null'
+          description: The invoice number assocaited with the receipt.
+        invoice_id:
+          type:
+          - integer
+          - 'null'
+          description: The invoice id assocaited with the receipt.
+          format: int32
+        date_added:
+          type:
+          - string
+          - 'null'
+          description: The created date of the receipt.
+          format: date-time
+        added_by:
+          type:
+          - string
+          - 'null'
+          description: The creator of the receipt.
+        date_modified:
+          type:
+          - string
+          - 'null'
+          description: The modified date of the receipt.
+          format: date-time
+        modified_by:
+          type:
+          - string
+          - 'null'
+          description: The modifier of the receipt.
+      additionalProperties: false
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

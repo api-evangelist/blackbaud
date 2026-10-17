@@ -1,0 +1,286 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Payments Directdebitaccounttokens API'
+  description: This API enables users to accept and manage payments via Blackbaud Merchant Services.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/payments
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/payments
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Directdebitaccounttokens
+paths:
+  /v1/directdebitaccounttokens:
+    post:
+      operationId: CreateDirectDebitAccountToken
+      summary: Direct debit account token
+      description: Create a direct debit account token.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DirectDebitAccountTokenAdd'
+            example:
+              direct_debit_account_info:
+                direct_debit_type: us_bank_account
+                account_holder: Blackbaud
+                account_email: Test@test.com
+                us_bank_account:
+                  account_number: '88888888'
+                  account_type: CorporateChecking
+                  routing_number: 091000019
+                mandate_is_variable_amount: false
+                mandate_amount: 0
+        description: Information about the direct debit account token.
+      responses:
+        '200':
+          description: Returned when the operation successfully stores direct debit account information. The response body contains a token to use in future transactions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DirectDebitAccountTokenRead'
+              example:
+                direct_debit_account_token: 2405227f-848d-4f17-979e-88e17298a543
+                mandate_id: 992c159f-dcca-4495-aa33-1025546c7af2
+                mandate_url: https://www.mandate-example.com
+        '400':
+          description: Returned when the request body is not in the appropriate format. The response body contains error details.
+      tags:
+      - Directdebitaccounttokens
+components:
+  schemas:
+    AuBecsDebitDetails:
+      required:
+      - account_number
+      - bsb_number
+      type: object
+      properties:
+        account_number:
+          minLength: 1
+          type: string
+          description: The account number of the bank account.
+        bsb_number:
+          minLength: 1
+          type: string
+          description: Bank-State-Branch number of the bank account.
+      additionalProperties: false
+      description: AU becs bank account details
+    AccountType:
+      enum:
+      - Checking
+      - Savings
+      - CorporateChecking
+      - CorporateSavings
+      type: string
+      description: The account type. Possible values are Checking, Savings, Corporate checking, or Corporate savings.<p>Available values:</p><ul><li><i>Checking</i></li><li><i>Savings</i></li><li><i>CorporateChecking</i></li><li><i>CorporateSavings</i></li></ul>
+    DirectDebitType:
+      enum:
+      - us_bank_account
+      - acss_debit
+      - au_becs_debit
+      - bacs_debit
+      type: string
+      description: Direct debit types<p>Available values:</p><ul><li><i>us_bank_account</i></li><li><i>acss_debit</i></li><li><i>au_becs_debit</i></li><li><i>bacs_debit</i></li></ul>
+    DirectDebitAccountTokenRead:
+      type: object
+      properties:
+        direct_debit_account_token:
+          type:
+          - string
+          - 'null'
+          description: The direct debit account token identifier.
+        mandate_id:
+          type:
+          - string
+          - 'null'
+          description: The ID for the associated mandate.
+        mandate_url:
+          type:
+          - string
+          - 'null'
+          description: The page URL for the associated mandate.
+      additionalProperties: false
+      description: Defines the output values when adding a direct debit account token.
+    DirectDebitAccountTokenAdd:
+      required:
+      - direct_debit_account_info
+      type: object
+      properties:
+        direct_debit_account_info:
+          $ref: '#/components/schemas/DirectDebitAccountInfo'
+        id:
+          type:
+          - string
+          - 'null'
+          description: The unique identifier to be used when storing this direct debit account. This parameter is optional and, if not specified, a unique identifier will be generated for this account.
+        payment_configuration_id:
+          type:
+          - string
+          - 'null'
+          description: 'The unique identifier for the payment configuration to be used when processing this request.
+
+            Payment configurations can be retrieved using the <a href="https://developer.sky.blackbaud.com/docs/services/payments/operations/ListPaymentConfiguration">GET Payment Configuration list endpoint</a>. <b>Note:</b> This property is required for <b>CAD</b>, <b>AUD</b>, or <b>GBP</b> accounts.'
+      additionalProperties: false
+      description: Defines the available values for adding a direct debit account token.
+    UsBankAccountDetails:
+      required:
+      - account_number
+      - account_type
+      - routing_number
+      type: object
+      properties:
+        account_number:
+          minLength: 1
+          type: string
+          description: The account number of the bank account.
+        account_type:
+          $ref: '#/components/schemas/AccountType'
+        routing_number:
+          minLength: 1
+          type: string
+          description: The routing number of the bank account.
+      additionalProperties: false
+      description: US bank account details
+    DirectDebitAccountInfo:
+      required:
+      - account_holder
+      - direct_debit_type
+      type: object
+      properties:
+        direct_debit_type:
+          $ref: '#/components/schemas/DirectDebitType'
+        account_holder:
+          minLength: 1
+          type: string
+          description: The name of the account holder for the direct debit account.
+        account_email:
+          type:
+          - string
+          - 'null'
+          description: The email address of the account holder for the direct debit account. <b>Note:</b> This property is required for <b>CAD</b>, <b>AUD</b>, or <b>GBP</b> accounts.
+          format: email
+        au_becs_debit:
+          $ref: '#/components/schemas/AuBecsDebitDetails'
+        us_bank_account:
+          $ref: '#/components/schemas/UsBankAccountDetails'
+        acss_debit:
+          $ref: '#/components/schemas/AcssDebitDetails'
+        bacs_debit:
+          $ref: '#/components/schemas/BacsDebitDetails'
+        billing_address:
+          $ref: '#/components/schemas/BillingAddressAdd'
+        account_number:
+          type:
+          - string
+          - 'null'
+          description: "[DEPRECATED] The account number used to process this request. This property will be removed in future versions.  \nInclude `direct_debit_type` and the related object, such as `us_bank_account`, to pass in account details."
+        account_type:
+          $ref: '#/components/schemas/AccountType'
+        check_number:
+          type:
+          - string
+          - 'null'
+          description: '[DEPRECATED] The check number used to process this request. This property will be removed in future versions.'
+        routing_number:
+          type:
+          - string
+          - 'null'
+          description: "[DEPRECATED] The routing number used to process this request. This property will be removed in future versions.  \nInclude `direct_debit_type` and the related object, such as `us_bank_account`, to pass in account details."
+        mandate_is_variable_amount:
+          type: boolean
+          description: True if mandate is for a variable amount. <b>Note:</b> This property is required for <b>CAD</b> accounts.
+        mandate_amount:
+          type: integer
+          description: 'The mandate amount. Measured in cents: 1000 = $10.00. <b>Note:</b> This property is required for <b>CAD</b> or <b>GBP</b> accounts.'
+          format: int32
+        recurrence_description:
+          type:
+          - string
+          - 'null'
+          description: The description of the recurring schedule for the mandate. <b>Note:</b> This property is required for <b>CAD</b> or <b>GBP</b> accounts.
+      additionalProperties: false
+      description: The direct debit account information to be used when processing this request.
+    BacsDebitDetails:
+      required:
+      - account_number
+      - sort_code
+      type: object
+      properties:
+        account_number:
+          minLength: 1
+          type: string
+          description: The account number of the bank account.
+        sort_code:
+          minLength: 1
+          type: string
+          description: Sort code of the bank account.
+      additionalProperties: false
+      description: UK bacs bank account details
+    AcssDebitDetails:
+      required:
+      - account_number
+      - institution_number
+      - transit_number
+      type: object
+      properties:
+        account_number:
+          minLength: 1
+          type: string
+          description: The account number of the bank account.
+        institution_number:
+          minLength: 1
+          type: string
+          description: Instituition number of the bank account.
+        transit_number:
+          minLength: 1
+          type: string
+          description: Transit number of the bank account.
+      additionalProperties: false
+      description: Acss bank account details
+    BillingAddressAdd:
+      type: object
+      properties:
+        address_block:
+          type:
+          - string
+          - 'null'
+          description: The account holder’s billing address. <b>Note:</b> This property is required for <b>GBP</b> accounts.
+        city:
+          type:
+          - string
+          - 'null'
+          description: The account holder’s billing city. <b>Note:</b> This property is required for <b>GBP</b> accounts.
+        state:
+          type:
+          - string
+          - 'null'
+          description: The account holder’s billing state - ISO standard.
+        country:
+          type:
+          - string
+          - 'null'
+          description: The account holder’s billing country - ISO standard. <b>Note:</b> This property is required for <b>GBP</b> accounts.
+        post_code:
+          type:
+          - string
+          - 'null'
+          description: The account holder’s billing postal code. <b>Note:</b> This property is required for <b>GBP</b> accounts.
+      additionalProperties: false
+      description: The billing information for the direct debit account.
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

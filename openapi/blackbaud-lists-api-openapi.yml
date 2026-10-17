@@ -1,0 +1,1470 @@
+openapi: 3.2.0
+info:
+  title: Blackbaud Lists API
+  x-refined-note:
+  - x-apievangelist-provenance differs across the merged source definitions and was not carried
+  version: '1.0'
+  description: 'Operations tagged Lists across 4 of this provider''s published API definitions: blackbaud-education-core-api-openapi.yml, blackbaud-list-api-openapi.yml, blackbaud-list-management-api-openapi.yml, blackbaud-school-api-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.sky.blackbaud.com/afe-edcor
+- url: https://api.sky.blackbaud.com/list
+- url: https://api.sky.blackbaud.com/lst-lstmg
+- url: https://api.sky.blackbaud.com/school
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Lists
+paths:
+  /v1/lists:
+    get:
+      operationId: V1ListsGet
+      summary: List type list (Get) (PREVIEW)
+      description: 'Returns the list of saved lists, including basic, advanced, and SKY lists.
+
+
+        Requires at least one of the following roles in the Education Management system:
+
+
+        Any role
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: type
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Limits results to lists of the specified type. Available values: Advanced, Basic, Sky'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListReadCollection'
+              example:
+                count: 3
+                value:
+                - id: 1
+                  name: My Student List
+                  type: Advanced
+                  category: Student
+                  description: A list of all active students
+                  created_by: John Smith
+                  created: '2022-08-31T03:30:00Z'
+                  last_modified: '2022-09-15T10:00:00Z'
+                - id: 2
+                  name: Faculty Directory
+                  type: Sky
+                  category: Faculty
+                  description: All faculty members
+                  created_by: Jane Doe
+                  created: '2023-01-10T09:00:00Z'
+                  last_modified: '2023-02-20T02:30:00Z'
+                - id: 3
+                  name: Course Roster
+                  type: Sky
+                  category: Course
+                  description: All courses
+                  created_by: Jane Doe
+                  created: '2023-03-01T09:00:00Z'
+                  last_modified: '2023-03-15T02:30:00Z'
+      tags:
+      - Lists
+    servers:
+    - url: https://api.sky.blackbaud.com/afe-edcor
+  /v1/lists/jobs:
+    post:
+      operationId: V1ListsJobsPost
+      summary: List execution job (Create) (PREVIEW)
+      description: 'Returns the Job ID of the created job. Accepts Basic, Advanced, and Sky list types.
+
+        `list_id` is required for Basic and Advanced lists, optional for Sky lists.`category` is required for Sky lists when `list_id` is not specified.When both `list_id` and `category` are supplied for a Sky list, `list_id` takes precedence.
+
+        Requires at least one of the following roles in the Education Management system:
+
+
+        Only the user that created the job can can access a job''s status
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ListJobRequest'
+            example:
+              list_type: Sky
+              category: Faculty List
+              output_format: JSON
+              results_file_name: my_faculty_list
+        description: The request list job object
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1ListsJobsPost200ApplicationJsonResponse'
+              example: string
+      tags:
+      - Lists
+    get:
+      operationId: V1ListsJobsGet
+      summary: List execution job list (Get) (PREVIEW)
+      description: 'Returns the jobs executed by the user over the last 7 days.
+
+
+        Requires at least one of the following roles in the Education Management system:
+
+
+        Any role – only jobs created by the user are returned
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListExecutionJob'
+              example:
+              - job_id: 569f728a-7094-4b12-9645-67da29c91e57
+                status: Completed
+                name: Official Notes List
+                type: Basic
+                created_by: A4B47D81-CF6C-4F96-9F49-9A9849EA172A
+                date_created: '2025-10-15T12:00:00Z'
+                date_completed: '2025-10-16T12:00:00Z'
+                total_processing_time: 0:00:02:20
+                results_name: t-vhCf7Fe8bESAr8sjbUwmSg/list-results/569f728a-7094-4b12-9645-67da29c91e57.json
+                output_format: JSON
+              - job_id: 569f728a-7094-4b12-9645-67da29c91e57
+                status: Completed
+                name: Official Notes List
+                type: Basic
+                created_by: A4B47D81-CF6C-4F96-9F49-9A9849EA172A
+                date_created: '2025-10-15T12:00:00Z'
+                date_completed: '2025-10-16T12:00:00Z'
+                total_processing_time: 0:00:02:20
+                results_name: t-vhCf7Fe8bESAr8sjbUwmSg/list-results/569f728a-7094-4b12-9645-67da29c91e57.json
+                output_format: JSON
+              - job_id: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+                status: Completed
+                name: Faculty Directory
+                type: Sky
+                created_by: A4B47D81-CF6C-4F96-9F49-9A9849EA172A
+                date_created: '2025-11-01T12:00:00Z'
+                date_completed: '2025-11-01T12:01:00Z'
+                total_processing_time: 0:00:00:45
+                results_name: t-vhCf7Fe8bESAr8sjbUwmSg/list-results/a1b2c3d4-e5f6-7890-abcd-ef1234567890.json
+                output_format: JSON
+      tags:
+      - Lists
+    servers:
+    - url: https://api.sky.blackbaud.com/afe-edcor
+  /v1/lists/jobs/{jobId}:
+    get:
+      operationId: V1ListsJobsByJobIdGet
+      summary: List execution job (Get) (PREVIEW)
+      description: 'Returns the status of a list job and the SAS URI location for accessing the results for completed jobs. Only the user that started the job can access its status and results.
+
+
+        The SAS URI for the file location expires after 15 minutes.
+
+
+        Requires at least one of the following roles in the Education Management system:
+
+
+        Only the user that created the job can can access a job’s status
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: jobId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The ID of the list execution job
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListExecutionJobStatus'
+              example:
+                id: 02c8fb52-a126-48b0-bd44-526c87aba88b
+                status: Pending
+                sas_uri: https://example.com/123.json
+                row_count: 1
+                list_id: 123
+                list_type: Basic
+                output_format: JSON
+                error_message: pending
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: https://tools.ietf.org/html/rfc7231#section-6.5.3
+                title: Forbidden
+                status: 403
+                detail: You do not have permission to access this job.
+      tags:
+      - Lists
+    servers:
+    - url: https://api.sky.blackbaud.com/afe-edcor
+  /lists:
+    get:
+      operationId: GetLists
+      summary: Get a list of lists
+      description: Returns a list of lists for the given list type
+      parameters:
+      - name: list_type
+        in: query
+        required: true
+        schema:
+          type: string
+          enum:
+          - Constituent
+          - Gift
+          - Action
+          - Opportunity
+        description: The type of list to return. Currently supports 'Constituent', 'Gift', 'Action', 'Opportunity'.
+      responses:
+        '200':
+          description: Returned when the operation succeeds.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiCollectionOfList'
+              example:
+                count: 3
+                value:
+                - id: 455bea77-598a-49d1-8945-09f70e93af56
+                  name: Board Members
+                  description: The list of active board members
+                  record_count: 8
+                  date_modified: '2019-10-09T13:48:08.5767857Z'
+                  last_modified_by_user_name: MarkAd
+                  last_modified_by_user_id: b878e39b-89f5-43e8-a42a-204ffe9cac21
+                  is_public: false
+                - id: caebcd03-249b-4677-b54d-8c936956029a
+                  name: High wealth donors
+                  description: Constituents with a high wealth rating
+                  record_count: 82
+                  date_modified: '2018-11-12T12:12:51.3869213Z'
+                  last_modified_by_user_name: AdrianDe
+                  last_modified_by_user_id: 5491ca28-723e-4dcc-8150-d8d41c083537
+                  is_public: false
+                - id: 5fe12c32-3c90-4fcf-9990-f47b906837b5
+                  name: Recent givers
+                  description: List of constituents with recent gifts
+                  record_count: 985
+                  date_modified: '2019-10-01T15:28:09.4767233Z'
+                  last_modified_by_user_name: SarahKe
+                  last_modified_by_user_id: afad5b0b-c49d-49e7-bbc0-f95a4a390624
+                  is_public: true
+        '400':
+          description: Returned when the specified request parameters are not in the appropriate format.
+        '403':
+          description: Returned when the user does not have permission to view lists.
+      tags:
+      - Lists
+    post:
+      operationId: CreateList
+      summary: Creates a new list (PREVIEW)
+      description: 'Saves a new list
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SaveListRequest'
+            example:
+              list_type: vendor
+              name: Active vendors
+              definition:
+                filter:
+                  filter_items:
+                  - field:
+                      value:
+                        value: active
+                        label: Active
+                      field_id: status
+                      operator: Equal
+                output:
+                  items:
+                  - field_id: vendor_display_name
+                  - field_id: status
+                sort:
+                  sort_fields:
+                  - field_id: vendor_display_name
+                    sort_order: asc
+              record_count: 175
+              description: Vendors with an active status
+        description: The list.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListModel'
+              example:
+                id: 71B4ADAB-235D-4FB9-97FB-22CB80737E1C
+                list_type: vendor
+                name: Active vendors
+                public_name: Active vendors
+                definition:
+                  filter:
+                    filter_items:
+                    - field:
+                        value:
+                          value: active
+                          label: Active
+                        field_id: status
+                        operator: Equal
+                  output:
+                    items:
+                    - field_id: vendor_display_name
+                    - field_id: status
+                  sort:
+                    sort_fields:
+                    - field_id: vendor_display_name
+                      sort_order: asc
+                created_by_user_id: 6B44131E-2935-4C0B-A7FB-5D4FA9729F50
+                created_date: '2022-04-12T12:00:00Z'
+                last_changed_by_user_id: 6B44131E-2935-4C0B-A7FB-5D4FA9729F50
+                last_changed_by_user_name: Michael Simpson
+                last_changed_date: '2022-04-12T12:00:00Z'
+                record_count: 175
+                description: Vendors with an active status
+                is_owner: true
+      tags:
+      - Lists
+    servers:
+    - url: https://api.sky.blackbaud.com/list
+  /lists/{list_id}:
+    delete:
+      operationId: DeleteList
+      summary: Deletes an existing list (PREVIEW)
+      description: 'Deletes an existing, saved list
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: list_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The list identifier.
+      responses:
+        '200':
+          description: OK
+      tags:
+      - Lists
+    patch:
+      operationId: EditList
+      summary: Edits an existing list (PREVIEW)
+      description: 'Edits an existing, saved list
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: list_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The list identifier.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditListRequest'
+            example:
+              name: Active vendors
+              definition:
+                filter:
+                  filter_items:
+                  - field:
+                      value:
+                        value: active
+                        label: Active
+                      field_id: status
+                      operator: Equal
+                output:
+                  items:
+                  - field_id: vendor_display_name
+                  - field_id: status
+                sort:
+                  sort_fields:
+                  - field_id: vendor_display_name
+                    sort_order: asc
+              record_count: 175
+              description: Vendors with an active status
+              if_match_last_changed_date: '1999-12-31T12:00:00Z'
+        description: The updated list definition.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListModel'
+              example:
+                id: 71B4ADAB-235D-4FB9-97FB-22CB80737E1C
+                list_type: vendor
+                name: Active vendors
+                public_name: Active vendors
+                definition:
+                  filter:
+                    filter_items:
+                    - field:
+                        value:
+                          value: active
+                          label: Active
+                        field_id: status
+                        operator: Equal
+                  output:
+                    items:
+                    - field_id: vendor_display_name
+                    - field_id: status
+                  sort:
+                    sort_fields:
+                    - field_id: vendor_display_name
+                      sort_order: asc
+                created_by_user_id: 6B44131E-2935-4C0B-A7FB-5D4FA9729F50
+                created_date: '2022-04-12T12:00:00Z'
+                last_changed_by_user_id: 6B44131E-2935-4C0B-A7FB-5D4FA9729F50
+                last_changed_by_user_name: Michael Simpson
+                last_changed_date: '2022-04-12T12:00:00Z'
+                record_count: 175
+                description: Vendors with an active status
+                is_owner: true
+      tags:
+      - Lists
+    get:
+      operationId: GetList
+      summary: Gets a list (PREVIEW)
+      description: 'Returns a saved list
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: list_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The list identifier.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListModel'
+              example:
+                id: 71B4ADAB-235D-4FB9-97FB-22CB80737E1C
+                list_type: vendor
+                name: Active vendors
+                public_name: Active vendors
+                definition:
+                  filter:
+                    filter_items:
+                    - field:
+                        value:
+                          value: active
+                          label: Active
+                        field_id: status
+                        operator: Equal
+                  output:
+                    items:
+                    - field_id: vendor_display_name
+                    - field_id: status
+                  sort:
+                    sort_fields:
+                    - field_id: vendor_display_name
+                      sort_order: asc
+                created_by_user_id: 6B44131E-2935-4C0B-A7FB-5D4FA9729F50
+                created_date: '2022-04-12T12:00:00Z'
+                last_changed_by_user_id: 6B44131E-2935-4C0B-A7FB-5D4FA9729F50
+                last_changed_by_user_name: Michael Simpson
+                last_changed_date: '2022-04-12T12:00:00Z'
+                record_count: 175
+                description: Vendors with an active status
+                is_owner: true
+      tags:
+      - Lists
+    servers:
+    - url: https://api.sky.blackbaud.com/lst-lstmg
+  /v1/lists/advanced/{list_id}:
+    get:
+      operationId: V1ListsAdvancedByList_idGet
+      summary: List Single
+      description: 'Returns a collection of results from a basic or advanced list.
+
+        Note: The requested list must have access permissions enabled for a role listed below or the user requesting the list needs read permission to that list.
+
+
+        Requires one of the following roles in the Education Management system:
+
+
+        Page Manager
+
+
+        Content Editor
+
+
+        Teacher
+
+
+        Coach
+
+
+        Community Group Manager
+
+
+        Mentor Manager
+
+
+        Alumni Group Manager
+
+
+        Athletic Group Manager
+
+
+        Academic Group Manager
+
+
+        System Group Manager
+
+
+        Content Manager
+
+
+        Community Group Owner
+
+
+        Dorm Group Manager
+
+
+        Activity Group Manager
+
+
+        Advisory Group Manager
+
+
+        Advisor
+
+
+        Dorm Supervisor
+
+
+        Activity Leader
+
+
+        Pending Teacher
+
+
+        Pending Advisor
+
+
+        Pending Dorm Supervisor
+
+
+        Pending Activity Leader
+
+
+        Platform Manager
+
+
+        SkyApi Data Sync
+
+
+        Rate Limiting:
+
+
+        Any successful calls made to the GET List Single endpoint will have no restrictions
+
+
+        Any call resulting in an error to the GET List Single endpoint will trigger a temporary time-out on the Environment and BBID of the calls origin. This time-out/hold will be for 60 seconds. After that calls may resume.
+
+
+        If calls are made to the endpoint while the time-out is in place the response back will be Status 429 too many requests and an error of "Limited by error rate" will appear.'
+      parameters:
+      - name: list_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The ID of the list. To learn how to find the list ID, see <a href="https://kb.blackbaud.com/articles/Article/108336" target="_blank">KB article 108336</a>.
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: '1'
+        description: The number of the page to return. Defaults to <b>1</b>.
+      - name: page_size
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: '1000'
+        description: Number of rows to return per page. Default is 1000. Maximum allowed is 1000.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListResult'
+              example:
+                count: 0
+                page: 0
+                results:
+                  rows:
+                  - columns:
+                    - name: First Name
+                      value: Ian
+                    - name: Last Name
+                      value: Smith
+                    - name: Middle Name
+                  - columns:
+                    - name: First Name
+                      value: Peter
+                    - name: Last Name
+                      value: Smith
+                    - name: Middle Name
+                      value: John
+      tags:
+      - Lists
+    servers:
+    - url: https://api.sky.blackbaud.com/school
+components:
+  schemas:
+    OutputFormat:
+      title: OutputFormat
+      enum:
+      - JSON
+      - CSV
+      type: string
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".
+        title:
+          type:
+          - string
+          - 'null'
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type:
+          - integer
+          - 'null'
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: {}
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+    ListRead:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The id of the list
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the list
+        type:
+          type:
+          - string
+          - 'null'
+          description: 'Whether list is an advanced list, basic list, or a SKY list. Available values: Advanced, Basic, Sky'
+          example: Advanced
+        category:
+          type:
+          - string
+          - 'null'
+          description: The category of the list. For advanced/basic lists, returns the list category. For SKY lists, returns the type of SKY list (e.g., Student, User, Faculty, Candidate, Course, Class, Household, Contract, Course Request, Day Attendance, Section Attendance, Fees, Transaction).
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the list
+        created_by:
+          type:
+          - string
+          - 'null'
+          description: The name of the user that created the list
+        created:
+          type:
+          - string
+          - 'null'
+          description: The timestamp when the list was created
+          format: date-time
+          example: '2022-08-31T03:30:00Z'
+        last_modified_by:
+          type:
+          - string
+          - 'null'
+          description: The name of the user that last modified the list
+        last_modified:
+          type:
+          - string
+          - 'null'
+          description: The timestamp when the list was last modified
+          format: date-time
+          example: '2022-08-31T03:30:00Z'
+      additionalProperties: false
+      description: Represents a saved list accessible to the user
+    ListJobRequest:
+      required:
+      - list_type
+      type: object
+      properties:
+        list_id:
+          type:
+          - integer
+          - 'null'
+          description: List ID associated with the list job. Required for Basic and Advanced list types. Optional for Sky list type (if omitted for Sky, the default list for the specified category is used).
+          format: int32
+        list_type:
+          minLength: 1
+          type: string
+          description: 'The type of list being executed. Accepted values: "Basic", "Advanced", "Sky".'
+        category:
+          type:
+          - string
+          - 'null'
+          description: The Sky list category name (e.g., 'Student List', 'Faculty List', 'Course List', 'Household List'). Required when list_type is 'Sky' and list_id is not specified, so the system knows which default list/category to run the job for. Values come from the list of lists endpoint.
+        output_format:
+          $ref: '#/components/schemas/OutputFormat'
+        results_file_name:
+          type:
+          - string
+          - 'null'
+          description: 'Optional custom filename for the results file
+
+            Must be a valid filename with no path information'
+      additionalProperties: false
+      description: Request model for creating a list execution job.
+    ListReadCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of lists returned
+          format: int32
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ListRead'
+          description: The list of saved lists
+      additionalProperties: false
+      description: A collection of saved lists
+    ListExecutionJobStatus:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: The ID of the list execution job
+        status:
+          type:
+          - string
+          - 'null'
+          description: "The status of the job \n Members:\n Pending - The job has been queued but has not yet started running.\n Running - The job is running.\n Completed - The job successfully completed.\n Disallowed -  User cannot access selected list.\n        Failed - The job failed.\n Cancelling - Job cancellation has been requested.The job may still complete successfully from this state.\n Cancelled - The job was cancelled. \n Expired - The file has expired\nThrottled - The job has been throttled.The job will run when space is available."
+        sas_uri:
+          type:
+          - string
+          - 'null'
+          description: SAS URI for accessing the list results. The URI functions as a secure credential to access the list results, and thus should be considered a secret unique value. Sharing this URI with anyone is strongly discouraged, and as a best-practice, avoid persisting the URI beyond processing the job result. The URI will expire after 15 minutes.
+        row_count:
+          type:
+          - integer
+          - 'null'
+          description: The number of rows returned for the list
+          format: int64
+        date_created:
+          type:
+          - string
+          - 'null'
+          description: Timestamp when the job was created
+          format: date-time
+        list_id:
+          type:
+          - integer
+          - 'null'
+          description: List ID associated with the job
+          format: int32
+        list_type:
+          type:
+          - string
+          - 'null'
+          description: Type of list being executed
+        output_format:
+          type:
+          - string
+          - 'null'
+          description: Output format of the job results
+        error_message:
+          type:
+          - string
+          - 'null'
+          description: Error message if the job failed
+        category:
+          type:
+          - integer
+          - 'null'
+          description: Sky list category identifier. Only present for Sky list type jobs.
+          format: int32
+      additionalProperties: false
+      description: Response model for list job operations
+    ListExecutionJob:
+      type: object
+      properties:
+        job_id:
+          type:
+          - string
+          - 'null'
+          description: The ID of the list execution job
+        status:
+          type:
+          - string
+          - 'null'
+          description: "The status of the job. \n Members:\n Pending - The job has been queued but has not yet started running.\nRunning - The job is running.\n Completed - The job successfully completed.     \nFailed - The job failed.\nCancelling - Job cancellation has been requested.The job may still complete successfully from this state.       \nCancelled - The job was cancelled.\nThrottled - The job has been throttled.The job will run when space is available."
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the list
+        type:
+          type:
+          - string
+          - 'null'
+          description: 'The list type. Available values: Basic, Advanced, Sky'
+        created_by:
+          type:
+          - string
+          - 'null'
+          description: The name of the user that created the list
+        date_created:
+          type:
+          - string
+          - 'null'
+          description: The date the job was created
+          format: date-time
+        date_completed:
+          type:
+          - string
+          - 'null'
+          description: The date the job was completed
+          format: date-time
+        total_processing_time:
+          type:
+          - string
+          - 'null'
+          description: The total processing time of the job
+        results_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the results
+        output_format:
+          type:
+          - string
+          - 'null'
+          description: Output format of the job results
+      additionalProperties: false
+      description: ListExecutionJob object model
+    V1ListsJobsPost200ApplicationJsonResponse:
+      type: string
+      x-apim-inline: true
+    ApiList:
+      description: Represents the List entity
+      type: object
+      properties:
+        id:
+          description: The immutable system record ID for the list
+          type: string
+        name:
+          description: The name of the list
+          type: string
+        description:
+          description: The description of the list
+          type: string
+        record_count:
+          format: int32
+          description: The total number of records defined by this list based on the last time this list was saved
+          type: integer
+        date_modified:
+          format: date-time
+          description: 'The date this list was last modified. Uses <a href="https://tools.ietf.org/html/rfc3339">ISO-8601 format: </a><i>1969-11-21T10:29:43</i>'
+          type: string
+          x-supports-datetime-offset: true
+        last_modified_by_user_name:
+          description: The name of the user that last modified the list
+          type: string
+        last_modified_by_user_id:
+          description: The ID of the user that last modified the list
+          type: string
+        is_public:
+          description: Indicates whether this is a public or private list.
+          type: boolean
+      x-display-name: List
+      x-display-id: List
+    ApiCollectionOfList:
+      description: Represents the list of lists entity
+      type: object
+      properties:
+        count:
+          format: int32
+          description: The total number of lists in the set
+          type: integer
+        value:
+          description: The set of lists
+          type: array
+          items:
+            $ref: '#/components/schemas/ApiList'
+      x-display-name: Lists
+      x-display-id: Lists
+    SelectedFilter:
+      type: object
+      properties:
+        field_id:
+          type:
+          - string
+          - 'null'
+          description: The identifier of the field the filter applies to
+      additionalProperties: false
+      description: Represents a filter that is present but has not been applied
+    OutputItem:
+      type: object
+      properties:
+        field_id:
+          type:
+          - string
+          - 'null'
+          description: Filter information for a specific field
+      additionalProperties: false
+      description: Represents an individual item in the output of a query execution.
+    SaveListRequest:
+      required:
+      - definition
+      - list_type
+      - name
+      type: object
+      properties:
+        list_id:
+          type:
+          - string
+          - 'null'
+        list_type:
+          type: string
+        name:
+          type: string
+        definition:
+          $ref: '#/components/schemas/ListDefinition'
+        permissions:
+          title: ListPermission
+          enum:
+          - OnlyOwnerCanAccess
+          - OthersCanView
+          - OthersCanViewAndEdit
+          type:
+          - string
+          - 'null'
+        record_count:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        description:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    EditListRequest:
+      type: object
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+        definition:
+          $ref: '#/components/schemas/ListDefinition'
+        permissions:
+          title: ListPermission
+          enum:
+          - OnlyOwnerCanAccess
+          - OthersCanView
+          - OthersCanViewAndEdit
+          type:
+          - string
+          - 'null'
+        record_count:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        description:
+          type:
+          - string
+          - 'null'
+        if_match_last_changed_date:
+          type:
+          - string
+          - 'null'
+          format: date-time
+      additionalProperties: false
+    ListDefinition:
+      type: object
+      properties:
+        filter:
+          $ref: '#/components/schemas/Filter'
+        output:
+          $ref: '#/components/schemas/Output'
+        sort:
+          $ref: '#/components/schemas/Sort'
+      additionalProperties: false
+      description: Represents a list definition
+    FilterGrouping:
+      type: object
+      properties:
+        grouping_id:
+          type:
+          - string
+          - 'null'
+          description: The identifier of the grouping the filter applies to
+        items:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/FilterItem'
+          description: The set of filter items in the grouping
+        operator:
+          title: FilterGroupingOperator
+          enum:
+          - None
+          - AllOf
+          - OneOf
+          type: string
+          description: The operator for how the items in the group relate
+      additionalProperties: false
+      description: Represents a group of filter items and how they relate
+    ListModel:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+        list_type:
+          type:
+          - string
+          - 'null'
+        name:
+          type:
+          - string
+          - 'null'
+        public_name:
+          type:
+          - string
+          - 'null'
+        definition:
+          $ref: '#/components/schemas/ListDefinition'
+        permissions:
+          title: ListPermission
+          enum:
+          - OnlyOwnerCanAccess
+          - OthersCanView
+          - OthersCanViewAndEdit
+          type:
+          - string
+          - 'null'
+        created_by_user_id:
+          type:
+          - string
+          - 'null'
+          x-bb-suppressions:
+          - parameter_property_name
+        created_by_user_name:
+          type:
+          - string
+          - 'null'
+        created_date:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          x-bb-suppressions:
+          - parameter_property_name
+        last_changed_by_user_id:
+          type:
+          - string
+          - 'null'
+        last_changed_by_user_name:
+          type:
+          - string
+          - 'null'
+        last_changed_date:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        record_count:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        record_count_as_of_date:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        description:
+          type:
+          - string
+          - 'null'
+        is_owner:
+          type: boolean
+          x-bb-suppressions:
+          - parameter_property_name
+      additionalProperties: false
+    FilterField:
+      type: object
+      properties:
+        value:
+          $ref: '#/components/schemas/FilterFieldValue'
+        field_id:
+          type:
+          - string
+          - 'null'
+          description: The identifier of the field the filter applies to
+        operator:
+          title: FilterOperator
+          enum:
+          - None
+          - Equal
+          - NotEqual
+          - GreaterThan
+          - LessThan
+          - GreaterThanOrEqual
+          - LessThanOrEqual
+          - OneOf
+          - NotOneOf
+          - Blank
+          - NotBlank
+          - Between
+          - StartsWith
+          - DoesNotStartWith
+          - Contains
+          - DoesNotContain
+          - AllOf
+          type: string
+          description: The operator for the filter
+        is_aggregate:
+          type:
+          - boolean
+          - 'null'
+          description: Determines if the filter is an aggregate filter
+      additionalProperties: false
+      description: Represents filter information for a specific field
+    SortField:
+      type: object
+      properties:
+        field_id:
+          type:
+          - string
+          - 'null'
+          description: The field ID to be sorted on
+        sort_order:
+          title: SortOrder
+          enum:
+          - asc
+          - desc
+          type: string
+          description: The sort order
+      additionalProperties: false
+      description: Defines a sort field
+    CollectionFilterField:
+      type: object
+      properties:
+        field_id:
+          type:
+          - string
+          - 'null'
+          description: The identifier of the field the filter applies to
+        filter_fields:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/FilterField'
+          description: The set of filters to be applied to items in the collection.  An indidivudal item must meet the entire set of filter criteria.
+      additionalProperties: false
+      description: Represents filter information for a collection.  This is used for filtering to records that have a single item in a collection that match a set of filters.
+    Output:
+      type: object
+      properties:
+        items:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/OutputItem'
+          description: The items to include in the output
+      additionalProperties: false
+      description: Output information for a query execution
+    Sort:
+      type: object
+      properties:
+        sort_fields:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SortField'
+          description: Gets or sets the sort fields for a list request
+      additionalProperties: false
+      description: 'Describes how to sort a list request
+
+        ///'
+    FilterItem:
+      type: object
+      properties:
+        field:
+          $ref: '#/components/schemas/FilterField'
+        grouping:
+          $ref: '#/components/schemas/FilterGrouping'
+        collection_field:
+          $ref: '#/components/schemas/CollectionFilterField'
+      additionalProperties: false
+      description: 'Represents an individual item in a group of filter items.  This item can contain filter information for a specific
+
+        field or contain another group of filter items.  It cannot contain both.'
+    FilterFieldValue:
+      type: object
+      properties:
+        value:
+          description: The value for the filter
+        label:
+          type:
+          - string
+          - 'null'
+          description: An optional label associated with the Blackbaud.ListPlatform.Contracts.FilterFieldValue
+      additionalProperties: false
+      description: Represents the value for a filter field
+    Filter:
+      type: object
+      properties:
+        filter_items:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/FilterItem'
+          description: The set of filter items in the filter
+        selected_filters:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SelectedFilter'
+          description: The set of selected filter items in the filter
+        time_zone_offset_in_minutes:
+          type:
+          - integer
+          - 'null'
+          description: Gets or sets the time zone offset to support dynamic date filtering
+          format: int32
+        first_day_of_week:
+          title: FirstDayOfWeekType
+          enum:
+          - Sunday
+          - Monday
+          type:
+          - string
+          - 'null'
+          description: Gets or sets the first day of week when using certain date filters.
+      additionalProperties: false
+      description: Filter information for a query or report execution
+    ListRead_2:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The id of the list
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the list
+        type:
+          type:
+          - string
+          - 'null'
+          description: The list type, either Basic or Advanced
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the list
+        category:
+          type:
+          - string
+          - 'null'
+          description: The category of the list
+        created_by:
+          type:
+          - string
+          - 'null'
+          description: The name of the user who created the list
+        created:
+          type:
+          - string
+          - 'null'
+          description: The date the list was created on
+          format: date-time
+        last_modified:
+          type:
+          - string
+          - 'null'
+          description: The date the list was last modified
+          format: date-time
+      additionalProperties: false
+      description: ListRead Class
+    ListReadCollection_2:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items in the collection
+          format: int32
+          readOnly: true
+        next_link:
+          type:
+          - string
+          - 'null'
+          description: For paginated responses, the URI for the next page of results
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ListRead_2'
+          description: The set of items included in the response. This may be a subset of the items in the collection
+      additionalProperties: false
+      description: A Collection
+    List:
+      type: object
+      properties:
+        rows:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Row'
+          description: The Rows of the list
+      additionalProperties: false
+      description: List Model
+    ListResult:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of records in the page
+          format: int32
+        page:
+          type: integer
+          description: The number of the page for the current result set
+          format: int32
+        results:
+          $ref: '#/components/schemas/List'
+      additionalProperties: false
+      description: List Collection
+    Row:
+      type: object
+      properties:
+        columns:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Field'
+          description: The fields of the list
+      additionalProperties: false
+      description: Row Model
+    Field:
+      type: object
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the field
+        value:
+          type:
+          - string
+          - 'null'
+          description: The value of the field
+      additionalProperties: false
+      description: List Field
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+x-refined-from:
+- blackbaud-education-core-api-openapi.yml
+- blackbaud-list-api-openapi.yml
+- blackbaud-list-management-api-openapi.yml
+- blackbaud-school-api-openapi.yml

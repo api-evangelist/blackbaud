@@ -1,0 +1,123 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Constituent Phonescollection API'
+  description: This API manages constituent information and related entities such as addresses, phones, emails, and notes.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/56b76470069a0509c8f1c5b3
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/constituent/v1
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Phonescollection
+paths:
+  /phonescollection:
+    post:
+      operationId: CreateConstituentPhoneCollection
+      summary: Phone Collection (Create)
+      description: Creates a collection of constituent phones.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PhoneAddCollection'
+            example:
+              constituent_id: '280'
+              phones:
+              - do_not_call: false
+                inactive: false
+                number: 520-847-2445
+                primary: true
+                type: Home
+              - do_not_call: false
+                inactive: false
+                number: 520-847-9876
+                primary: false
+                type: Business
+        description: An object that represents the phones to create.
+      responses:
+        '200':
+          description: Returned when the operation successfully creates a phone. The response body contains the ID of the new phone.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse'
+              example:
+                id: '1281'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+        '403':
+          description: Returned when the user does not have permission to create the phone.
+        '404':
+          description: Returned when the specified constituent is not found.
+      tags:
+      - Phonescollection
+components:
+  schemas:
+    PostResponse:
+      description: Defines the shape of a post response object.
+      type: object
+      properties:
+        id:
+          description: The newly created ID
+          type: string
+      x-hidden: true
+    PhoneAddCollectionPhone:
+      description: Phones store information about constituent phone numbers and where to call individuals and organizations.
+      required:
+      - number
+      - type
+      type: object
+      properties:
+        do_not_call:
+          description: Indicates whether the constituent requests not to be contacted at this number.
+          type: boolean
+        inactive:
+          description: Indicates whether the phone is inactive.
+          type: boolean
+        number:
+          description: The phone number.
+          type: string
+        primary:
+          description: Indicates whether this is the constituent's primary phone.
+          type: boolean
+        type:
+          description: The phone type. Available values are the entries in the <a href="https://developer.sky.blackbaud.com/docs/services/56b76470069a0509c8f1c5b3/operations/ListPhoneTypes"><b>Phone Types</b></a> table.
+          type: string
+      x-hidden: true
+      x-display-name: Create phone
+      x-display-id: CreatePhone_01
+    PhoneAddCollection:
+      description: Phones store information about constituent phone numbers and where to call individuals and organizations.
+      required:
+      - constituent_id
+      - phones
+      type: object
+      properties:
+        constituent_id:
+          description: The immutable system record ID of the constituent associated with the phone.
+          type: string
+        phones:
+          description: Collection of phones to add
+          type: array
+          items:
+            $ref: '#/components/schemas/PhoneAddCollectionPhone'
+      x-hidden: true
+      x-display-name: Create phone collection
+      x-display-id: CreatePhoneCollection
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

@@ -1,0 +1,597 @@
+openapi: 3.2.0
+info:
+  title: Blackbaud Relationshipjobsinfo API
+  version: '1.0'
+  x-refined-note:
+  - x-apievangelist-provenance differs across the merged source definitions and was not carried
+  description: 'Operations tagged Relationshipjobsinfo across 2 of this provider''s published API definitions: blackbaud-altru-constituent-api-openapi.yml, blackbaud-crm-constituent-api-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.sky.blackbaud.com/alt-conmg
+- url: https://api.sky.blackbaud.com/crm-conmg
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Relationshipjobsinfo
+paths:
+  /relationshipjobsinfo:
+    post:
+      operationId: CreateRelationshipJobInfo
+      summary: Create a Relationship Job Info
+      description: This operation is used to add relationship job inoperationation.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewRelationshipJobInfo'
+            example:
+              context_id: ''
+              relationship: ''
+              job_title: ''
+              career_level: ''
+              job_category: ''
+              start_date: ''
+              end_date: ''
+              job_department: ''
+              job_division: ''
+              job_schedule: ''
+              job_responsibility: ''
+              private_record: false
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully creates the resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to create the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Relationshipjobsinfo
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-conmg
+  /relationshipjobsinfo/{relationship_job_information_id}:
+    delete:
+      operationId: DeleteRelationshipJobInfo
+      summary: Delete a Relationship Job Info
+      description: Delete relationship job inoperationation
+      parameters:
+      - name: relationship_job_information_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The relationship job information id
+      responses:
+        '200':
+          description: Returned when the operation successfully deletes the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to delete the resource.
+      tags:
+      - Relationshipjobsinfo
+    patch:
+      operationId: EditRelationshipJobInfo
+      summary: Edit a Relationship Job Info
+      description: This operation is used to edit relationship job inoperationation.
+      parameters:
+      - name: relationship_job_information_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The relationship job information id.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditRelationshipJobInfo'
+            example:
+              job_title: Dietician
+              career_level: executive
+              job_category: ''
+              start_date: '2022-12-15T12:00:00Z'
+              end_date: '2026-12-25T12:00:00Z'
+              job_department: ''
+              job_division: ''
+              job_schedule: {}
+              job_responsibility: ''
+              private_record: 'false'
+              sync_end_date_to_relationship: 'true'
+              last_job: 'true'
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully edits the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to edit the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Relationshipjobsinfo
+    get:
+      operationId: GetRelationshipJobInfo
+      summary: Get a Relationship Job Info
+      description: This operation is used to edit relationship job inoperationation.
+      parameters:
+      - name: relationship_job_information_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The relationship job information id.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the specified resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RelationshipJobInfo'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to get the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Relationshipjobsinfo
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-conmg
+components:
+  schemas:
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type: integer
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type: string
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: false
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-display-name: Problem details
+      x-display-id: ProblemDetails
+    EditRelationshipJobInfo:
+      type: object
+      properties:
+        job_title:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The job title.
+        career_level:
+          type: string
+          description: The career level. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/careerlevelcode/entries
+        job_category:
+          type: string
+          description: The category. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/jobcategorycode/entries
+        start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        end_date:
+          type: string
+          description: 'The end date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        job_department:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The department.
+        job_division:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The division.
+        job_schedule:
+          type: string
+          description: The schedule. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/jobschedulecode/entries
+        job_responsibility:
+          maxLength: 250
+          minLength: 0
+          type: string
+          description: The responsibilities.
+        private_record:
+          type: boolean
+          description: Indicates whether is private.
+      additionalProperties: false
+      description: EditRelationshipJobInfo
+      example:
+        job_title: Dietician
+        career_level: executive
+        job_category: ''
+        start_date: '2022-12-15T12:00:00Z'
+        end_date: '2026-12-25T12:00:00Z'
+        job_department: ''
+        job_division: ''
+        job_schedule: {}
+        job_responsibility: ''
+        private_record: 'false'
+        sync_end_date_to_relationship: 'true'
+        last_job: 'true'
+      x-display-name: Relationship Job Info Edit Data Form
+      x-display-id: Relationship Job Info Edit Data Form
+    NewRelationshipJobInfo:
+      required:
+      - context_id
+      - relationship
+      type: object
+      properties:
+        context_id:
+          type: string
+          description: The context ID.
+        relationship:
+          type: string
+          description: The relationship. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/62083cb6-2a32-4d1d-aace-0ad288292ab7?parameters=constituentid,{context_id}.
+        job_title:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The job title.
+        career_level:
+          type: string
+          description: The career level. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/careerlevelcode/entries
+        job_category:
+          type: string
+          description: The category. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/jobcategorycode/entries
+        start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        end_date:
+          type: string
+          description: 'The end date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        job_department:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The department.
+        job_division:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The division.
+        job_schedule:
+          type: string
+          description: The schedule. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/jobschedulecode/entries
+        job_responsibility:
+          maxLength: 250
+          minLength: 0
+          type: string
+          description: The responsibilities.
+        private_record:
+          type: boolean
+          description: Indicates whether is private.
+      additionalProperties: false
+      description: CreateRelationshipJobInfo
+      example:
+        context_id: ''
+        relationship: ''
+        job_title: ''
+        career_level: ''
+        job_category: ''
+        start_date: ''
+        end_date: ''
+        job_department: ''
+        job_division: ''
+        job_schedule: ''
+        job_responsibility: ''
+        private_record: false
+      x-display-name: Relationship Job Info Add Data Form
+      x-display-id: Relationship Job Info Add Data Form
+    PostResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The newly created ID.
+      additionalProperties: false
+      description: Defines the shape of a post response object.
+    RelationshipJobInfo:
+      type: object
+      properties:
+        job_title:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The job title.
+        career_level:
+          type: string
+          description: The career level. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/careerlevelcode/entries
+        job_category:
+          type: string
+          description: The category. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/jobcategorycode/entries
+        start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        end_date:
+          type: string
+          description: 'The end date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        job_department:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The department.
+        job_division:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The division.
+        job_schedule:
+          type: string
+          description: The schedule. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/jobschedulecode/entries
+        job_responsibility:
+          maxLength: 250
+          minLength: 0
+          type: string
+          description: The responsibilities.
+        private_record:
+          type: boolean
+          description: Indicates whether is private.
+      additionalProperties: false
+      description: GetRelationshipJobInfo
+      x-display-name: Relationship Job Info Edit Data Form
+      x-display-id: Relationship Job Info Edit Data Form
+    EditRelationshipJobInfo_2:
+      type: object
+      properties:
+        job_title:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The job title.
+        career_level:
+          type: string
+          description: The career level. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/careerlevelcode/entries
+        job_category:
+          type: string
+          description: The category. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/jobcategorycode/entries
+        start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        end_date:
+          type: string
+          description: 'The end date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        job_department:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The department.
+        job_division:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The division.
+        job_schedule:
+          type: string
+          description: The schedule. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/jobschedulecode/entries
+        job_responsibility:
+          maxLength: 250
+          minLength: 0
+          type: string
+          description: The responsibilities.
+        private_record:
+          type: boolean
+          description: Indicates whether is private.
+        sync_end_date_to_relationship:
+          type: boolean
+          description: Indicates whether sync end date with organization relationship.
+        last_job:
+          type: boolean
+          description: Indicates whether islastjob. Read-only in the SOAP API.
+      additionalProperties: false
+      description: EditRelationshipJobInfo
+      example:
+        job_title: Dietician
+        career_level: executive
+        job_category: ''
+        start_date: '2022-12-15T12:00:00Z'
+        end_date: '2026-12-25T12:00:00Z'
+        job_department: ''
+        job_division: ''
+        job_schedule: {}
+        job_responsibility: ''
+        private_record: 'false'
+        sync_end_date_to_relationship: 'true'
+        last_job: 'true'
+      x-display-name: Relationship Job Info Edit Data Form
+      x-display-id: Relationship Job Info Edit Data Form
+    NewRelationshipJobInfo_2:
+      required:
+      - context_id
+      - relationship
+      type: object
+      properties:
+        context_id:
+          type: string
+          description: The context ID.
+        relationship:
+          type: string
+          description: The relationship. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/62083cb6-2a32-4d1d-aace-0ad288292ab7?parameters=constituentid,{context_id}.
+        job_title:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The job title.
+        career_level:
+          type: string
+          description: The career level. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/careerlevelcode/entries
+        job_category:
+          type: string
+          description: The category. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/jobcategorycode/entries
+        start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        end_date:
+          type: string
+          description: 'The end date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        job_department:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The department.
+        job_division:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The division.
+        job_schedule:
+          type: string
+          description: The schedule. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/jobschedulecode/entries
+        job_responsibility:
+          maxLength: 250
+          minLength: 0
+          type: string
+          description: The responsibilities.
+        private_record:
+          type: boolean
+          description: Indicates whether is private.
+        sync_end_date_to_relationship:
+          type: boolean
+          description: Indicates whether sync end date with organization relationship.
+      additionalProperties: false
+      description: CreateRelationshipJobInfo
+      example:
+        context_id: ''
+        relationship: ''
+        job_title: ''
+        career_level: ''
+        job_category: ''
+        start_date: ''
+        end_date: ''
+        job_department: ''
+        job_division: ''
+        job_schedule: ''
+        job_responsibility: ''
+        private_record: false
+        sync_end_date_to_relationship: false
+      x-display-name: Relationship Job Info Add Data Form
+      x-display-id: Relationship Job Info Add Data Form
+    RelationshipJobInfo_2:
+      type: object
+      properties:
+        job_title:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The job title.
+        career_level:
+          type: string
+          description: The career level. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/careerlevelcode/entries
+        job_category:
+          type: string
+          description: The category. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/jobcategorycode/entries
+        start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        end_date:
+          type: string
+          description: 'The end date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        job_department:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The department.
+        job_division:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The division.
+        job_schedule:
+          type: string
+          description: The schedule. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/jobschedulecode/entries
+        job_responsibility:
+          maxLength: 250
+          minLength: 0
+          type: string
+          description: The responsibilities.
+        private_record:
+          type: boolean
+          description: Indicates whether is private.
+        sync_end_date_to_relationship:
+          type: boolean
+          description: Indicates whether sync end date with organization relationship.
+        last_job:
+          type: boolean
+          description: Indicates whether islastjob. Read-only in the SOAP API.
+      additionalProperties: false
+      description: GetRelationshipJobInfo
+      x-display-name: Relationship Job Info Edit Data Form
+      x-display-id: Relationship Job Info Edit Data Form
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+x-refined-from:
+- blackbaud-altru-constituent-api-openapi.yml
+- blackbaud-crm-constituent-api-openapi.yml

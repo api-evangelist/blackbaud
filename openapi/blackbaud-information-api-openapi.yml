@@ -1,0 +1,71 @@
+openapi: 3.2.0
+info:
+  title: Blackbaud Information API
+  version: '1.0'
+  x-refined-note:
+  - x-apievangelist-provenance differs across the merged source definitions and was not carried
+  description: 'Operations tagged Information across 2 of this provider''s published API definitions: blackbaud-altru-administration-api-openapi.yml, blackbaud-crm-administration-api-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.sky.blackbaud.com/alt-adnmg
+- url: https://api.sky.blackbaud.com/crm-adnmg
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Information
+paths:
+  /information:
+    get:
+      operationId: GetVersionInformation
+      summary: Get information about application and SQL CLR versions
+      description: Returns the current product version.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the specified resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetVersionInformationView'
+      tags:
+      - Information
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-adnmg
+components:
+  schemas:
+    GetVersionInformationView:
+      type: object
+      properties:
+        infinity_version:
+          maxLength: 20
+          minLength: 0
+          type: string
+          description: The infinity version.
+        bbis_version:
+          maxLength: 20
+          minLength: 0
+          type: string
+          description: The bbis version.
+        sql_clr_version:
+          maxLength: 20
+          minLength: 0
+          type: string
+          description: The sql clr version.
+      additionalProperties: false
+      description: GetVersionInformation
+      x-display-name: CMS Configuration Product Version
+      x-display-id: CMS Configuration Product Version
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+x-refined-from:
+- blackbaud-altru-administration-api-openapi.yml
+- blackbaud-crm-administration-api-openapi.yml

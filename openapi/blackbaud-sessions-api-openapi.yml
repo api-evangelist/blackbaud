@@ -1,0 +1,165 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: School Sessions API'
+  description: This API is used to provide access to school information such as users, academics, admissions, athletics, content, lists, and general school info.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/school
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/school
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Sessions
+paths:
+  /v1/sessions:
+    get:
+      operationId: V1SessionsGet
+      summary: Core sessions
+      description: 'Returns a collection of sessions for a higher education institution.
+
+
+        Requires at least one of the following roles in the Education Management system:
+
+
+        Academic Group Manager
+
+
+        Platform Manager'
+      parameters:
+      - name: level_num
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Filter for a specific ```level_num``` (level number)
+      - name: school_year
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filter for a specific ```school_year``` (required format YYYY - YYYY (11 chars))
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SchoolSessionCollection'
+              example:
+                count: 2
+                value:
+                - id: 1
+                  name: Spring Semester
+                  school_year_label: 2020 - 2021
+                  school_year_id: 1
+                  level_num: 123
+                  begin_date: '2020-02-02T12:00:00Z'
+                  end_date: '2020-05-12T12:00:00Z'
+                  current: false
+                  in_use: true
+                - id: 2
+                  name: Summer Semester
+                  school_year_label: 2020 - 2021
+                  school_year_id: 1
+                  level_num: 123
+                  begin_date: '2020-05-13T12:00:00Z'
+                  end_date: '2020-08-21T12:00:00Z'
+                  current: false
+                  in_use: true
+      tags:
+      - Sessions
+components:
+  schemas:
+    SchoolSession:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The Id of the session
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the session
+        school_year_label:
+          type:
+          - string
+          - 'null'
+          description: The school year the session takes place
+        school_year_id:
+          type:
+          - integer
+          - 'null'
+          description: The id of the school year
+          format: int32
+        level_num:
+          type:
+          - integer
+          - 'null'
+          description: The school level number where the session takes place
+          format: int32
+        begin_date:
+          type:
+          - string
+          - 'null'
+          description: The start date of the session
+          format: date-time
+        end_date:
+          type:
+          - string
+          - 'null'
+          description: The end date of the session
+          format: date-time
+        current:
+          type:
+          - boolean
+          - 'null'
+          description: Returns true if the session is the current session
+        in_use:
+          type:
+          - boolean
+          - 'null'
+          description: Returns true if the session is currently in use
+      additionalProperties: false
+      description: ''
+    SchoolSessionCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items in the collection
+          format: int32
+          readOnly: true
+        next_link:
+          type:
+          - string
+          - 'null'
+          description: For paginated responses, the URI for the next page of results
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SchoolSession'
+          description: The set of items included in the response. This may be a subset of the items in the collection
+      additionalProperties: false
+      description: A Collection
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

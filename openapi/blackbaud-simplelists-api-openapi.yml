@@ -1,0 +1,210 @@
+openapi: 3.2.0
+info:
+  title: Blackbaud Simplelists API
+  version: '1.0'
+  x-refined-note:
+  - x-apievangelist-provenance differs across the merged source definitions and was not carried
+  description: 'Operations tagged Simplelists across 2 of this provider''s published API definitions: blackbaud-altru-administration-api-openapi.yml, blackbaud-crm-administration-api-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.sky.blackbaud.com/alt-adnmg
+- url: https://api.sky.blackbaud.com/crm-adnmg
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Simplelists
+paths:
+  /simplelists/translation/{simple_list_id}:
+    get:
+      operationId: SimpleListTranslation
+      summary: Simple list translation
+      description: /appfxwebservice.asmx?op=SimpleDataListGetTranslation, SOAPAction=Blackbaud.AppFx.WebService.API.1/SimpleDataListGetTranslation.
+      parameters:
+      - name: simple_list_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The ID of simple list.
+      - name: entry_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Simple list entry value.
+      - name: simple_list_name
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Simple list name.
+      responses:
+        '200':
+          description: Returned when the operation succeeds.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SimpleListTranslation'
+              example:
+                value: Primary
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to create the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+      tags:
+      - Simplelists
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-adnmg
+  /simplelists/{simple_list_id}:
+    get:
+      operationId: SimpleListLoad
+      summary: Simple list load
+      description: Gets the data for a simple datalist using ID or Name and any parameters. /appfxwebservice.asmx?op=SimpleDataListLoad, SOAPAction=Blackbaud.AppFx.WebService.API.1/SimpleDataListLoad.
+      parameters:
+      - name: simple_list_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The ID of simple list.
+      - name: parameters
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'String of comma separated parameter and its value.Example: interaction_category_id,d4e18cdc-1baa-4d0c-ae41-2e40fcda9d64'
+      responses:
+        '200':
+          description: Returned when the operation succeeds.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiCollectionSimpleListLoad'
+              example:
+                count: 5
+                rows:
+                - value: fcc68195-a29e-4191-916d-421fb9188bd9
+                  label: Autumn mailing only
+                - value: 7749b617-ec7f-447e-995a-d586db9fa312
+                  label: Change for testing
+                - value: b18fedac-76f1-4beb-a4f7-e38a8dc387f6
+                  label: Do not call after 9:00 PM
+                - value: 6381b85c-625c-4739-b068-09d68fb95c62
+                  label: Do not mail
+                - value: 03d4cb5d-2f02-46e7-90cd-2da933d238d6
+                  label: Do not phone
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to create the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+      tags:
+      - Simplelists
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-adnmg
+components:
+  schemas:
+    SimpleListLoad:
+      type: object
+      properties:
+        count:
+          type: integer
+        rows:
+          type: array
+          items:
+            $ref: '#/components/schemas/SimpleListrows'
+          description: ''
+      x-hidden: true
+      x-base-type: '#/definitions/ApiCollection'
+    SimpleListrows:
+      type: object
+      properties:
+        value:
+          type: string
+          description: The value.
+        label:
+          type: string
+          description: The label.
+      x-hidden: true
+      x-display-name: rows
+      x-display-id: rows
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type: integer
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type: string
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: false
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-display-name: Problem details
+      x-display-id: ProblemDetails
+    ApiCollectionSimpleListLoad:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items available for retrieval into the collection after applying any request parameters.
+          format: int32
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/SimpleListLoad'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+      description: Fetching data all at once quickly becomes unmanageable. The collection entity helps by returning paginated chunks of large data sets. This entity includes helpful metadata and properties to paginate and iterate through the data.
+      x-hidden: true
+      x-base-type: '#/definitions/ApiCollection'
+    SimpleListTranslation:
+      type: object
+      properties:
+        value:
+          type: string
+          description: The value of the simplelist entry.
+      description: The simplelist translation.
+      x-hidden: true
+      x-display-name: Simple list translation
+      x-display-id: Simple list translation
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+x-refined-from:
+- blackbaud-altru-administration-api-openapi.yml
+- blackbaud-crm-administration-api-openapi.yml

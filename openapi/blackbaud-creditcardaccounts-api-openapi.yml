@@ -1,0 +1,292 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Treasury Creditcardaccounts API'
+  description: This API is used to manage bank accounts and transactions.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/58e3b2880528ab71c796492e
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/treasury/v1
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Creditcardaccounts
+paths:
+  /creditcardaccounts:
+    get:
+      operationId: ListCreditCardAccounts
+      summary: Credit card accounts (List)
+      description: Returns a list of credit card accounts.
+      parameters:
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: 'Represents the number of records to skip.
+
+          For use with pagination.'
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: "Represents the number of records to return. \nThe default is 100. \nThe maximum allowed value is 500."
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the list of credit card accounts.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiCollection_CreditCardAccountSummary'
+              example:
+                count: 3
+                value:
+                - credit_card_account_id: 1021
+                  account_name: Shan account
+                  bank_name: Dag Site
+                  type: Discover
+                  register_balance: 0
+                  status: Open
+                  active_card_count: 1
+                - credit_card_account_id: 1018
+                  account_name: U. S. Bank
+                  bank_name: U. S. Bank
+                  type: Visa
+                  register_balance: 0
+                  status: Open
+                  active_card_count: 3
+                - credit_card_account_id: 1019
+                  account_name: Bank of America
+                  bank_name: U. S. Bank
+                  type: Visa
+                  register_balance: 1460
+                  status: Open
+                  active_card_count: 1
+        '400':
+          description: Returned when the request is not in the correct format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DomainErrorMessage'
+              example:
+                Error: Invalid Request
+                Details:
+                - The value 'fake' is not valid for transaction_status.
+                ErrorPath: null
+        '403':
+          description: Returned when the user does not have permission to view credit card accounts.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Creditcardaccounts
+  /creditcardaccounts/{credit_card_account_id}/creditcards:
+    get:
+      operationId: ListCreditCardsSingleCreditCardAccount
+      summary: Credit cards (List)
+      description: Returns a list of credit card summaries for a given credit card account.
+      parameters:
+      - name: credit_card_account_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The identifier for the credit card account to retrieve the credit card summaries.
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: 'Represents the number of records to skip.
+
+          For use with pagination.'
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: "Represents the number of records to return. \nThe default is 100. \nThe maximum allowed value is 500."
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the list of credit card summaries for a given credit card account.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiCollection_CreditCardSummary'
+              example:
+                count: 2
+                value:
+                - credit_card_id: 4
+                  ui_credit_card_id: Vi8675
+                  account_id: 1019
+                  last_4: '8675'
+                  Inactive: true
+                - credit_card_id: 2
+                  ui_credit_card_id: Vi9198
+                  account_id: 1019
+                  last_4: '9198'
+                  Inactive: false
+        '400':
+          description: Returned when the request is not in the correct format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DomainErrorMessage'
+              example:
+                Error: Invalid Request
+                Details:
+                - The value 'fake' is not valid for transaction_status.
+                ErrorPath: null
+        '403':
+          description: Returned when the user does not have permission to view credit card accounts.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Creditcardaccounts
+components:
+  schemas:
+    DomainErrorMessage:
+      type: object
+      properties:
+        Error:
+          type: string
+          x-ms-summary: Error
+        Details:
+          type: array
+          items:
+            type: string
+          x-ms-summary: Details
+        ErrorPath:
+          type: string
+          x-ms-summary: Error path
+      x-display-name: Domain error message
+      x-ms-summary: Domain error message
+    ApiCollection_CreditCardAccountSummary:
+      type: object
+      properties:
+        count:
+          format: int32
+          type: integer
+          x-ms-summary: Count
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/CreditCardAccountSummary'
+          x-ms-summary: Value
+      x-hidden: true
+      x-display-name: Api collection `1
+      x-ms-summary: Api collection `1
+    CreditCardSummary:
+      description: Credit card summary information
+      type: object
+      properties:
+        credit_card_id:
+          format: int32
+          description: The identifier for this credit card.
+          type: integer
+          x-ms-summary: Credit card id
+        ui_credit_card_id:
+          description: The user defined credit card identifier for this credit card.
+          type: string
+          x-ms-summary: Ui credit card id
+        account_id:
+          format: int32
+          description: The identifier of the parent account for this credit card.
+          type: integer
+          x-ms-summary: Account id
+        last_4:
+          description: The last 4 digits of this credit card.
+          type: string
+          x-ms-summary: Last 4
+        Inactive:
+          description: Whether or not the credit card is active.
+          type: boolean
+          x-ms-summary: Inactive
+      x-display-name: Credit card summary
+      x-ms-summary: Credit card summary
+    BasicErrorMessage:
+      type: object
+      properties:
+        Error:
+          type: string
+          x-ms-summary: Error
+      x-display-name: Basic error message
+      x-ms-summary: Basic error message
+    ApiCollection_CreditCardSummary:
+      type: object
+      properties:
+        count:
+          format: int32
+          type: integer
+          x-ms-summary: Count
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/CreditCardSummary'
+          x-ms-summary: Value
+      x-hidden: true
+      x-display-name: Api collection `1
+      x-ms-summary: Api collection `1
+    CreditCardAccountSummary:
+      description: Credit card account information
+      type: object
+      properties:
+        credit_card_account_id:
+          format: int32
+          description: The identifier for this credit card account.
+          type: integer
+          x-ms-summary: Credit card account id
+        account_name:
+          description: The name for this account.
+          type: string
+          x-ms-summary: Account name
+        bank_name:
+          description: The bank name for this credit card account.
+          type: string
+          x-ms-summary: Bank name
+        type:
+          description: The type of this credit card account.
+          type: string
+          x-ms-summary: Type
+        register_balance:
+          format: double
+          description: The register balance of this bank account.
+          type: number
+          x-ms-summary: Register balance
+        status:
+          description: The status of this bank account.
+          enum:
+          - Open
+          - Closed
+          type: string
+          x-ms-summary: Status
+        active_card_count:
+          format: int32
+          description: The number of active credit cards on this credit card account.
+          type: integer
+          x-ms-summary: Active card count
+      x-display-name: Credit card account summary
+      x-ms-summary: Credit card account summary
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

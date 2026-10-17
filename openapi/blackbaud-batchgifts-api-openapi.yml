@@ -1,0 +1,3586 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Gift v2 Batchgifts API'
+  description: This API manages gift information and related entities.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/gft-gifts
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/gft-gifts
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Batchgifts
+paths:
+  /v2/batchgifts/{batchGiftId}:
+    patch:
+      operationId: EditBatchGift
+      summary: Edit Batch Gift (PREVIEW)
+      description: 'Updates a batch gift
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: batchGiftId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The ID of the batch gift.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BatchGiftEdit'
+        description: The changes to the batch gift.
+      responses:
+        '200':
+          description: Returned when when the gift was updated successfully. Any resolvable exceptions will be returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GiftValidationErrors'
+              example:
+                errors:
+                - legacy_gift_id: '12345'
+                  lookup_id: Lookup-12345
+                  error_code: GiftDateOutOfValidRange
+                  error_message: The provided date '{0}' does not fall within the valid range for a date.
+                  affected_field: GiftDate
+                  hard_exception: false
+                  batch_id: '12345'
+        '403':
+          description: Forbidden
+        '400':
+          description: Returned when the specified batch gift ID or the request body is not in the correct format OR the batch is already approved OR exceptions prevented the change from being applied
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/AddEditBatchGift400ResponseTypesProblemDetails'
+              example:
+                type: urn:blackbaud:model-validation-error
+                title: One or more validation errors occurred.
+                status: 400
+                detail: The date field is required.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '404':
+          description: Returned when a batch gift with the provided ID does not exist.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: urn:blackbaud:model-validation-error
+                title: One or more validation errors occurred.
+                status: 400
+                detail: The date field is required.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+      tags:
+      - Batchgifts
+    get:
+      operationId: GetBatchGift
+      summary: Get Batch Gift (PREVIEW)
+      description: 'Returns a single batch gift by ID
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: batchGiftId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: ID of the batch gift to return
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchGiftRead'
+        '403':
+          description: Forbidden
+        '400':
+          description: Returned when no batch gift ID was provided or the ID was not in the correct format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/GetBatchGift400ResponseTypesProblemDetails'
+              example:
+                type: urn:blackbaud:model-validation-error
+                title: One or more validation errors occurred.
+                status: 400
+                detail: The date field is required.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '404':
+          description: Returned when a batch gift with the provided ID does not exist.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: urn:blackbaud:model-validation-error
+                title: One or more validation errors occurred.
+                status: 400
+                detail: The date field is required.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+      tags:
+      - Batchgifts
+  /v2/batchgifts/{batchId}:
+    post:
+      operationId: AddGiftsToBatch
+      summary: Add Gifts to Batch (PREVIEW)
+      description: 'Add multiple gifts to an existing unapproved batch
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: batchId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The identifier of the batch
+      - name: default_constituency
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: Flag indicating to default constituency. Defaults to true.
+      - name: default_soft_credits
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: Flag indicating to default soft credits. Defaults to false.
+      - name: default_fundraiser_credits
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: Flag indicating to default fundraiser credits. Defaults to false.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/V2Batchgifts-batchId-PostRequest-4'
+            example:
+            - gift_splits:
+              - id: null
+                amount:
+                  value: 100
+                fund_id: '100'
+              tributes:
+              - id: '12345'
+                tribute_acknowledgees:
+                - id: '12345'
+              marketing_source_code: WEB
+              mailing_id: '456'
+              finder_number: 7896
+              amount:
+                value: 100
+              gift_type: Pledge
+              constituent:
+                id: '280'
+              pledge_installments:
+              - amount: 100
+                date: '2021-10-31T12:00:00Z'
+              gift_date: '2021-01-01T12:00:00Z'
+              comments: New gift from Bobby
+              gift_post_status: NotPosted
+              gift_post_date: '2021-01-01T12:00:00Z'
+              payments:
+              - gift_legacy_id: null
+                amount:
+                  value: 100
+                method: CreditCard
+                account_details:
+                  account_holder: Bobby Hernandez
+                  card_type: Visa
+                  expiration_date:
+                    y: 2024
+                    m: 12
+                account_token: 14638527-36cf-4bb8-ab9f-339570bc4661
+                configuration_id: 2917a168-7bc0-4281-91c5-e7d8011b7290
+                pad_mandates:
+                - date_added: '2024-06-03T12:00:00Z'
+                  url: https://www.blackbaud.com
+              receipts:
+              - gift_legacy_id: null
+                receipt_amount:
+                  value: 0
+                receipt_stack:
+                  legacy_id: '1'
+                  value: stack
+              fundraiser_credits:
+              - amount:
+                  value: 0
+                legacy_id: null
+                credit_type: Fundraiser
+              soft_credits:
+              - amount:
+                  value: 0
+                legacy_id: null
+                credit_type: SoftCredit
+              send_reminder: true
+              acknowledgements:
+              - gift_legacy_id: null
+                letter:
+                  value: Thanks
+                  id: '1'
+            - gift_splits:
+              - id: null
+                amount:
+                  value: 100
+                fund_id: '100'
+              marketing_source_code: WEB
+              mailing_id: '456'
+              finder_number: 7896
+              amount:
+                value: 100
+              gift_type: PledgePayment
+              constituent:
+                id: '280'
+              apply_payments:
+              - installments:
+                - installment_id: '1234'
+                  amount_applied: 100
+                parent_id: '2034'
+              gift_date: '2021-01-01T12:00:00Z'
+              comments: Payment for pledge
+              gift_post_status: NotPosted
+              gift_post_date: '2021-01-01T12:00:00Z'
+              payments:
+              - gift_legacy_id: null
+                amount:
+                  value: 100
+                method: Check
+                check_dt:
+                  y: 2024
+                  m: 2
+                  d: 28
+                reference_dt:
+                  y: 2024
+                  m: 2
+                  d: 28
+            - gift_splits:
+              - id: null
+                amount:
+                  value: 100
+                fund_id: '100'
+              marketing_source_code: WEB
+              mailing_id: '456'
+              finder_number: 7896
+              amount:
+                value: 100
+              gift_type: RecurringGift
+              constituent:
+                id: '280'
+              gift_date: '2021-01-01T12:00:00Z'
+              comments: New gift from Bobby
+              gift_post_status: NotPosted
+              gift_post_date: '2021-01-01T12:00:00Z'
+              payments:
+              - gift_legacy_id: null
+                amount:
+                  value: 100
+                method: CreditCard
+                account_details:
+                  account_holder: Bobby Hernandez
+                  card_type: Visa
+                  expiration_date:
+                    y: 2024
+                    m: 12
+                account_token: 14638527-36cf-4bb8-ab9f-339570bc4661
+                configuration_id: 3da46047-b21e-41b2-b333-0ec7aacc6dc7
+                pad_mandates:
+                - date_added: '2024-06-03T12:00:00Z'
+                  url: https://www.blackbaud.com
+              schedule:
+                frequency: Monthly
+                start_date: '2021-01-01T12:00:00Z'
+              gift_subtype:
+                id: '1593'
+                name: subtype
+              gift_code:
+                legacy_id: '1'
+                value: value
+              gift_status_date:
+                y: 2022
+                m: 12
+                d: 1
+            - gift_splits:
+              - id: null
+                amount:
+                  value: 100
+                fund_id: '100'
+              marketing_source_code: WEB
+              mailing_id: '456'
+              finder_number: 7896
+              amount:
+                value: 100
+              gift_type: Stock
+              constituent:
+                id: '280'
+              custom_fields:
+              - category: '19'
+                comment: comment
+                date: '2021-01-01T12:00:00Z'
+                description: description
+              gift_date: '2021-01-01T12:00:00Z'
+              comments: New gift from Bobby
+              gift_post_status: NotPosted
+              gift_post_date: '2021-01-01T12:00:00Z'
+              issuer_details:
+                issuer: Acme
+                symbol: ACME
+                units: 100
+                unit_price: 100
+              gift_constituency:
+                legacy_id: '1'
+                value: constituency value
+        description: The gifts to add to batch.
+      responses:
+        '200':
+          description: Returned when gifts were added successfully. Any resolvable exceptions will be returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddGiftsToBatchResult'
+              example:
+                added_batch_gifts:
+                - gift_splits:
+                  - id: null
+                    amount:
+                      value: 100
+                    fund_id: '100'
+                  batch_gift_id: '12345'
+                  batch_id: '12345'
+                  tributes:
+                  - id: null
+                    tribute_id: '12345'
+                    tribute_acknowledgees:
+                    - id: null
+                      tribute_id: '12345'
+                      relationships_id: '12345'
+                      letter:
+                        legacy_id: '4444'
+                        value: Thank You
+                  gift_date: '2021-01-01'
+                  gift_post_date: '2021-01-01'
+                  amount:
+                    value: 100
+                  gift_type: Pledge
+                  constituent:
+                    id: '280'
+                  pledge_installments:
+                  - amount: 100
+                    date: '2021-10-31T12:00:00Z'
+                  comments: New gift from Bobby
+                  gift_post_status: NotPosted
+                  payments:
+                  - gift_legacy_id: null
+                    amount:
+                      value: 100
+                    method: CreditCard
+                    account_details:
+                      account_holder: Bobby Hernandez
+                      card_type: Visa
+                      expiration_date:
+                        y: 2024
+                        m: 12
+                    account_token: 14638527-36cf-4bb8-ab9f-339570bc4661
+                    configuration_id: 2917a168-7bc0-4281-91c5-e7d8011b7290
+                    pad_mandates:
+                    - date_added: '2024-06-03T12:00:00Z'
+                      url: https://www.blackbaud.com
+                  receipts:
+                  - gift_legacy_id: null
+                    receipt_amount:
+                      value: 0
+                    receipt_stack:
+                      legacy_id: '1'
+                      value: stack
+                  fundraiser_credits:
+                  - amount:
+                      value: 0
+                    legacy_id: null
+                    credit_type: Fundraiser
+                  soft_credits:
+                  - amount:
+                      value: 0
+                    legacy_id: null
+                    credit_type: SoftCredit
+                  send_reminder: true
+                  acknowledgements:
+                  - gift_legacy_id: null
+                    letter:
+                      value: Thanks
+                      id: '1'
+                - gift_splits:
+                  - id: null
+                    amount:
+                      value: 100
+                    fund_id: '100'
+                  gift_date: '2021-01-01'
+                  gift_post_date: '2021-01-01'
+                  amount:
+                    value: 100
+                  gift_type: PledgePayment
+                  constituent:
+                    id: '280'
+                  apply_payments:
+                  - installments:
+                    - installment_id: '1234'
+                      amount_applied: 100
+                    parent_id: '2034'
+                  comments: Payment for pledge
+                  gift_post_status: NotPosted
+                  payments:
+                  - gift_legacy_id: null
+                    amount:
+                      value: 100
+                    method: Check
+                    check_dt:
+                      y: 2024
+                      m: 2
+                      d: 28
+                    reference_dt:
+                      y: 2024
+                      m: 2
+                      d: 28
+                - gift_splits:
+                  - id: null
+                    amount:
+                      value: 100
+                    fund_id: '100'
+                  gift_date: '2021-01-01'
+                  gift_post_date: '2021-01-01'
+                  amount:
+                    value: 100
+                  gift_type: RecurringGift
+                  constituent:
+                    id: '280'
+                  comments: New gift from Bobby
+                  gift_post_status: NotPosted
+                  payments:
+                  - gift_legacy_id: null
+                    amount:
+                      value: 100
+                    method: CreditCard
+                    account_details:
+                      account_holder: Bobby Hernandez
+                      card_type: Visa
+                      expiration_date:
+                        y: 2024
+                        m: 12
+                    account_token: 14638527-36cf-4bb8-ab9f-339570bc4661
+                    configuration_id: 3da46047-b21e-41b2-b333-0ec7aacc6dc7
+                    pad_mandates:
+                    - date_added: '2024-06-03T12:00:00Z'
+                      url: https://www.blackbaud.com
+                  schedule:
+                    frequency: Monthly
+                    start_date: '2021-01-01T12:00:00Z'
+                  gift_subtype:
+                    id: '1593'
+                    name: subtype
+                  gift_code:
+                    legacy_id: '1'
+                    value: value
+                  gift_status_date:
+                    y: 2022
+                    m: 12
+                    d: 1
+                - gift_splits:
+                  - id: null
+                    amount:
+                      value: 100
+                    fund_id: '100'
+                  gift_date: '2021-01-01'
+                  gift_post_date: '2021-01-01'
+                  amount:
+                    value: 100
+                  gift_type: Stock
+                  constituent:
+                    id: '280'
+                  custom_fields:
+                  - category: '19'
+                    comment: comment
+                    date: '2021-01-01T12:00:00Z'
+                    description: description
+                  comments: New gift from Bobby
+                  gift_post_status: NotPosted
+                  issuer_details:
+                    issuer: Acme
+                    symbol: ACME
+                    units: 100
+                    unit_price: 100
+                  gift_constituency:
+                    legacy_id: '1'
+                    value: constituency value
+                gift_validation_errors:
+                - legacy_gift_id: '12345'
+                  lookup_id: Lookup-12345
+                  error_code: GiftDateOutOfValidRange
+                  error_message: The provided date '{0}' does not fall within the valid range for a date.
+                  affected_field: GiftDate
+                  hard_exception: false
+                  batch_id: '12345'
+        '403':
+          description: Forbidden
+        '400':
+          description: Returned when the specified batch ID or the request body is not in the correct format OR the batch is already approved OR exceptions prevent the gift being added. The values property will contain any hard exceptions.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/AddEditBatchGift400ResponseTypesProblemDetails'
+              example:
+                type: urn:blackbaud:model-validation-error
+                title: One or more validation errors occurred.
+                status: 400
+                detail: The date field is required.
+                values:
+                  LookupId1:
+                  - legacy_gift_id: '12345'
+                    lookup_id: LookupId1
+                    error_code: RequiredArgumentNotAssignedValue
+                    error_message: The required argument 'GiftSplits' was not assigned a value.
+                    affected_field: GiftSplits
+                    hard_exception: true
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '404':
+          description: Returned when a batch with the provided ID does not exist.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: urn:blackbaud:model-validation-error
+                title: One or more validation errors occurred.
+                status: 400
+                detail: The date field is required.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+      tags:
+      - Batchgifts
+components:
+  schemas:
+    BatchGiftNote:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: ID of the note
+        batch_gift_id:
+          type:
+          - string
+          - 'null'
+          description: ID of the batch gift to which this note belongs
+        batch_id:
+          type:
+          - string
+          - 'null'
+          description: ID of the batch to which this note belongs
+        note_type:
+          $ref: '#/components/schemas/CodeTableEntry'
+        date:
+          $ref: '#/components/schemas/FuzzyDate'
+        description:
+          type:
+          - string
+          - 'null'
+          description: Short description of the note
+        notes:
+          type:
+          - string
+          - 'null'
+          description: The full text of the note
+        author:
+          type:
+          - string
+          - 'null'
+          description: 'The name of the author of the note. If not supplied, this will default to the name of the
+
+            user making the request.'
+        sequence:
+          type:
+          - integer
+          - 'null'
+          description: The sequence
+          format: int32
+      additionalProperties: false
+      description: Represents a note associated with a batch gift
+    BatchGiftExtensionListItem:
+      type: object
+      properties:
+        extension_id:
+          type:
+          - string
+          - 'null'
+          description: The unique extension type identifier.
+        display:
+          type:
+          - string
+          - 'null'
+          description: Display label for the extension.
+        exceptions:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ExtensionException'
+          description: Validation exceptions reported by the extension service.
+        e_tag:
+          type:
+          - string
+          - 'null'
+          description: The ETag of the extension document for optimistic concurrency.
+      additionalProperties: false
+      description: Summary of an extension document for display in the batch gift list.
+    BatchGiftAddWithTributeLookup:
+      required:
+      - amount
+      - constituent
+      - gift_type
+      type: object
+      properties:
+        gift_splits:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/BatchGiftSplitAdd'
+          description: The gift splits belonging to this batch gift.
+        batch_id:
+          type:
+          - string
+          - 'null'
+          description: ID of the batch to which this gift should be added.
+        tributes:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/TributeLookup'
+          description: A collection of tribute lookups.
+        notes:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/BatchGiftNote'
+          description: Notes for this batch gift.
+        row_sequence:
+          type:
+          - integer
+          - 'null'
+          description: The row sequence within the batch (display/sort order) that will be persisted for this gift.
+          format: int32
+        marketing_source_code:
+          maxLength: 255
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: 'The gift''s marketing source code. Character limit: 255.'
+        mailing_id:
+          type:
+          - string
+          - 'null'
+          description: The gift's mailing identifier.
+        finder_number:
+          maximum: 10000000000000000000
+          minimum: 0
+          type:
+          - number
+          - 'null'
+          description: The gift's finder number. Digits behind the decimal are ignored.
+          format: double
+        amount:
+          $ref: '#/components/schemas/Currency'
+        gift_type:
+          $ref: '#/components/schemas/GiftType'
+        constituent:
+          $ref: '#/components/schemas/GiftConstituent'
+        apply_payments:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ApplyPayment'
+          description: Applies partial payments to multiple pledges.
+        charge_first_payment:
+          type:
+          - boolean
+          - 'null'
+          description: True if a recurring gift payment should be charged immediately. Only applicable for recurring gifts.
+        parent_gift_id:
+          type:
+          - string
+          - 'null'
+          description: 'The linked parent gift ID. For a recurring gift payment this is the parent recurring gift;
+
+            for a matching gift pledge it is the matched gift the pledge is matching.'
+        custom_fields:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/GiftCustomFieldAdd'
+          description: Gets or sets the custom fields.
+        processes_manually:
+          type:
+          - boolean
+          - 'null'
+          description: 'Indicates whether the gift processes payments manually (true) or automatically (false).
+
+            When null, defaults based on payment method: CC/DD = false (automated), all others = true (manual).'
+          example: false
+        pledge_installments:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/PledgeInstallmentAdd'
+          description: Pledge installments
+        gift_date:
+          type:
+          - string
+          - 'null'
+          description: The date the gift was given.
+          format: date-time
+        vehicle:
+          $ref: '#/components/schemas/Vehicle'
+        lookup_id:
+          type:
+          - string
+          - 'null'
+          description: The gift's lookup ID.
+          example: Lookup-12345
+        comments:
+          maxLength: 255
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: 'Comments associated with the gift. Character limit: 255.'
+          example: This is a comment
+        gift_post_status:
+          $ref: '#/components/schemas/GiftPostStatus'
+        gift_post_date:
+          type:
+          - string
+          - 'null'
+          description: The post date of the gift. Must be set if post status is NotPosted or Posted. Must be null if post status is DoNotPost.
+          format: date-time
+        issuer_details:
+          $ref: '#/components/schemas/IssuerDetails'
+        origin:
+          type:
+          - string
+          - 'null'
+          description: The gift's origin.
+        payments:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/GiftPaymentRecord'
+          description: The gift's payments. Required for Recurring Gift type.
+        schedule:
+          $ref: '#/components/schemas/Schedule'
+        adjustment_notes:
+          type:
+          - string
+          - 'null'
+          description: The gift's adjustment notes. Used by the Adjustment Gift type.
+          example: Refunded gift
+        receipts:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/GiftReceipt'
+          description: The gift's receipts.
+        fundraiser_credits:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/FundraiserCredit'
+          description: The gift's fundraiser credits.
+        soft_credits:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SoftCredit'
+          description: The gift's soft credits.
+        send_reminder:
+          type:
+          - boolean
+          - 'null'
+          description: Gets or sets the send reminder flag for pledge gifts. If no value is provided, it will default to true for pledges, false otherwise.
+          example: false
+        acknowledgements:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/GiftAcknowledgement'
+          description: The gift's acknowledgements.
+        gift_subtype:
+          $ref: '#/components/schemas/GiftSubtype'
+        anonymous:
+          type:
+          - boolean
+          - 'null'
+          description: Notes whether the gift should remain anonymous or not, i.e. do not publicly show the donor's name.
+          example: false
+        gift_code:
+          $ref: '#/components/schemas/CodeTableEntry'
+        gift_status:
+          $ref: '#/components/schemas/GiftStatus'
+        gift_status_date:
+          $ref: '#/components/schemas/FuzzyDate'
+        gift_constituency:
+          $ref: '#/components/schemas/CodeTableEntry'
+      additionalProperties: false
+      description: Represents a batch gift to be added, with lookup for tribute
+    CodeTableEntry:
+      type: object
+      properties:
+        legacy_id:
+          type:
+          - string
+          - 'null'
+          description: The legacy ID of the code table entry.
+          example: '1234'
+        value:
+          type:
+          - string
+          - 'null'
+          description: The value of the code table entry.
+          example: Test value
+      additionalProperties: false
+      description: A predefined entry in a code table.
+    ScheduleFrequency:
+      title: ScheduleFrequency
+      enum:
+      - Annually
+      - EVERY_SIX_MONTHS
+      - Quarterly
+      - Monthly
+      - EVERY_FOUR_WEEKS
+      - EVERY_TWO_WEEKS
+      - Weekly
+      - Irregular
+      - Single
+      type: string
+      description: Gift schedule frequency.
+      x-bb-suppressions:
+      - enum_standards
+    CustomFieldDataType:
+      title: CustomFieldDataType
+      enum:
+      - Text
+      - Number
+      - Date
+      - Currency
+      - Boolean
+      - Table
+      - Constituent
+      - FuzzyDate
+      type: string
+      description: The data type of a custom field.
+    BatchGiftSplitAdd:
+      type: object
+      properties:
+        gift_aid_qualification_method:
+          $ref: '#/components/schemas/GiftAidQualificationMethod'
+        donor_covered:
+          type:
+          - boolean
+          - 'null'
+          description: True if split represents donor covering some portion of the processing fees.
+          example: false
+        id:
+          type:
+          - string
+          - 'null'
+          description: The ID of the split.
+          example: '12345'
+        amount:
+          $ref: '#/components/schemas/Currency'
+        fund_id:
+          type:
+          - string
+          - 'null'
+          description: The ID of the fund to apply the amount to.
+          example: '1234'
+        campaign_id:
+          type:
+          - string
+          - 'null'
+          description: The ID of the campaign to apply the amount to.
+          example: '1234'
+        appeal_id:
+          type:
+          - string
+          - 'null'
+          description: The ID of the appeal to apply the amount to.
+          example: '1234'
+        package_id:
+          type:
+          - string
+          - 'null'
+          description: The ID of the package to apply the amount to.
+          example: '1234'
+      additionalProperties: false
+      description: A split on a batch gift that is being added.
+    GiftSubtype:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: The ID of the gift subtype.
+          example: '3333'
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the gift subtype.
+          example: Subtype
+      additionalProperties: false
+      description: Model representing a gift subtype.
+    BatchGiftEdit:
+      type: object
+      properties:
+        batch_gift_id:
+          type:
+          - string
+          - 'null'
+          description: The batch gift record ID.
+        batch_number:
+          type:
+          - string
+          - 'null'
+          description: Batch number for the batch this gift is assigned to
+        date_added:
+          type:
+          - string
+          - 'null'
+          description: Date this batch gift was added to the system
+          format: date-time
+        charge_first_payment:
+          type:
+          - boolean
+          - 'null'
+          description: True if a recurring gift payment should be processed immediately. Only applicable for recurring gifts.
+        processes_manually:
+          type:
+          - boolean
+          - 'null'
+          description: 'Indicates whether the gift processes payments manually (true) or automatically (false).
+
+            Read-only; reflects the value set at gift creation and cannot be changed via batch edit.'
+          readOnly: true
+          example: false
+        custom_fields:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/BatchGiftCustomFieldEdit'
+          description: Custom fields associated with the batch gift
+        installments:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/BatchGiftInstallment'
+          description: Installments created for this gift
+        installment_payments:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/BatchGiftInstallmentPayment'
+          description: Installment payments paid by this gift
+        tributes:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/GiftTributeAdd'
+          description: A collection of validatable tributes
+        notes:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/BatchGiftNote'
+          description: A collection of validatable notes.
+        row_sequence:
+          type:
+          - integer
+          - 'null'
+          description: 'The row sequence within the batch (display/sort order). An omitted or null value leaves the
+
+            previously-persisted sort position unchanged; an explicit value overwrites it.'
+          format: int32
+        batch_id:
+          type:
+          - string
+          - 'null'
+          description: System ID of the batch to which this batch gift belongs
+        gift_splits:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/BatchGiftSplit'
+          description: The gift splits belonging to this batch gift
+        fundraiser_credits:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/BatchGiftFundraiserCredit'
+          description: The fundraiser credits belonging to this batch gift
+        soft_credits:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/BatchGiftSoftCredit'
+          description: The soft credits belonging to this batch gift
+        gift_date:
+          type:
+          - string
+          - 'null'
+          description: The date the gift was given.
+          format: date
+        gift_post_date:
+          type:
+          - string
+          - 'null'
+          description: The post date of the gift. Must be set if post status is NotPosted or Posted. Must be null if post status is DoNotPost.
+          format: date
+        marketing_source_code:
+          maxLength: 255
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: 'The gift''s marketing source code. Character limit: 255.'
+        mailing_id:
+          type:
+          - string
+          - 'null'
+          description: The gift's mailing identifier.
+        finder_number:
+          maximum: 10000000000000000000
+          minimum: 0
+          type:
+          - number
+          - 'null'
+          description: The gift's finder number. Digits behind the decimal are ignored.
+          format: double
+        lookup_id:
+          type:
+          - string
+          - 'null'
+          description: The gift's lookup ID.
+          example: Lookup-12345
+        amount:
+          $ref: '#/components/schemas/Currency'
+        comments:
+          maxLength: 255
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: 'Comments associated with the gift. Character limit: 255.'
+          example: This is a comment
+        constituent:
+          $ref: '#/components/schemas/GiftConstituent'
+        gift_post_status:
+          $ref: '#/components/schemas/GiftPostStatus'
+        gift_type:
+          $ref: '#/components/schemas/GiftType'
+        issuer_details:
+          $ref: '#/components/schemas/IssuerDetails'
+        origin:
+          type:
+          - string
+          - 'null'
+          description: The gift's origin.
+        payments:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/GiftPaymentRecord'
+          description: The gift's payments. Required for Recurring Gift type.
+        schedule:
+          $ref: '#/components/schemas/Schedule'
+        adjustment_notes:
+          type:
+          - string
+          - 'null'
+          description: The gift's adjustment notes. Used by the Adjustment Gift type.
+          example: Refunded gift
+        receipts:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/GiftReceipt'
+          description: The gift's receipts.
+        send_reminder:
+          type:
+          - boolean
+          - 'null'
+          description: Gets or sets the send reminder flag for pledge gifts. If no value is provided, it will default to true for pledges, false otherwise.
+          example: false
+        acknowledgements:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/GiftAcknowledgement'
+          description: The gift's acknowledgements.
+        gift_subtype:
+          $ref: '#/components/schemas/GiftSubtype'
+        anonymous:
+          type:
+          - boolean
+          - 'null'
+          description: Notes whether the gift should remain anonymous or not, i.e. do not publicly show the donor's name.
+          example: false
+        gift_code:
+          $ref: '#/components/schemas/CodeTableEntry'
+        gift_status:
+          $ref: '#/components/schemas/GiftStatus'
+        gift_status_date:
+          $ref: '#/components/schemas/FuzzyDate'
+        gift_constituency:
+          $ref: '#/components/schemas/CodeTableEntry'
+      additionalProperties: false
+      description: A batch gift to be edited, only including fields that can be changed
+    V2Batchgifts-batchId-PostRequest-4:
+      type: array
+      items:
+        $ref: '#/components/schemas/BatchGiftAddWithTributeLookup'
+      x-apim-inline: true
+    AcknowledgementLetter:
+      type: object
+      properties:
+        value:
+          type:
+          - string
+          - 'null'
+          description: The name of the acknowledgement letter.
+          example: Welcome letter
+        id:
+          type:
+          - string
+          - 'null'
+          description: The ID of the acknowledgement letter.
+          example: '4444'
+        active:
+          type:
+          - boolean
+          - 'null'
+          description: True if the acknowledgement letter is active.  False otherwise.
+          example: true
+          x-bb-suppressions:
+          - parameter_property_name
+        sequence:
+          type:
+          - integer
+          - 'null'
+          description: The sequence of the acknowledgement letter.
+          format: int32
+          example: 1
+      additionalProperties: false
+      description: Model representing an acknowledgement letter.
+    BatchGiftInstallment:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: System ID of this batch gift installment record
+        batch_gift_id:
+          type:
+          - string
+          - 'null'
+          description: System ID of the batch gift to which this installment belongs
+        batch_id:
+          type:
+          - string
+          - 'null'
+          description: System ID of the batch to which this installment belongs
+        amount:
+          type:
+          - number
+          - 'null'
+          description: Amount of this installment
+          format: double
+        date:
+          type:
+          - string
+          - 'null'
+          description: The date this installment is due
+          format: date-time
+        year:
+          type:
+          - integer
+          - 'null'
+          description: The year
+          format: int32
+        sequence:
+          type:
+          - integer
+          - 'null'
+          description: The sequence
+          format: int32
+      additionalProperties: false
+      description: Installment for a Pledge entered in batch
+    GiftCustomFieldAdd:
+      type: object
+      properties:
+        category:
+          type:
+          - string
+          - 'null'
+          description: The category ID, foreign key to ATTRIBUTETYPES.
+          example: '6666'
+        comment:
+          type:
+          - string
+          - 'null'
+          description: The comment.
+          example: Comment
+        date:
+          type:
+          - string
+          - 'null'
+          description: The date.
+          format: date-time
+        description:
+          type:
+          - string
+          - 'null'
+          description: The value of the custom field. This is the string-encoded value, its actual type will need to be parsed based on the type of the category.
+          example: Custom field description
+        category_instance:
+          type:
+          - integer
+          - 'null'
+          description: The instance number of the batch custom field to differentiate category instances.
+          format: int32
+          example: 2
+      additionalProperties: false
+      description: A custom field to be added to a gift.
+    FuzzyDate:
+      type: object
+      properties:
+        y:
+          type:
+          - integer
+          - 'null'
+          description: The year of the fuzzy date
+          format: int32
+          example: 2024
+        m:
+          type:
+          - integer
+          - 'null'
+          description: The month of the fuzzy date
+          format: int32
+          example: 12
+        d:
+          type:
+          - integer
+          - 'null'
+          description: The day of the fuzzy date
+          format: int32
+          example: 15
+      additionalProperties: false
+      description: Expresses a date as separate Year, Month, and Day components.
+    PadMandate:
+      type: object
+      properties:
+        date_added:
+          type:
+          - string
+          - 'null'
+          description: The date the mandate was added.
+          format: date-time
+        url:
+          type:
+          - string
+          - 'null'
+          description: The URL of the mandate.
+      additionalProperties: false
+      description: A mandate.
+    PaymentAccountDetails:
+      type: object
+      properties:
+        account_holder:
+          type:
+          - string
+          - 'null'
+          description: The name of the account holder. Unified for Credit Card and Direct Debit.
+          example: Robert Hernandez
+        account_number:
+          type:
+          - string
+          - 'null'
+          description: The account number. Unified for Credit Card and Direct Debit.
+          example: xxxxxxxxxxxx1234
+        account_type:
+          type:
+          - string
+          - 'null'
+          description: The direct debit account type, for direct debit accounts.
+          example: Checking
+        card_type:
+          type:
+          - string
+          - 'null'
+          description: The card type, for credit card accounts.
+          example: Visa
+        expiration_date:
+          $ref: '#/components/schemas/FuzzyDate'
+        routing_number:
+          type:
+          - string
+          - 'null'
+          description: The routing number for direct debit accounts.
+          example: '12345678'
+      additionalProperties: false
+      description: Account details for credit card and direct debit accounts tokenized in BB Payment Services.
+    GiftValidationErrors:
+      type: object
+      properties:
+        errors:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/GiftValidationError'
+          description: The gift validation errors encountered by the endpoint
+      additionalProperties: false
+      description: Collection of gift validation errors
+    ProcessingStatus:
+      title: ProcessingStatus
+      enum:
+      - Unknown
+      - Approved
+      - Pending
+      - Declined
+      type: string
+      description: Encapsulates possible processing statuses for direct debit transactions.
+    GiftStatus:
+      title: GiftStatus
+      enum:
+      - None
+      - Active
+      - Held
+      - Terminated
+      - Completed
+      - Canceled
+      type: string
+      description: The status of a gift.
+    Vehicle:
+      title: Vehicle
+      enum:
+      - None
+      - Bequest
+      - GiftAnnuity
+      - LeadAnnuityTrust
+      - RemainderAnnuityTrust
+      - LeadUnitrust
+      - RemainderUnitrust
+      - PooledIncomeFund
+      - RetainedLifeEstate
+      - Other
+      - LifeInsurance
+      type: string
+      description: Defines planned gift vehicle types.
+    BatchGiftCustomFieldEdit:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: ID of the gift custom field
+        batch_gift_id:
+          type:
+          - string
+          - 'null'
+          description: ID of the batch gift to which this custom field belongs
+        batch_id:
+          type:
+          - string
+          - 'null'
+          description: ID of the batch to which this custom field belongs
+        category:
+          type:
+          - string
+          - 'null'
+          description: The category ID, foreign key to ATTRIBUTETYPES.
+          example: '6666'
+        comment:
+          type:
+          - string
+          - 'null'
+          description: The comment.
+          example: Comment
+        date:
+          type:
+          - string
+          - 'null'
+          description: The date.
+          format: date-time
+        description:
+          type:
+          - string
+          - 'null'
+          description: The value of the custom field. This is the string-encoded value, its actual type will need to be parsed based on the type of the category.
+          example: Custom field description
+        category_instance:
+          type:
+          - integer
+          - 'null'
+          description: The instance number of the batch custom field to differentiate category instances.
+          format: int32
+          example: 2
+      additionalProperties: false
+      description: Editable batch gift custom field
+    AcknowledgementStatus:
+      title: AcknowledgementStatus
+      enum:
+      - None
+      - Acknowledged
+      - NotAcknowledged
+      - DoNotAcknowledge
+      type: string
+      description: Represents gift acknowledgement statuses.
+    FundraiserCredit:
+      type: object
+      properties:
+        amount:
+          $ref: '#/components/schemas/Currency'
+        constituent_id:
+          type:
+          - string
+          - 'null'
+          description: The identifier of the recipient of the recognition credit.
+          example: '280'
+        constituent_name:
+          type:
+          - string
+          - 'null'
+          description: Name of the constituent being recognized
+          example: Robert Hernandez
+        legacy_id:
+          type:
+          - string
+          - 'null'
+          description: The legacy identifier of the recognition credit.
+          example: '12345'
+        credit_type:
+          $ref: '#/components/schemas/RecognitionCreditType'
+        sequence:
+          type:
+          - integer
+          - 'null'
+          description: The sequence number for the recognition credit.
+          format: int32
+          example: 1
+      additionalProperties: false
+      description: A fundraiser credit for a gift.
+    Schedule:
+      type: object
+      properties:
+        end_date:
+          type:
+          - string
+          - 'null'
+          description: The date that the gift schedule ends.
+          format: date-time
+        number_of_installments:
+          type:
+          - integer
+          - 'null'
+          description: The number of installments on the pledge schedule.
+          format: int32
+        next_installment_date:
+          type:
+          - string
+          - 'null'
+          description: The date of the next scheduled installment. Read only.
+          format: date-time
+        frequency:
+          $ref: '#/components/schemas/ScheduleFrequency'
+        start_date:
+          type:
+          - string
+          - 'null'
+          description: The date that the gift schedule starts.
+          format: date-time
+      additionalProperties: false
+      description: A gift schedule.
+    GiftValidationError:
+      type: object
+      properties:
+        gift_id:
+          type:
+          - string
+          - 'null'
+          description: The ID of the gift.
+          format: uuid
+        legacy_gift_id:
+          type:
+          - string
+          - 'null'
+          description: The Legacy ID of the gift.
+        lookup_id:
+          type:
+          - string
+          - 'null'
+          description: The lookup ID of the gift.
+        error_code:
+          $ref: '#/components/schemas/InvalidInputErrorCode'
+        error_message:
+          type:
+          - string
+          - 'null'
+          description: The validation error message.
+        affected_field:
+          type:
+          - string
+          - 'null'
+          description: The field of the gift which failed validation.
+        exception_error_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the validation exception.
+        exception:
+          description: The validation exception.
+        hard_exception:
+          type:
+          - boolean
+          - 'null'
+          description: Indicates if this is a hard exception.
+        batch_id:
+          type:
+          - string
+          - 'null'
+          description: The ID of the batch for when this exception is for a batch gift.
+      additionalProperties: false
+      description: An error with a gift.
+    BatchGiftErrorRecord:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: ID of the error record. Read Only.
+        gift_id:
+          type:
+          - string
+          - 'null'
+          description: The identifier of the gift
+        batch_id:
+          type:
+          - string
+          - 'null'
+          description: The identifier of the batch
+        lookup_id:
+          type:
+          - string
+          - 'null'
+          description: The lookup identifier for the gift
+        exception_error_name:
+          type:
+          - string
+          - 'null'
+          description: The batch gift error name
+        exception_error_code:
+          type:
+          - integer
+          - 'null'
+          description: The batch gift exception error code
+          format: int32
+        exception_error_message:
+          type:
+          - string
+          - 'null'
+          description: The batch gift exception error message
+        affected_field:
+          type:
+          - string
+          - 'null'
+          description: The batch gift field where the error occurred
+      additionalProperties: false
+      description: A validation error for a batch gift
+    GiftPostStatus:
+      title: GiftPostStatus
+      enum:
+      - NotPosted
+      - Posted
+      - DoNotPost
+      type: string
+      description: Defines possible post statuses for gifts.
+    GiftTributeAdd:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: ID of the gift tribute
+          example: '12345'
+        gift_legacy_id:
+          type:
+          - string
+          - 'null'
+          description: The record ID of the gift to which this tribute belongs.
+          example: '12345'
+        gift_lookup_id:
+          type:
+          - string
+          - 'null'
+          description: The lookup ID of the gift to which this tribute belongs.
+          example: Lookup-12345
+        parent_gift_date:
+          type:
+          - string
+          - 'null'
+          description: The date of the gift to validate.
+          format: date-time
+          deprecated: true
+        tribute_id:
+          type:
+          - string
+          - 'null'
+          description: Tribute record ID.
+          example: '12345'
+        tribute_type_id:
+          type:
+          - string
+          - 'null'
+          description: Tribute type ID.
+          example: '12345'
+        tribute_acknowledgees:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/GiftTributeAcknowledgeeAdd'
+          description: Validatable acknowledgees.
+        acknowledge_status:
+          $ref: '#/components/schemas/AcknowledgementStatus'
+      additionalProperties: false
+      description: Represents a tribute record.
+    BatchGiftRead:
+      type: object
+      properties:
+        extensions:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/BatchGiftExtensionListItem'
+          description: Extension data documents associated with this batch gift.
+        id:
+          type:
+          - string
+          - 'null'
+          description: ID of the batch gift
+        batch_number:
+          type:
+          - string
+          - 'null'
+          description: Batch number for the batch this gift is assigned to
+        date_added:
+          type:
+          - string
+          - 'null'
+          description: Date this batch gift was added to the system
+          format: date-time
+        custom_fields:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/BatchGiftCustomFieldRead'
+          description: Custom fields associated with the batch gift
+        batch_gift_errors:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/BatchGiftErrorRecord'
+          description: Validation errors
+        tributes:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/BatchGiftTribute'
+          description: Tributes associated with the batch gift
+        notes:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/BatchGiftNote'
+          description: Notes associated with the batch gift
+        installments:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/BatchGiftInstallment'
+          description: Installments created for this gift
+        installment_payments:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/BatchGiftInstallmentPayment'
+          description: Installment payments paid by this gift
+        parent_gift_id:
+          type:
+          - string
+          - 'null'
+          description: The linked parent gift ID for a recurring gift payment.
+        parent_is_manual:
+          type:
+          - boolean
+          - 'null'
+          description: 'Indicates whether the linked parent recurring gift currently processes payments
+
+            manually (true) or automatically (false). Computed fresh from the parent''s current
+
+            state on every read (not persisted) so it never goes stale if the parent''s automation
+
+            status changes after this payment row was saved. Null when the gift type is not
+
+            RecurringGiftPayment, the parent link could not be resolved, or the parent gift record
+
+            could not be found. False not just when the parent is explicitly automated, but also
+
+            when the found parent gift record''s automation state is unknown — this field fails
+
+            closed to "not manual" rather than assuming manual on unknown state. True whenever the
+
+            parent''s payment method isn''t one the installment engine actually automates (i.e. not
+
+            credit card or direct debit), regardless of NXTGift — a Cash/Check recurring gift is
+
+            always manual, even if NXTGift alone would suggest otherwise (mirrors
+
+            PaymentMethodExtensions.ResolveIsManual, already used the same way elsewhere in this
+
+            service, e.g. PledgeGiftService).'
+        row_sequence:
+          type:
+          - integer
+          - 'null'
+          description: 'The persisted display/sort order of this gift within its batch, read back from the
+
+            batch so the arranged order can be returned by the batch gift list endpoint.
+
+            May be null for gifts added before this feature shipped.'
+          format: int32
+        batch_id:
+          type:
+          - string
+          - 'null'
+          description: System ID of the batch to which this batch gift belongs
+        gift_splits:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/BatchGiftSplit'
+          description: The gift splits belonging to this batch gift
+        fundraiser_credits:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/BatchGiftFundraiserCredit'
+          description: The fundraiser credits belonging to this batch gift
+        soft_credits:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/BatchGiftSoftCredit'
+          description: The soft credits belonging to this batch gift
+        gift_date:
+          type:
+          - string
+          - 'null'
+          description: The date the gift was given.
+          format: date
+        gift_post_date:
+          type:
+          - string
+          - 'null'
+          description: The post date of the gift. Must be set if post status is NotPosted or Posted. Must be null if post status is DoNotPost.
+          format: date
+        marketing_source_code:
+          maxLength: 255
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: 'The gift''s marketing source code. Character limit: 255.'
+        mailing_id:
+          type:
+          - string
+          - 'null'
+          description: The gift's mailing identifier.
+        finder_number:
+          maximum: 10000000000000000000
+          minimum: 0
+          type:
+          - number
+          - 'null'
+          description: The gift's finder number. Digits behind the decimal are ignored.
+          format: double
+        lookup_id:
+          type:
+          - string
+          - 'null'
+          description: The gift's lookup ID.
+          example: Lookup-12345
+        amount:
+          $ref: '#/components/schemas/Currency'
+        comments:
+          maxLength: 255
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: 'Comments associated with the gift. Character limit: 255.'
+          example: This is a comment
+        constituent:
+          $ref: '#/components/schemas/GiftConstituent'
+        gift_post_status:
+          $ref: '#/components/schemas/GiftPostStatus'
+        gift_type:
+          $ref: '#/components/schemas/GiftType'
+        issuer_details:
+          $ref: '#/components/schemas/IssuerDetails'
+        origin:
+          type:
+          - string
+          - 'null'
+          description: The gift's origin.
+        payments:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/GiftPaymentRecord'
+          description: The gift's payments. Required for Recurring Gift type.
+        schedule:
+          $ref: '#/components/schemas/Schedule'
+        adjustment_notes:
+          type:
+          - string
+          - 'null'
+          description: The gift's adjustment notes. Used by the Adjustment Gift type.
+          example: Refunded gift
+        receipts:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/GiftReceipt'
+          description: The gift's receipts.
+        send_reminder:
+          type:
+          - boolean
+          - 'null'
+          description: Gets or sets the send reminder flag for pledge gifts. If no value is provided, it will default to true for pledges, false otherwise.
+          example: false
+        acknowledgements:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/GiftAcknowledgement'
+          description: The gift's acknowledgements.
+        gift_subtype:
+          $ref: '#/components/schemas/GiftSubtype'
+        anonymous:
+          type:
+          - boolean
+          - 'null'
+          description: Notes whether the gift should remain anonymous or not, i.e. do not publicly show the donor's name.
+          example: false
+        gift_code:
+          $ref: '#/components/schemas/CodeTableEntry'
+        gift_status:
+          $ref: '#/components/schemas/GiftStatus'
+        gift_status_date:
+          $ref: '#/components/schemas/FuzzyDate'
+        gift_constituency:
+          $ref: '#/components/schemas/CodeTableEntry'
+      additionalProperties: false
+      description: A batch gift record stored in the system
+    IssuerDetails:
+      type: object
+      properties:
+        issuer:
+          maxLength: 50
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: Issuer name
+          example: Google
+        symbol:
+          maxLength: 16
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: Issuer symbol
+          example: GOOG
+        units:
+          maximum: 2147483647
+          minimum: 0
+          type:
+          - integer
+          - 'null'
+          description: Number of units of stock
+          format: int32
+          example: 100
+        unit_price:
+          maximum: 9999999999999
+          minimum: 0
+          type:
+          - number
+          - 'null'
+          description: Median unit price
+          format: double
+          example: 90
+      additionalProperties: false
+      description: Represents issuer detils for a stock gift
+    BatchGiftSplit:
+      type: object
+      properties:
+        batch_gift_id:
+          type:
+          - string
+          - 'null'
+          description: ID of the batch gift to which this split belongs
+        batch_id:
+          type:
+          - string
+          - 'null'
+          description: ID of the batch to which this split belongs
+        gift_aid_qualification_method:
+          $ref: '#/components/schemas/GiftAidQualificationMethod'
+        sequence:
+          type:
+          - integer
+          - 'null'
+          description: The sequence
+          format: int32
+        donor_covered:
+          type:
+          - boolean
+          - 'null'
+          description: True if split represents donor covering some portion of the processing fees.
+          example: false
+        id:
+          type:
+          - string
+          - 'null'
+          description: The ID of the split.
+          example: '12345'
+        amount:
+          $ref: '#/components/schemas/Currency'
+        fund_id:
+          type:
+          - string
+          - 'null'
+          description: The ID of the fund to apply the amount to.
+          example: '1234'
+        campaign_id:
+          type:
+          - string
+          - 'null'
+          description: The ID of the campaign to apply the amount to.
+          example: '1234'
+        appeal_id:
+          type:
+          - string
+          - 'null'
+          description: The ID of the appeal to apply the amount to.
+          example: '1234'
+        package_id:
+          type:
+          - string
+          - 'null'
+          description: The ID of the package to apply the amount to.
+          example: '1234'
+      additionalProperties: false
+      description: A split for a batch gift
+    SoftCredit:
+      type: object
+      properties:
+        amount:
+          $ref: '#/components/schemas/Currency'
+        constituent_id:
+          type:
+          - string
+          - 'null'
+          description: The identifier of the recipient of the recognition credit.
+          example: '280'
+        constituent_name:
+          type:
+          - string
+          - 'null'
+          description: Name of the constituent being recognized
+          example: Robert Hernandez
+        legacy_id:
+          type:
+          - string
+          - 'null'
+          description: The legacy identifier of the recognition credit.
+          example: '12345'
+        credit_type:
+          $ref: '#/components/schemas/RecognitionCreditType'
+        sequence:
+          type:
+          - integer
+          - 'null'
+          description: The sequence number for the recognition credit.
+          format: int32
+          example: 1
+      additionalProperties: false
+      description: A soft credit for a gift.
+    BatchGiftTribute:
+      type: object
+      properties:
+        batch_gift_id:
+          type:
+          - string
+          - 'null'
+          description: ID of the batch gift to which this gift tribute belongs
+        batch_id:
+          type:
+          - string
+          - 'null'
+          description: ID of the batch to which this tribute belongs
+        tribute_id:
+          type:
+          - string
+          - 'null'
+          description: ID of the constituent tribute record
+        sequence:
+          type:
+          - integer
+          - 'null'
+          description: The sequence
+          format: int32
+        acknowledgees:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/BatchGiftTributeAcknowledgee'
+          description: Acknowledgees belonging to this gift tribute
+        acknowledge_status:
+          $ref: '#/components/schemas/GiftTributeAcknowledgeStatus'
+        can_view_honor_or_memorial_constituent:
+          type:
+          - boolean
+          - 'null'
+          description: Whether the user has permissions to view the constituent being honored or memorialized.
+        gift_tribute_id:
+          type:
+          - string
+          - 'null'
+          description: The gift tribute ID.
+        honor_or_memorial_constituent_id:
+          type:
+          - string
+          - 'null'
+          description: The constituent identifier for the person being honored or memorialized.
+        honor_or_memorial_constituent_name:
+          type:
+          - string
+          - 'null'
+          description: The constituent identifier for the person being honored or memorialized.
+        tribute_code:
+          type:
+          - string
+          - 'null'
+          description: The code table value of the tribute description.
+        tribute_description:
+          type:
+          - string
+          - 'null'
+          description: The tribute description from the code value.
+        tribute_type_code:
+          type:
+          - string
+          - 'null'
+          description: The code table value of the tribute type description.
+        tribute_type_description:
+          type:
+          - string
+          - 'null'
+          description: The tribute's type description from the code value.
+      additionalProperties: false
+      description: Represents a batch gift tribute record
+    TributeAcknowledgeeLookup:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: The system record ID of the tribute acknowledgee.
+      additionalProperties: false
+      description: A tribute acknowledgee to add.
+    GiftTributeAcknowledgeeAdd:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: The gift tribute acknowledgee ID.
+          example: '12345'
+        gift_legacy_id:
+          type:
+          - string
+          - 'null'
+          description: The gift's record ID.
+          example: '12345'
+        gift_lookup_id:
+          type:
+          - string
+          - 'null'
+          description: The gift's lookup ID.
+          example: Lookup-12345
+        tribute_id:
+          type:
+          - string
+          - 'null'
+          description: Tribute record ID.
+          example: '12345'
+        relationships_id:
+          type:
+          - string
+          - 'null'
+          description: Relationship record ID.
+          example: '12345'
+        letter:
+          $ref: '#/components/schemas/CodeTableEntry'
+        tribute_acknowledgee_id:
+          type:
+          - string
+          - 'null'
+          description: The tribute acknowledgee ID.
+          example: '12345'
+        letter_date:
+          type:
+          - string
+          - 'null'
+          description: The letter's date for table value.
+          format: date-time
+      additionalProperties: false
+      description: A validatable gift tribute acknowledgee.
+    GiftReceipt:
+      type: object
+      properties:
+        gift_legacy_id:
+          type:
+          - string
+          - 'null'
+          description: The legacy ID of the receipt's associated gift.
+          example: '12345'
+        receipt_amount:
+          $ref: '#/components/schemas/Currency'
+        receipt_status:
+          $ref: '#/components/schemas/ReceiptStatus'
+        receipt_date:
+          type:
+          - string
+          - 'null'
+          description: The receipt date. Deprecated. Please use the date property instead.
+          format: date-time
+          deprecated: true
+        date:
+          type:
+          - string
+          - 'null'
+          description: The receipt date.
+          format: date
+        receipt_number:
+          type:
+          - integer
+          - 'null'
+          description: The receipt number.
+          format: int32
+          example: 5555
+        sequence:
+          type:
+          - integer
+          - 'null'
+          description: The receipt's sequence.
+          format: int32
+          example: 1
+        receipt_stack:
+          $ref: '#/components/schemas/CodeTableEntry'
+      additionalProperties: false
+      description: Receipt information for a gift.
+    BatchGiftFundraiserCredit:
+      type: object
+      properties:
+        batch_gift_id:
+          type:
+          - string
+          - 'null'
+          description: ID of the batch gift to which this credit belongs
+        batch_id:
+          type:
+          - string
+          - 'null'
+          description: ID of the batch to which this credit belongs
+        amount:
+          $ref: '#/components/schemas/Currency'
+        constituent_id:
+          type:
+          - string
+          - 'null'
+          description: The identifier of the recipient of the recognition credit.
+          example: '280'
+        constituent_name:
+          type:
+          - string
+          - 'null'
+          description: Name of the constituent being recognized
+          example: Robert Hernandez
+        legacy_id:
+          type:
+          - string
+          - 'null'
+          description: The legacy identifier of the recognition credit.
+          example: '12345'
+        credit_type:
+          $ref: '#/components/schemas/RecognitionCreditType'
+        sequence:
+          type:
+          - integer
+          - 'null'
+          description: The sequence number for the recognition credit.
+          format: int32
+          example: 1
+      additionalProperties: false
+      description: A fundraiser credit on a batch gift
+    GiftConstituent:
+      required:
+      - id
+      type: object
+      properties:
+        id:
+          minLength: 1
+          type: string
+          description: The constituent's ID.
+          example: '12345'
+        name:
+          type:
+          - string
+          - 'null'
+          description: The constituent's name.
+          example: Robert Hernandez
+      additionalProperties: false
+      description: The constituent who makes a gift.
+    RecognitionCreditType:
+      title: RecognitionCreditType
+      enum:
+      - None
+      - SoftCredit
+      - Fundraiser
+      type: string
+      description: Contains possible recognition credit types.
+    AddEditBatchGift400ResponseTypesProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: 'A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".<br/><br/>Available values:<table><tr><th>type</th><th>detail</th></tr><tr><td>urn:blackbaud:model-validation-error</td><td>A model validation rule was violated, such as a missing required field.</td></tr><tr><td>urn:blackbaud:required-argument-not-assigned-value</td><td>The required argument ''{0}'' was not assigned a value.</td></tr><tr><td>urn:blackbaud:gift-argument-not-valid</td><td>There were issues with the contract: {0}</td></tr></table>'
+        title:
+          type:
+          - string
+          - 'null'
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type:
+          - integer
+          - 'null'
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: {}
+      description: The problem details when a 400 status code is returned for the GetBatchGift endpoint
+      x-bb-error-types:
+      - urn:blackbaud:model-validation-error
+      - urn:blackbaud:required-argument-not-assigned-value
+      - urn:blackbaud:gift-argument-not-valid
+    GiftType:
+      title: GiftType
+      enum:
+      - None
+      - Amendment
+      - OneTime
+      - GiftInKind
+      - GeneralLedgerReversal
+      - MatchingGiftPledge
+      - MatchingGiftPayment
+      - MatchingGiftWriteOff
+      - Other
+      - PlannedGift
+      - Pledge
+      - PledgePayment
+      - PledgeWriteOff
+      - RecurringGift
+      - RecurringGiftPayment
+      - Stock
+      - SoldStock
+      - Adjustment
+      type: string
+      description: Contains all possible gift types.
+    GiftTributeAcknowledgeStatus:
+      title: GiftTributeAcknowledgeStatus
+      enum:
+      - None
+      - Acknowledged
+      - NotAcknowledged
+      - DoNotAcknowledge
+      type: string
+      description: Contains the possible acknowledge status values for an acknowledgee.
+    AddGiftsToBatchResult:
+      type: object
+      properties:
+        added_batch_gifts:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/BatchGiftAdd'
+          description: List of added batch gifts
+        gift_validation_errors:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/GiftValidationError'
+          description: List of gift validation errors
+      additionalProperties: false
+      description: The result of add gifts to batch operation.
+    GiftAcknowledgement:
+      type: object
+      properties:
+        gift_legacy_id:
+          type:
+          - string
+          - 'null'
+          description: The legacy ID of the acknowledgement's associated gift.
+          example: '12345'
+        status:
+          $ref: '#/components/schemas/AcknowledgementStatus'
+        acknowledgement_date:
+          type:
+          - string
+          - 'null'
+          description: The acknowledgement's date. Deprecated. Please use the date property instead.
+          format: date-time
+          deprecated: true
+        date:
+          type:
+          - string
+          - 'null'
+          description: The acknowledgement's date.
+          format: date
+        letter:
+          $ref: '#/components/schemas/AcknowledgementLetter'
+        gift_lookup_id:
+          type:
+          - string
+          - 'null'
+          description: Lookupd ID of the acknowledgement's associated gift.
+          example: LookupId-12345
+      additionalProperties: false
+      description: Acknowledgement information for a gift.
+    BatchGiftTributeAcknowledgee:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: System ID of the acknowledgee record
+        batch_gift_id:
+          type:
+          - string
+          - 'null'
+          description: System ID of the batch gift to which this acknowledgee belongs
+        batch_id:
+          type:
+          - string
+          - 'null'
+          description: System ID of the batch to which this acknowledgee belongs
+        batch_gift_tribute_id:
+          type:
+          - string
+          - 'null'
+          description: System ID of the batch gift tribute to which this acknowledgee belongs
+        relationship_id:
+          type:
+          - string
+          - 'null'
+          description: System ID of the relationship this acknowledgee has with the constituent
+        relationship_code_value:
+          type:
+          - string
+          - 'null'
+          description: Name of the relationship this acknowledgee has with the constituent
+        acknowledge_date:
+          type:
+          - string
+          - 'null'
+          description: The acknowledgement date.
+          format: date-time
+        can_view:
+          type:
+          - boolean
+          - 'null'
+          description: Whether the user has permissions to view the acknowledgee.
+        contact_id:
+          type:
+          - string
+          - 'null'
+          description: The acknowledgee's contact ID (equivalent to acknowledgee's constituent ID).
+        acknowledgee_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the acknowledgee
+        acknowledged:
+          type:
+          - boolean
+          - 'null'
+          description: Whether the acknowledgee has acknowledged.
+        self_acknowledgee:
+          type:
+          - boolean
+          - 'null'
+          description: If the acknowledgee is a subject of the tribute.
+        letter_code:
+          type:
+          - string
+          - 'null'
+          description: The letter's code table value.
+        letter_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the letter.
+        relationship:
+          type:
+          - string
+          - 'null'
+          description: The relationship.
+        relationship_code:
+          type:
+          - string
+          - 'null'
+          description: The relationship's code table value.
+      additionalProperties: false
+      description: An acknowledgee for a batch gift tribute
+    InvalidInputErrorCode:
+      title: InvalidInputErrorCode
+      enum:
+      - InvalidPaymentConfigurationId
+      - RequiredArgumentNotAssignedValue
+      - GiftNegativeAmountArgumentFound
+      - GiftDateOutOfValidRange
+      - ScheduleStartDateMissing
+      - ScheduleInvalidFrequency
+      - ScheduleInvalidEndDate
+      - ScheduleInvalidStartDate
+      - DuplicateGiftChildItems
+      - GiftChildItemRequiredArgumentNotAssignedValue
+      - GiftChildItemAmountExceedsGiftAmount
+      - GiftSplitTotalAmountDoesNotEqualGiftAmount
+      - GiftPackageRequestedAppealNotSpecified
+      - GiftOnlyOneItemAllowed
+      - GiftUnsupportedPaymentMethod
+      - GiftArgumentNotValid
+      - GiftCheckNumberTooLong
+      - GiftChildItemInvalidGuid
+      - ChargeTransactionNotSupported
+      - CannotChargeDirectDebitWithoutAccountTokenOrTransactionId
+      - GiftChargeFirstPaymentInvalidDate
+      - GiftPaymentMethodInvalid
+      - GiftNonCheckPaymentMustNotHaveCheckDate
+      - GiftNonCheckNonDirectDebitPaymentMustNotHaveCheckNumber
+      - GiftNonCreditCardPaymentMustNotHaveCardholder
+      - GiftNonCreditCardPaymentMustNotHaveCardType
+      - GiftNonCreditCardPaymentMustNotHaveAuthorizationCode
+      - GiftDuplicateSplits
+      - GiftSplitMissingFundId
+      - GiftPaymentMissingAmount
+      - CannotChargeCreditCardWithoutTransactionId
+      - PaymentAmendmentMissingOriginalGift
+      - PaymentAmendmentIdAndOriginalGiftIdMismatch
+      - UpdatedGiftAmountLessThanAmountSubjectToVat
+      - UpdatedGiftAmountLessThanOpportunityAppliedAmount
+      - UpdatedGiftAmountLessThanTotalBenefitsAmount
+      - UpdatedRecurringGiftAmountToZero
+      - GiftDuplicateFundraisers
+      - GiftDuplicateRecognitionCredits
+      - GiftReceiptMustHaveValidReceiptStatus
+      - RecurringGiftCannotBeReceipted
+      - RecurringGiftCannotBeRefunded
+      - NonReceiptedGiftCannotHaveReceiptDate
+      - ReceiptedGiftMustHaveReceiptDate
+      - GiftOriginTooLong
+      - GiftOriginInvalidJSON
+      - GiftOriginMissingName
+      - PostedGiftCannotBeModified
+      - UnprovisionedBbpsAccount
+      - InvalidGiftStatusAmendGift
+      - InvalidScheduledInstallmentDateAmendGift
+      - AmendScheduleValidationNotAvailable
+      - DoNotPostGiftMustNotHavePostDate
+      - UnpostableGiftTypeMarkedPostable
+      - CFACombinationInvalid
+      - PledgeInstallmentNegativeAmountArgumentFound
+      - PledgeInstallmentDateMustBeSet
+      - PledgeInstallmentDateMustNotPrecedeGiftDate
+      - PledgeInstallmentsTotalDoesNotMatchGiftAmount
+      - PledgeInstallmentParentGiftIsNotPledge
+      - PledgeInstallmentArgumentNotValid
+      - NonStockGiftCannotHaveIssuerDetails
+      - InvalidGiftType
+      - GiftMustBeAPledgePaymentToApplyPayment
+      - SumOfAmountAppliedDoesNotEqualGiftAmount
+      - InstallmentsMustExistToApplyPayment
+      - ApplyPaymentCannotProvideDuplicateInstallments
+      - InstallmentPaymentAmountMustMatchInstallmentBalance
+      - PledgePaymentParentGiftIsNotPledge
+      - ProcessRefundRequestNotValid
+      - GiftPaymentMustHaveTransactionIdToProcessRefund
+      - GiftPaymentMethodMustBeCreditCardToProcessRefund
+      - GiftPaymentTransactionIdMustBeValidGuidToProcessRefund
+      - TransactionResultCodeMustBeApprovedToProcessRefund
+      - TransactionDateMustBeWithinOneYearToProcessRefund
+      - SoldStockDetailsArgumentNotValid
+      - GiftDateFiltersInvalid
+      - GiftPaymentMustBeGreaterThanZeroToProcessRefund
+      - TransactionIdCouldNotBeFound
+      - TransactionGatewayIdMustBeBBMSToProcessRefund
+      - GiftTypeCannotBeAmended
+      - InvalidGiftId
+      - UpdatePledgeInstallmentThatDoesNotExist
+      - AdjustingGiftAfterProcessingRefundFailed
+      - ConstituentIdNotFound
+      - GiftMustBePledgeToSendReminder
+      - InvalidBatchId
+      - DuplicatePledgeParentIdsProvided
+      - DonorCoverSplitLessThanDonorCoverAmount
+      - InvalidGiftStatus
+      - UpdateGiftStatusInvalidGiftStatus
+      - GiftFundraiserIsNotAnActiveFundraiser
+      - GiftAcknowledgementMustHaveValidAcknowledgementStatus
+      - NonAcknowledgedGiftCannotHaveAcknowledgementDate
+      - GiftWithAcknowledgementLetterHasAnInvalidAcknowledgementStatus
+      - GiftSubtypeInvalid
+      - GiftReceiptStackDoesNotExist
+      - GiftReceiptStackNotUnique
+      - GiftReceiptHasStackFieldsButCapabilityNotEnabled
+      - NonRecurringGiftCannotHaveSchedule
+      - LinkedRecurringGiftDoesNotExist
+      - CreditCardTypeInvalid
+      - GiftAccountNumberTooLong
+      - GiftReferenceNumberTooLong
+      - GiftNonCheckPaymentMustNotHaveDrawer
+      - GiftCodeInvalid
+      - GiftCustomFieldInvalidCategoryId
+      - GiftCustomFieldActiveCategoryDoesNotExist
+      - CustomFieldDescriptionDoesNotMatchCategoryDataType
+      - GiftCustomFieldCommentTooLong
+      - GiftCustomFieldInvalidCodeTable
+      - GiftCustomFieldInvalidNumericValue
+      - GiftCustomFieldTextValueTooLong
+      - GiftCustomFieldCurrencyValueInvalid
+      - GiftCustomFieldFuzzyDateValueInvalid
+      - GiftCustomFieldsMultipleOnePerRecordTypeCategoriesAdded
+      - GiftCustomFieldConstituentDoesNotExist
+      - GiftConstituencyInvalid
+      - GiftAcknowledgementLetterInvalid
+      - ChargeTransactionNotSupportedForGiftType
+      - GiftTypeNotPermitted
+      - GiftTributeAcknowledgeeDoesNotExist
+      - GiftTributeDoesNotExist
+      - GiftTributeIsInactive
+      - GiftDateOutOfRangeOfGiftTribute
+      - GiftTributeAcknowledgeeLetterInvalid
+      - UnauthorizedException
+      - NumberOfInstallmentsMustBePositive
+      - PledgeInstallmentGenerationNumberOfInstallmentsAndEndDateSet
+      - InvalidNumberOfInstallmentsForSingleSchedule
+      - PledgeScheduleInvalid
+      - RequestedGiftLookupIdOutOfRange
+      - CannotUpdateGiftInApprovedBatch
+      - CannotAddGiftToApprovedBatch
+      - PledgeWithSingleFrequencyMustHaveExactlyOneInstallment
+      - AutomatedPledgeInstallmentUpdateMustBeAfterToday
+      - InvalidId
+      - CanadianDirectDebitRequiresPADMandateUrl
+      - PADMandatesAreInvalidForGift
+      - GiftTributeAlreadyExists
+      - InvalidTributeId
+      - AcknowledgeeNotAssociatedWithTribute
+      - DuplicateGiftOpportunityItem
+      - GiftOpportunityArgumentNotValid
+      - UpdateGiftOpportunityThatDoesNotExist
+      - GiftOpportunityAmountCannotExceedGiftAmount
+      - InvalidOpportunityId
+      - GiftOpportunityArgumentEmpty
+      - DeleteGiftOpportunityThatDoesNotExist
+      - CannotChargeDirectDebitWithoutTransactionId
+      - GiftPaymentInformationNotAvailableForAmendment
+      - PledgeScheduleAmountMustBeAtLeastOneToBeDistributedToMoreThanOneInstallment
+      - StockIssuerDetailsArgumentNotValid
+      - InvalidApplyPaymentsForBatchRecurringPayment
+      - NumberOfInstallmentsExceedsMaxAmount
+      - CanadianDirectDebitGiftCannotBeAdded
+      - PledgeWithIrregularScheduleMustHaveInstallments
+      - GiftWithDonorCoverCannotBeAppliedToPledge
+      - PledgePaymentInstallmentCannotBeAppliedToPastOrCurrentAutomatedInstallments
+      - LookupIdNotUnique
+      - UKDirectDebitGiftCannotBeAdded
+      - UKDirectDebitRequiresMandateUrl
+      - AustralianDirectDebitGiftCannotBeAdded
+      - AustralianDirectDebitRequiresMandateUrl
+      - TransactionCaptureFailedWithProvidedTransactionId
+      - TransactionDetailsUpdateFailed
+      - NumberOfTransactionIdsProvidedExceedsLimit
+      - GiftCustomFieldCategoryIsInactive
+      - DuplicatePersistentKeysInRequest
+      - PersistentKeyAlreadyExists
+      - InvalidExtensionId
+      - MissingIfMatchHeader
+      - GiftIdsCountOutOfRange
+      - GiftUpdateAmountLockedByTransaction
+      - GiftUpdateFieldLockedByAdjustment
+      - GiftUpdateCannotSetPostStatusToPosted
+      - GiftUpdateReceiptAmountCannotBeSet
+      - GiftUpdateReceiptAmountExceedsGiftAmount
+      - GiftUpdateAmountLessThanMaxOpportunityAmount
+      - GiftUpdateFieldLockedByClaimNumber
+      - RecurringGiftPaymentAmountLockedByAutomatedRecurringGift
+      - PledgePaymentAmountOrSplitsRequireActiveUnpostedAdjustment
+      - PledgePaymentAmountLockedByAutomatedPledge
+      - RecurringGiftDateMustNotExceedScheduleStartDate
+      - RecurringGiftAmountMustBeChangedViaAmendment
+      - RecurringGiftSplitsMustBeChangedViaAmendment
+      - RecurringGiftReceiptStatusMustBeDoNotReceipt
+      - RecurringGiftPostStatusMustBeDoNotPost
+      - PledgeGiftDateMustNotExceedFirstInstallmentDate
+      - PledgeAmountChangesNotCurrentlySupported
+      - PledgePaymentAmountChangesNotCurrentlySupported
+      - CurrencyFieldReadOnly
+      - CurrencyFieldNotValidForGiftType
+      - GiftTributeTypeInvalid
+      - ControlReportNotAvailable
+      - ControlReportAlreadyExists
+      - DuplicateImportEntityIdsInRequest
+      - GiftUpdateIssuerDetailsOnlyAllowedOnStockOrSoldStockGift
+      - GiftUpdateSoldStockDetailsOnlyAllowedOnSoldStockGift
+      - GiftUpdateSoldStockSaleValueLockedOnPostedGift
+      - GiftUpdateSoldStockBrokerFeeLockedOnPostedGift
+      - GiftUpdateSoldStockPostStatusLockedOnPostedGift
+      - GiftUpdateSoldStockPostDateLockedOnPostedGift
+      - RecurringGiftPaymentParentGiftIsNotRecurringGift
+      - PledgePaymentParentGiftIsRecurringGift
+      - RecurringGiftPaymentAmountLessThanScheduledInstallmentAmount
+      - RecurringGiftPaymentParentGiftIsNotManual
+      - RecurringGiftPaymentParentGiftIsNotActive
+      - RecurringGiftPaymentParentGiftIsInvalid
+      - RecurringGiftPaymentDuplicateInstallmentDate
+      - GiftTypeNotAdjustable
+      - UnpostedAdjustmentAlreadyExists
+      - AdjustmentBlockedByPendingTransaction
+      - AdjustmentIdNotFound
+      - GiftUpdateAmountMustNotBeNegative
+      - OverpaymentAmountOnlyValidForPledgePayment
+      - OverpaymentAmountRequiresPledgeApplication
+      - OverpaymentAmountInconsistentWithPledgeBalance
+      - OverpaymentAmountMustBePositive
+      - OverpaymentAmountExceedsGiftAmount
+      - RecurringGiftCannotBeLinkedToOpportunity
+      - BatchGiftNoteTypeIdRequired
+      - BatchGiftNoteTypeIdInvalid
+      - BatchGiftNoteDateInvalid
+      - GiftSplitCFAIdInvalidFormat
+      - PledgePaymentGiftAmountMustBePositive
+      - MatchingGiftPledgeMatchedGiftIdRequired
+      - MatchingGiftPledgeMatchedGiftDoesNotExist
+      - MatchingGiftPledgeMatchedGiftTypeNotMatchable
+      - MatchingGiftPledgeCannotMatchOwnDonor
+      - MatchingGiftPledgeConstituentMustBeOrganization
+      - MatchingGiftPledgeDuplicateMatchingCompany
+      - MatchingGiftPledgeNumberOfInstallmentsMustBeOne
+      - MatchingGiftPledgeFrequencyMustBeSingle
+      - MatchingGiftPledgePledgeInstallmentsMustNotExceedOne
+      - SkipInstallmentsDatesExceedsMaximum
+      - SkipInstallmentsGiftIsNotRecurringGift
+      - SkipInstallmentsGiftIsNotManual
+      - SkipInstallmentsInvalidGiftStatus
+      - SkipInstallmentsDatesRequired
+      - SkipInstallmentsDatesStale
+      - SkipInstallmentsCountInvalid
+      - SkipInstallmentsScheduleCannotAdvance
+      - GiftUpdatePaymentMethodInvalid
+      - GiftUpdateUnsupportedPaymentMethod
+      - BatchGiftRowSequenceRequestInvalid
+      - LinkedGiftsRequireExplicitRefund
+      - ManualRecurringGiftCannotChargeFirstPayment
+      - PledgeEditInstallmentTotalMismatch
+      - PledgeEditInstallmentDatesNotChronological
+      - PledgeEditInstallmentBelowAppliedPayments
+      - PledgeEditInstallmentAmountNegative
+      - PledgeEditAutomatedInstallmentDateInPast
+      - PledgeAdjustmentAlreadyPosted
+      - PledgeEditInstallmentsRequireAdjustment
+      - PledgeEditInstallmentsRequireScheduleFrequency
+      - PledgeEditInvalidScheduleFrequency
+      - PledgeEditAmountRequiresInstallments
+      - GiftUpdateInstallmentsOnlyAllowedOnPledgeGift
+      - PledgeEditInstallmentsMustNotBeEmpty
+      - PledgeEditAutomatedInstallmentAmountInPast
+      - PledgePaymentAmountMustEqualInstallmentApplicationAmount
+      - InstallmentPaymentAmountCannotExceedInstallmentBalance
+      - PledgeAdjustmentInsufficientInstallmentsForPaymentRemap
+      - PledgePaymentInstallmentDistributionLockedByPostedAdjustment
+      - GiftUpdateScheduleOnlyAllowedOnPledgeGift
+      - PledgeInstallmentApplicationTotalMismatch
+      - PledgeInstallmentApplicationOverapplied
+      - PledgeInstallmentApplicationUnknownPaymentGift
+      - PledgeInstallmentApplicationAmountNegative
+      - PledgeInstallmentApplicationDuplicatePaymentGift
+      - PledgeInstallmentApplicationsRequired
+      - AdjustmentDeleteNotMostRecent
+      - AdjustmentDeletePosted
+      - GiftDeleteEligibilityNotSupported
+      - AdjustmentDeleteChainUnorderable
+      - AdjustmentDeletePreviousFundRestricted
+      - AdjustmentDeleteClaimedGiftAidMismatch
+      - PledgePaymentInstallmentCannotBeRemovedFromPastOrCurrentAutomatedInstallments
+      - PledgePaymentCannotBeRemovedFromAutomatedPledge
+      - AdjustmentDeleteNotLinkedToParent
+      - AdjustmentDeleteRestoreSourceInvalid
+      - AdjustmentDeleteInstallmentScheduleAmbiguous
+      - AdjustmentDeleteInstallmentScheduleAmountMismatch
+      - AdjustmentDeleteInstallmentScheduleMissing
+      - AdjustmentDeleteInstallmentApplicationInvalid
+      type: string
+      description: Error codes for invalid input
+    PaymentMethod:
+      title: PaymentMethod
+      enum:
+      - None
+      - Cash
+      - Check
+      - CreditCard
+      - StandingOrder
+      - DirectDebit
+      - Voucher
+      - Other
+      - PayPal
+      - Venmo
+      type: string
+      description: The eligible payment methods options on the add gift form.
+    ApplyPayment:
+      type: object
+      properties:
+        installments:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ApplyPaymentInstallment'
+          description: A collection of installments the payment should be applied to
+        parent_id:
+          type:
+          - string
+          - 'null'
+          description: The identifier for the payment's parent gift
+          example: '12345'
+        concurrency_id:
+          type:
+          - string
+          - 'null'
+          description: The concurrency ID for this pledge. Retrieved from the GET endpoint.
+          example: 217f8ca6-8e10-4a6f-b1e0-5f186afa1ba7
+      additionalProperties: false
+      description: The payment to apply to an installment when adding a pledge payment gift
+    GiftPaymentRecord:
+      type: object
+      properties:
+        gift_legacy_id:
+          type:
+          - string
+          - 'null'
+          description: The legacy ID of the payment's associated gift.
+          example: '12345'
+        amount:
+          $ref: '#/components/schemas/Currency'
+        method:
+          $ref: '#/components/schemas/PaymentMethod'
+        account_details:
+          $ref: '#/components/schemas/PaymentAccountDetails'
+        account_token:
+          type:
+          - string
+          - 'null'
+          description: The account token from BBPS.
+          example: 3e8f5c58-737d-4255-abde-9cfe236c230e
+        authorization_code:
+          type:
+          - string
+          - 'null'
+          description: The authorization code, for credit card payments.
+          example: '54321'
+        check_dt:
+          $ref: '#/components/schemas/FuzzyDate'
+        check_number:
+          type:
+          - string
+          - 'null'
+          description: The check number, for check and direct debit payments.
+          example: '2001'
+        checkout_transaction_id:
+          type:
+          - string
+          - 'null'
+          description: The checkout transaction ID from BB Checkout.
+          format: uuid
+          example: 6781faab-0eeb-41b2-ba1e-cdfd20669f81
+        bbps_transaction_id:
+          type:
+          - string
+          - 'null'
+          description: The BBPS transaction ID from BB Checkout or BB Payment Services.
+          format: uuid
+          example: edcd3d4c-116b-4f33-9462-dcdcfaf49eea
+        configuration_id:
+          type:
+          - string
+          - 'null'
+          description: The Payment Configuration ID used for this transaction.
+          format: uuid
+          example: ca5b9a59-633c-40e8-9242-81d59b83a29d
+        reference_dt:
+          $ref: '#/components/schemas/FuzzyDate'
+        reference_number:
+          type:
+          - string
+          - 'null'
+          description: The reference number.
+          example: 555-6666
+        charge_transaction:
+          type:
+          - boolean
+          - 'null'
+          description: True if the transaction should be completed. Requires a Checkout Transaction ID.
+        pad_mandates:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/PadMandate'
+          description: The URLs of the mandates.
+        processing_status:
+          $ref: '#/components/schemas/ProcessingStatus'
+      additionalProperties: false
+      description: A payment for a gift being added.
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".
+        title:
+          type:
+          - string
+          - 'null'
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type:
+          - integer
+          - 'null'
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: {}
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+    ApplyPaymentInstallment:
+      required:
+      - amount_applied
+      - installment_id
+      type: object
+      properties:
+        installment_id:
+          minLength: 1
+          type: string
+          description: The identifier for the installment to apply the payment.
+          example: '34567'
+        amount_applied:
+          maximum: 9999999999999
+          minimum: 0
+          type: number
+          description: The amount to apply to the specified installment.
+          format: double
+          example: 25
+      additionalProperties: false
+      description: Represents the details provided when applying a payment to an installment.
+    BatchGiftAdd:
+      required:
+      - amount
+      - constituent
+      - gift_type
+      type: object
+      properties:
+        gift_splits:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/BatchGiftSplitAdd'
+          description: The gift splits belonging to this batch gift.
+        batch_gift_id:
+          type:
+          - string
+          - 'null'
+          description: System ID of the batch gift.
+          example: '12345'
+        batch_id:
+          type:
+          - string
+          - 'null'
+          description: ID of the batch which this gift belongs to
+          example: '12345'
+        tributes:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/GiftTributeAdd'
+          description: Tributes for this batch gift
+        notes:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/BatchGiftNote'
+          description: Notes for this batch gift
+        gift_date:
+          type:
+          - string
+          - 'null'
+          description: The date the gift was given.
+          format: date
+        gift_post_date:
+          type:
+          - string
+          - 'null'
+          description: The post date of the gift. Must be set if post status is NotPosted or Posted. Must be null if post status is DoNotPost.
+          format: date
+        row_sequence:
+          type:
+          - integer
+          - 'null'
+          description: The row sequence within the batch (display/sort order) that will be persisted for this gift.
+          format: int32
+        marketing_source_code:
+          maxLength: 255
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: 'The gift''s marketing source code. Character limit: 255.'
+        mailing_id:
+          type:
+          - string
+          - 'null'
+          description: The gift's mailing identifier.
+        finder_number:
+          maximum: 10000000000000000000
+          minimum: 0
+          type:
+          - number
+          - 'null'
+          description: The gift's finder number. Digits behind the decimal are ignored.
+          format: double
+        amount:
+          $ref: '#/components/schemas/Currency'
+        gift_type:
+          $ref: '#/components/schemas/GiftType'
+        constituent:
+          $ref: '#/components/schemas/GiftConstituent'
+        apply_payments:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ApplyPayment'
+          description: Applies partial payments to multiple pledges.
+        charge_first_payment:
+          type:
+          - boolean
+          - 'null'
+          description: True if a recurring gift payment should be charged immediately. Only applicable for recurring gifts.
+        parent_gift_id:
+          type:
+          - string
+          - 'null'
+          description: 'The linked parent gift ID. For a recurring gift payment this is the parent recurring gift;
+
+            for a matching gift pledge it is the matched gift the pledge is matching.'
+        custom_fields:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/GiftCustomFieldAdd'
+          description: Gets or sets the custom fields.
+        processes_manually:
+          type:
+          - boolean
+          - 'null'
+          description: 'Indicates whether the gift processes payments manually (true) or automatically (false).
+
+            When null, defaults based on payment method: CC/DD = false (automated), all others = true (manual).'
+          example: false
+        pledge_installments:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/PledgeInstallmentAdd'
+          description: Pledge installments
+        vehicle:
+          $ref: '#/components/schemas/Vehicle'
+        lookup_id:
+          type:
+          - string
+          - 'null'
+          description: The gift's lookup ID.
+          example: Lookup-12345
+        comments:
+          maxLength: 255
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: 'Comments associated with the gift. Character limit: 255.'
+          example: This is a comment
+        gift_post_status:
+          $ref: '#/components/schemas/GiftPostStatus'
+        issuer_details:
+          $ref: '#/components/schemas/IssuerDetails'
+        origin:
+          type:
+          - string
+          - 'null'
+          description: The gift's origin.
+        payments:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/GiftPaymentRecord'
+          description: The gift's payments. Required for Recurring Gift type.
+        schedule:
+          $ref: '#/components/schemas/Schedule'
+        adjustment_notes:
+          type:
+          - string
+          - 'null'
+          description: The gift's adjustment notes. Used by the Adjustment Gift type.
+          example: Refunded gift
+        receipts:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/GiftReceipt'
+          description: The gift's receipts.
+        fundraiser_credits:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/FundraiserCredit'
+          description: The gift's fundraiser credits.
+        soft_credits:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SoftCredit'
+          description: The gift's soft credits.
+        send_reminder:
+          type:
+          - boolean
+          - 'null'
+          description: Gets or sets the send reminder flag for pledge gifts. If no value is provided, it will default to true for pledges, false otherwise.
+          example: false
+        acknowledgements:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/GiftAcknowledgement'
+          description: The gift's acknowledgements.
+        gift_subtype:
+          $ref: '#/components/schemas/GiftSubtype'
+        anonymous:
+          type:
+          - boolean
+          - 'null'
+          description: Notes whether the gift should remain anonymous or not, i.e. do not publicly show the donor's name.
+          example: false
+        gift_code:
+          $ref: '#/components/schemas/CodeTableEntry'
+        gift_status:
+          $ref: '#/components/schemas/GiftStatus'
+        gift_status_date:
+          $ref: '#/components/schemas/FuzzyDate'
+        gift_constituency:
+          $ref: '#/components/schemas/CodeTableEntry'
+      additionalProperties: false
+      description: A new batch gift to be added
+    BatchGiftInstallmentPayment:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: System ID of this batch gift installment payment
+        amount:
+          type:
+          - number
+          - 'null'
+          description: Amount of this installment payment
+          format: double
+        batch_id:
+          type:
+          - string
+          - 'null'
+          description: System ID of the batch to which this installment payment belongs
+        batch_gift_id:
+          type:
+          - string
+          - 'null'
+          description: System ID of the batch gift to which this installment payment belongs
+        installment_id:
+          type:
+          - string
+          - 'null'
+          description: System ID of the installment paid by this batch installment payment
+        pledge_id:
+          type:
+          - string
+          - 'null'
+          description: System ID of the pledge gift paid by this batch installment payment
+        payment_id:
+          type:
+          - string
+          - 'null'
+          description: Payment ID of this batch installment payment.
+        pledge_constituent:
+          $ref: '#/components/schemas/GiftConstituent'
+        pledge_is_automated:
+          type:
+          - boolean
+          - 'null'
+          description: Flag indicating if this installment payment is for an automated pledge.
+      additionalProperties: false
+      description: Installment payment for a pledge or recurring gift paid by a batch gift
+    ExtensionException:
+      type: object
+      properties:
+        error_message:
+          type:
+          - string
+          - 'null'
+          description: The error message describing the validation failure.
+        affected_field:
+          type:
+          - string
+          - 'null'
+          description: The JSON path of the field that caused the validation failure.
+      additionalProperties: false
+      description: A validation exception for an extension.
+    ReceiptStatus:
+      title: ReceiptStatus
+      enum:
+      - None
+      - Receipted
+      - NotReceipted
+      - DoNotReceipt
+      type: string
+      description: Contains all possible values for receipt status.
+    GiftAidQualificationMethod:
+      title: GiftAidQualificationMethod
+      enum:
+      - None
+      - ApplyRulesWhenSaving
+      - SetAsQualified
+      - SetAsNotQualified
+      type: string
+      description: 'This computed field determines the Gift Aid qualification status based on tax declaration information and the database format. Available values are: <i>Qualified</i>, <i>NotQualified</i>, and <i>PartlyQualified</i>. For the UK only.'
+    TributeLookup:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: The system record ID of the tribute.
+        tribute_acknowledgees:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/TributeAcknowledgeeLookup'
+          description: The acknowledgees for this tribute record to add with a gift tribute.
+      additionalProperties: false
+      description: A tribute to add.
+    BatchGiftSoftCredit:
+      type: object
+      properties:
+        batch_gift_id:
+          type:
+          - string
+          - 'null'
+          description: ID of the batch gift to which this credit belongs
+        batch_id:
+          type:
+          - string
+          - 'null'
+          description: ID of the batch to which this credit belongs
+        amount:
+          $ref: '#/components/schemas/Currency'
+        constituent_id:
+          type:
+          - string
+          - 'null'
+          description: The identifier of the recipient of the recognition credit.
+          example: '280'
+        constituent_name:
+          type:
+          - string
+          - 'null'
+          description: Name of the constituent being recognized
+          example: Robert Hernandez
+        legacy_id:
+          type:
+          - string
+          - 'null'
+          description: The legacy identifier of the recognition credit.
+          example: '12345'
+        credit_type:
+          $ref: '#/components/schemas/RecognitionCreditType'
+        sequence:
+          type:
+          - integer
+          - 'null'
+          description: The sequence number for the recognition credit.
+          format: int32
+          example: 1
+      additionalProperties: false
+      description: A soft credit on a batch gift
+    PledgeInstallmentAdd:
+      type: object
+      properties:
+        adjustment_id:
+          type:
+          - string
+          - 'null'
+          description: 'The ID of the pledge''s most recent adjustment. If the pledge has not been adjusted, this is the ID of the pledge.
+
+            If no value is provided, this will default to the ID of the pledge.'
+          example: '12345'
+        amount:
+          type: number
+          description: The amount of the installment.
+          format: double
+          example: 25
+        year:
+          type:
+          - integer
+          - 'null'
+          description: The year field.
+          format: int32
+          example: 2024
+        date:
+          type:
+          - string
+          - 'null'
+          description: The date of the installment.
+          format: date-time
+      additionalProperties: false
+      description: A single installment for a pledge.
+    Currency:
+      required:
+      - value
+      type: object
+      properties:
+        value:
+          maximum: 9999999999999
+          minimum: 0
+          type: number
+          description: The amount.
+          format: double
+          example: 123.45
+      additionalProperties: false
+      description: An amount denominated in a specific currency.
+    GetBatchGift400ResponseTypesProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".<br/><br/>Available values:<table><tr><th>type</th><th>detail</th></tr><tr><td>urn:blackbaud:model-validation-error</td><td>A model validation rule was violated, such as a missing required field.</td></tr><tr><td>urn:blackbaud:required-argument-not-assigned-value</td><td>The required argument '{0}' was not assigned a value.</td></tr></table>
+        title:
+          type:
+          - string
+          - 'null'
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type:
+          - integer
+          - 'null'
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: {}
+      description: The problem details when a 400 status code is returned for the GetBatchGift endpoint
+      x-bb-error-types:
+      - urn:blackbaud:model-validation-error
+      - urn:blackbaud:required-argument-not-assigned-value
+    BatchGiftCustomFieldRead:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: ID of the batch gift custom field
+        batch_gift_id:
+          type:
+          - string
+          - 'null'
+          description: ID of the batch gift to which this custom field belongs
+        batch_id:
+          type:
+          - string
+          - 'null'
+          description: ID of the batch to which this custom field belongs
+        text_value:
+          type:
+          - string
+          - 'null'
+          description: Text value of a text or fuzzy date custom field
+        numeric_value:
+          type:
+          - integer
+          - 'null'
+          description: Numeric value of a numeric custom field
+          format: int32
+        date_value:
+          type:
+          - string
+          - 'null'
+          description: Date value of a date custom field
+          format: date-time
+        currency_value:
+          type:
+          - number
+          - 'null'
+          description: Currency value of a currency custom field
+          format: double
+        boolean_value:
+          type:
+          - boolean
+          - 'null'
+          description: Boolean value of a boolean custom field
+        table_entry_id_value:
+          type:
+          - integer
+          - 'null'
+          description: Table entry ID of a table custom field
+          format: int32
+        table_entry_value:
+          type:
+          - string
+          - 'null'
+          description: Long description of a table value custom field
+        constituent_id_value:
+          type:
+          - integer
+          - 'null'
+          description: Constituent ID of a constituent custom field
+          format: int32
+        constituent_name_value:
+          type:
+          - string
+          - 'null'
+          description: Name of the constituent, if this is a constituent type field
+        data_type:
+          $ref: '#/components/schemas/CustomFieldDataType'
+        sequence:
+          type:
+          - integer
+          - 'null'
+          description: Sequence of this custom field within the gift
+          format: int32
+        category:
+          type:
+          - string
+          - 'null'
+          description: The category ID, foreign key to ATTRIBUTETYPES.
+          example: '6666'
+        comment:
+          type:
+          - string
+          - 'null'
+          description: The comment.
+          example: Comment
+        date:
+          type:
+          - string
+          - 'null'
+          description: The date.
+          format: date-time
+        description:
+          type:
+          - string
+          - 'null'
+          description: The value of the custom field. This is the string-encoded value, its actual type will need to be parsed based on the type of the category.
+          example: Custom field description
+        category_instance:
+          type:
+          - integer
+          - 'null'
+          description: The instance number of the batch custom field to differentiate category instances.
+          format: int32
+          example: 2
+      additionalProperties: false
+      description: Represents a sing custom field on a batch record.
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

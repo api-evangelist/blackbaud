@@ -1,0 +1,76 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Accounts Payable Boxnumbers API'
+  description: This API is used to manage accounts payable, including vendors and invoices.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/57a342f1d7dcde1c28a749fe
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/accountspayable/v1
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Boxnumbers
+paths:
+  /boxnumbers:
+    get:
+      operationId: ListBoxNumberValues
+      summary: Box number value (List)
+      description: Returns a list of 1099 box number values.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains a list of 1099 box number values.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StringApiCollection'
+              example:
+                count: 14
+                value:
+                - 1-Rents
+                - 2-Royalties
+                - 3-Other income
+                - 4-Federal Income tax withheld
+                - 5-Fishing boat proceeds
+                - 6-Medical and health care payments
+                - 7-Nonemployee compensation
+                - 8-Substitute payments
+                - 10-Crop insurance proceeds
+                - 13-Excess golden parachute payments
+                - 14-Gross proceeds paid to an attorney
+                - 15a-Section 409A deferrals
+                - 15b-Section 409A income
+                - 16-State tax withheld
+      tags:
+      - Boxnumbers
+components:
+  schemas:
+    StringApiCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+      additionalProperties: false
+      description: Collection Response
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

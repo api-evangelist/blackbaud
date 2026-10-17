@@ -1,0 +1,1821 @@
+openapi: 3.2.0
+info:
+  title: Blackbaud Activities API
+  version: '1.0'
+  x-refined-note:
+  - x-apievangelist-provenance differs across the merged source definitions and was not carried
+  description: 'Operations tagged Activities across 3 of this provider''s published API definitions: blackbaud-grantmaking-api-openapi.yml, blackbaud-grantsconnect-api-openapi.yml, blackbaud-school-api-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.sky.blackbaud.com/grantmaking
+- url: https://api.sky.blackbaud.com/grants-connect
+- url: https://api.sky.blackbaud.com/school
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Activities
+paths:
+  /api/v1/activities/classifications:
+    get:
+      operationId: GetActivityClassifications
+      summary: Gets the classifications for Activities
+      description: Fetches the coding tables associated with the Activities.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationResponse'
+              example:
+                classifications:
+                - code_table_id: 0
+                  code_table:
+                  - id: 0
+                    code: string
+                    description: string
+                    description_with_code: string
+                    full_path_description_code: string
+                    full_path_description: string
+                    depth: 0
+                    parent_id: 0
+                    is_active: true
+                    full_path: string
+                    full_path_with_code: string
+      tags:
+      - Activities
+    servers:
+    - url: https://api.sky.blackbaud.com/grantmaking
+  /api/v1/activities/search:
+    post:
+      operationId: SearchActivity
+      summary: Search for Activities which meet the provided criteria
+      description: Fetches Grantmaking Activities that meet the provided search criteria.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ActivitySearchRequest'
+            example:
+              id: 0
+              class_id: 0
+              type_id: 0
+              done_date:
+                start_date: string
+                end_date: string
+                is: string
+              received_date:
+                start_date: string
+                end_date: string
+                is: string
+              request_id: string
+              staff_id: string
+              contact_id: string
+              organization_id: string
+              create_date:
+                start_date: string
+                end_date: string
+                is: string
+              change_date:
+                start_date: string
+                end_date: string
+                is: string
+              custom_fields:
+              - string
+              per_page: 0
+              page: 0
+        description: An instance of Blackbaud.CFS.MiddlewareService.DataAccess.Models.SKYAPI.Activity.ActivitySearchRequest.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActivitySearchResponse'
+              example:
+                activities:
+                - id: 0
+                  request:
+                    request_id: string
+                    project_title: string
+                    disposition: string
+                  organization:
+                    organization_id: string
+                    name: string
+                  contact:
+                    email: string
+                    contact_id: string
+                    name: string
+                  payment:
+                    id: 0
+                    amount: 0
+                  type:
+                    classification_id: 0
+                    code: string
+                    description: string
+                  class:
+                    classification_id: 0
+                    code: string
+                    description: string
+                  schedule_date: string
+                  duration: 0
+                  done_date: string
+                  staff:
+                    login_id: string
+                    name: string
+                  is_done: true
+                  notes: string
+                  long_notes: string
+                  branch:
+                    classification_id: 0
+                    code: string
+                    description: string
+                  create_date: string
+                  change_date: string
+                  custom_fields: {}
+      tags:
+      - Activities
+    servers:
+    - url: https://api.sky.blackbaud.com/grantmaking
+  /api/v1/activities/{activity_id}:
+    get:
+      operationId: GetActivity
+      summary: Return an Activity
+      description: Fetches an Activity from the Grantmaking system.
+      parameters:
+      - name: activity_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: An activity ID.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiActivity'
+              example:
+                id: 0
+                request:
+                  request_id: string
+                  project_title: string
+                  disposition: string
+                organization:
+                  organization_id: string
+                  name: string
+                contact:
+                  email: string
+                  contact_id: string
+                  name: string
+                payment:
+                  id: 0
+                  amount: 0
+                type:
+                  classification_id: 0
+                  code: string
+                  description: string
+                class:
+                  classification_id: 0
+                  code: string
+                  description: string
+                schedule_date: string
+                duration: 0
+                done_date: string
+                staff:
+                  login_id: string
+                  name: string
+                is_done: true
+                notes: string
+                long_notes: string
+                branch:
+                  classification_id: 0
+                  code: string
+                  description: string
+                create_date: string
+                change_date: string
+                custom_fields: {}
+      tags:
+      - Activities
+    servers:
+    - url: https://api.sky.blackbaud.com/grantmaking
+  /v1/activities/{application_id}:
+    post:
+      operationId: SearchGrantActivities
+      summary: Search grant program activity (PREVIEW)
+      description: 'Retrieves information about grant activities.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: application_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The identifier of the application for which to retrieve the grant activities.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApplyFiltersForGrantActivityDetails'
+            example:
+              id: 1
+              application_id: 1001
+              applicant_name: John Doe
+              grant_program_name: Community Support Grant
+              organization_name: Community Organization
+              work_flow_level_name: Initial Review
+              grant_program_cycle_name: 2024 Cycle
+              previous_work_flow_level_name: Submission
+              previous_grant_program_cycle_name: 2023 Cycle
+              form_name: Grant Application Form
+              activity_type_id: 2
+              activity_type_name: Submission
+              comment: Application submitted successfully.
+              date_added: '2025-01-01T12:00:00Z'
+              nomination: false
+              assigned_budget_name: General Fund
+              assigned_funding_source_name: Donor A
+              form_due_date: '2025-01-31T12:00:00Z'
+              form_id: 501
+              archive_reason_code: 2
+              currency_requested: USD
+              limit: 50
+              page: 1
+              date_modified: '2025-01-01T12:00:00Z'
+              include_inactive: false
+        description: Specifies the conditions of the grant activities to search. If no filter is provided, the response will return all grant activities.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReturnPaginatedGrantActivityRecords'
+              example:
+                records:
+                - id: 1
+                  application_id: 12345
+                  applicant_name: Applicant Name
+                  grant_program_name: Program Name
+                  organization_name: Organization Name
+                  work_flow_level_name: Workflow Level
+                  grant_program_cycle_name: Cycle Name
+                  previous_work_flow_level_name: Previous Workflow Level
+                  previous_grant_program_cycle_name: Previous Cycle Name
+                  form_name: Form Name
+                  activity_type_id: 3
+                  activity_type_name: Activity Type Name
+                  comment: This is a comment.
+                  date_added: '2025-01-01T12:00:00Z'
+                  nomination: false
+                  assigned_budget_name: Budget Name
+                  assigned_funding_source_name: Funding Source Name
+                  form_due_date: '2025-01-31T12:00:00Z'
+                  form_id: 67890
+                record_count: 1
+      tags:
+      - Activities
+    servers:
+    - url: https://api.sky.blackbaud.com/grants-connect
+  /v1/activities/rosters:
+    get:
+      operationId: V1ActivitiesRostersGet
+      summary: Activities rosters
+      description: 'Returns the activity rosters for a selected year. Uses current school year by default.
+
+
+        Requires the following role in the Education Management system:
+
+
+        Schedule Manager
+
+
+        Activity Group Manager'
+      parameters:
+      - name: school_year
+        in: query
+        required: false
+        schema:
+          type: string
+        description: The ID or label of the school year. Defaults to the current school year.
+      - name: school_level
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Limits rosters returned to school level specified.
+      - name: section_ids
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Limits rosters returned to sections specified.Provide comma-delimited list of section_id values.
+      - name: last_modified
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Limits rosters returned to sections that were modified on or after the date provided. Use ISO-8601 date-time format: 2024-09-01T00:00:00-5:00.'
+      - name: include_dropped
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: 'false'
+        description: Set to True to include dropped students in the rosters. Defaults to false, if omitted.
+      - name: include_inactive
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: 'false'
+        description: Set to True to include inactive sections. Defaults to false.
+      responses:
+        '200':
+          description: A List of Activities rosters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1ActivitiesRostersGet200ApplicationJsonResponse'
+              example:
+              - section:
+                  id: 1
+                  name: Fencing – 2 (Boys)
+                  identifier: 2 (Boys)
+                  offering:
+                    id: 1
+                    name: Fencing
+                    type:
+                      id: 2
+                      description: Activities
+                    course_code: CHR240
+                    description: Fun with pointy sticks
+                    length: 1
+                    credits: 0.5
+                    status: Active
+                    publish_to_website: true
+                    record_attendance: true
+                    max_requests: 15
+                    school_level:
+                      id: 1
+                      abbreviation: US
+                      name: Upper School
+                    school_year: 2023 - 2024
+                  duration:
+                    id: 1
+                    name: Fall
+                  school_year:
+                    id: 1234
+                    begin_date: '2019-08-30T12:00:00Z'
+                    current_year: true
+                    end_date: '2020-08-30T12:00:00Z'
+                    published: true
+                    begin_billing_year_date: '2019-08-30T12:00:00Z'
+                    end_billing_year_date: '2020-08-30T12:00:00Z'
+                  lead_section_id: 1
+                  modified: '2024-09-30T01:30:05Z'
+                  room:
+                    room_id: 1
+                    room_number: LR7
+                    name: Labroom 7
+                    code: AH-LR7
+                    capacity: '20'
+                    notes: Saving a note
+                    building:
+                      id: 1
+                      description: Test Building
+                    type:
+                      id: 1
+                      description: Academics
+                  block:
+                    id: 1
+                    name: A
+                    type:
+                      id: 1
+                      description: Academic
+                    offering_type:
+                      id: 1
+                      description: Academics
+                    is_inactive: false
+                roster:
+                - user:
+                    id: 1
+                    email: JohnJr@domain.com
+                    first_name: John
+                    last_name: Smith
+                    maiden_name: Brannigan
+                    middle_name: Robert
+                    preferred_name: Jack
+                    preferred_last_name: Brannigan
+                    prefix: Mr.
+                    suffix: Jr.
+                  enroll_date: '2024-09-30T01:30:05Z'
+                  depart_date: '2024-09-30T01:30:05Z'
+                  leader:
+                    is_leader: true
+                    is_head: true
+                    is_faculty: true
+                    type: Teacher
+                  photo:
+                    large_filename_url: //some.cdn.com/pathTo/largeFilename
+                    thumb_filename_url: //some.cdn.com/pathTo/thumbFilename
+                  status: Enrolled
+      tags:
+      - Activities
+    servers:
+    - url: https://api.sky.blackbaud.com/school
+  /v1/activities/sections:
+    get:
+      operationId: V1ActivitiesSectionsGet
+      summary: Activities sections by school level
+      description: 'Returns a collection of activity sections for the specified school level.
+
+
+        Requires the following role in the Education Management system:
+
+
+        Activity Group Manager'
+      parameters:
+      - name: level_num
+        in: query
+        required: true
+        schema:
+          type: integer
+        description: Level number
+      - name: school_year
+        in: query
+        required: false
+        schema:
+          type: string
+        description: "The school year to get activity sections for. \nDefaults to the current school year."
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActivitiesSectionCollection'
+              example:
+                count: 1
+                value:
+                - leaders:
+                  - id: 4567
+                    head: true
+                    name: Advisor Name
+                  block:
+                    id: 2099
+                    name: ADV
+                    type:
+                      id: 1
+                      description: Academic
+                    offering_type:
+                      id: 1
+                      description: Academics
+                    is_inactive: false
+                  room:
+                    room_id: 1
+                    room_number: LR7
+                    name: Labroom 7
+                    code: AH-LR7
+                    capacity: '20'
+                    building:
+                      id: 1
+                      description: Test Building
+                    type:
+                      id: 1
+                      description: Academics
+                  id: 123
+                  course_code: '123'
+                  duration:
+                    id: 1
+                    name: Duration Name
+                  lead_section_id: 2
+                  name: Section name
+                  description: The activity description for the section
+                  offering_id: 1
+                  parent_section_id: 2
+                  room_id: 12
+                  school_year: 2017-2018
+                  section_identifier: Section Identifier
+      tags:
+      - Activities
+    servers:
+    - url: https://api.sky.blackbaud.com/school
+components:
+  schemas:
+    CodeInfo:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the coding table value
+          format: int32
+        code:
+          type:
+          - string
+          - 'null'
+          description: The code value of the coding table value
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description value of the coding table value
+        description_with_code:
+          type:
+          - string
+          - 'null'
+          description: The code and the description shown to the user
+        full_path_description_code:
+          type:
+          - string
+          - 'null'
+          description: The code and the description shown to the user preceded by the parent values
+        full_path_description:
+          type:
+          - string
+          - 'null'
+          description: The description shown to the user
+        depth:
+          type: integer
+          description: The level that this code resides in within the coding table hierarchy
+          format: int32
+        parent_id:
+          type: integer
+          description: The ID of the parent code to this one, 0 if this is a top level code
+          format: int32
+        is_active:
+          type: boolean
+          description: To determine if this is an active code
+          x-bb-suppressions:
+          - parameter_property_name
+        full_path:
+          type:
+          - string
+          - 'null'
+          description: The full path to the description in the coding table hierarchy
+        full_path_with_code:
+          type:
+          - string
+          - 'null'
+          description: The full path including code and description to the code in the coding table hierarchy
+      additionalProperties: false
+      description: Model for coding options data
+    OrganizationReference:
+      type: object
+      properties:
+        organization_id:
+          type:
+          - string
+          - 'null'
+          description: The related Organization's ID.
+        name:
+          type:
+          - string
+          - 'null'
+          description: Related Organization's name.
+      additionalProperties: false
+      description: Represents related Contact information.
+    ActivitySearchResponse:
+      type: object
+      properties:
+        activities:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ApiActivity'
+          description: The results of the activity search.
+      additionalProperties: false
+      description: A response model for activity search.
+    ClassificationResponse:
+      type: object
+      properties:
+        classifications:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CodeInfoList'
+          description: The classifications for the entity type.
+      additionalProperties: false
+      description: A response model for classifications.
+    ContactReference:
+      type: object
+      properties:
+        email:
+          type:
+          - string
+          - 'null'
+          description: The contact's email address.
+        contact_id:
+          type:
+          - string
+          - 'null'
+          description: The related contact's ID.
+        name:
+          type:
+          - string
+          - 'null'
+          description: The contact's full name.
+      additionalProperties: false
+      description: Represents related Contact information.
+    PaymentReference:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The related Payment's ID.
+          format: int32
+        amount:
+          type:
+          - number
+          - 'null'
+          description: The related Payment's Amount.
+          format: double
+      additionalProperties: false
+      description: Represents related Payment information.
+    RequestReference:
+      type: object
+      properties:
+        request_id:
+          type:
+          - string
+          - 'null'
+          description: The related request's ID.
+        project_title:
+          type:
+          - string
+          - 'null'
+          description: The request's project title.
+        disposition:
+          type:
+          - string
+          - 'null'
+          description: The request's disposition.
+      additionalProperties: false
+      description: Represents related Request information
+    ActivitySearchRequest:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: An Activity ID.
+          format: int32
+        class_id:
+          type:
+          - integer
+          - 'null'
+          description: An activity class ID.
+          format: int32
+        type_id:
+          type:
+          - integer
+          - 'null'
+          description: An activity type ID.
+          format: int32
+        done_date:
+          $ref: '#/components/schemas/DateSearchCriteria'
+        received_date:
+          $ref: '#/components/schemas/DateSearchCriteria'
+        request_id:
+          type:
+          - string
+          - 'null'
+          description: A string value representing the associated Request ID.
+        staff_id:
+          type:
+          - string
+          - 'null'
+          description: A string value representing the associated staff member.
+        contact_id:
+          type:
+          - string
+          - 'null'
+          description: A string value representing the associated Contact ID.
+        organization_id:
+          type:
+          - string
+          - 'null'
+          description: A string value representing the associated Organization ID.
+        create_date:
+          $ref: '#/components/schemas/DateSearchCriteria'
+        change_date:
+          $ref: '#/components/schemas/DateSearchCriteria'
+        custom_fields:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: Represents the list of custom fields to return on the entities in the result.
+        per_page:
+          maximum: 100
+          minimum: 1
+          type: integer
+          description: The page size for paged output.
+          format: int32
+        page:
+          type: integer
+          description: The page number for paged output.
+          format: int32
+      additionalProperties: false
+      description: A request model for searching Activities.
+      x-bb-suppressions:
+      - request_body_has_required_property
+    Staff:
+      type: object
+      properties:
+        login_id:
+          type:
+          - string
+          - 'null'
+          description: The staff member's login ID.
+        name:
+          type:
+          - string
+          - 'null'
+          description: The staff member's name.
+      additionalProperties: false
+      description: Represents a Grantmaking staff user.
+    CodeInfoList:
+      type: object
+      properties:
+        code_table_id:
+          type: integer
+          description: Gets or sets the table ID.
+          format: int32
+        code_table:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CodeInfo'
+          description: Gets or sets the list of coding values in the table.
+      additionalProperties: false
+      description: Coding table model.
+    DateSearchCriteria:
+      type: object
+      properties:
+        start_date:
+          type:
+          - string
+          - 'null'
+          description: An earliest date criteria.
+          format: date-time
+        end_date:
+          type:
+          - string
+          - 'null'
+          description: A latest date criteria.
+          format: date-time
+        is:
+          type:
+          - string
+          - 'null'
+          description: An exact match criteria.
+          format: date-time
+      additionalProperties: false
+      description: A model with date search criteria.
+    IdCodeDescription:
+      type: object
+      properties:
+        classification_id:
+          type: integer
+          description: Classification's ID.
+          format: int32
+        code:
+          type:
+          - string
+          - 'null'
+          description: Classification's code.
+        description:
+          type:
+          - string
+          - 'null'
+          description: Classification's description.
+      additionalProperties: false
+      description: Represents a Classification value.
+    ApiActivity:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The Activity's ID.
+          format: int32
+        request:
+          $ref: '#/components/schemas/RequestReference'
+        organization:
+          $ref: '#/components/schemas/OrganizationReference'
+        contact:
+          $ref: '#/components/schemas/ContactReference'
+        payment:
+          $ref: '#/components/schemas/PaymentReference'
+        type:
+          $ref: '#/components/schemas/IdCodeDescription'
+        class:
+          $ref: '#/components/schemas/IdCodeDescription'
+        schedule_date:
+          type:
+          - string
+          - 'null'
+          description: The Activity's schedule date.
+          format: date-time
+        duration:
+          type:
+          - integer
+          - 'null'
+          description: The Activity's duration.
+          format: int32
+        done_date:
+          type:
+          - string
+          - 'null'
+          description: The Activity's done date.
+          format: date-time
+        staff:
+          $ref: '#/components/schemas/Staff'
+        is_done:
+          type: boolean
+          description: Indicates whether the current activity is done.
+          x-bb-suppressions:
+          - parameter_property_name
+        notes:
+          type:
+          - string
+          - 'null'
+          description: The Activity's notes.
+        long_notes:
+          type:
+          - string
+          - 'null'
+          description: The Activity's long notes.
+        branch:
+          $ref: '#/components/schemas/IdCodeDescription'
+        create_date:
+          type:
+          - string
+          - 'null'
+          description: The Activity's created date.
+          format: date-time
+        change_date:
+          type:
+          - string
+          - 'null'
+          description: The Activity's last modified date.
+          format: date-time
+        custom_fields:
+          type:
+          - object
+          - 'null'
+          additionalProperties: {}
+          description: The Entity's custom field data.
+      additionalProperties: false
+      description: A SKY API specific version of a Grantmaking Activity entity.
+    ReturnPaginatedGrantActivityRecords:
+      type: object
+      properties:
+        records:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ReturnGrantActivityDetails'
+          description: The details returned for the current page.
+        record_count:
+          type:
+          - integer
+          - 'null'
+          description: The total number of records in the search result.
+          format: int32
+      additionalProperties: false
+      description: Returns a paginated view of grant activities.
+    ReturnGrantActivityDetails:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The identifier of the grant activity.
+          format: int32
+        application_id:
+          type: integer
+          description: The identifier of the application.
+          format: int32
+        applicant_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the applicant.
+        grant_program_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the grant program.
+        organization_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the organization (if activity is tied to an org).
+        work_flow_level_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the workflow level.
+        grant_program_cycle_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the grant program cycle.
+        previous_work_flow_level_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the previous workflow level.
+        previous_grant_program_cycle_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the previous grant program cycle.
+        form_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the form.
+        activity_type_id:
+          type: integer
+          description: The activity type identifier.
+          format: int32
+        activity_type_name:
+          type:
+          - string
+          - 'null'
+          description: The activity type name.
+        comment:
+          type:
+          - string
+          - 'null'
+          description: The comment associated with the activity.
+        date_added:
+          type:
+          - string
+          - 'null'
+          description: Will return results since the created date and time specified for the activity. Time zone is UTC.
+          format: date-time
+        nomination:
+          type:
+          - boolean
+          - 'null'
+          description: Determines if the activity is part of a nomination program. Value is true or false.
+        assigned_budget_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the assigned budget for the activity.
+        assigned_funding_source_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the assigned funding source for the activity.
+        form_due_date:
+          type:
+          - string
+          - 'null'
+          description: The date and time of the associated form's due date. Time zone is UTC.
+          format: date-time
+        form_id:
+          type:
+          - integer
+          - 'null'
+          description: The identifier of the form.
+          format: int32
+        archive_reason_code:
+          type:
+          - integer
+          - 'null'
+          description: The archive reason code for the activity.
+          format: int32
+      additionalProperties: false
+      description: Returns information about the grant activity.
+    ApplyFiltersForGrantActivityDetails:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: If provided, results will filter on the identifier of the activity's associated grant activity.
+          format: int32
+        application_id:
+          type:
+          - integer
+          - 'null'
+          description: If provided, results will filter on the identifier of the activity's associated application.
+          format: int32
+        applicant_name:
+          type:
+          - string
+          - 'null'
+          description: If provided, results will filter on the name of the activity's associated applicant.
+        grant_program_name:
+          type:
+          - string
+          - 'null'
+          description: If provided, results will filter on the name of the activity's associated grant program.
+        organization_name:
+          type:
+          - string
+          - 'null'
+          description: If provided, results will filter on the name of the activity's associated organization (if activity is tied to an org).
+        work_flow_level_name:
+          type:
+          - string
+          - 'null'
+          description: If provided, results will filter on the name of the activity's associated workflow level.
+        grant_program_cycle_name:
+          type:
+          - string
+          - 'null'
+          description: If provided, results will filter on the name of the activity's associated grant program cycle.
+        previous_work_flow_level_name:
+          type:
+          - string
+          - 'null'
+          description: If provided, results will filter on the name of the activity's associated previous workflow level.
+        previous_grant_program_cycle_name:
+          type:
+          - string
+          - 'null'
+          description: If provided, results will filter on the name of the activity's associated previous grant program cycle.
+        form_name:
+          type:
+          - string
+          - 'null'
+          description: If provided, results will filter on the name of the activity's associated form.
+        activity_type_id:
+          type:
+          - integer
+          - 'null'
+          description: If provided, results will filter on the activity type identifier.
+          format: int32
+        activity_type_name:
+          type:
+          - string
+          - 'null'
+          description: If provided, results will filter on the activity type name.
+        comment:
+          type:
+          - string
+          - 'null'
+          description: If provided, results will filter on the comment associated with the activity.
+        date_added:
+          type: string
+          description: If provided, will return results since the created date and time specified for the activity. Time zone is UTC.
+          format: date-time
+        nomination:
+          type:
+          - boolean
+          - 'null'
+          description: If provided, results will filter on whether the activity is a nomination. Value is true or false.
+        assigned_budget_name:
+          type:
+          - string
+          - 'null'
+          description: If provided, results will filter on the name of the assigned budget for the activity.
+        assigned_funding_source_name:
+          type:
+          - string
+          - 'null'
+          description: If provided, results will filter on the name of the assigned funding source for the activity.
+        form_due_date:
+          type:
+          - string
+          - 'null'
+          description: If provided, will will return results since the date and time specified will be returned. Time zone is UTC.
+          format: date-time
+        form_id:
+          type:
+          - integer
+          - 'null'
+          description: If provided, results will filter on the identifier of the form.
+          format: int32
+        archive_reason_code:
+          type:
+          - integer
+          - 'null'
+          description: If provided, results will filter on the archive reason code for the activity.
+          format: int32
+        currency_requested:
+          type:
+          - string
+          - 'null'
+          description: If provided, results will filter on the currency requested for the activity.
+        limit:
+          maximum: 500
+          minimum: 50
+          type: integer
+          description: Specifies the maximum number of records to return per page.
+          format: int32
+          default: 50
+        page:
+          maximum: 2147483647
+          minimum: 1
+          type: integer
+          description: Specifies the page number for pagination.
+          format: int32
+          default: 1
+        date_modified:
+          type:
+          - string
+          - 'null'
+          description: If provided, only records modified since the date and time specified will be returned. Time zone is UTC.
+          format: date-time
+        include_inactive:
+          type: boolean
+          description: Specifies if inactive records should be returned. Value is true or false.
+          default: false
+      additionalProperties: false
+      description: Filters to apply to the grant activity endpoint. Specify conditions of the grant activity to return detailed information.
+    UserBaseRead:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID associated with a user
+          format: int32
+        email:
+          type:
+          - string
+          - 'null'
+          description: The email address of a user
+        first_name:
+          type:
+          - string
+          - 'null'
+          description: The first name of a user
+        last_name:
+          type:
+          - string
+          - 'null'
+          description: The last name of a user
+        maiden_name:
+          type:
+          - string
+          - 'null'
+          description: The maiden name of a user
+        middle_name:
+          type:
+          - string
+          - 'null'
+          description: The middle name of a user
+        preferred_name:
+          type:
+          - string
+          - 'null'
+          description: The nickname of a user
+        preferred_last_name:
+          type:
+          - string
+          - 'null'
+          description: The preferred last name of a user
+        prefix:
+          type:
+          - string
+          - 'null'
+          description: The prefix of a user
+        suffix:
+          type:
+          - string
+          - 'null'
+          description: The suffix of a user
+      additionalProperties: false
+      description: UserBaseRead Model
+    ActivitiesSection:
+      type: object
+      properties:
+        leaders:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Leader'
+          description: The list of leaders for this section
+        block:
+          $ref: '#/components/schemas/BlockBase'
+        room:
+          $ref: '#/components/schemas/BuildingRoomRead'
+        id:
+          type: integer
+          description: The ID of the section
+          format: int32
+        course_code:
+          type:
+          - string
+          - 'null'
+          description: The identifier used to reference a course; the Course Code is a user-entered value
+        duration:
+          $ref: '#/components/schemas/Duration'
+        lead_section_id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the first section in a series of terms
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the section
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the section
+        offering_id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of an offered course
+          format: int32
+        parent_section_id:
+          type:
+          - integer
+          - 'null'
+          description: The ID that leads you back to the offered section
+          format: int32
+        room_id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the room the section is held in
+          format: int32
+        school_year:
+          type:
+          - string
+          - 'null'
+          description: The school year date range in which the section occurs
+        section_identifier:
+          type:
+          - string
+          - 'null'
+          description: The identifier used to differentiate between multiple sections that contain a course; the Section Identifier is a user-entered value
+      additionalProperties: false
+      description: Activities Section Model
+    OfferingModel:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The Id of the Offering
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the offering
+        type:
+          $ref: '#/components/schemas/OfferingType'
+        course_code:
+          type:
+          - string
+          - 'null'
+          description: The course code for the offering
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the offering
+        length:
+          type:
+          - integer
+          - 'null'
+          description: The length of the offering in terms
+          format: int32
+        credits:
+          type:
+          - number
+          - 'null'
+          description: The credits for the offering
+          format: float
+        status:
+          type:
+          - string
+          - 'null'
+          description: 'The status of the offering. Possible values: Active, Inactive.'
+        publish_to_website:
+          type:
+          - boolean
+          - 'null'
+          description: True when the Publish to Website setting is selected; otherwise, false.
+        record_attendance:
+          type:
+          - boolean
+          - 'null'
+          description: True when the Record Attendance setting is selected; otherwise, false. This is always FALSE for Community Groups offering type.
+        max_requests:
+          type:
+          - integer
+          - 'null'
+          description: The maximum number of requests for the offering. This is NULL for Athletics and Community Groups offering types.
+          format: int32
+        school_level:
+          $ref: '#/components/schemas/Level'
+        school_year:
+          type:
+          - string
+          - 'null'
+          description: The School year of the offering
+      additionalProperties: false
+      description: An object with offering information
+    Section:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the section. This is the the class ID for academics, team ID for athletics, building_id for dorms, etc. dependent on offering type
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the roster group
+        identifier:
+          type:
+          - string
+          - 'null'
+          description: The section identifier
+        offering:
+          $ref: '#/components/schemas/OfferingModel'
+        duration:
+          $ref: '#/components/schemas/Duration'
+        school_year:
+          $ref: '#/components/schemas/Year'
+        lead_section_id:
+          type:
+          - integer
+          - 'null'
+          description: The section id for the lead section (i.e. first term) of the class.
+          format: int32
+        modified:
+          type:
+          - string
+          - 'null'
+          description: The last modified date for the section
+          format: date-time
+        photo:
+          $ref: '#/components/schemas/ProfilePictureUrls'
+        room:
+          $ref: '#/components/schemas/BuildingRoomRead'
+        block:
+          $ref: '#/components/schemas/BlockBase'
+      additionalProperties: false
+      description: An object with section information
+    RosterUser:
+      type: object
+      properties:
+        user:
+          $ref: '#/components/schemas/UserBaseRead'
+        enroll_date:
+          type:
+          - string
+          - 'null'
+          description: The date enrolled
+          format: date-time
+        depart_date:
+          type:
+          - string
+          - 'null'
+          description: The date dropped or left
+          format: date-time
+        leader:
+          $ref: '#/components/schemas/RosterLeader'
+        photo:
+          $ref: '#/components/schemas/ProfilePictureUrls'
+        status:
+          type:
+          - string
+          - 'null'
+          description: The status of the enrollment
+        enrollment_type:
+          $ref: '#/components/schemas/EnrollmentType'
+      additionalProperties: false
+      description: An object with roster user information
+    IdDescriptorField:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID of the field
+          format: int32
+        description:
+          type:
+          - string
+          - 'null'
+          description: Description of the field
+      additionalProperties: false
+      description: ''
+    ActivitiesSectionCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items in the collection
+          format: int32
+          readOnly: true
+        next_link:
+          type:
+          - string
+          - 'null'
+          description: For paginated responses, the URI for the next page of results
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ActivitiesSection'
+          description: The set of items included in the response. This may be a subset of the items in the collection
+      additionalProperties: false
+      description: A Collection
+    V1ActivitiesRostersGet200ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/SectionRosterModel'
+      x-apim-inline: true
+    Year:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of a school year
+          format: int32
+        begin_date:
+          type:
+          - string
+          - 'null'
+          description: 'The begin date in a school year date range. Uses <a href="https://tools.ietf.org/html/rfc3339" target="_blank">ISO-8601</a> (24H) format: 2003-04-21T10:29:43'
+          format: date-time
+        current_year:
+          type:
+          - boolean
+          - 'null'
+          description: Returns True if Current Year is enabled for the respective school year
+        end_date:
+          type:
+          - string
+          - 'null'
+          description: 'The end date in a school year date range. Uses <a href="https://tools.ietf.org/html/rfc3339" target="_blank">ISO-8601</a> (24H) format: 2003-04-21T10:29:43'
+          format: date-time
+        published:
+          type:
+          - boolean
+          - 'null'
+          description: Gets or sets the published flag
+        school_year_label:
+          type:
+          - string
+          - 'null'
+          description: The label used to identify the range of dates in a school year
+        begin_billing_year_date:
+          type:
+          - string
+          - 'null'
+          description: 'The begin billing year date in a school year date range. Uses <a href="https://tools.ietf.org/html/rfc3339" target="_blank">ISO-8601</a> (24H) format: 2003-04-21T10:29:43'
+          format: date-time
+        end_billing_year_date:
+          type:
+          - string
+          - 'null'
+          description: 'The end billing year date in a school year date range. Uses <a href="https://tools.ietf.org/html/rfc3339" target="_blank">ISO-8601</a> (24H) format: 2003-04-21T10:29:43'
+          format: date-time
+      additionalProperties: false
+      description: An object with school year information
+    SectionRosterModel:
+      type: object
+      properties:
+        section:
+          $ref: '#/components/schemas/Section'
+        roster:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/RosterUser'
+          description: An array of roster users assigned to the section. This includes members and leaders.
+      additionalProperties: false
+      description: An object with section roster information
+    BuildingRoomRead:
+      type: object
+      properties:
+        room_id:
+          type:
+          - integer
+          - 'null'
+          description: Identifier for the room
+          format: int32
+        room_number:
+          type:
+          - string
+          - 'null'
+          description: Room number
+        name:
+          type:
+          - string
+          - 'null'
+          description: Room name
+        code:
+          type:
+          - string
+          - 'null'
+          description: Room code
+        capacity:
+          type:
+          - string
+          - 'null'
+          description: Room capacity
+        room_type:
+          type:
+          - string
+          - 'null'
+          description: Denotes how the room is used
+        room_type_id:
+          type:
+          - integer
+          - 'null'
+          description: Identifier for the room type
+          format: int32
+        notes:
+          type:
+          - string
+          - 'null'
+          description: The notes for the room
+        building:
+          $ref: '#/components/schemas/IdDescriptorField'
+        type:
+          $ref: '#/components/schemas/IdDescriptorField'
+      additionalProperties: false
+      description: ''
+    BlockBase:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the block
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The block name
+        type:
+          $ref: '#/components/schemas/IdDescriptorField'
+        offering_type:
+          $ref: '#/components/schemas/IdDescriptorField'
+        is_inactive:
+          type:
+          - boolean
+          - 'null'
+          description: True if the block is inactive
+      additionalProperties: false
+      description: ''
+    ProfilePictureUrls:
+      type: object
+      properties:
+        large_filename_url:
+          type:
+          - string
+          - 'null'
+          description: URL to users Large profile picture
+        thumb_filename_url:
+          type:
+          - string
+          - 'null'
+          description: URL to users Thumbnail profile picture
+      additionalProperties: false
+      description: An object with profile photo and thumbnail
+    Duration:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the duration
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The Name of the duration
+      additionalProperties: false
+      description: An object describing the term or season for the section
+    RosterLeader:
+      type: object
+      properties:
+        is_leader:
+          type:
+          - boolean
+          - 'null'
+          description: True if the roster user is a leader.
+        is_head:
+          type:
+          - boolean
+          - 'null'
+          description: True if the leader is the head teacher, head coach, etc.
+        is_faculty:
+          type:
+          - boolean
+          - 'null'
+          description: True if the leader is a faculty user
+        type:
+          type:
+          - string
+          - 'null'
+          description: The type of leader
+      additionalProperties: false
+      description: An object with leader information
+    Leader:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The user ID for the leader
+          format: int32
+        head:
+          type:
+          - boolean
+          - 'null'
+          description: The head leader indicator
+        name:
+          type:
+          - string
+          - 'null'
+          description: The firstname and lastname of the leader
+      additionalProperties: false
+      description: Leader Model
+    Level:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of a school level
+          format: int32
+        abbreviation:
+          type:
+          - string
+          - 'null'
+          description: The abbreviation associated with a school level
+        name:
+          type:
+          - string
+          - 'null'
+          description: The label used to identify a school level
+        address:
+          $ref: '#/components/schemas/SchoolAddress'
+        school_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the School
+        school_address:
+          $ref: '#/components/schemas/SchoolAddress'
+      additionalProperties: false
+      description: An object with school level information
+    SchoolAddress:
+      type: object
+      properties:
+        address1:
+          type:
+          - string
+          - 'null'
+          description: The address line
+        address2:
+          type:
+          - string
+          - 'null'
+          description: The address line
+        address3:
+          type:
+          - string
+          - 'null'
+          description: The address line
+        city:
+          type:
+          - string
+          - 'null'
+          description: The city
+        state:
+          type:
+          - string
+          - 'null'
+          description: TThe state for the address
+        zip:
+          type:
+          - string
+          - 'null'
+          description: The postal/ZIP code for the address
+        county_province:
+          type:
+          - string
+          - 'null'
+          description: The county or province for the address
+        country:
+          type:
+          - string
+          - 'null'
+          description: The country for the address
+        phone:
+          type:
+          - string
+          - 'null'
+          description: The phone number for the address
+        fax:
+          type:
+          - string
+          - 'null'
+          description: The fax number for the address
+        website:
+          type:
+          - string
+          - 'null'
+          description: The website for the address
+      additionalProperties: false
+      description: An object with information about the address of the school level, including address fields, phone fields and website.
+    OfferingType:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of an offering type
+          format: int32
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of an offering type
+      additionalProperties: false
+      description: An object with offering type information
+    EnrollmentType:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the enrollment type
+          format: int32
+        description:
+          type:
+          - string
+          - 'null'
+          description: The enrollment type
+        earns_credit:
+          type:
+          - boolean
+          - 'null'
+          description: True if the school tracks attempted and earned credit for students with this enrollment type.
+        use_all_grades:
+          type:
+          - boolean
+          - 'null'
+          description: True if a student with this enrollment type can earn any grades valid for the section. False if the grades get translated, such as if the enrollment type only allows Pass/Fail grades.
+        takes_attendance:
+          type:
+          - boolean
+          - 'null'
+          description: True if the school tracks attendance for students with this enrollment type.
+        is_default:
+          type:
+          - boolean
+          - 'null'
+          description: True if this is the default enrollment type
+      additionalProperties: false
+      description: An object with information about the enrollment type, including whether attendance is tracked, whether students can earn credit, or whether grades are limited to pass/fail.
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+x-refined-from:
+- blackbaud-grantmaking-api-openapi.yml
+- blackbaud-grantsconnect-api-openapi.yml
+- blackbaud-school-api-openapi.yml

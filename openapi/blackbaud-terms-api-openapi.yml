@@ -1,0 +1,476 @@
+openapi: 3.2.0
+info:
+  title: Blackbaud Terms API
+  x-refined-note:
+  - x-apievangelist-provenance differs across the merged source definitions and was not carried
+  version: '1.0'
+  description: 'Operations tagged Terms across 2 of this provider''s published API definitions: blackbaud-oneroster-api-openapi.yml, blackbaud-school-api-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.sky.blackbaud.com/afe-rostr/ims/oneroster
+- url: https://api.sky.blackbaud.com/school
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Terms
+paths:
+  /terms:
+    get:
+      operationId: getAllTerms
+      summary: Terms all
+      description: Returns a collection of terms.
+      responses:
+        '200':
+          description: OK - It was possible to read the collection.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AcademicSessionsOutputModel'
+              example:
+                academicSessions:
+                - title: 1st Semester
+                  startDate: '2022-09-01'
+                  endDate: '2022-12-24'
+                  type: term
+                  parent:
+                    sourcedId: as-syr-222-2023
+                    href: https://api.sky.blackbaud.com/afe-rostr/ims/oneroster/v1p1/link_to_parent
+                    type: academicSession
+                  children:
+                  - sourcedId: as-grp-222-1234
+                    href: https://api.sky.blackbaud.com/afe-rostr/ims/oneroster/v1p1/link_to_child
+                    type: academicSession
+                  schoolYear: '2023'
+                  sourcedId: as-trm-222-1234
+                  status: active
+                  dateLastModified: '2022-09-26T09:45:00Z'
+                - title: 2nd Semester
+                  startDate: '2023-01-01'
+                  endDate: '2023-06-30'
+                  type: term
+                  parent:
+                    sourcedId: as-syr-222-2023
+                    href: https://api.sky.blackbaud.com/afe-rostr/ims/oneroster/v1p1/link_to_parent
+                    type: academicSession
+                  children:
+                  - sourcedId: as-grp-222-1234
+                    href: https://api.sky.blackbaud.com/afe-rostr/ims/oneroster/v1p1/link_to_child
+                    type: academicSession
+                  schoolYear: '2023'
+                  sourcedId: as-trm-222-1235
+                  status: active
+                  dateLastModified: '2022-09-26T09:45:00Z'
+      tags:
+      - Terms
+    servers:
+    - url: https://api.sky.blackbaud.com/afe-rostr/ims/oneroster
+  /terms/{id}:
+    get:
+      operationId: getTerm
+      summary: Term by id
+      description: Returns a specific term.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: sourcedId for the term
+      responses:
+        '200':
+          description: OK - It was possible to read the collection.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AcademicSessionOutputModel'
+              example:
+                academicSession:
+                  title: 1st Semester
+                  startDate: '2022-09-01'
+                  endDate: '2022-12-24'
+                  type: term
+                  parent:
+                    sourcedId: as-syr-222-2023
+                    href: https://api.sky.blackbaud.com/afe-rostr/ims/oneroster/v1p1/link_to_parent
+                    type: academicSession
+                  children:
+                  - sourcedId: as-grp-222-1234
+                    href: https://api.sky.blackbaud.com/afe-rostr/ims/oneroster/v1p1/link_to_child
+                    type: academicSession
+                  schoolYear: '2023'
+                  sourcedId: as-trm-222-1234
+                  status: active
+                  dateLastModified: '2022-09-26T09:45:00Z'
+      tags:
+      - Terms
+    servers:
+    - url: https://api.sky.blackbaud.com/afe-rostr/ims/oneroster
+  /terms/{term_id}/gradingPeriods:
+    get:
+      operationId: getGradingPeriodsForTerm
+      summary: GradingPeriods for term
+      description: Returns a collection of grading periods for the specified ```term_id```
+      parameters:
+      - name: term_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: sourcedId for the term
+      responses:
+        '200':
+          description: OK - It was possible to read the collection.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AcademicSessionsOutputModel'
+              example:
+                academicSessions:
+                - title: 2st Quarter
+                  startDate: '2022-10-01'
+                  endDate: '2022-12-24'
+                  type: gradingPeriod
+                  parent:
+                    sourcedId: as-trm-222-1234
+                    href: https://api.sky.blackbaud.com/afe-rostr/ims/oneroster/v1p1/link_to_parent
+                    type: academicSession
+                  schoolYear: '2023'
+                  sourcedId: as-grp-222-2345
+                  status: active
+                  dateLastModified: '2022-09-26T09:45:00Z'
+                - title: 3rd Quarter
+                  startDate: '2023-01-02'
+                  endDate: '2023-03-31'
+                  type: gradingPeriod
+                  parent:
+                    sourcedId: as-trm-222-1235
+                    href: https://api.sky.blackbaud.com/afe-rostr/ims/oneroster/v1p1/link_to_parent
+                    type: academicSession
+                  schoolYear: '2023'
+                  sourcedId: as-grp-222-2346
+                  status: active
+                  dateLastModified: '2022-09-26T09:45:00Z'
+      tags:
+      - Terms
+    servers:
+    - url: https://api.sky.blackbaud.com/afe-rostr/ims/oneroster
+  /v1/terms:
+    get:
+      operationId: v1termsget
+      summary: Core terms
+      description: 'Returns a collection of core school terms.
+
+
+        Requires at least one of the following roles in the Education Management system:
+
+
+        Academic Group Manager
+
+
+        Schedule Manager
+
+
+        Platform Manager
+
+
+        Any Manager Role'
+      parameters:
+      - name: school_year
+        in: query
+        required: false
+        schema:
+          type: string
+        description: The school year to get terms for. Defaults to the current school year.
+      - name: offering_type
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: The offering type to filter terms by.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TermCollection'
+              example:
+                count: 2
+                value:
+                - id: 123
+                  begin_date: '2018-08-30T12:00:00Z'
+                  description: Term 1
+                  end_date: '2019-11-24T12:00:00Z'
+                  level_description: The first term
+                  level_id: 1
+                  offering_type: 1
+                  school_year_label: 2018-2019
+                  marking_periods:
+                  - id: 1
+                    name: Spring Term
+                    start: '2026-01-31T12:00:00Z'
+                    end: '2026-05-31T12:00:00Z'
+                - id: 1234
+                  begin_date: '2018-11-25T12:00:00Z'
+                  description: Term 2
+                  end_date: '2019-02-01T12:00:00Z'
+                  level_description: The second term
+                  level_id: 1
+                  offering_type: 1
+                  school_year_label: 2018-2019
+                  marking_periods:
+                  - id: 1
+                    name: Spring Term
+                    start: '2026-01-31T12:00:00Z'
+                    end: '2026-05-31T12:00:00Z'
+      tags:
+      - Terms
+    servers:
+    - url: https://api.sky.blackbaud.com/school
+components:
+  schemas:
+    AcademicSessionModel:
+      type: object
+      properties:
+        title:
+          type:
+          - string
+          - 'null'
+        startDate:
+          type:
+          - string
+          - 'null'
+        endDate:
+          type:
+          - string
+          - 'null'
+        type:
+          type:
+          - string
+          - 'null'
+        parent:
+          $ref: '#/components/schemas/GuidRefModel'
+        children:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/GuidRefModel'
+        schoolYear:
+          type:
+          - string
+          - 'null'
+        sourcedId:
+          type:
+          - string
+          - 'null'
+        status:
+          type:
+          - string
+          - 'null'
+        dateLastModified:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        metadata:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: string
+      additionalProperties: false
+    StatusInfoModel:
+      type: object
+      properties:
+        imsx_codeMajor:
+          type:
+          - string
+          - 'null'
+        imsx_severity:
+          type:
+          - string
+          - 'null'
+        imsx_messageRefIdentifier:
+          type:
+          - string
+          - 'null'
+        imsx_operationRefIdentifier:
+          type:
+          - string
+          - 'null'
+        imsx_description:
+          type:
+          - string
+          - 'null'
+        imsx_codeMinor:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    AcademicSessionOutputModel:
+      type: object
+      properties:
+        academicSession:
+          $ref: '#/components/schemas/AcademicSessionModel'
+        statusInfoSet:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/StatusInfoModel'
+      additionalProperties: false
+    AcademicSessionsOutputModel:
+      type: object
+      properties:
+        academicSessions:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/AcademicSessionModel'
+        statusInfoSet:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/StatusInfoModel'
+      additionalProperties: false
+    GuidRefModel:
+      type: object
+      properties:
+        sourcedId:
+          type:
+          - string
+          - 'null'
+        href:
+          type:
+          - string
+          - 'null'
+        type:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    MarkingPeriod:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID for the marking period
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the marking period
+        start:
+          type:
+          - string
+          - 'null'
+          description: 'The start time of the marking period. Uses <a href="https://tools.ietf.org/html/rfc3339" target="_blank">ISO-8601</a> (24H) format: 2003-04-21T10:29:43'
+          format: date-time
+        end:
+          type:
+          - string
+          - 'null'
+          description: 'The end time of the marking period. Uses <a href="https://tools.ietf.org/html/rfc3339" target="_blank">ISO-8601</a> (24H) format: 2003-04-21T10:29:43'
+          format: date-time
+      additionalProperties: false
+      description: An object with marking period information, including id, name and date range
+    Term:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The duration ID for the term
+          format: int32
+        begin_date:
+          type:
+          - string
+          - 'null'
+          description: 'The begin date of the term. Uses <a href="https://tools.ietf.org/html/rfc3339" target="_blank">ISO-8601</a> (24H) format: 2003-04-21T10:29:43'
+          format: date-time
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description for the term
+        end_date:
+          type:
+          - string
+          - 'null'
+          description: 'The end date of the term. Uses <a href="https://tools.ietf.org/html/rfc3339" target="_blank">ISO-8601</a> (24H) format: 2003-04-21T10:29:43'
+          format: date-time
+        level_description:
+          type:
+          - string
+          - 'null'
+          description: The description of the level for the term
+        level_id:
+          type:
+          - integer
+          - 'null'
+          description: The school level for the term
+          format: int32
+        offering_type:
+          type:
+          - integer
+          - 'null'
+          description: The offering type for the term
+          format: int32
+        school_year_label:
+          type:
+          - string
+          - 'null'
+          description: The label used to identify the range of dates in a school year
+        marking_periods:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/MarkingPeriod'
+          description: An array of marking periods
+      additionalProperties: false
+      description: Term Model
+    TermCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items in the collection
+          format: int32
+          readOnly: true
+        next_link:
+          type:
+          - string
+          - 'null'
+          description: For paginated responses, the URI for the next page of results
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Term'
+          description: The set of items included in the response. This may be a subset of the items in the collection
+      additionalProperties: false
+      description: A Collection
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+x-refined-from:
+- blackbaud-oneroster-api-openapi.yml
+- blackbaud-school-api-openapi.yml

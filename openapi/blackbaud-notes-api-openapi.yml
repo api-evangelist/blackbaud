@@ -1,0 +1,551 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Constituent Notes API'
+  description: This API manages constituent information and related entities such as addresses, phones, emails, and notes.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/56b76470069a0509c8f1c5b3
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/constituent/v1
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Notes
+paths:
+  /notes:
+    post:
+      operationId: CreateConstituentNote
+      summary: Note (Create)
+      description: Creates a constituent note.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NoteAdd'
+            example:
+              constituent_id: '280'
+              date:
+                d: 25
+                m: 8
+                y: 2015
+              summary: Trivia
+              text: Dr. Hernandez is an avid Trekkie who frequently quotes Captain Kirk in his lectures.
+              type: Personal
+        description: An object that represents the note to create.
+      responses:
+        '200':
+          description: Returned when the operation successfully creates a note. The response body contains the ID of the new note.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse'
+              example:
+                id: '1281'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+        '403':
+          description: Returned when the user does not have permission to create the note.
+        '404':
+          description: Returned when the specified constituent is not found.
+      tags:
+      - Notes
+    get:
+      operationId: ListConstituentNotesAllConstituents
+      summary: Note list (All constituents)
+      description: 'Returns a paginated list of notes, excluding RE NXT Summary notes.
+
+
+        The default sorting behavior is to list notes in ascending order based on when they were created.
+
+
+        However, the last_modified parameter overrides the default sorting behavior to list notes in ascending order based on when they were last modified. The last_modified parameter also adds the sort_token parameter to the next_link URL to ensure that notes are stably sorted and that order persists when changes occur while working through a paginated list.
+
+
+        If the last_modified and date_added parameters are both specified, the sorting behavior is to list notes based on when they were last modified.'
+      parameters:
+      - name: date_added
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Represents a filter for results created on or after the specified date. Adds the sort_token parameter to the next_link URL to ensure that notes are stably sorted. The filter respects time offsets from UTC per the ISO-8601 format: 2016-05-05T17:59:31.1600745-04:00.'
+      - name: last_modified
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Represents a filter for results modified on or after the specified date. Adds the sort_token parameter to the next_link URL to ensure that notes are stably sorted. The filter respects time offsets from UTC per the ISO-8601 format: 2016-05-05T17:59:31.1600745-04:00.'
+      - name: sort_token
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Represents a token filter to provide the next stable-sorted list of notes and to ensure that the order persists even if changes occur while working through a paginated list. The token is provided on the next_link collection response property when the request specifies the sort_token filter. The last_modified, date_added, and sort parameters also add the token to the next_link URL, although the sort parameter only adds the token when it sorts by just the date_added field or just the date_modified field.
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Represents the number of records to return. The default is 500. The maximum is 5000.
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Represents the number of records to skip. For use with pagination.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a <a href="https://developer.blackbaud.com/skyapi/api/entity-reference/constituent#Collection">collection</a> of <a href="https://developer.blackbaud.com/skyapi/api/entity-reference/constituent#Note">note</a> entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiCollectionOfNoteRead'
+              example:
+                count: 26
+                next_link: https://api.sky.blackbaud.com/constituent/v1/notes?limit=20&offset=20
+                value:
+                - id: '1'
+                  constituent_id: '185'
+                  date:
+                    d: 4
+                    m: 1
+                    y: 2004
+                  date_added: '1999-06-17T19:14:07Z'
+                  date_modified: '2004-09-29T19:10:24.42Z'
+                  summary: Newspaper Article
+                  type: Prospect
+                - id: '2'
+                  constituent_id: '185'
+                  date:
+                    d: 18
+                    m: 7
+                    y: 2001
+                  date_added: '1999-06-17T19:15:33Z'
+                  date_modified: '2003-01-16T15:42:21.247Z'
+                  summary: Moved
+                  type: Address Changes
+                - id: '3'
+                  constituent_id: '274'
+                  date:
+                    d: 24
+                    m: 1
+                    y: 2007
+                  date_added: '1999-09-22T15:54:00.82Z'
+                  date_modified: '2007-04-13T14:50:49.6Z'
+                  summary: Graduation Alumni Dinner
+                  type: Alumni Notes
+                - id: '4'
+                  constituent_id: '274'
+                  date:
+                    d: 12
+                    m: 11
+                    y: 2000
+                  date_added: '1999-09-22T15:57:41.667Z'
+                  date_modified: '2003-01-24T19:17:47.35Z'
+                  summary: Stopped by to see Dr. Young
+                  type: Director's Notes
+                - id: '5'
+                  constituent_id: '274'
+                  date:
+                    d: 17
+                    m: 5
+                    y: 1992
+                  date_added: '1999-09-22T16:13:31.583Z'
+                  date_modified: '2000-03-10T14:51:19.627Z'
+                  summary: Engagement announcement
+                  type: Personal
+                - id: '6'
+                  constituent_id: '186'
+                  date:
+                    d: 18
+                    m: 10
+                    y: 2005
+                  date_added: '1999-09-29T15:09:27.243Z'
+                  date_modified: '2006-01-10T18:37:36.423Z'
+                  summary: Travel to Japan
+                  type: Biographical
+                - id: '7'
+                  constituent_id: '237'
+                  date:
+                    d: 11
+                    m: 2
+                    y: 2003
+                  date_added: '1999-10-06T16:21:38.177Z'
+                  date_modified: '2004-10-11T20:07:00.06Z'
+                  summary: Background
+                  type: Biographical
+                - id: '8'
+                  constituent_id: '237'
+                  date:
+                    m: 6
+                    y: 2006
+                  date_added: '1999-10-06T18:59:03.5Z'
+                  date_modified: '2007-05-02T14:46:16.533Z'
+                  summary: Top 100 Companies
+                  type: Financial
+                - id: '9'
+                  constituent_id: '280'
+                  date:
+                    d: 6
+                    m: 1
+                    y: 2000
+                  date_added: '1999-10-25T18:48:55.547Z'
+                  date_modified: '2004-10-11T14:06:01.953Z'
+                  summary: Possible Major Donor
+                  type: Prospect
+                - id: '10'
+                  constituent_id: '280'
+                  date:
+                    d: 11
+                    m: 6
+                    y: 2006
+                  date_added: '1999-10-25T19:26:10.13Z'
+                  date_modified: '2004-10-08T20:30:33.27Z'
+                  summary: Opening of Pediatric Clinic with Partner
+                  type: Career
+                - id: '11'
+                  constituent_id: '280'
+                  date:
+                    m: 6
+                    y: 2002
+                  date_added: '1999-10-26T15:50:50.877Z'
+                  date_modified: '2004-10-11T14:09:30.163Z'
+                  summary: Volunteer solicitors vs. Staff
+                  type: Prospect
+                - id: '12'
+                  constituent_id: '280'
+                  date:
+                    m: 6
+                    y: 2007
+                  date_added: '1999-10-26T15:53:53.03Z'
+                  date_modified: '2007-05-02T19:12:56.28Z'
+                  summary: Vacation
+                  type: Address Changes
+                - id: '13'
+                  constituent_id: '280'
+                  date:
+                    d: 30
+                    m: 8
+                    y: 2003
+                  date_added: '1999-10-26T15:55:49.217Z'
+                  date_modified: '2004-10-08T20:30:33.27Z'
+                  summary: Lunch with Wendy (Dr. Hernandez's wife)
+                  type: Personal
+                - id: '14'
+                  constituent_id: '280'
+                  date:
+                    d: 5
+                    m: 5
+                    y: 2005
+                  date_added: '1999-10-26T15:57:49.307Z'
+                  date_modified: '2004-10-11T14:09:30.163Z'
+                  summary: Chair selections for next year
+                  type: Director's Notes
+                - id: '16'
+                  constituent_id: '288'
+                  date:
+                    d: 24
+                    m: 1
+                    y: 2007
+                  date_added: '2000-03-10T18:06:12.863Z'
+                  date_modified: '2007-04-13T15:17:00.99Z'
+                  summary: Expressed interest in support through the Capital Campaign
+                  type: Capital Campaign
+                - id: '17'
+                  constituent_id: '543'
+                  date:
+                    d: 10
+                    m: 4
+                    y: 2004
+                  date_added: '2000-04-10T14:52:23.883Z'
+                  date_modified: '2004-09-29T16:01:28.297Z'
+                  summary: Disaster Relief
+                  type: Possible Solicitations
+                - id: '18'
+                  constituent_id: '545'
+                  date:
+                    d: 14
+                    m: 4
+                    y: 2000
+                  date_added: '2000-04-14T21:01:09.277Z'
+                  date_modified: '2004-09-29T16:34:13.817Z'
+                  summary: Address Information
+                  type: Address Changes
+                - id: '19'
+                  constituent_id: '223'
+                  date:
+                    d: 10
+                    m: 10
+                    y: 2003
+                  date_added: '2001-07-06T18:18:16.313Z'
+                  date_modified: '2003-01-17T17:24:58.42Z'
+                  summary: Mr. Judson receives inheritance
+                  type: Prospect
+                - id: '20'
+                  constituent_id: '204'
+                  date:
+                    d: 2
+                    m: 5
+                    y: 2007
+                  date_added: '2001-11-14T17:22:19.543Z'
+                  date_modified: '2007-05-02T14:35:47.937Z'
+                  summary: Orla has many contacts at the Francis R. Heidt Memorial Hospital
+                  type: Capital Campaign
+                - id: '21'
+                  constituent_id: '187'
+                  date:
+                    d: 10
+                    m: 1
+                    y: 2009
+                  date_added: '2001-11-15T15:38:16.417Z'
+                  date_modified: '2008-02-07T12:48:59.223Z'
+                  summary: Mark has many contacts
+                  type: Possible Solicitations
+        '400':
+          description: Returned when the specified request parameters are not in the appropriate format.
+        '403':
+          description: Returned when the user does not have permission to view the notes.
+      tags:
+      - Notes
+  /notes/{note_id}:
+    delete:
+      operationId: DeleteConstituentNote
+      summary: Note (Delete)
+      description: Deletes a constituent note.
+      parameters:
+      - name: note_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The immutable system record ID of the constituent note to delete.
+      responses:
+        '200':
+          description: Returned when the operation successfully deletes the note.
+        '400':
+          description: Returned when the specified note ID in the request URL is not in the appropriate format.
+        '403':
+          description: Returned when the user does not have permission to delete the note.
+      tags:
+      - Notes
+    patch:
+      operationId: EditConstituentNote
+      summary: Note (Edit)
+      description: Edits a constituent note.
+      parameters:
+      - name: note_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The immutable system record ID of the note to edit.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NoteEdit'
+            example:
+              date:
+                d: 25
+                m: 8
+                y: 2015
+              summary: Trivia
+              text: Dr. Hernandez is an avid Trekkie who frequently quotes Mister Spock in his lectures.
+              type: Personal
+        description: An object that represent properties of the note to edit.
+      responses:
+        '200':
+          description: Returned when the operation successfully edits the note.
+        '400':
+          description: Returned when the specified note ID in the request URL or the specified request parameters are not in the appropriate format.
+        '403':
+          description: Returned when the user does not have permission to edit the note.
+        '404':
+          description: Returned when the specified note is not found.
+      tags:
+      - Notes
+    get:
+      operationId: GetConstituentNote
+      summary: Note (Get)
+      description: Returns information about a note.
+      parameters:
+      - name: note_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The immutable system record ID of the note to retrieve information for.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the specified <a href="https://developer.blackbaud.com/skyapi/api/entity-reference/constituent#Note">note</a> entity.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NoteRead'
+              example:
+                id: '14'
+                constituent_id: '280'
+                date:
+                  d: 5
+                  m: 5
+                  y: 2005
+                summary: Chair selections for next year
+                text: Possible that Dr. Hernandez may step down from the board next year to pursue additional medical research activities.  Schedule lunch date to discuss options.
+                type: Director's Notes
+        '400':
+          description: Returned when the specified note ID in the request URL is not in the appropriate format.
+        '403':
+          description: Returned when the user does not have permission to view the note.
+        '404':
+          description: Returned when the specified note is not found.
+      tags:
+      - Notes
+components:
+  schemas:
+    NoteRead:
+      description: Notes track helpful or important details about constituents, gifts, or actions, such as specific interests and special instructions for donations. Notes connect you with donors at a more personal level as you cultivate relationships and track lessons learned for more effective fundraising.
+      type: object
+      properties:
+        id:
+          description: The immutable system record ID of the note.
+          type: string
+        constituent_id:
+          description: The immutable system record ID of the constituent associated with the note.
+          type: string
+        date:
+          $ref: '#/components/schemas/FuzzyDate'
+          description: The note date.
+        date_added:
+          format: date-time
+          description: 'The date when the note was created. Includes an offset from UTC in <a href="https://tools.ietf.org/html/rfc3339">ISO-8601 format: </a><i>1969-11-21T10:29:43-04:00</i>.'
+          type: string
+          x-supports-datetime-offset: true
+        date_modified:
+          format: date-time
+          description: 'The date when the note was last modified. Includes an offset from UTC in <a href="https://tools.ietf.org/html/rfc3339">ISO-8601 format: </a><i>1969-11-21T10:29:43-04:00</i>.'
+          type: string
+          x-supports-datetime-offset: true
+        summary:
+          description: The note summary. Maximum length is 255 characters.
+          type: string
+        text:
+          description: The note's contents.
+          type: string
+        type:
+          description: The note type. Available values are the entries in the <a href="https://developer.sky.blackbaud.com/docs/services/56b76470069a0509c8f1c5b3/operations/ListNoteTypes"><b>Notepad Types</b></a> table.
+          type: string
+      x-display-name: Note
+      x-display-id: Note
+    ApiCollectionOfNoteRead:
+      description: Fetching data all at once quickly becomes unmanageable. The collection entity helps by returning paginated chunks of large data sets. This entity includes helpful metadata and properties to paginate and iterate through the data.
+      type: object
+      properties:
+        count:
+          format: int32
+          description: The number of items available for retrieval into the collection after applying any request parameters. The <b>limit</b> and <b>offset</b> parameters do not affect the <b>count</b>, but to facilitate paging, they may affect the number of items in the <b>value</b> result set.
+          type: integer
+        next_link:
+          description: For paginated responses, the URI for the next page of results.
+          type: string
+        value:
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+          type: array
+          items:
+            $ref: '#/components/schemas/NoteRead'
+      x-hidden: true
+      x-base-type: '#/definitions/ApiCollection'
+    NoteEdit:
+      description: Notes track helpful or important details about constituents, gifts, or actions, such as specific interests and special instructions for donations. Notes connect you with donors at a more personal level as you cultivate relationships and track lessons learned for more effective fundraising.
+      type: object
+      properties:
+        date:
+          $ref: '#/components/schemas/FuzzyDate'
+          description: The note date. This property cannot be set to null.
+        summary:
+          description: 'The note summary. Character limit: 255.'
+          maxLength: 255
+          minLength: 0
+          type: string
+        text:
+          description: The note's contents.
+          type: string
+        type:
+          description: The note type. Available values are the entries in the <a href="https://developer.sky.blackbaud.com/docs/services/56b76470069a0509c8f1c5b3/operations/ListNoteTypes"><b>Notepad Types</b></a> table. This property cannot be set to null.
+          type: string
+      x-hidden: true
+      x-display-name: Edit note
+      x-display-id: EditNote
+    PostResponse:
+      description: Defines the shape of a post response object.
+      type: object
+      properties:
+        id:
+          description: The newly created ID
+          type: string
+      x-hidden: true
+    FuzzyDate:
+      description: Fuzzy dates provide a versatile date type to create partial dates such as February 9 (with no year indicated).
+      type: object
+      properties:
+        d:
+          format: int32
+          description: The day in the fuzzy date.
+          type: integer
+        m:
+          format: int32
+          description: The month in the fuzzy date.
+          type: integer
+        y:
+          format: int32
+          description: The year in the fuzzy date.
+          type: integer
+      x-display-name: Fuzzy date
+      x-display-id: FuzzyDate
+    NoteAdd:
+      description: Notes track helpful or important details about constituents, gifts, or actions, such as specific interests and special instructions for donations. Notes connect you with donors at a more personal level as you cultivate relationships and track lessons learned for more effective fundraising.
+      required:
+      - constituent_id
+      - date
+      - type
+      type: object
+      properties:
+        constituent_id:
+          description: The immutable system record ID of the constituent associated with the note.
+          type: string
+        date:
+          $ref: '#/components/schemas/FuzzyDate'
+          description: The note date.
+        summary:
+          description: 'The note summary. Character limit: 255.'
+          maxLength: 255
+          minLength: 0
+          type: string
+        text:
+          description: The note's contents.
+          type: string
+        type:
+          description: The note type. Available values are the entries in the <a href="https://developer.sky.blackbaud.com/docs/services/56b76470069a0509c8f1c5b3/operations/ListNoteTypes"><b>Notepad Types</b></a> table.
+          type: string
+        author:
+          description: 'The note author. If not supplied, will have a default set based on the user''s account. Character limit: 50.'
+          maxLength: 50
+          minLength: 0
+          type: string
+      x-hidden: true
+      x-display-name: Create note
+      x-display-id: CreateNote
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

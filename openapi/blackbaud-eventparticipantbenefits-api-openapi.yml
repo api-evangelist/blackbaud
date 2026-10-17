@@ -1,0 +1,733 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Event Eventparticipantbenefits API'
+  description: This API manages event information and related entities such as participant.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/event
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/event
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Eventparticipantbenefits
+paths:
+  /v1/eventparticipantbenefits/benefits:
+    post:
+      operationId: AddParticipantBenefit
+      summary: Create a benefit for a participant. (PREVIEW)
+      description: 'Adds a new participant benefit.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BenefitsDetailsRequest'
+            example:
+              parent_id: 500
+              benefit_id: 10
+              benefits_id: 0
+              count: 2
+              unit_cost: 75
+              total_benefit_value: 150
+              sent:
+                y: 2026
+                m: 1
+                d: 15
+              comments: VIP seating included
+              is_receipt_amount_update: false
+              receipt_amount_update: false
+        description: The benefit details to add.
+      responses:
+        '400':
+          description: Returned when the specified request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ModelValidationProblemDetails'
+              example:
+                type: urn:blackbaud:model-validation-error
+                title: One or more validation errors occurred.
+                status: 400
+                detail: The BenefitID field must be greater than 0.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '403':
+          description: Returned when the user does not have the necessary permissions to add participant benefit.
+        '200':
+          description: Returned when the participant benefit is added. The response body contains the ID of the new benefit.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse'
+              example:
+                id: '1001'
+      tags:
+      - Eventparticipantbenefits
+    patch:
+      operationId: EditParticipantBenefit
+      summary: Edit a participant benefit. (PREVIEW)
+      description: 'Edit existing participant benefit entry.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BenefitsDetailsRequest'
+            example:
+              parent_id: 500
+              benefit_id: 10
+              benefits_id: 1001
+              count: 3
+              unit_cost: 100
+              total_benefit_value: 300
+              sent:
+                y: 2026
+                m: 2
+                d: 20
+              comments: Updated benefit details
+              is_receipt_amount_update: false
+              receipt_amount_update: false
+        description: The benefit details to update.
+      responses:
+        '200':
+          description: Returned when the operation succeeds.
+        '400':
+          description: Returned when the specified request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ModelValidationProblemDetails'
+              example:
+                type: urn:blackbaud:model-validation-error
+                title: One or more validation errors occurred.
+                status: 400
+                detail: The BenefitID field must be greater than 0.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '404':
+          description: Returned when the specified participant benefit not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: urn:blackbaud:not-found
+                title: Resource not found.
+                status: 404
+                detail: The specified benefit was not found.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '403':
+          description: Returned when the user does not have permission to edit participant benefits.
+      tags:
+      - Eventparticipantbenefits
+  /v1/eventparticipantbenefits/benefits/notes:
+    patch:
+      operationId: EditEventParticipantBenefitNotes
+      summary: Edit participant benefit notes. (PREVIEW)
+      description: 'Updates the benefit notes for a specified event participant.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventParticipantBenefitNotesRequest'
+            example:
+              parent_id: 12345
+              benefits_notes: Updated notes for all benefits for this event participant. These notes will be applied to all benefits.
+        description: The request containing the parent ID and benefits notes to update.
+      responses:
+        '200':
+          description: Returned when benefit notes are updated successfully.
+        '400':
+          description: Returned when the request parameters are invalid.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ModelValidationProblemDetails'
+              example:
+                type: urn:blackbaud:model-validation-error
+                title: One or more validation errors occurred.
+                status: 400
+                detail: The BenefitID field must be greater than 0.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '404':
+          description: Returned when the specified event participant is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: urn:blackbaud:not-found
+                title: Resource not found.
+                status: 404
+                detail: The specified participant was not found.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '403':
+          description: Returned when the user does not have permission to update event participant benefit notes.
+      tags:
+      - Eventparticipantbenefits
+  /v1/eventparticipantbenefits/benefits/{benefit_id}:
+    delete:
+      operationId: DeleteParticipantBenefit
+      summary: Delete a participant benefit. (PREVIEW)
+      description: 'Deletes an existing participant benefit entry.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: benefit_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The ID of the benefit to delete.
+      responses:
+        '200':
+          description: Returned when the operation succeeds.
+        '400':
+          description: Returned when the data in the request URL is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ModelValidationProblemDetails'
+              example:
+                type: urn:blackbaud:model-validation-error
+                title: One or more validation errors occurred.
+                status: 400
+                detail: The BenefitID field must be greater than 0.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '404':
+          description: Returned when the specified participant benefit not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: urn:blackbaud:not-found
+                title: Resource not found.
+                status: 404
+                detail: The specified benefit was not found.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '403':
+          description: Returned when the user does not have permission to delete participant benefits.
+      tags:
+      - Eventparticipantbenefits
+    get:
+      operationId: GetEventParticipantBenefit
+      summary: Get a participant benefit by ID. (PREVIEW)
+      description: 'Returns a participant benefit.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: benefit_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The ID of the benefit for which to retrieve details.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a participant benefit.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BenefitsResponse'
+              example:
+                benefits_id: 1001
+                parent_id: 500
+                benefit_id: 10
+                description: Event Ticket - Annual Gala
+                count: 2
+                unit_cost: 75
+                total_benefit_value: 150
+                sent:
+                  y: 2026
+                  m: 1
+                  d: 15
+                comments: VIP seating included
+                sum_of_total_benefits: 150
+                benefits_include_notes: false
+        '400':
+          description: Returned when the data in the request URL is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ModelValidationProblemDetails'
+              example:
+                type: urn:blackbaud:model-validation-error
+                title: One or more validation errors occurred.
+                status: 400
+                detail: The BenefitID field must be greater than 0.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '404':
+          description: Returned when the specified participant benefit not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: urn:blackbaud:not-found
+                title: Resource not found.
+                status: 404
+                detail: The specified benefit was not found.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '403':
+          description: Returned when the user does not have permission to request participant benefit.
+      tags:
+      - Eventparticipantbenefits
+  /v1/eventparticipantbenefits/waivebenefits:
+    patch:
+      operationId: EditParticipantWaiveBenefits
+      summary: Edit waive benefits status for a participant. (PREVIEW)
+      description: 'Updates the waive benefits status for a participant.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ParticipantRequest'
+            example:
+              participant_id: 12345
+              waive_benefits: true
+        description: The participant request containing the waive benefits status to update.
+      responses:
+        '200':
+          description: Returned when the operation succeeds.
+        '400':
+          description: Returned when the specified request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ModelValidationProblemDetails'
+              example:
+                type: urn:blackbaud:model-validation-error
+                title: One or more validation errors occurred.
+                status: 400
+                detail: The BenefitID field must be greater than 0.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '404':
+          description: Returned when the specified participant not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: urn:blackbaud:not-found
+                title: Resource not found.
+                status: 404
+                detail: The specified participant was not found.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '403':
+          description: Returned when the user does not have permission to update participant waive benefits.
+      tags:
+      - Eventparticipantbenefits
+  /v1/eventparticipantbenefits/{participant_id}/benefits/list:
+    get:
+      operationId: GetEventParticipantBenefitCollection
+      summary: Get benefits for a participant. (PREVIEW)
+      description: 'Returns a collection of benefits by participant ID.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: participant_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The ID of the participant for which to retrieve benefits.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of event participant benefits.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BenefitCollection'
+              example:
+                count: 1
+                benefits:
+                - benefits_id: 1001
+                  parent_id: 500
+                  benefit_id: 10
+                  description: Event Ticket - Annual Gala
+                  count: 2
+                  unit_cost: 75
+                  total_benefit_value: 150
+                  sent:
+                    y: 2026
+                    m: 1
+                    d: 15
+                  comments: VIP seating included
+                  sum_of_total_benefits: 150
+                  benefits_include_notes: true
+                  benefits_notes: Please include these notes in the acknowledgment letter
+        '400':
+          description: Returned when the specified request parameters are not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ModelValidationProblemDetails'
+              example:
+                type: urn:blackbaud:model-validation-error
+                title: One or more validation errors occurred.
+                status: 400
+                detail: The BenefitID field must be greater than 0.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '403':
+          description: Returned when the user does not have permission to view event participant.
+      tags:
+      - Eventparticipantbenefits
+  /v1/eventparticipantbenefits/{participant_id}/waivebenefits:
+    get:
+      operationId: GetParticipantWaiveBenefits
+      summary: Get waive benefits status for a participant. (PREVIEW)
+      description: 'Returns the waive benefits status for a participant by participant ID.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: participant_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The ID of the participant for which to retrieve waive benefits status.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the participant waive benefits status.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ParticipantResponse'
+              example:
+                participant_id: 12345
+                waive_benefits: true
+        '400':
+          description: Returned when the specified request parameters are not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ModelValidationProblemDetails'
+              example:
+                type: urn:blackbaud:model-validation-error
+                title: One or more validation errors occurred.
+                status: 400
+                detail: The BenefitID field must be greater than 0.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '403':
+          description: Returned when the user does not have permission to view event participant.
+      tags:
+      - Eventparticipantbenefits
+components:
+  schemas:
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".
+        title:
+          type:
+          - string
+          - 'null'
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type:
+          - integer
+          - 'null'
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: {}
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+    ParticipantRequest:
+      type: object
+      properties:
+        participant_id:
+          type: integer
+          description: Gets or sets the unique identifier for the participant.
+          format: int32
+        waive_benefits:
+          type:
+          - boolean
+          - 'null'
+          description: Gets or sets a value indicating whether the participant has waived benefits.
+      additionalProperties: false
+      description: Represents the participant's benefits, including waiver status.
+    BenefitsDetailsRequest:
+      required:
+      - benefit_id
+      - parent_id
+      type: object
+      properties:
+        parent_id:
+          maximum: 2147483647
+          minimum: 1
+          type: integer
+          description: Gets or sets the unique identifier for the parent entity.
+          format: int32
+        benefit_id:
+          maximum: 2147483647
+          minimum: 1
+          type: integer
+          description: Gets or sets the unique identifier for the benefit code table entry.
+          format: int32
+        benefits_id:
+          type: integer
+          description: Gets or sets the unique identifier for the parent benefit table BenefitsId.
+          format: int32
+        count:
+          type: integer
+          description: Gets or sets the quantity of benefits.
+          format: int32
+        unit_cost:
+          type: number
+          description: Gets or sets the cost per unit of the benefit.
+          format: double
+        total_benefit_value:
+          type: number
+          description: Gets or sets the total value of the benefit calculated from count and unit cost.
+          format: double
+        sent:
+          $ref: '#/components/schemas/FuzzyDate'
+        comments:
+          type:
+          - string
+          - 'null'
+          description: Gets or sets additional comments or notes about the benefit.
+        is_receipt_amount_update:
+          type: boolean
+          description: Gets or sets a value indicating whether this represents a receipt amount update.
+          x-bb-suppressions:
+          - parameter_property_name
+        receipt_amount_update:
+          type: boolean
+          description: Gets or sets a value indicating whether this represents a receipt amount update.
+      additionalProperties: false
+      description: Represents a request model for benefit details, containing information about benefits associated with a parent including quantities, costs, and status.
+    BenefitCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The total number of items in the collection.
+          format: int32
+        benefits:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/BenefitsResponse'
+          description: The set of benefits included in the response.
+      additionalProperties: false
+      description: Defines a collection of benefits.
+    ModelValidationProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".<br/><br/>Available values:<table><tr><th>type</th><th>detail</th></tr><tr><td>urn:blackbaud:model-validation-error</td><td>A model validation rule was violated, such as a missing required field.</td></tr></table>
+        title:
+          type:
+          - string
+          - 'null'
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type:
+          - integer
+          - 'null'
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: {}
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-bb-error-types:
+      - urn:blackbaud:model-validation-error
+    EventParticipantBenefitNotesRequest:
+      required:
+      - parent_id
+      type: object
+      properties:
+        parent_id:
+          maximum: 2147483647
+          minimum: 1
+          type: integer
+          description: Gets or sets the unique identifier for the parent entity.
+          format: int32
+        benefits_notes:
+          type:
+          - string
+          - 'null'
+          description: Gets or sets the notes for the benefits.
+      additionalProperties: false
+      description: 'Represents the event participant benefits notes request.
+
+        Extends BenefitNotesBaseRequest without BenefitsIncludeNotes property as it''s not applicable for event participants.'
+    ParticipantResponse:
+      type: object
+      properties:
+        participant_id:
+          type: integer
+          description: Gets or sets the unique identifier for the participant.
+          format: int32
+        waive_benefits:
+          type: boolean
+          description: Gets or sets a value indicating whether the participant has waived benefits.
+      additionalProperties: false
+      description: Represents the participant's benefits, including waiver status.
+    PostResponse:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: The ID of the created record
+      additionalProperties: false
+      description: Result of creation of a record
+    FuzzyDate:
+      type: object
+      properties:
+        d:
+          type:
+          - integer
+          - 'null'
+          description: The day in the fuzzy date.
+          format: int32
+        m:
+          type:
+          - integer
+          - 'null'
+          description: The month in the fuzzy date.
+          format: int32
+        y:
+          type:
+          - integer
+          - 'null'
+          description: The year in the fuzzy date.
+          format: int32
+      additionalProperties: false
+      description: Fuzzy dates provide a versatile date type to create partial dates such as February 9 (with no year indicated).
+    BenefitsResponse:
+      type: object
+      properties:
+        benefits_id:
+          type: integer
+          description: Gets or sets the unique identifier for the benefit.
+          format: int32
+        parent_id:
+          type: integer
+          description: Gets or sets the unique identifier for the parent.
+          format: int32
+        benefit_id:
+          type: integer
+          description: Gets or sets the unique identifier for the benefit code table entry.
+          format: int32
+        description:
+          type:
+          - string
+          - 'null'
+          description: Gets or sets the description of the benefit.
+        count:
+          type: integer
+          description: Gets or sets the quantity of benefits.
+          format: int32
+        unit_cost:
+          type: number
+          description: Gets or sets the cost per unit of the benefit.
+          format: double
+        total_benefit_value:
+          type: number
+          description: Gets or sets the total value of the benefit calculated from count and unit cost.
+          format: double
+        sent:
+          $ref: '#/components/schemas/FuzzyDate'
+        comments:
+          type:
+          - string
+          - 'null'
+          description: Gets or sets additional comments or notes about the benefit.
+        sum_of_total_benefits:
+          type: number
+          description: Gets or sets sum of TotalBenefitValue for all benefits associated with the parent.
+          format: double
+        benefits_include_notes:
+          type: boolean
+          description: Gets or sets whether to include benefit notes in acknowledgment letters.
+        benefits_notes:
+          type:
+          - string
+          - 'null'
+          description: Gets or sets the text of the benefit notes from the parent entity.
+      additionalProperties: false
+      description: Represents the benefits associated with a parent, including benefit details, costs, and fulfillment information.
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

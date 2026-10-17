@@ -1,0 +1,556 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Lists V2 Executequery API'
+  description: This API manages lists of records
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/lst-lists
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/lst-lists
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Executequery
+paths:
+  /executequery:
+    post:
+      operationId: GetQueryResults
+      summary: Executes a query request (PREVIEW)
+      description: 'Executes a query to return a list of records
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Blackbaud.List.Service.Models.QueryExecutionRequest'
+            example:
+              data_model_name: list-management
+              definition:
+                filter:
+                  filter_items:
+                  - field:
+                      value:
+                        value:
+                          start_value: 100
+                          end_value: 5000
+                      field_id: record_count
+                      operator: Between
+                  time_zone_offset_in_minutes: 300
+                output:
+                  items:
+                  - field_id: name
+                    display_name: Name
+                  - field_id: description
+                    display_name: Description
+                  - field_id: list_type
+                    display_name: List type
+                sort:
+                  sort_fields:
+                  - field_id: date_added
+                    sort_order: asc
+              limit: 25
+        description: The query request.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Blackbaud.List.Service.Models.QueryResults'
+              example:
+                status: Completed
+                count_information:
+                  count: 3
+                items:
+                - id: 97bb9a83-9788-441f-9e4f-3e4258e5da99
+                  available_actions:
+                  - list-management.edit_list
+                  - list-management.delete_list
+                  name: Q2 charges over $5K
+                  description: ''
+                  list_type: charge
+                  search_score: null
+                - id: FF29CB43-E893-444F-A3CD-38254CB91717
+                  available_actions:
+                  - list-management.edit_list
+                  - list-management.delete_list
+                  name: Deposits from January 2022
+                  description: null
+                  list_type: deposit
+                  search_score: null
+                - id: 51F86D70-A01D-4F89-849A-D03BFC51C87D
+                  available_actions:
+                  - list-management.edit_list
+                  - list-management.delete_list
+                  name: Charges not yet posted
+                  description: Charges that have not been posted to GL
+                  list_type: charge
+                  search_score: null
+      tags:
+      - Executequery
+components:
+  schemas:
+    Blackbaud.List.Service.Models.OutputItem:
+      type: object
+      properties:
+        field_id:
+          type:
+          - string
+          - 'null'
+          description: Field information for a specific field to return
+        display_name:
+          type:
+          - string
+          - 'null'
+          description: The user-friendly display name of the output field
+        aggregation_filter:
+          $ref: '#/components/schemas/Blackbaud.List.Service.Models.Filter'
+      additionalProperties: false
+      description: Represents an individual item in the output of a query execution.
+    Blackbaud.List.Service.Models.SelectedFilter:
+      type: object
+      properties:
+        field_id:
+          type:
+          - string
+          - 'null'
+          description: The identifier of the field the filter applies to
+      additionalProperties: false
+      description: Represents a filter that is present but has not been applied
+    Blackbaud.List.Service.Models.QueryResultCount:
+      type: object
+      properties:
+        count:
+          type:
+          - integer
+          - 'null'
+          description: The total result count
+          format: int64
+        list_aggregation_result:
+          $ref: '#/components/schemas/Blackbaud.List.Service.Models.ListAggregationResult'
+        status:
+          title: CountStatusType
+          enum:
+          - None
+          - Incomplete
+          - Complete
+          type:
+          - string
+          - 'null'
+          description: Status of the count result
+      additionalProperties: false
+      description: The results of a list count
+    Blackbaud.List.Service.Models.ListAggregationResult:
+      type: object
+      properties:
+        value:
+          type:
+          - number
+          - 'null'
+          description: The numeric result of the aggregation
+          format: double
+        name:
+          type:
+          - string
+          - 'null'
+          description: User-facing name for this aggregate value.
+        field_type:
+          title: FieldType
+          enum:
+          - String
+          - Boolean
+          - Integer
+          - Currency
+          - Double
+          - DateTimeOffset
+          - FuzzyDate
+          - ComplexType
+          - ComplexTypeCollection
+          - StringCollection
+          - Composite
+          - Keyword
+          - EmailUrl
+          - PhoneNumber
+          - MonthDay
+          - Byte
+          - Short
+          - Money
+          - ScaledFloat
+          - LocalDate
+          - Long
+          - RelatedOutputField
+          - EffectiveDateRange
+          - DynamicFieldCollection
+          - Year
+          - Aggregation
+          - TopResultAggregation
+          - BBID
+          - ExportLink
+          type: string
+          description: The type of data returned by the aggregation (integer or currency)
+        iso_currency:
+          type:
+          - string
+          - 'null'
+          description: When the aggregate field is a money data type, will return the first iso_currency found
+      additionalProperties: false
+      description: The result of an aggregation
+    Blackbaud.List.Service.Models.FilterGrouping:
+      type: object
+      properties:
+        grouping_id:
+          type:
+          - string
+          - 'null'
+          description: The identifier of the grouping the filter applies to
+        items:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Blackbaud.List.Service.Models.FilterItem'
+          description: The set of filter items in the grouping
+        operator:
+          title: FilterGroupingOperator
+          enum:
+          - None
+          - AllOf
+          - OneOf
+          type: string
+          description: The operator for how the items in the group relate
+      additionalProperties: false
+      description: Represents a group of filter items and how they relate
+    Blackbaud.List.Service.Models.ContextValue:
+      type: object
+      properties:
+        context_id:
+          type:
+          - string
+          - 'null'
+          description: Context value used to create an applied filter.
+      additionalProperties: false
+      description: Specific context for a given request used for filtering to a subset of records.
+    Blackbaud.List.Service.Models.Filter:
+      type: object
+      properties:
+        filter_items:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Blackbaud.List.Service.Models.FilterItem'
+          description: The set of filter items in the filter
+        time_zone_offset_in_minutes:
+          type:
+          - integer
+          - 'null'
+          description: Gets or sets the time zone offset to support dynamic date filtering
+          format: int32
+        first_day_of_week:
+          title: FirstDayOfWeekType
+          enum:
+          - Sunday
+          - Monday
+          type:
+          - string
+          - 'null'
+          description: Gets or sets the first day of week when using certain date filters.
+        selected_filters:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Blackbaud.List.Service.Models.SelectedFilter'
+          description: The set of selected filter items in the filter
+      additionalProperties: false
+      description: Filter information for a query or report execution
+    Blackbaud.List.Service.Models.DrillThroughOutputItem:
+      type: object
+      properties:
+        field_id:
+          type:
+          - string
+          - 'null'
+          description: The output field which this information pertains to
+        link_field_id:
+          type:
+          - string
+          - 'null'
+          description: FieldId in the current model which has the value to use when drilling to related model.
+        related_field_id:
+          type:
+          - string
+          - 'null'
+          description: FieldId in the related model that should be filtered to the value of the link field when drilling to the related model.
+        filter:
+          $ref: '#/components/schemas/Blackbaud.List.Service.Models.Filter'
+      additionalProperties: false
+      description: Represents the details for how an output item calculates its aggregate data
+    Blackbaud.List.Service.Models.QuerySearchField:
+      type: object
+      properties:
+        field_id:
+          type:
+          - string
+          - 'null'
+          description: Field ID for a field to target when searching.
+      additionalProperties: false
+      description: Specific field to target when searching for a query execution request
+    Blackbaud.List.Service.Models.Output:
+      type: object
+      properties:
+        items:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Blackbaud.List.Service.Models.OutputItem'
+          description: The items to include in the output
+      additionalProperties: false
+      description: Output information for a query execution
+    Blackbaud.List.Service.Models.DrillThroughOutput:
+      type: object
+      properties:
+        items:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Blackbaud.List.Service.Models.DrillThroughOutputItem'
+          description: Defines the set of drill through output items.
+      additionalProperties: false
+      description: Details of the drill through output used for a query execution.
+    Blackbaud.List.Service.Models.QuerySearchFields:
+      type: object
+      properties:
+        items:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Blackbaud.List.Service.Models.QuerySearchField'
+          description: List of fields to target when searching.
+      additionalProperties: false
+      description: Specific fields to target when searching for a query execution request
+    Blackbaud.List.Service.Models.FilterValue:
+      type: object
+      properties:
+        value:
+          description: The value for the filter
+        label:
+          type:
+          - string
+          - 'null'
+          description: An optional label associated with the Blackbaud.List.Service.Models.FilterValue
+        filter_value_options:
+          type:
+          - String
+          - 'null'
+          description: Defines additional options that can be used for filtering
+      additionalProperties: false
+      description: Represents the value for a filter field
+    Blackbaud.List.Service.Models.FilterItem:
+      type: object
+      properties:
+        field:
+          $ref: '#/components/schemas/Blackbaud.List.Service.Models.FilterField'
+        grouping:
+          $ref: '#/components/schemas/Blackbaud.List.Service.Models.FilterGrouping'
+        collection_field:
+          $ref: '#/components/schemas/Blackbaud.List.Service.Models.CollectionFilterField'
+      additionalProperties: false
+      description: 'Represents an individual item in a group of filter items.  This item can contain filter information for a specific
+
+        field or contain another group of filter items.  It cannot contain both.'
+    Blackbaud.List.Service.Models.CollectionFilterField:
+      type: object
+      properties:
+        field_id:
+          type:
+          - string
+          - 'null'
+          description: The identifier of the field the filter applies to
+        filter_fields:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Blackbaud.List.Service.Models.FilterField'
+          description: The set of filters to be applied to items in the collection.  An indidivudal item must meet the entire set of filter criteria.
+      additionalProperties: false
+      description: Represents filter information for a collection.  This is used for filtering to records that have a single item in a collection that match a set of filters.
+    Blackbaud.List.Service.Models.Sort:
+      type: object
+      properties:
+        sort_fields:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Blackbaud.List.Service.Models.SortField'
+          description: Gets or sets the sort fields for a list request
+      additionalProperties: false
+      description: 'Describes how to sort a list request
+
+        ///'
+    Blackbaud.List.Service.Models.SortField:
+      type: object
+      properties:
+        field_id:
+          type:
+          - string
+          - 'null'
+          description: Gets or sets the name of the sort field
+        sort_order:
+          title: SortOrder
+          enum:
+          - asc
+          - desc
+          type: string
+          description: Gets or sets the direction of the sort order
+          x-bb-suppressions:
+          - enum_standards
+      additionalProperties: false
+      description: 'Describes a field to be sorted by
+
+        ///'
+    Blackbaud.List.Service.Models.QueryExecutionRequest:
+      required:
+      - data_model_name
+      type: object
+      properties:
+        data_model_name:
+          type: string
+          description: Defines which data model to use when executing the query
+        include_count:
+          type:
+          - boolean
+          - 'null'
+          description: Whether or not to include a total count in the result of the query execution
+        definition:
+          $ref: '#/components/schemas/Blackbaud.List.Service.Models.ListDefinition'
+        search_text:
+          type:
+          - string
+          - 'null'
+          description: Gets or sets the search text for the query.
+        limit:
+          type:
+          - integer
+          - 'null'
+          description: Gets or sets the number of items to return in a single request, to a maximum of 9,999 records (default 1000)
+          format: int32
+        continuation_token:
+          type:
+          - string
+          - 'null'
+          description: Defines a continuation token for the current result set that should be used when fetching the next page of results
+        include_drill_through_output:
+          type:
+          - boolean
+          - 'null'
+          description: Whether or not to return filter details to support drilling into an output column result.
+        search_fields:
+          $ref: '#/components/schemas/Blackbaud.List.Service.Models.QuerySearchFields'
+        context:
+          $ref: '#/components/schemas/Blackbaud.List.Service.Models.ContextValue'
+      additionalProperties: false
+      description: The request information needed to execute a query
+    Blackbaud.List.Service.Models.QueryResults:
+      type: object
+      properties:
+        status:
+          title: JobRunStatus
+          enum:
+          - None
+          - Running
+          - Completed
+          - Failed
+          type: string
+          description: The status of the query execution job
+        count_information:
+          $ref: '#/components/schemas/Blackbaud.List.Service.Models.QueryResultCount'
+        items:
+          type:
+          - array
+          - 'null'
+          items: {}
+          description: The results of the query execution
+        continuation_token:
+          type:
+          - string
+          - 'null'
+          description: Defines a continuation token for the current result set that should be used when fetching the next page of results
+        drill_through_output:
+          $ref: '#/components/schemas/Blackbaud.List.Service.Models.DrillThroughOutput'
+      additionalProperties: false
+      description: Defines the results of a query request
+    Blackbaud.List.Service.Models.FilterField:
+      type: object
+      properties:
+        value:
+          $ref: '#/components/schemas/Blackbaud.List.Service.Models.FilterValue'
+        field_id:
+          type:
+          - string
+          - 'null'
+          description: The identifier of the field the filter applies to
+        operator:
+          title: FilterOperator
+          enum:
+          - None
+          - Equal
+          - NotEqual
+          - GreaterThan
+          - LessThan
+          - GreaterThanOrEqual
+          - LessThanOrEqual
+          - OneOf
+          - NotOneOf
+          - Blank
+          - NotBlank
+          - Between
+          - StartsWith
+          - DoesNotStartWith
+          - AllOf
+          - NotBetween
+          - NotNull
+          type: string
+          description: The operator for the filter
+        is_aggregate:
+          type:
+          - boolean
+          - 'null'
+          description: Whether this filter represents an aggregate filter field.
+          x-bb-suppressions:
+          - parameter_property_name
+      additionalProperties: false
+      description: Represents filter information for a specific field
+    Blackbaud.List.Service.Models.ListDefinition:
+      type: object
+      properties:
+        filter:
+          $ref: '#/components/schemas/Blackbaud.List.Service.Models.Filter'
+        output:
+          $ref: '#/components/schemas/Blackbaud.List.Service.Models.Output'
+        sort:
+          $ref: '#/components/schemas/Blackbaud.List.Service.Models.Sort'
+      additionalProperties: false
+      description: Represents a list definition
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

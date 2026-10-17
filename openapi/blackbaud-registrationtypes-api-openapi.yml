@@ -1,0 +1,344 @@
+openapi: 3.2.0
+info:
+  title: Blackbaud Registrationtypes API
+  version: '1.0'
+  x-refined-note:
+  - x-apievangelist-provenance differs across the merged source definitions and was not carried
+  description: 'Operations tagged Registrationtypes across 2 of this provider''s published API definitions: blackbaud-altru-event-api-openapi.yml, blackbaud-crm-event-api-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.sky.blackbaud.com/alt-evtmg
+- url: https://api.sky.blackbaud.com/crm-evtmg
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Registrationtypes
+paths:
+  /registrationtypes:
+    post:
+      operationId: CreateEventRegistrationType
+      summary: Create an event registration type
+      description: Operation for adding an event registration type record.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewEventRegistrationType'
+            example:
+              description: Premium
+              registration_count: 100
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully creates the resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to create the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Registrationtypes
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-evtmg
+  /registrationtypes/search:
+    get:
+      operationId: SearchEventRegistrationTypes
+      summary: Search for event registration types
+      description: A search list of event registration types
+      parameters:
+      - name: description
+        in: query
+        required: false
+        schema:
+          type: string
+        description: description
+      - name: include_inactive
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: include inactive
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Limits the number of records to return.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of result entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventRegistrationTypeSearchCollection'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to view the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+      tags:
+      - Registrationtypes
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-evtmg
+  /registrationtypes/{event_registration_type_id}:
+    delete:
+      operationId: DeleteEventRegistrationType
+      summary: Delete an event registration type
+      description: Deletes an event registration record.
+      parameters:
+      - name: event_registration_type_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The event registration type id
+      responses:
+        '200':
+          description: Returned when the operation successfully deletes the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to delete the resource.
+      tags:
+      - Registrationtypes
+    patch:
+      operationId: EditEventRegistrationType
+      summary: Edit an event registration type
+      description: Operation for editing an event registration type.
+      parameters:
+      - name: event_registration_type_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The event registration type id.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditEventRegistrationType'
+            example:
+              description: Premium
+              registration_count: 100
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully edits the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to edit the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Registrationtypes
+    get:
+      operationId: GetEventRegistrationType
+      summary: Get an event registration type
+      description: Operation for editing an event registration type.
+      parameters:
+      - name: event_registration_type_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The event registration type id.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the specified resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventRegistrationType'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to get the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Registrationtypes
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-evtmg
+components:
+  schemas:
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type: integer
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type: string
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: false
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-display-name: Problem details
+      x-display-id: ProblemDetails
+    NewEventRegistrationType:
+      required:
+      - description
+      - registration_count
+      type: object
+      properties:
+        description:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The description.
+        registration_count:
+          type: integer
+          description: The registration count.
+          format: int32
+      additionalProperties: false
+      description: CreateEventRegistrationType
+      example:
+        description: Premium
+        registration_count: 100
+      x-display-name: Event Registration Type Add Form
+      x-display-id: Event Registration Type Add Form
+    EventRegistrationType:
+      required:
+      - description
+      - registration_count
+      type: object
+      properties:
+        description:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The description.
+        registration_count:
+          type: integer
+          description: The registration count.
+          format: int32
+      additionalProperties: false
+      description: GetEventRegistrationType
+      x-display-name: Event Registration Type Edit Form
+      x-display-id: Event Registration Type Edit Form
+    EventRegistrationTypeSearchCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items available for retrieval into the collection after applying any request parameters.
+          format: int32
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventRegistrationTypeSearchSummary'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+      additionalProperties: false
+      description: A collection of items. Data lists can contain paginated results.
+    PostResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The newly created ID.
+      additionalProperties: false
+      description: Defines the shape of a post response object.
+    EditEventRegistrationType:
+      type: object
+      properties:
+        description:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The description.
+        registration_count:
+          type: integer
+          description: The registration count.
+          format: int32
+      additionalProperties: false
+      description: EditEventRegistrationType
+      example:
+        description: Premium
+        registration_count: 100
+      x-display-name: Event Registration Type Edit Form
+      x-display-id: Event Registration Type Edit Form
+    EventRegistrationTypeSearchSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID.
+        description:
+          type: string
+          description: The description.
+        active:
+          type: boolean
+          description: Indicates whether active.
+      additionalProperties: false
+      description: SearchEventRegistrationTypes
+      x-display-name: Search Event Registration Type
+      x-display-id: Search Event Registration Type
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+x-refined-from:
+- blackbaud-altru-event-api-openapi.yml
+- blackbaud-crm-event-api-openapi.yml

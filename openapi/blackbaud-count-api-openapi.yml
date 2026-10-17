@@ -1,0 +1,256 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Lists V2 Count API'
+  description: This API manages lists of records
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/lst-lists
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/lst-lists
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Count
+paths:
+  /count:
+    post:
+      operationId: GetCount
+      summary: Calculates the total count of records (PREVIEW)
+      description: 'Calculates the total count of records which meet the criteria of the request
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Blackbaud.List.Service.Models.CountRequest'
+            example:
+              data_model_name: constituent
+              filter:
+                filter_items:
+                - field:
+                    value:
+                      value:
+                        start_value: 18
+                        end_value: 45
+                    field_id: age.age_in_years
+                    operator: Between
+                time_zone_offset_in_minutes: 300
+        description: The request.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Blackbaud.List.Service.Models.CountResult'
+              example:
+                count: 298223
+      tags:
+      - Count
+components:
+  schemas:
+    Blackbaud.List.Service.Models.FilterValue:
+      type: object
+      properties:
+        value:
+          description: The value for the filter
+        label:
+          type:
+          - string
+          - 'null'
+          description: An optional label associated with the Blackbaud.List.Service.Models.FilterValue
+        filter_value_options:
+          type:
+          - String
+          - 'null'
+          description: Defines additional options that can be used for filtering
+      additionalProperties: false
+      description: Represents the value for a filter field
+    Blackbaud.List.Service.Models.Filter:
+      type: object
+      properties:
+        filter_items:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Blackbaud.List.Service.Models.FilterItem'
+          description: The set of filter items in the filter
+        time_zone_offset_in_minutes:
+          type:
+          - integer
+          - 'null'
+          description: Gets or sets the time zone offset to support dynamic date filtering
+          format: int32
+        first_day_of_week:
+          title: FirstDayOfWeekType
+          enum:
+          - Sunday
+          - Monday
+          type:
+          - string
+          - 'null'
+          description: Gets or sets the first day of week when using certain date filters.
+        selected_filters:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Blackbaud.List.Service.Models.SelectedFilter'
+          description: The set of selected filter items in the filter
+      additionalProperties: false
+      description: Filter information for a query or report execution
+    Blackbaud.List.Service.Models.FilterItem:
+      type: object
+      properties:
+        field:
+          $ref: '#/components/schemas/Blackbaud.List.Service.Models.FilterField'
+        grouping:
+          $ref: '#/components/schemas/Blackbaud.List.Service.Models.FilterGrouping'
+        collection_field:
+          $ref: '#/components/schemas/Blackbaud.List.Service.Models.CollectionFilterField'
+      additionalProperties: false
+      description: 'Represents an individual item in a group of filter items.  This item can contain filter information for a specific
+
+        field or contain another group of filter items.  It cannot contain both.'
+    Blackbaud.List.Service.Models.CollectionFilterField:
+      type: object
+      properties:
+        field_id:
+          type:
+          - string
+          - 'null'
+          description: The identifier of the field the filter applies to
+        filter_fields:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Blackbaud.List.Service.Models.FilterField'
+          description: The set of filters to be applied to items in the collection.  An indidivudal item must meet the entire set of filter criteria.
+      additionalProperties: false
+      description: Represents filter information for a collection.  This is used for filtering to records that have a single item in a collection that match a set of filters.
+    Blackbaud.List.Service.Models.CountRequest:
+      required:
+      - data_model_name
+      type: object
+      properties:
+        data_model_name:
+          type: string
+          description: Defines which data model to use when executing the query
+        filter:
+          $ref: '#/components/schemas/Blackbaud.List.Service.Models.Filter'
+      additionalProperties: false
+      description: Defines a count request for the given model with optional filters
+    Blackbaud.List.Service.Models.SelectedFilter:
+      type: object
+      properties:
+        field_id:
+          type:
+          - string
+          - 'null'
+          description: The identifier of the field the filter applies to
+      additionalProperties: false
+      description: Represents a filter that is present but has not been applied
+    Blackbaud.List.Service.Models.CountResult:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: Gets or sets the total count
+          format: int64
+        status:
+          title: CountStatusType
+          enum:
+          - None
+          - Incomplete
+          - Complete
+          type:
+          - string
+          - 'null'
+          description: Status of the count result
+      additionalProperties: false
+      description: Defines the result of the count request
+    Blackbaud.List.Service.Models.FilterField:
+      type: object
+      properties:
+        value:
+          $ref: '#/components/schemas/Blackbaud.List.Service.Models.FilterValue'
+        field_id:
+          type:
+          - string
+          - 'null'
+          description: The identifier of the field the filter applies to
+        operator:
+          title: FilterOperator
+          enum:
+          - None
+          - Equal
+          - NotEqual
+          - GreaterThan
+          - LessThan
+          - GreaterThanOrEqual
+          - LessThanOrEqual
+          - OneOf
+          - NotOneOf
+          - Blank
+          - NotBlank
+          - Between
+          - StartsWith
+          - DoesNotStartWith
+          - AllOf
+          - NotBetween
+          - NotNull
+          type: string
+          description: The operator for the filter
+        is_aggregate:
+          type:
+          - boolean
+          - 'null'
+          description: Whether this filter represents an aggregate filter field.
+          x-bb-suppressions:
+          - parameter_property_name
+      additionalProperties: false
+      description: Represents filter information for a specific field
+    Blackbaud.List.Service.Models.FilterGrouping:
+      type: object
+      properties:
+        grouping_id:
+          type:
+          - string
+          - 'null'
+          description: The identifier of the grouping the filter applies to
+        items:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Blackbaud.List.Service.Models.FilterItem'
+          description: The set of filter items in the grouping
+        operator:
+          title: FilterGroupingOperator
+          enum:
+          - None
+          - AllOf
+          - OneOf
+          type: string
+          description: The operator for how the items in the group relate
+      additionalProperties: false
+      description: Represents a group of filter items and how they relate
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

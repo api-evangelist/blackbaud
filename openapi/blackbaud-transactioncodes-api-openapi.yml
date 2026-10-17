@@ -1,0 +1,297 @@
+openapi: 3.2.0
+info:
+  title: Blackbaud Transactioncodes API
+  version: '1.0'
+  x-refined-note:
+  - x-apievangelist-provenance differs across the merged source definitions and was not carried
+  description: 'Operations tagged Transactioncodes across 3 of this provider''s published API definitions: blackbaud-accounts-payable-api-openapi.yml, blackbaud-general-ledger-api-openapi.yml, blackbaud-treasury-api-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.sky.blackbaud.com/accountspayable/v1
+- url: https://api.sky.blackbaud.com/generalledger/v1
+- url: https://api.sky.blackbaud.com/treasury/v1
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Transactioncodes
+paths:
+  /transactioncodes:
+    get:
+      operationId: ListTransactionCodes
+      summary: Transaction code (List)
+      description: Returns the list of all available transaction codes.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the list of all available transaction codes.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactioncodesGet200ApplicationJsonResponse'
+              example:
+              - transaction_code_id: 1
+                name: Jurisdiction
+                description: Jurisdiction
+                used_for_grants: false
+              - transaction_code_id: 2
+                name: Spendable?
+                description: Spendable?
+                used_for_grants: false
+              - transaction_code_id: 3
+                name: RE Appeals
+                description: RE Appeals
+                used_for_grants: false
+              - transaction_code_id: 4
+                name: Grant
+                description: Grant
+                used_for_grants: true
+              - transaction_code_id: 5
+                name: Activities
+                description: Activities
+                used_for_grants: false
+      tags:
+      - Transactioncodes
+    servers:
+    - url: https://api.sky.blackbaud.com/accountspayable/v1
+  /transactioncodes/{transaction_code_id}/values:
+    get:
+      operationId: ListTransactionCodeValuesSingleTransactionCode
+      summary: Transaction code value (List)
+      description: Returns the list of all values for the specified transaction code.
+      parameters:
+      - name: transaction_code_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The transaction code identifier.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the list of all values for the specified transaction code.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transactioncodes-transaction_code_id-ValuesGet200ApplicationJsonResponse'
+              example:
+              - name: Jurisdiction
+                value: Fairfax County
+                id: 1893
+                inactive: true
+              - name: Jurisdiction
+                value: Prince William County
+                id: 1894
+                inactive: false
+              - name: Jurisdiction
+                value: Loudon County
+                id: 1895
+                inactive: false
+              - name: Jurisdiction
+                value: Waterbury
+                id: 1888
+                inactive: false
+              - name: Jurisdiction
+                value: Litchfield
+                id: 1889
+                inactive: false
+              - name: Jurisdiction
+                value: 1750 Deposit
+                id: 1861
+                inactive: false
+      tags:
+      - Transactioncodes
+    servers:
+    - url: https://api.sky.blackbaud.com/accountspayable/v1
+components:
+  schemas:
+    TransactionCodeValue:
+      required:
+      - id
+      - value
+      type: object
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+          description: The transaction code name.
+        value:
+          type: string
+          description: The transaction code value.
+        id:
+          type: integer
+          description: The transaction code value id.
+          format: int32
+        inactive:
+          type: boolean
+          description: Indicate if record is inactive or not.
+      additionalProperties: false
+      description: Transaction code value
+    Transactioncodes-transaction_code_id-ValuesGet200ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/TransactionCodeValue'
+      x-apim-inline: true
+    TransactioncodesGet200ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/TransactionCode'
+      x-apim-inline: true
+    TransactionCode:
+      type: object
+      properties:
+        transaction_code_id:
+          type: integer
+          description: The transaction code identifier.
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The transaction code name.
+        description:
+          type:
+          - string
+          - 'null'
+          description: The transaction code description.
+        used_for_grants:
+          type: boolean
+          description: If the transaction code is used for grants.
+      additionalProperties: false
+      description: Journal entry transaction code
+    TransactionCodeValueArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/TransactionCodeValue_2'
+    TransactionCodeArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/TransactionCode_2'
+    BasicErrorMessage:
+      type: object
+      properties:
+        Error:
+          type: string
+          x-ms-summary: Error
+      x-display-name: Basic error message
+      x-ms-summary: Basic error message
+    TransactionCode_2:
+      description: Journal entry transaction code
+      type: object
+      properties:
+        transaction_code_id:
+          format: int32
+          description: The transaction code identifier.
+          type: integer
+          x-ms-summary: Transaction code id
+        name:
+          description: The transaction code name.
+          type: string
+          x-ms-summary: Name
+        description:
+          description: The transaction code description.
+          type: string
+          x-ms-summary: Description
+        used_for_grants:
+          description: If the transaction code is used for grants.
+          type: boolean
+          x-ms-summary: Used for grants
+      x-display-name: Transaction code
+      x-ms-summary: Transaction code
+    TransactionCodeValue_2:
+      description: Transaction code value
+      required:
+      - value
+      - id
+      type: object
+      properties:
+        name:
+          description: The transaction code name.
+          type: string
+          x-ms-summary: Name
+        value:
+          description: The transaction code value.
+          type: string
+          x-ms-summary: Value
+        id:
+          format: int32
+          description: The transaction code value id.
+          type: integer
+          x-ms-summary: Id
+        inactive:
+          description: Indicate if record is inactive or not.
+          type: boolean
+          x-ms-summary: Inactive
+      x-display-name: Transaction code value
+      x-ms-summary: Transaction code value
+    TransactionCodeValueArray_2:
+      type: array
+      items:
+        $ref: '#/components/schemas/TransactionCodeValue_3'
+    TransactionCodeArray_2:
+      type: array
+      items:
+        $ref: '#/components/schemas/TransactionCode_3'
+    TransactionCode_3:
+      description: Journal entry transaction code
+      type: object
+      properties:
+        transaction_code_id:
+          format: int32
+          description: The transaction code identifier.
+          type: integer
+          x-ms-summary: Transaction code id
+        name:
+          description: The transaction code name.
+          type: string
+          x-ms-summary: Name
+        description:
+          description: The transaction code description.
+          type: string
+          x-ms-summary: Description
+        used_for_grants:
+          description: If the transaction code is used for grants.
+          type: boolean
+          x-ms-summary: Used for grants
+      x-display-name: Transaction code
+      x-ms-summary: Transaction code
+    TransactionCodeValue_3:
+      description: Transaction code value
+      required:
+      - value
+      - id
+      type: object
+      properties:
+        name:
+          description: The transaction code name.
+          type: string
+          x-ms-summary: Name
+        value:
+          description: The transaction code value.
+          type: string
+          x-ms-summary: Value
+        id:
+          format: int32
+          description: The transaction code value id.
+          type: integer
+          x-ms-summary: Id
+        inactive:
+          description: Indicate if record is inactive or not.
+          type: boolean
+          x-ms-summary: Inactive
+      x-display-name: Transaction code value
+      x-ms-summary: Transaction code value
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+x-refined-from:
+- blackbaud-accounts-payable-api-openapi.yml
+- blackbaud-general-ledger-api-openapi.yml
+- blackbaud-treasury-api-openapi.yml

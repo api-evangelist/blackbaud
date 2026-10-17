@@ -1,0 +1,574 @@
+openapi: 3.2.0
+info:
+  title: Blackbaud Constituentcorrespondencecodes API
+  version: '1.0'
+  x-refined-note:
+  - x-apievangelist-provenance differs across the merged source definitions and was not carried
+  description: 'Operations tagged Constituentcorrespondencecodes across 2 of this provider''s published API definitions: blackbaud-altru-constituent-api-openapi.yml, blackbaud-crm-constituent-api-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.sky.blackbaud.com/alt-conmg
+- url: https://api.sky.blackbaud.com/crm-conmg
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Constituentcorrespondencecodes
+paths:
+  /constituentcorrespondencecodes:
+    post:
+      operationId: CreateConstituentCorrespondenceCode
+      summary: Create a constituent correspondence code
+      description: This operation is used to add correspondence record for a constituent.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewConstituentCorrespondenceCode'
+            example:
+              constituent_id: FE204CAB-0E67-4F28-990C-3E1B3B5C40A5
+              correspondence_code: Newsletter
+              date_sent: '2018-05-22T12:00:00Z'
+              comments: Newsletter discussing the volunteer drive.
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully creates the resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to create the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Constituentcorrespondencecodes
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-conmg
+  /constituentcorrespondencecodes/{constituent_correspondence_id}:
+    delete:
+      operationId: DeleteConstituentCorrespondenceCode
+      summary: Delete a constituent correspondence code
+      description: Delete the specified constituent correspondence record.
+      parameters:
+      - name: constituent_correspondence_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The constituent correspondence id
+      responses:
+        '200':
+          description: Returned when the operation successfully deletes the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to delete the resource.
+      tags:
+      - Constituentcorrespondencecodes
+    patch:
+      operationId: EditConstituentCorrespondenceCode
+      summary: Edit a constituent correspondence code
+      description: This operation is for editing constituent correspondence.
+      parameters:
+      - name: constituent_correspondence_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The constituent correspondence id.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditConstituentCorrespondenceCode'
+            example:
+              correspondence_code: Phone
+              date_sent: '2018-10-21T12:00:00Z'
+              comments: Follow up phone call.
+              require_code: false
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully edits the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to edit the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Constituentcorrespondencecodes
+    get:
+      operationId: GetConstituentCorrespondenceCode
+      summary: Get a constituent correspondence code
+      description: This operation is for editing constituent correspondence.
+      parameters:
+      - name: constituent_correspondence_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The constituent correspondence id.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the specified resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConstituentCorrespondenceCode'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to get the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Constituentcorrespondencecodes
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-conmg
+  /constituentcorrespondencecodes/{constituent_correspondence_id}/response:
+    patch:
+      operationId: EditConstituentCorrespondenceCodeResponse
+      summary: Edit a constituent correspondence code response
+      description: This operation is used to add and edit constituent correspondence responses.
+      parameters:
+      - name: constituent_correspondence_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The constituent correspondence id.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditConstituentCorrespondenceCodeResponse'
+            example:
+              responses:
+              - date: '2018-10-21'
+                response_category: Test
+                response: Test
+                code: Phone
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully edits the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to edit the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Constituentcorrespondencecodes
+    get:
+      operationId: GetConstituentCorrespondenceCodeResponse
+      summary: Get a constituent correspondence code response
+      description: This operation is used to add and edit constituent correspondence responses.
+      parameters:
+      - name: constituent_correspondence_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The constituent correspondence id.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the specified resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConstituentCorrespondenceCodeResponse'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to get the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Constituentcorrespondencecodes
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-conmg
+components:
+  schemas:
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type: integer
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type: string
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: false
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-display-name: Problem details
+      x-display-id: ProblemDetails
+    EditConstituentCorrespondenceCodeResponse:
+      type: object
+      properties:
+        responses:
+          type: array
+          items:
+            $ref: '#/components/schemas/EditConstituentCorrespondenceCodeResponseResponses'
+          description: Responses.
+      additionalProperties: false
+      description: EditConstituentCorrespondenceCodeResponse
+      example:
+        responses:
+        - date: '2018-10-21'
+          response_category: Test
+          response: Test
+          code: Phone
+      x-display-name: Constituent Correspondence Response Edit Form
+      x-display-id: Constituent Correspondence Response Edit Form
+    NewConstituentCorrespondenceCode:
+      required:
+      - constituent_id
+      - correspondence_code
+      - date_sent
+      type: object
+      properties:
+        constituent_id:
+          type: string
+          description: The constituent ID.
+        correspondence_code:
+          type: string
+          description: The the code associated with this correspondence.. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/63305295-220e-43a1-b744-359c7ffb77f5.
+        date_sent:
+          type: string
+          description: 'The date when this correspondence was sent.. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        comments:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The comments regarding this correspondence..
+      additionalProperties: false
+      description: CreateConstituentCorrespondenceCode
+      example:
+        constituent_id: FE204CAB-0E67-4F28-990C-3E1B3B5C40A5
+        correspondence_code: Newsletter
+        date_sent: '2018-05-22T12:00:00Z'
+        comments: Newsletter discussing the volunteer drive.
+      x-display-name: Constituent Correspondence Add Form 2
+      x-display-id: Constituent Correspondence Add Form 2
+    EditConstituentCorrespondenceCodeResponseResponses:
+      required:
+      - response_category
+      - response
+      type: object
+      properties:
+        date:
+          type: string
+          description: date
+          format: date
+        response_category:
+          type: string
+          description: The category. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/fa5c3e42-aea6-450c-a66f-e79919df98d8.
+        response:
+          type: string
+          description: The response. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/e48745a4-b8cd-4e31-885a-3173d7374ea6?parameters=responsecategoryid,{response_category}.
+        code:
+          type: string
+          description: code
+      description: EditConstituentCorrespondenceCodeResponseResponses
+      x-display-name: responses
+      x-display-id: responses
+    ConstituentCorrespondenceCodeResponseResponses:
+      required:
+      - response_category
+      - response
+      type: object
+      properties:
+        date:
+          type: string
+          description: date
+          format: date
+        response_category:
+          type: string
+          description: The category. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/fa5c3e42-aea6-450c-a66f-e79919df98d8.
+        response:
+          type: string
+          description: The response. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/e48745a4-b8cd-4e31-885a-3173d7374ea6?parameters=responsecategoryid,{response_category}.
+        code:
+          type: string
+          description: code
+      description: ConstituentCorrespondenceCodeResponseResponses
+      x-display-name: responses
+      x-display-id: responses
+    ConstituentCorrespondenceCode:
+      required:
+      - date_sent
+      type: object
+      properties:
+        correspondence_code:
+          type: string
+          description: The the code associated with this correspondence.. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/63305295-220e-43a1-b744-359c7ffb77f5.
+        date_sent:
+          type: string
+          description: 'The date when this correspondence was sent.. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        comments:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The comments regarding this correspondence..
+        require_code:
+          type: boolean
+          description: Indicates whether require code. Read-only in the SOAP API.
+      additionalProperties: false
+      description: GetConstituentCorrespondenceCode
+      x-display-name: Constituent Correspondence Edit Form 3
+      x-display-id: Constituent Correspondence Edit Form 3
+    ConstituentCorrespondenceCodeResponse:
+      type: object
+      properties:
+        responses:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConstituentCorrespondenceCodeResponseResponses'
+          description: Responses.
+      additionalProperties: false
+      description: GetConstituentCorrespondenceCodeResponse
+      x-display-name: Constituent Correspondence Response Edit Form
+      x-display-id: Constituent Correspondence Response Edit Form
+    EditConstituentCorrespondenceCode:
+      type: object
+      properties:
+        correspondence_code:
+          type: string
+          description: The the code associated with this correspondence.. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/63305295-220e-43a1-b744-359c7ffb77f5.
+        date_sent:
+          type: string
+          description: 'The date when this correspondence was sent.. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        comments:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The comments regarding this correspondence..
+        require_code:
+          type: boolean
+          description: Indicates whether require code. Read-only in the SOAP API.
+      additionalProperties: false
+      description: EditConstituentCorrespondenceCode
+      example:
+        correspondence_code: Phone
+        date_sent: '2018-10-21T12:00:00Z'
+        comments: Follow up phone call.
+        require_code: false
+      x-display-name: Constituent Correspondence Edit Form 3
+      x-display-id: Constituent Correspondence Edit Form 3
+    PostResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The newly created ID.
+      additionalProperties: false
+      description: Defines the shape of a post response object.
+    NewConstituentCorrespondenceCode_2:
+      required:
+      - constituent_id
+      - correspondence_code
+      - date_sent
+      type: object
+      properties:
+        constituent_id:
+          type: string
+          description: The constituent ID.
+        correspondence_code:
+          type: string
+          description: The the code associated with this correspondence.. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/63305295-220e-43a1-b744-359c7ffb77f5.
+        date_sent:
+          type: string
+          description: 'The date when this correspondence was sent.. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        comments:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The comments regarding this correspondence..
+      additionalProperties: false
+      description: CreateConstituentCorrespondenceCode
+      example:
+        constituent_id: FE204CAB-0E67-4F28-990C-3E1B3B5C40A5
+        correspondence_code: Newsletter
+        date_sent: '2018-05-22T12:00:00Z'
+        comments: Newsletter discussing the volunteer drive.
+      x-display-name: Constituent Correspondence Add Form 2
+      x-display-id: Constituent Correspondence Add Form 2
+    EditConstituentCorrespondenceCodeResponseResponses_2:
+      required:
+      - response_category
+      - response
+      type: object
+      properties:
+        date:
+          type: string
+          description: date
+          format: date
+        response_category:
+          type: string
+          description: The category. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/fa5c3e42-aea6-450c-a66f-e79919df98d8.
+        response:
+          type: string
+          description: The response. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/e48745a4-b8cd-4e31-885a-3173d7374ea6?parameters=responsecategoryid,{response_category}.
+        code:
+          type: string
+          description: code
+      description: EditConstituentCorrespondenceCodeResponseResponses
+      x-display-name: responses
+      x-display-id: responses
+    ConstituentCorrespondenceCodeResponseResponses_2:
+      required:
+      - response_category
+      - response
+      type: object
+      properties:
+        date:
+          type: string
+          description: date
+          format: date
+        response_category:
+          type: string
+          description: The category. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/fa5c3e42-aea6-450c-a66f-e79919df98d8.
+        response:
+          type: string
+          description: The response. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/e48745a4-b8cd-4e31-885a-3173d7374ea6?parameters=responsecategoryid,{response_category}.
+        code:
+          type: string
+          description: code
+      description: ConstituentCorrespondenceCodeResponseResponses
+      x-display-name: responses
+      x-display-id: responses
+    ConstituentCorrespondenceCode_2:
+      required:
+      - date_sent
+      type: object
+      properties:
+        correspondence_code:
+          type: string
+          description: The the code associated with this correspondence.. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/63305295-220e-43a1-b744-359c7ffb77f5.
+        date_sent:
+          type: string
+          description: 'The date when this correspondence was sent.. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        comments:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The comments regarding this correspondence..
+        require_code:
+          type: boolean
+          description: Indicates whether require code. Read-only in the SOAP API.
+      additionalProperties: false
+      description: GetConstituentCorrespondenceCode
+      x-display-name: Constituent Correspondence Edit Form 3
+      x-display-id: Constituent Correspondence Edit Form 3
+    EditConstituentCorrespondenceCode_2:
+      type: object
+      properties:
+        correspondence_code:
+          type: string
+          description: The the code associated with this correspondence.. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/63305295-220e-43a1-b744-359c7ffb77f5.
+        date_sent:
+          type: string
+          description: 'The date when this correspondence was sent.. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        comments:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The comments regarding this correspondence..
+        require_code:
+          type: boolean
+          description: Indicates whether require code. Read-only in the SOAP API.
+      additionalProperties: false
+      description: EditConstituentCorrespondenceCode
+      example:
+        correspondence_code: Phone
+        date_sent: '2018-10-21T12:00:00Z'
+        comments: Follow up phone call.
+        require_code: false
+      x-display-name: Constituent Correspondence Edit Form 3
+      x-display-id: Constituent Correspondence Edit Form 3
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+x-refined-from:
+- blackbaud-altru-constituent-api-openapi.yml
+- blackbaud-crm-constituent-api-openapi.yml

@@ -1,0 +1,96 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Accounts Payable Fobs API'
+  description: This API is used to manage accounts payable, including vendors and invoices.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/57a342f1d7dcde1c28a749fe
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/accountspayable/v1
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Fobs
+paths:
+  /fobs:
+    get:
+      operationId: ListFOBs
+      summary: FOB (List)
+      description: Returns a list of freight on board options.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the list of freight on board options.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FOBApiCollection'
+              example:
+                count: 3
+                value:
+                - id: 359
+                  description: Shipping
+                  value: Shipping
+                  inactive: false
+                - id: 363
+                  description: Destination
+                  value: Destination
+                  inactive: false
+                - id: 6038
+                  description: Transit
+                  value: Transit
+                  inactive: true
+      tags:
+      - Fobs
+components:
+  schemas:
+    FOB:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The identifier for this fob.
+          format: int32
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the fob.
+        value:
+          type:
+          - string
+          - 'null'
+          description: The value of the fob.
+        inactive:
+          type: boolean
+          description: Whether or not the fob is active.
+      additionalProperties: false
+      description: Contract for freight on board.
+    FOBApiCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/FOB'
+      additionalProperties: false
+      description: Collection Response
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

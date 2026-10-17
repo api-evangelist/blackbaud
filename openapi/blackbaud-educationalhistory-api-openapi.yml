@@ -1,0 +1,266 @@
+openapi: 3.2.0
+info:
+  title: Blackbaud Educationalhistory API
+  version: '1.0'
+  x-refined-note:
+  - x-apievangelist-provenance differs across the merged source definitions and was not carried
+  description: 'Operations tagged Educationalhistory across 2 of this provider''s published API definitions: blackbaud-altru-fundraising-api-openapi.yml, blackbaud-crm-fundraising-api-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.sky.blackbaud.com/alt-fndmg
+- url: https://api.sky.blackbaud.com/crm-fndmg
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Educationalhistory
+paths:
+  /educationalhistory/search:
+    get:
+      operationId: SearchEducationalHistories
+      summary: Search for educational histories
+      description: This search list provides the ability to search for educational history records.
+      parameters:
+      - name: full_name_educational_institution
+        in: query
+        required: false
+        schema:
+          type: string
+        description: full name educational institution
+      - name: key_name
+        in: query
+        required: false
+        schema:
+          type: string
+        description: last/org name
+      - name: first_name
+        in: query
+        required: false
+        schema:
+          type: string
+        description: first name
+      - name: lookup_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: lookup id
+      - name: exact_match_only
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: match all criteria exactly
+      - name: check_nickname
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: check nickname
+      - name: check_aliases
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: check aliases
+      - name: check_alternate_lookup_ids
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: check alternate lookup ids
+      - name: educational_institution
+        in: query
+        required: false
+        schema:
+          type: string
+        description: educational institution SimpleDataListID=0e239b5a-8c99-4e1e-9c10-06adce4b6500.
+      - name: academic_catalog_program
+        in: query
+        required: false
+        schema:
+          type: string
+        description: academic catalog program SimpleDataListID=d411c16b-8bcf-4fc8-a747-754e1e89e9bc.
+      - name: educational_program
+        in: query
+        required: false
+        schema:
+          type: string
+        description: educational program This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/EDUCATIONALPROGRAMCODE/entries
+      - name: constituency_status
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - All statuses
+          - Unknown
+          - Currently attending
+          - Incomplete
+          - Graduated
+        description: status
+      - name: educational_history_status
+        in: query
+        required: false
+        schema:
+          type: string
+        description: status SimpleDataListID=086c5bfb-1a80-46cf-a2f5-05ef51120891.
+      - name: academic_catalog_degree
+        in: query
+        required: false
+        schema:
+          type: string
+        description: academic catalog degree SimpleDataListID=73c67942-07ad-412e-8596-a042e5e68002.
+      - name: educational_degree
+        in: query
+        required: false
+        schema:
+          type: string
+        description: educational degree This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/EDUCATIONALDEGREECODE/entries
+      - name: class_of
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: class year
+      - name: primary_only
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: only search primary records
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Limits the number of records to return.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of result entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EducationalHistorySearchCollection'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to view the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+      tags:
+      - Educationalhistory
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-fndmg
+components:
+  schemas:
+    EducationalHistorySearchCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items available for retrieval into the collection after applying any request parameters.
+          format: int32
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/EducationalHistorySearchSummary'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+      additionalProperties: false
+      description: A collection of items. Data lists can contain paginated results.
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type: integer
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type: string
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: false
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-display-name: Problem details
+      x-display-id: ProblemDetails
+    EducationalHistorySearchSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID.
+        full_name_educational_institution:
+          type: string
+          description: The full name\educational institution.
+        constituent_name:
+          type: string
+          description: The constituent name.
+        constituent_lookup_id:
+          type: string
+          description: The constituent lookup ID.
+        constituent_address:
+          type: string
+          description: The constituent address.
+        constituent_city:
+          type: string
+          description: The constituent city.
+        constituent_state:
+          type: string
+          description: The constituent state.
+        constituent_postcode:
+          type: string
+          description: The constituent zip/postal code.
+        educational_institution:
+          type: string
+          description: The educational institution.
+        program:
+          type: string
+          description: The program.
+        degree:
+          type: string
+          description: The degree.
+        status:
+          type: string
+          description: The status.
+        class_year:
+          type: string
+          description: The class year.
+        educational_history_status:
+          type: string
+          description: The status.
+      additionalProperties: false
+      description: SearchEducationalHistories
+      x-display-name: Educational History Search
+      x-display-id: Educational History Search
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+x-refined-from:
+- blackbaud-altru-fundraising-api-openapi.yml
+- blackbaud-crm-fundraising-api-openapi.yml

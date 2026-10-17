@@ -1,0 +1,371 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Event Eventcategories API'
+  description: This API manages event information and related entities such as participant.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/event
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/event
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Eventcategories
+paths:
+  /v1/eventcategories:
+    post:
+      operationId: CreateEventCategory
+      summary: Create an event category
+      description: Creates a new event category.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateEventCategory'
+            example:
+              name: Dinner
+        description: An object that represents the event category to create.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the ID of the new event category.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdResponse'
+              example:
+                id: '4343'
+        '400':
+          description: Returned when the specified request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1EventcategoriesPost400ApplicationJsonResponse'
+              example:
+              - message: The request body is not in the appropriate format.
+                error_name: BadRequest
+                error_code: 400
+                raw_message: The request body is not in the appropriate format.
+        '403':
+          description: Returned when the user does not have permission to create the event category.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1EventcategoriesPost403ApplicationJsonResponse'
+              example:
+              - message: The user does not have the necessary permissions for this task.
+                error_name: Forbidden
+                error_code: 403
+                raw_message: The user does not have the necessary permissions for this task.
+      tags:
+      - Eventcategories
+    get:
+      operationId: GetEventCategories
+      summary: Get event categories
+      description: Returns a list of active event categories.
+      parameters:
+      - name: include_inactive
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: Represents whether to include inactive entries.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of event categories.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventCategoryCollection'
+              example:
+                count: 12
+                value:
+                - id: '1293'
+                  name: Annual Fundraiser
+                  inactive: false
+                - id: '1179'
+                  name: Golf Tournament
+                  inactive: false
+                - id: '2906'
+                  name: Social
+                  inactive: false
+        '400':
+          description: Returned when the request filters are improperly formatted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1EventcategoriesGet400ApplicationJsonResponse'
+              example:
+              - message: The request body is not in the appropriate format.
+                error_name: BadRequest
+                error_code: 400
+                raw_message: The request body is not in the appropriate format.
+        '403':
+          description: Returned when the user does not have rights to view event categories.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1EventcategoriesGet403ApplicationJsonResponse'
+              example:
+              - message: The user does not have the necessary permissions for this task.
+                error_name: Forbidden
+                error_code: 403
+                raw_message: The user does not have the necessary permissions for this task.
+      tags:
+      - Eventcategories
+  /v1/eventcategories/{event_category_id}:
+    delete:
+      operationId: DeleteEventCategory
+      summary: Delete an event category
+      description: Deletes an event category.
+      parameters:
+      - name: event_category_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The ID of the event category.
+      responses:
+        '200':
+          description: Returned when the operation successfully deletes an event category.
+        '400':
+          description: Returned when the specified event category ID is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Eventcategories-event_category_id-Delete400ApplicationJsonResponse'
+              example:
+              - message: The request body is not in the appropriate format.
+                error_name: BadRequest
+                error_code: 400
+                raw_message: The request body is not in the appropriate format.
+        '403':
+          description: Returned when the user does not have permission to delete the event category.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Eventcategories-event_category_id-Delete403ApplicationJsonResponse'
+              example:
+              - message: The user does not have the necessary permissions for this task.
+                error_name: Forbidden
+                error_code: 403
+                raw_message: The user does not have the necessary permissions for this task.
+      tags:
+      - Eventcategories
+    patch:
+      operationId: EditEventCategory
+      summary: Edit an event category
+      description: Edits the details about an event category.
+      parameters:
+      - name: event_category_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The ID of the event category.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditEventCategory'
+            example:
+              name: Alumni Dinner
+              inactive: false
+        description: An object that represents the changes to the event category.
+      responses:
+        '200':
+          description: Returned when the operation succeeds.
+        '400':
+          description: Returned when the specified request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Eventcategories-event_category_id-Patch400ApplicationJsonResponse'
+              example:
+              - message: The request body is not in the appropriate format.
+                error_name: BadRequest
+                error_code: 400
+                raw_message: The request body is not in the appropriate format.
+        '403':
+          description: Returned when the user does not have permission to edit the event category.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Eventcategories-event_category_id-Patch403ApplicationJsonResponse'
+              example:
+              - message: The user does not have the necessary permissions for this task.
+                error_name: Forbidden
+                error_code: 403
+                raw_message: The user does not have the necessary permissions for this task.
+        '404':
+          description: Returned when the specified event category is not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Eventcategories-event_category_id-Patch404ApplicationJsonResponse'
+              example:
+              - message: The requested resource could not be found.
+                error_name: ResourceNotFound
+                error_code: 404
+                raw_message: The requested resource could not be found.
+      tags:
+      - Eventcategories
+components:
+  schemas:
+    EventCategory:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: The ID of the event category.
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the event category.
+        inactive:
+          type: boolean
+          description: Whether the category is inactive. True if inactive.
+      additionalProperties: false
+      description: Event category is the custom categorization for the event.
+    V1Eventcategories-event_category_id-Patch403ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    IdResponse:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: The ID response
+      additionalProperties: false
+      description: Class used to return a single ID property
+    EditEventCategory:
+      type: object
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the event category.
+        inactive:
+          type: boolean
+          description: Whether the category is inactive. True if inactive.
+      additionalProperties: false
+      description: Event categories help group different types of events.
+    V1EventcategoriesGet403ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    CreateEventCategory:
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the event category.
+      additionalProperties: false
+      description: Event categories help group different types of events.
+    ServiceError:
+      type: object
+      properties:
+        message:
+          type:
+          - string
+          - 'null'
+          description: The description of the error.
+        error_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the error.
+        error_code:
+          type: integer
+          description: The number associated with the error.
+          format: int32
+        raw_message:
+          type:
+          - string
+          - 'null'
+          description: The description of the error which can include argument placeholders.
+        error_args:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: The argument data for the placeholders.
+      additionalProperties: false
+      description: Explains the reason for an error.
+    V1Eventcategories-event_category_id-Delete400ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    V1EventcategoriesGet400ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    V1Eventcategories-event_category_id-Patch404ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    V1EventcategoriesPost403ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    EventCategoryCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The total number of items in the collection before limit/offset.
+          format: int32
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/EventCategory'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+      additionalProperties: false
+      description: Defines a collection of event categories.
+    V1Eventcategories-event_category_id-Patch400ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    V1Eventcategories-event_category_id-Delete403ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    V1EventcategoriesPost400ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

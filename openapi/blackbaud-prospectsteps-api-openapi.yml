@@ -1,0 +1,965 @@
+openapi: 3.2.0
+info:
+  title: Blackbaud Prospectsteps API
+  version: '1.0'
+  x-refined-note:
+  - x-apievangelist-provenance differs across the merged source definitions and was not carried
+  description: 'Operations tagged Prospectsteps across 2 of this provider''s published API definitions: blackbaud-altru-prospect-api-openapi.yml, blackbaud-crm-prospect-api-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.sky.blackbaud.com/alt-prsmg
+- url: https://api.sky.blackbaud.com/crm-prsmg
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Prospectsteps
+paths:
+  /prospectsteps:
+    post:
+      operationId: CreateProspectSteps
+      summary: Create a prospect steps
+      description: Add dataoperation for step records.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewProspectSteps'
+            example:
+              prospect_plan_id: 2fd00e64-4580-415e-a550-6afb622386c9
+              interaction_type: Phone call
+              objective: prospect step
+              owner_id: 67027938-df87-4796-9a1c-99c326d4bb00
+              status: Planned
+              interaction_type_code_id: 5156e605-0958-441d-9d65-0b1b95c39356
+              actual_date: '2006-07-29T10:00:00Z'
+              prospect_plan_status: Future Prospect
+              comment: this is step add
+              interaction_type_code_id_value_translation: Phone call
+              additional_fundraisers:
+              - id: 5156e605-0958-441d-9d65-0b1b95c39356
+                fundraiser_id: 310c7a77-bc72-4f32-ae62-1c5f2c9b6b58
+              participants:
+              - id: ac681ec7-110f-4f54-b88c-25c062472ac4
+                constituent_id: 12e89c4a-204d-479e-b7a3-81cd3752e73f
+              interaction_category: Prospect Management
+              interaction_subcategory: Recipient Scholarship/Donor Info Sent
+              expected_start_time:
+                hour: 1
+                minute: 26
+              expected_end_time:
+                hour: 3
+                minute: 26
+              is_all_day_event: false
+              time_zone_entry: Pacific Standard Time
+              actual_start_time:
+                hour: 1
+                minute: 26
+              actual_end_time:
+                hour: 3
+                minute: 26
+              prospect_id: 449c9705-20ca-499c-bac6-224716ee699d
+              location: 818 Dunwoody Blvd  Minneapolis, MN  55403
+              other_location: Minneapolis
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully creates the resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to create the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Prospectsteps
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-prsmg
+  /prospectsteps/{interaction_id}:
+    patch:
+      operationId: EditProspectSteps
+      summary: Edit a prospect steps
+      description: Edit operation for a step.
+      parameters:
+      - name: interaction_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The interaction id.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditProspectSteps'
+            example:
+              prospect_plan_id: 2fd00e64-4580-415e-a550-6afb622386c9
+              interaction_type: Phone call
+              objective: objective of adding prospect step
+              owner_id: 67027938-df87-4796-9a1c-99c326d4bb00
+              status: Planned
+              interaction_type_code_id: 5156e605-0958-441d-9d65-0b1b95c39356
+              actual_date: '2006-07-29T10:00:00Z'
+              prospect_plan_status: Future Prospect
+              comment: this is step add
+              interaction_type_code_id_value_translation: Phone call
+              additional_fundraisers:
+              - id: 5156e605-0958-441d-9d65-0b1b95c39356
+                fundraiser_id: 310c7a77-bc72-4f32-ae62-1c5f2c9b6b58
+              participants:
+              - id: ac681ec7-110f-4f54-b88c-25c062472ac4
+                constituent_id: 12e89c4a-204d-479e-b7a3-81cd3752e73f
+              interaction_category: Prospect Management
+              interaction_subcategory: Recipient Scholarship/Donor Info Sent
+              expected_start_time:
+                hour: 1
+                minute: 26
+              expected_end_time:
+                hour: 3
+                minute: 26
+              is_all_day_event: false
+              time_zone_entry: Pacific Standard Time
+              actual_start_time:
+                hour: 1
+                minute: 26
+              actual_end_time:
+                hour: 3
+                minute: 26
+              plan_is_active: false
+              prospect_id: 449c9705-20ca-499c-bac6-224716ee699d
+              location: 818 Dunwoody Blvd  Minneapolis, MN  55403
+              other_location: Minneapolis
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully edits the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to edit the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Prospectsteps
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-prsmg
+  /prospectsteps/{prospect_plan_id}/plannedlist:
+    get:
+      operationId: ListProspectSteps
+      summary: List prospect steps
+      description: List of planned/pending steps for a given plan.
+      parameters:
+      - name: prospect_plan_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The prospect plan id.
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Limits the number of records to return.
+      - name: session_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: A unique key provided by user for paging results. The same key will be returned in a successful response.
+      - name: infinity_session
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Values for cookies related to the Infinity load balancer session.
+      - name: more_rows_range_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Key for accessing cached results on subsequent calls to this data list.
+      - name: start_row_index
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Number of rows to skip,get result after these rows.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of result entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProspectStepsListCollection'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to view the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+      tags:
+      - Prospectsteps
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-prsmg
+  /prospectsteps/{step_id}:
+    delete:
+      operationId: DeleteProspectSteps
+      summary: Delete a prospect steps
+      description: Deletes a step from a plan.
+      parameters:
+      - name: step_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The step id
+      responses:
+        '200':
+          description: Returned when the operation successfully deletes the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to delete the resource.
+      tags:
+      - Prospectsteps
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-prsmg
+components:
+  schemas:
+    ProspectStepsListSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID.
+        status:
+          type: string
+          description: The status.
+        status_code:
+          type: integer
+          description: The statuscode.
+          format: int32
+        date:
+          type: string
+          description: 'The date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        owner:
+          type: string
+          description: The owner.
+        objective:
+          type: string
+          description: The objective.
+        stage:
+          type: string
+          description: The stage.
+        has_documentation:
+          type: boolean
+          description: Indicates whether has documentation.
+        is_interaction:
+          type: boolean
+          description: Indicates whether is interaction.
+        prospectplantype:
+          type: string
+          description: The prospect plan type.
+        constituentname:
+          type: string
+          description: The constituent name.
+        contact_method:
+          type: string
+          description: The contact method.
+        has_additional_fundraisers:
+          type: boolean
+          description: Indicates whether additional solicitors.
+        date_added:
+          type: string
+          description: 'The date added. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        has_participants:
+          type: boolean
+          description: Indicates whether participants.
+        start_time:
+          $ref: '#/components/schemas/HourMinute'
+        end_time:
+          $ref: '#/components/schemas/HourMinute'
+        timezone:
+          type: string
+          description: The time zone.
+      additionalProperties: false
+      description: ListProspectSteps
+      x-display-name: Prospect Plan Steps Planned List
+      x-display-id: Prospect Plan Steps Planned List
+    EditProspectSteps:
+      type: object
+      properties:
+        prospect_plan_id:
+          type: string
+          description: The prospect plan ID. Read-only in the SOAP API.
+        interaction_type:
+          type: string
+          description: The contact method. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/interactiontypecode/entries
+        objective:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The objective.
+        owner_id:
+          type: string
+          description: The owner.
+        status:
+          type: string
+          description: The status. Available values are <i>planned</i>, <i>pending</i>, <i>completed</i>, <i>cancelled</i>, <i>declined</i>
+        expected_date:
+          type: string
+          description: 'The expected date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        actual_date:
+          type: string
+          description: 'The actual date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        prospect_plan_status:
+          type: string
+          description: The stage. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/prospectplanstatuscode/entries
+        comment:
+          type: string
+          description: The comment.
+        prospect_name:
+          maxLength: 700
+          minLength: 0
+          type: string
+          description: The prospect name. Read-only in the SOAP API.
+        additional_fundraisers:
+          type: array
+          items:
+            $ref: '#/components/schemas/EditProspectStepsAdditionalFundraisers'
+          description: Additional fundraisers.
+        participants:
+          type: array
+          items:
+            $ref: '#/components/schemas/EditProspectStepsParticipants'
+          description: Participants.
+        interaction_category:
+          type: string
+          description: The category. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/cbba7545-b66f-44ac-aa24-d9c2f8cbc4ec.
+        interaction_subcategory:
+          type: string
+          description: The subcategory. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/0eacc39b-07d1-4641-8774-e319559535a7?parameters=interactioncategoryid,{interactioncategoryid}.
+        expected_start_time:
+          $ref: '#/components/schemas/HourMinute'
+        expected_end_time:
+          $ref: '#/components/schemas/HourMinute'
+        is_all_day_event:
+          type: boolean
+          description: Indicates whether is all day event.
+        time_zone_entry:
+          type: string
+          description: The time zone. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/7fba76fa-b1ea-4c01-b841-edb18f03fe8c.
+        actual_start_time:
+          $ref: '#/components/schemas/HourMinute'
+        actual_end_time:
+          $ref: '#/components/schemas/HourMinute'
+        plan_is_active:
+          type: boolean
+          description: Indicates whether plan is active. Read-only in the SOAP API.
+      additionalProperties: false
+      description: EditProspectSteps
+      example:
+        prospect_plan_id: 2fd00e64-4580-415e-a550-6afb622386c9
+        interaction_type: Phone call
+        objective: objective of adding prospect step
+        owner_id: 67027938-df87-4796-9a1c-99c326d4bb00
+        status: Planned
+        interaction_type_code_id: 5156e605-0958-441d-9d65-0b1b95c39356
+        actual_date: '2006-07-29T10:00:00Z'
+        prospect_plan_status: Future Prospect
+        comment: this is step add
+        interaction_type_code_id_value_translation: Phone call
+        additional_fundraisers:
+        - id: 5156e605-0958-441d-9d65-0b1b95c39356
+          fundraiser_id: 310c7a77-bc72-4f32-ae62-1c5f2c9b6b58
+        participants:
+        - id: ac681ec7-110f-4f54-b88c-25c062472ac4
+          constituent_id: 12e89c4a-204d-479e-b7a3-81cd3752e73f
+        interaction_category: Prospect Management
+        interaction_subcategory: Recipient Scholarship/Donor Info Sent
+        expected_start_time:
+          hour: 1
+          minute: 26
+        expected_end_time:
+          hour: 3
+          minute: 26
+        is_all_day_event: false
+        time_zone_entry: Pacific Standard Time
+        actual_start_time:
+          hour: 1
+          minute: 26
+        actual_end_time:
+          hour: 3
+          minute: 26
+        plan_is_active: false
+        prospect_id: 449c9705-20ca-499c-bac6-224716ee699d
+        location: 818 Dunwoody Blvd  Minneapolis, MN  55403
+        other_location: Minneapolis
+      x-display-name: Step Edit Form 4
+      x-display-id: Step Edit Form 4
+    NewProspectSteps:
+      required:
+      - prospect_plan_id
+      - objective
+      - status
+      - expected_date
+      - prospect_plan_status
+      type: object
+      properties:
+        prospect_plan_id:
+          type: string
+          description: The prospect plan ID.
+        interaction_type:
+          type: string
+          description: The contact method. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/interactiontypecode/entries
+        objective:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The objective.
+        owner_id:
+          type: string
+          description: The owner.
+        status:
+          type: string
+          description: The status. Available values are <i>planned</i>, <i>pending</i>, <i>completed</i>, <i>cancelled</i>, <i>declined</i>
+        expected_date:
+          type: string
+          description: 'The expected date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        actual_date:
+          type: string
+          description: 'The actual date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        prospect_plan_status:
+          type: string
+          description: The stage. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/prospectplanstatuscode/entries
+        comment:
+          type: string
+          description: The comment.
+        prospect_name:
+          maxLength: 154
+          minLength: 0
+          type: string
+          description: The prospect name. Read-only in the SOAP API.
+        additional_fundraisers:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewProspectStepsAdditionalFundraisers'
+          description: Additional fundraisers.
+        participants:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewProspectStepsParticipants'
+          description: Participants.
+        interaction_category:
+          type: string
+          description: The category. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/cbba7545-b66f-44ac-aa24-d9c2f8cbc4ec.
+        interaction_subcategory:
+          type: string
+          description: The subcategory. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/0eacc39b-07d1-4641-8774-e319559535a7?parameters=interactioncategoryid,{interactioncategoryid}.
+        expected_start_time:
+          $ref: '#/components/schemas/HourMinute'
+        expected_end_time:
+          $ref: '#/components/schemas/HourMinute'
+        is_all_day_event:
+          type: boolean
+          description: Indicates whether is all day event.
+        time_zone_entry:
+          type: string
+          description: The time zone. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/7fba76fa-b1ea-4c01-b841-edb18f03fe8c.
+        actual_start_time:
+          $ref: '#/components/schemas/HourMinute'
+        actual_end_time:
+          $ref: '#/components/schemas/HourMinute'
+        prospect_id:
+          type: string
+          description: The prospect ID. Read-only in the SOAP API.
+        location:
+          type: string
+          description: The location. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/b0cb4058-4355-431a-abdb-3e9f2be8c918?parameters=constituent_id,{prospect_id}.
+        other_location:
+          maxLength: 300
+          minLength: 0
+          type: string
+          description: The other location.
+      additionalProperties: false
+      description: CreateProspectSteps
+      example:
+        prospect_plan_id: 2fd00e64-4580-415e-a550-6afb622386c9
+        interaction_type: Phone call
+        objective: prospect step
+        owner_id: 67027938-df87-4796-9a1c-99c326d4bb00
+        status: Planned
+        interaction_type_code_id: 5156e605-0958-441d-9d65-0b1b95c39356
+        actual_date: '2006-07-29T10:00:00Z'
+        prospect_plan_status: Future Prospect
+        comment: this is step add
+        interaction_type_code_id_value_translation: Phone call
+        additional_fundraisers:
+        - id: 5156e605-0958-441d-9d65-0b1b95c39356
+          fundraiser_id: 310c7a77-bc72-4f32-ae62-1c5f2c9b6b58
+        participants:
+        - id: ac681ec7-110f-4f54-b88c-25c062472ac4
+          constituent_id: 12e89c4a-204d-479e-b7a3-81cd3752e73f
+        interaction_category: Prospect Management
+        interaction_subcategory: Recipient Scholarship/Donor Info Sent
+        expected_start_time:
+          hour: 1
+          minute: 26
+        expected_end_time:
+          hour: 3
+          minute: 26
+        is_all_day_event: false
+        time_zone_entry: Pacific Standard Time
+        actual_start_time:
+          hour: 1
+          minute: 26
+        actual_end_time:
+          hour: 3
+          minute: 26
+        prospect_id: 449c9705-20ca-499c-bac6-224716ee699d
+        location: 818 Dunwoody Blvd  Minneapolis, MN  55403
+        other_location: Minneapolis
+      x-display-name: Step Add Form 2
+      x-display-id: Step Add Form 2
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type: integer
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type: string
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: false
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-display-name: Problem details
+      x-display-id: ProblemDetails
+    HourMinute:
+      type: object
+      properties:
+        hour:
+          type: integer
+          description: The hour.
+          format: int32
+        minute:
+          type: integer
+          description: The minute.
+          format: int32
+      description: HourMinute
+      x-display-name: Hour Minute
+      x-display-id: Hour Minute
+    ProspectStepsListCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items available for retrieval into the collection after applying any request parameters.
+          format: int32
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProspectStepsListSummary'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+        infinity_session:
+          type: string
+          description: Values for cookies related to the Infinity load balancer session.
+          format: string
+        session_key:
+          type: string
+          description: Session key for paging provided by user in request query parameter.
+          format: string
+        total_available_rows:
+          type: integer
+          description: The number of total rows available.
+          format: int32
+        more_rows_range_key:
+          type: string
+          description: Key for accessing cached results on subsequent calls to this data list.
+          format: string
+        data_no_longer_available:
+          type: boolean
+          description: Indicates data is no longer available in the context of this session.
+          format: boolean
+      additionalProperties: false
+      description: A collection of items. Data lists can contain paginated results.
+    EditProspectStepsAdditionalFundraisers:
+      required:
+      - fundraiser_id
+      type: object
+      properties:
+        id:
+          type: string
+          description: id
+        fundraiser_id:
+          type: string
+          description: solicitor
+      description: EditProspectStepsAdditionalFundraisers
+      x-display-name: additional_fundraisers
+      x-display-id: additional_fundraisers
+    NewProspectStepsAdditionalFundraisers:
+      required:
+      - fundraiser_id
+      type: object
+      properties:
+        id:
+          type: string
+          description: id
+        fundraiser_id:
+          type: string
+          description: solicitor
+      description: NewProspectStepsAdditionalFundraisers
+      x-display-name: additional_fundraisers
+      x-display-id: additional_fundraisers
+    NewProspectStepsParticipants:
+      required:
+      - constituent_id
+      type: object
+      properties:
+        id:
+          type: string
+          description: id
+        constituent_id:
+          type: string
+          description: participant
+      description: NewProspectStepsParticipants
+      x-display-name: participants
+      x-display-id: participants
+    PostResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The newly created ID.
+      additionalProperties: false
+      description: Defines the shape of a post response object.
+    EditProspectStepsParticipants:
+      required:
+      - constituent_id
+      type: object
+      properties:
+        id:
+          type: string
+          description: id
+        constituent_id:
+          type: string
+          description: participant
+      description: EditProspectStepsParticipants
+      x-display-name: participants
+      x-display-id: participants
+    EditProspectSteps_2:
+      type: object
+      properties:
+        prospect_plan_id:
+          type: string
+          description: The prospect plan ID. Read-only in the SOAP API.
+        interaction_type:
+          type: string
+          description: The contact method. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/interactiontypecode/entries
+        objective:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The objective.
+        owner_id:
+          type: string
+          description: The owner.
+        status:
+          type: string
+          description: The status. Available values are <i>planned</i>, <i>pending</i>, <i>completed</i>, <i>cancelled</i>, <i>declined</i>
+        expected_date:
+          type: string
+          description: 'The expected date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        actual_date:
+          type: string
+          description: 'The actual date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        prospect_plan_status:
+          type: string
+          description: The stage. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/prospectplanstatuscode/entries
+        comment:
+          type: string
+          description: The comment.
+        prospect_name:
+          maxLength: 700
+          minLength: 0
+          type: string
+          description: The prospect name. Read-only in the SOAP API.
+        additional_fundraisers:
+          type: array
+          items:
+            $ref: '#/components/schemas/EditProspectStepsAdditionalFundraisers'
+          description: Additional fundraisers.
+        participants:
+          type: array
+          items:
+            $ref: '#/components/schemas/EditProspectStepsParticipants'
+          description: Participants.
+        interaction_category:
+          type: string
+          description: The category. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/cbba7545-b66f-44ac-aa24-d9c2f8cbc4ec.
+        interaction_subcategory:
+          type: string
+          description: The subcategory. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/0eacc39b-07d1-4641-8774-e319559535a7?parameters=interactioncategoryid,{interactioncategoryid}.
+        expected_start_time:
+          $ref: '#/components/schemas/HourMinute'
+        expected_end_time:
+          $ref: '#/components/schemas/HourMinute'
+        is_all_day_event:
+          type: boolean
+          description: Indicates whether is all day event.
+        time_zone_entry:
+          type: string
+          description: The time zone. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/7fba76fa-b1ea-4c01-b841-edb18f03fe8c.
+        actual_start_time:
+          $ref: '#/components/schemas/HourMinute'
+        actual_end_time:
+          $ref: '#/components/schemas/HourMinute'
+        plan_is_active:
+          type: boolean
+          description: Indicates whether plan is active. Read-only in the SOAP API.
+        prospect_id:
+          type: string
+          description: The prospect ID. Read-only in the SOAP API.
+        location:
+          maxLength: 300
+          minLength: 0
+          type: string
+          description: The location. Read-only in the SOAP API.
+        other_location:
+          maxLength: 300
+          minLength: 0
+          type: string
+          description: The other location.
+      additionalProperties: false
+      description: EditProspectSteps
+      example:
+        prospect_plan_id: 2fd00e64-4580-415e-a550-6afb622386c9
+        interaction_type: Phone call
+        objective: objective of adding prospect step
+        owner_id: 67027938-df87-4796-9a1c-99c326d4bb00
+        status: Planned
+        interaction_type_code_id: 5156e605-0958-441d-9d65-0b1b95c39356
+        actual_date: '2006-07-29T10:00:00Z'
+        prospect_plan_status: Future Prospect
+        comment: this is step add
+        interaction_type_code_id_value_translation: Phone call
+        additional_fundraisers:
+        - id: 5156e605-0958-441d-9d65-0b1b95c39356
+          fundraiser_id: 310c7a77-bc72-4f32-ae62-1c5f2c9b6b58
+        participants:
+        - id: ac681ec7-110f-4f54-b88c-25c062472ac4
+          constituent_id: 12e89c4a-204d-479e-b7a3-81cd3752e73f
+        interaction_category: Prospect Management
+        interaction_subcategory: Recipient Scholarship/Donor Info Sent
+        expected_start_time:
+          hour: 1
+          minute: 26
+        expected_end_time:
+          hour: 3
+          minute: 26
+        is_all_day_event: false
+        time_zone_entry: Pacific Standard Time
+        actual_start_time:
+          hour: 1
+          minute: 26
+        actual_end_time:
+          hour: 3
+          minute: 26
+        plan_is_active: false
+        prospect_id: 449c9705-20ca-499c-bac6-224716ee699d
+        location: 818 Dunwoody Blvd  Minneapolis, MN  55403
+        other_location: Minneapolis
+      x-display-name: Step Edit Form 4
+      x-display-id: Step Edit Form 4
+    NewProspectSteps_2:
+      required:
+      - prospect_plan_id
+      - objective
+      - status
+      - expected_date
+      - prospect_plan_status
+      type: object
+      properties:
+        prospect_plan_id:
+          type: string
+          description: The prospect plan ID.
+        interaction_type:
+          type: string
+          description: The contact method. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/interactiontypecode/entries
+        objective:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The objective.
+        owner_id:
+          type: string
+          description: The owner.
+        status:
+          type: string
+          description: The status. Available values are <i>planned</i>, <i>pending</i>, <i>completed</i>, <i>cancelled</i>, <i>declined</i>
+        expected_date:
+          type: string
+          description: 'The expected date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        actual_date:
+          type: string
+          description: 'The actual date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        prospect_plan_status:
+          type: string
+          description: The stage. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/prospectplanstatuscode/entries
+        comment:
+          type: string
+          description: The comment.
+        prospect_name:
+          maxLength: 154
+          minLength: 0
+          type: string
+          description: The prospect name. Read-only in the SOAP API.
+        additional_fundraisers:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewProspectStepsAdditionalFundraisers'
+          description: Additional fundraisers.
+        participants:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewProspectStepsParticipants'
+          description: Participants.
+        interaction_category:
+          type: string
+          description: The category. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/cbba7545-b66f-44ac-aa24-d9c2f8cbc4ec.
+        interaction_subcategory:
+          type: string
+          description: The subcategory. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/0eacc39b-07d1-4641-8774-e319559535a7?parameters=interactioncategoryid,{interactioncategoryid}.
+        expected_start_time:
+          $ref: '#/components/schemas/HourMinute'
+        expected_end_time:
+          $ref: '#/components/schemas/HourMinute'
+        is_all_day_event:
+          type: boolean
+          description: Indicates whether is all day event.
+        time_zone_entry:
+          type: string
+          description: The time zone. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/7fba76fa-b1ea-4c01-b841-edb18f03fe8c.
+        actual_start_time:
+          $ref: '#/components/schemas/HourMinute'
+        actual_end_time:
+          $ref: '#/components/schemas/HourMinute'
+        prospect_id:
+          type: string
+          description: The prospect ID. Read-only in the SOAP API.
+        location:
+          type: string
+          description: The location. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/b0cb4058-4355-431a-abdb-3e9f2be8c918?parameters=constituent_id,{prospect_id}.
+        other_location:
+          maxLength: 300
+          minLength: 0
+          type: string
+          description: The other location.
+      additionalProperties: false
+      description: CreateProspectSteps
+      example:
+        prospect_plan_id: 2fd00e64-4580-415e-a550-6afb622386c9
+        interaction_type: Phone call
+        objective: prospect step
+        owner_id: 67027938-df87-4796-9a1c-99c326d4bb00
+        status: Planned
+        interaction_type_code_id: 5156e605-0958-441d-9d65-0b1b95c39356
+        actual_date: '2006-07-29T10:00:00Z'
+        prospect_plan_status: Future Prospect
+        comment: this is step add
+        interaction_type_code_id_value_translation: Phone call
+        additional_fundraisers:
+        - id: 5156e605-0958-441d-9d65-0b1b95c39356
+          fundraiser_id: 310c7a77-bc72-4f32-ae62-1c5f2c9b6b58
+        participants:
+        - id: ac681ec7-110f-4f54-b88c-25c062472ac4
+          constituent_id: 12e89c4a-204d-479e-b7a3-81cd3752e73f
+        interaction_category: Prospect Management
+        interaction_subcategory: Recipient Scholarship/Donor Info Sent
+        expected_start_time:
+          hour: 1
+          minute: 26
+        expected_end_time:
+          hour: 3
+          minute: 26
+        is_all_day_event: false
+        time_zone_entry: Pacific Standard Time
+        actual_start_time:
+          hour: 1
+          minute: 26
+        actual_end_time:
+          hour: 3
+          minute: 26
+        prospect_id: 449c9705-20ca-499c-bac6-224716ee699d
+        location: 818 Dunwoody Blvd  Minneapolis, MN  55403
+        other_location: Minneapolis
+      x-display-name: Step Add Form 2
+      x-display-id: Step Add Form 2
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+x-refined-from:
+- blackbaud-altru-prospect-api-openapi.yml
+- blackbaud-crm-prospect-api-openapi.yml

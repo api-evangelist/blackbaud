@@ -1,0 +1,122 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: School Offeringtypes API'
+  description: This API is used to provide access to school information such as users, academics, admissions, athletics, content, lists, and general school info.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/school
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/school
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Offeringtypes
+paths:
+  /v1/offeringtypes:
+    get:
+      operationId: v1offeringtypesget
+      summary: Core offering types
+      description: 'Returns a collection of core school offering types.
+
+
+        Requires at least one of the following roles in the Education Management system:
+
+
+        Academic Group Manager
+
+
+        Schedule Manager
+
+
+        Platform Manager'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OfferingTypeCollection'
+              example:
+                count: 13
+                value:
+                - id: 0
+                  description: School
+                - id: 1
+                  description: Academics
+                - id: 2
+                  description: Activities
+                - id: 3
+                  description: Advisory
+                - id: 4
+                  description: Dorms
+                - id: 5
+                  description: Transcript
+                - id: 6
+                  description: OfferedCourse
+                - id: 8
+                  description: SchoolWideAwards
+                - id: 9
+                  description: Athletic
+                - id: 10
+                  description: Admissions
+                - id: 11
+                  description: Community groups
+                - id: 12
+                  description: Mentor
+                - id: 13
+                  description: Events
+      tags:
+      - Offeringtypes
+components:
+  schemas:
+    OfferingTypeCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items in the collection
+          format: int32
+          readOnly: true
+        next_link:
+          type:
+          - string
+          - 'null'
+          description: For paginated responses, the URI for the next page of results
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/OfferingType'
+          description: The set of items included in the response. This may be a subset of the items in the collection
+      additionalProperties: false
+      description: A Collection
+    OfferingType:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of an offering type
+          format: int32
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of an offering type
+      additionalProperties: false
+      description: An object with offering type information
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

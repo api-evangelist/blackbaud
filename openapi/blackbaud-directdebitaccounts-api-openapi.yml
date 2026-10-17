@@ -1,0 +1,249 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Payments Directdebitaccounts API'
+  description: This API enables users to accept and manage payments via Blackbaud Merchant Services.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/payments
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/payments
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Directdebitaccounts
+paths:
+  /v1/directdebitaccounts/{account_token}:
+    get:
+      operationId: GetDirectDebitAccount
+      summary: Direct debit account
+      description: Returns information about a stored direct debit account.
+      parameters:
+      - name: account_token
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The <a href="https://en.wikipedia.org/wiki/Universally_unique_identifier">unique identifier</a> of the stored direct debit account for which you would like to retrieve detailed information.
+      responses:
+        '200':
+          description: Returned when the operation successfully gets direct debit account information.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DirectDebitAccountRead'
+              example:
+                account_holder: Blackbaud
+                account_email: Test@test.com
+                direct_debit_type: us_bank_account
+                billing_address:
+                  city: Charleston
+                  country: US
+                  post_code: '29492'
+                  state: SC
+                  address_block: 2000 Daniel Island Drive
+                us_bank_account:
+                  account_number_last_four: '8888'
+                  account_type: CorporateChecking
+                  routing_number: 091000019
+                mandate_info:
+                  recurrence_description: Daily
+                  mandate_amount: 1000
+                  mandate_is_variable_amount: false
+                  mandate_id: 992c159f-dcca-4495-aa33-1025546c7af2
+                  mandate_url: https://www.mandate-example.com
+        '400':
+          description: Returned when the request is not in the appropriate format. The response body contains error details.
+        '404':
+          description: Returned when the specified account token is not found. The response body contains error details.
+      tags:
+      - Directdebitaccounts
+components:
+  schemas:
+    AcssDebitRead:
+      type: object
+      properties:
+        account_number_last_four:
+          type:
+          - string
+          - 'null'
+          description: The last four digits of the bank account number.
+        transit_number:
+          type:
+          - string
+          - 'null'
+          description: The transit number of the bank account.
+        institution_number:
+          type:
+          - string
+          - 'null'
+          description: The institution number of the bank account.
+      additionalProperties: false
+      description: ACSS debit bank account details
+    AccountType:
+      enum:
+      - Checking
+      - Savings
+      - CorporateChecking
+      - CorporateSavings
+      type: string
+      description: The account type. Possible values are Checking, Savings, Corporate checking, or Corporate savings.<p>Available values:</p><ul><li><i>Checking</i></li><li><i>Savings</i></li><li><i>CorporateChecking</i></li><li><i>CorporateSavings</i></li></ul>
+    DirectDebitAccountRead:
+      type: object
+      properties:
+        account_holder:
+          type:
+          - string
+          - 'null'
+          description: The name of the account holder for the direct debit account.
+        account_email:
+          type:
+          - string
+          - 'null'
+          description: The email address of the account holder for the direct debit account.
+        direct_debit_type:
+          $ref: '#/components/schemas/DirectDebitType'
+        billing_address:
+          $ref: '#/components/schemas/BillingAddressRead'
+        us_bank_account:
+          $ref: '#/components/schemas/UsBankAccountRead'
+        acss_debit:
+          $ref: '#/components/schemas/AcssDebitRead'
+        au_becs_debit:
+          $ref: '#/components/schemas/AuBecsDebitRead'
+        bacs_debit:
+          $ref: '#/components/schemas/BacsDebitRead'
+        mandate_info:
+          $ref: '#/components/schemas/DirectDebitMandateRead'
+      additionalProperties: false
+      description: Represents a stored direct debit account.
+    DirectDebitType:
+      enum:
+      - us_bank_account
+      - acss_debit
+      - au_becs_debit
+      - bacs_debit
+      type: string
+      description: Direct debit types<p>Available values:</p><ul><li><i>us_bank_account</i></li><li><i>acss_debit</i></li><li><i>au_becs_debit</i></li><li><i>bacs_debit</i></li></ul>
+    BacsDebitRead:
+      type: object
+      properties:
+        account_number_last_four:
+          type:
+          - string
+          - 'null'
+          description: The last four digits of the bank account number.
+        sort_code:
+          type:
+          - string
+          - 'null'
+          description: The sort code of the bank account.
+      additionalProperties: false
+      description: UK bacs bank account details
+    AuBecsDebitRead:
+      type: object
+      properties:
+        account_number_last_four:
+          type:
+          - string
+          - 'null'
+          description: The last four digits of the bank account number.
+        bsb_number:
+          type:
+          - string
+          - 'null'
+          description: Bank-State-Branch number of the bank account.
+      additionalProperties: false
+      description: AU becs bank account details
+    DirectDebitMandateRead:
+      type: object
+      properties:
+        recurrence_description:
+          type:
+          - string
+          - 'null'
+          description: The recurrence description for the associated mandate.
+        mandate_amount:
+          type:
+          - integer
+          - 'null'
+          description: 'The amount for the associated mandate. Measured in cents: 1000 = $10.00.'
+          format: int32
+        mandate_is_variable_amount:
+          type:
+          - boolean
+          - 'null'
+          description: The amount is variable or not for the associated mandate.
+        mandate_id:
+          type:
+          - string
+          - 'null'
+          description: The ID for the associated mandate.
+        mandate_url:
+          type:
+          - string
+          - 'null'
+          description: The page URL for the associated mandate.
+      additionalProperties: false
+      description: Mandate information associated with direct debit account.
+    BillingAddressRead:
+      type: object
+      properties:
+        city:
+          type:
+          - string
+          - 'null'
+          description: The account holder’s billing city.
+        country:
+          type:
+          - string
+          - 'null'
+          description: The account holder’s billing country - ISO standard.
+        post_code:
+          type:
+          - string
+          - 'null'
+          description: The account holder’s billing postal code.
+        state:
+          type:
+          - string
+          - 'null'
+          description: The account holder’s billing state - ISO standard.
+        address_block:
+          type:
+          - string
+          - 'null'
+          description: The account holder’s billing address.
+      additionalProperties: false
+      description: The billing adress for the account.
+    UsBankAccountRead:
+      type: object
+      properties:
+        account_number_last_four:
+          type:
+          - string
+          - 'null'
+          description: The last four digits of the bank account number.
+        account_type:
+          $ref: '#/components/schemas/AccountType'
+        routing_number:
+          type:
+          - string
+          - 'null'
+          description: The routing number of the bank account.
+      additionalProperties: false
+      description: US bank account details
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

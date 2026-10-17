@@ -1,0 +1,389 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Constituent Ratings API'
+  description: This API manages constituent information and related entities such as addresses, phones, emails, and notes.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/56b76470069a0509c8f1c5b3
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/constituent/v1
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Ratings
+paths:
+  /ratings:
+    post:
+      operationId: CreateConstituentRating
+      summary: Rating (Create)
+      description: Creates a constituent rating.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RatingAdd'
+            example:
+              category: CMS Annual Gift Likelihood
+              comment: This is a comment
+              constituent_id: '280'
+              date: '1993-02-19T00:00:00Z'
+              source: Blackbaud Analytics' Custom Modeling Service
+              value: 10
+        description: An object that represents the rating to create.
+      responses:
+        '200':
+          description: Returned when the operation successfully creates a rating. The response body contains the ID of the new rating.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse'
+              example:
+                id: '1281'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+        '403':
+          description: Returned when the user does not have permission to create the rating.
+        '404':
+          description: Returned when the specified constituent is not found.
+      tags:
+      - Ratings
+  /ratings/categories:
+    get:
+      operationId: ListRatingCategories
+      summary: Rating categories
+      description: Returns a list of all available rating categories.
+      parameters:
+      - name: include_inactive
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: Set this parameter to "true" to include inactive categories in the response.
+      - name: source_name
+        in: query
+        required: false
+        schema:
+          type: string
+        description: The source to retrieve categories for. To return all categories, do not include <code>source_name</code>. To return all categories that do not have a source, include <code>source_name</code> in the request URL with an empty value.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a <a href="https://developer.blackbaud.com/skyapi/api/entity-reference/constituent#Collection">collection</a> of <a href="https://developer.blackbaud.com/skyapi/api/entity-reference/constituent#RatingCategory">rating category</a> entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiCollectionOfRatingCategoryRead'
+              example:
+                count: 3
+                value:
+                - inactive: false
+                  name: Acquaintance
+                  source_name: Blackbaud Analytics' Giving Score
+                  type: CodeTable
+                - inactive: false
+                  name: Age of Head of Household
+                  source_name: Marts & Lundy
+                  type: CodeTable
+                - inactive: false
+                  name: Annual Gift Likelihood
+                  type: Text
+        '400':
+          description: Returned when the specified request parameters are not in the appropriate format.
+      tags:
+      - Ratings
+  /ratings/categories/values:
+    get:
+      operationId: ListRatingCategoryValues
+      summary: Rating category values
+      description: Returns a list of rating values for code table categories.
+      parameters:
+      - name: category_name
+        in: query
+        required: false
+        schema:
+          type: string
+        description: The name of the code table category to return values for.
+      - name: source_name
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Required when the rating category has a source. The name of the rating source for the category.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a <a href="https://developer.blackbaud.com/skyapi/api/entity-reference/constituent#Collection">collection</a> of string rating category values.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiCollectionOfString'
+              example:
+                count: 5
+                value:
+                - Very Positive
+                - Positive
+                - Neutral
+                - Negative
+                - Very Negative
+        '400':
+          description: Returned when the specified request parameter is not in the appropriate format.
+      tags:
+      - Ratings
+  /ratings/sources:
+    get:
+      operationId: ListRatingSources
+      summary: Rating sources
+      description: Returns a list of all available rating sources.
+      parameters:
+      - name: include_inactive
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: Set this parameter to "true" to include inactive sources in the response.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a <a href="https://developer.blackbaud.com/skyapi/api/entity-reference/constituent#Collection">collection</a> of <a href="https://developer.blackbaud.com/skyapi/api/entity-reference/constituent#RatingSource">rating source</a> entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiCollectionOfRatingSourceRead'
+              example:
+                count: 3
+                value:
+                - inactive: false
+                  name: Marts & Lundy
+                - inactive: false
+                  name: Econometrics
+                - inactive: false
+                  name: Blackbaud Analytics' Custom Modeling Service
+        '400':
+          description: Returned when the specified request parameter is not in the appropriate format.
+      tags:
+      - Ratings
+  /ratings/{rating_id}:
+    delete:
+      operationId: DeleteConstituentRating
+      summary: Rating (Delete)
+      description: Deletes a constituent rating.
+      parameters:
+      - name: rating_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The immutable system record ID of the rating to delete.
+      responses:
+        '200':
+          description: Returned when the operation successfully deletes the rating.
+        '400':
+          description: Returned when the specified rating ID in the request URL is not in the appropriate format.
+        '403':
+          description: Returned when the user does not have permission to delete the rating.
+        '404':
+          description: Returned when the specified rating is not found.
+      tags:
+      - Ratings
+    patch:
+      operationId: EditConstituentRating
+      summary: Rating (Edit)
+      description: Edits a constituent rating.
+      parameters:
+      - name: rating_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The immutable system record ID of the rating to edit.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RatingEdit'
+            example:
+              comment: This is totally a comment
+              date: '2016-07-04T04:00:00Z'
+              value: 3
+        description: An object that represents updated properties of the rating to edit.
+      responses:
+        '200':
+          description: Returned when the operation successfully edits the rating.
+        '400':
+          description: Returned when the specified rating ID in the request URL or the specified request parameters are not in the appropriate format.
+        '403':
+          description: Returned when the user does not have permission to edit the rating.
+        '404':
+          description: Returned when the specified rating is not found.
+      tags:
+      - Ratings
+components:
+  schemas:
+    ApiCollectionOfString:
+      description: Fetching data all at once quickly becomes unmanageable. The collection entity helps by returning paginated chunks of large data sets. This entity includes helpful metadata and properties to paginate and iterate through the data.
+      type: object
+      properties:
+        count:
+          format: int32
+          description: The number of items available for retrieval into the collection after applying any request parameters. The <b>limit</b> and <b>offset</b> parameters do not affect the <b>count</b>, but to facilitate paging, they may affect the number of items in the <b>value</b> result set.
+          type: integer
+        next_link:
+          description: For paginated responses, the URI for the next page of results.
+          type: string
+        value:
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+          type: array
+          items:
+            type: string
+      x-hidden: true
+      x-base-type: '#/definitions/ApiCollection'
+    RatingAdd:
+      description: Ratings indicate the estimated wealth of constituents and their capacity to give. Ratings information such as overall wealth ratings, suggested ask amounts, and total identified assets can help to determine where to focus efforts, whether to pursue prospects or major gifts, and how much to ask from donors.
+      required:
+      - category
+      - constituent_id
+      - date
+      type: object
+      properties:
+        category:
+          description: The category of the rating. Available values are the entries in the <a href="https://developer.sky.blackbaud.com/docs/services/56b76470069a0509c8f1c5b3/operations/ListRatingCategories"><b>Rating Categories</b></a> table.
+          type: string
+        comment:
+          description: 'A comment about the rating. Character limit: 255.'
+          maxLength: 255
+          minLength: 0
+          type: string
+        constituent_id:
+          description: The immutable system record ID of the constituent associated with the rating.
+          type: string
+        date:
+          format: date-time
+          description: 'The date of the rating. Uses <a href="https://tools.ietf.org/html/rfc3339">ISO-8601 format: </a><i>1969-11-21T10:29:43</i>.'
+          type: string
+          x-supports-datetime-offset: false
+        source:
+          description: Required when the rating category has a source. The source of the new rating.
+          type: string
+        value:
+          description: The value of the rating. The <code>type</code> property determines the format and the character limit.
+          type: object
+      x-hidden: true
+      x-display-name: Create rating
+      x-display-id: CreateRating
+      x-additional-info: "<a name=\"RatingTypes\"></a>\n<p>&nbsp;</p>\n<p>\n  Available values for the <b>type</b> of a <b>rating</b>:\n</p>\n\n<div class=\"table-responsive\">\n  <table class=\"table table-striped table-hover\">\n    <thead>\n      <tr>\n          <th class=\"col-xs-3\"><strong>Type</strong></th>\n          <th class=\"col-xs-9\"><strong>Description</strong></th>\n      </tr>\n    </thead>\n    <tbody>\n      <tr>\n        <td>Boolean</td>\n        <td>Defines the rating value as a boolean JSON data type.</td>\n      </tr>\n      <tr>\n        <td>CodeTable</td>\n        <td>Defines the rating value as a string JSON data type that refers to a code table entry.</td>\n      </tr>\n      <tr>\n        <td>Currency</td>\n        <td>Defines the rating value as a number JSON data type.</td>\n      </tr>\n      <tr>\n        <td>DateTime</td>\n        <td>\n          Defines the rating value as a string JSON data type in <a href=\"https://tools.ietf.org/html/rfc3339\">ISO-8601 format: </a><i>1969-11-21T10:29:43</i>.\n        </td>\n      </tr>\n      <tr>\n        <td>Number</td>\n        <td>Defines the rating value as a number JSON data type.</td>\n      </tr>\n      <tr>\n        <td>Text</td>\n        <td>Defines the rating value as a string JSON data type.</td>\n      </tr>\n    </tbody>\n  </table>\n</div>\n"
+    RatingSourceRead:
+      description: Rating sources indicate the source of ratings information. For example, information can come from your organization's own prospect research, third-party providers, or additional Blackbaud sources such as ResearchPoint or Target Analytics.
+      type: object
+      properties:
+        inactive:
+          description: Indicates whether the rating source is inactive.
+          type: boolean
+        name:
+          description: The name of the rating source.
+          type: string
+      x-display-name: Rating source
+      x-display-id: RatingSource
+    RatingCategoryRead:
+      description: Rating categories store the metadata to appropriately match ratings with an available type.
+      type: object
+      properties:
+        inactive:
+          description: Indicates whether the category is inactive.
+          type: boolean
+        name:
+          description: The name of the rating category.
+          type: string
+        source_name:
+          description: The source of the category.*
+          type: string
+        type:
+          description: Gets or sets the type of the rating category.
+          enum:
+          - Text
+          - Number
+          - DateTime
+          - Currency
+          - Boolean
+          - CodeTable
+          - Unknown
+          type: string
+      x-display-name: Rating category
+      x-display-id: RatingCategory
+      x-additional-info: "<div class=\"footnotes\">\n    <p class=\"footnote\">&#42; <code>source_name</code> is not required for all rating categories, but when rating categories have sources, endpoint calls require both the source name and category name for proper identification.</p>\n</div>\n\n<a name=\"RatingCategoryTypes\"></a>\n<p>&nbsp;</p>\n<p>Available values for the <b>type</b> of a <b>rating category</b>:</p>\n\n<div class=\"table-responsive\">\n    <table class=\"table table-striped table-hover\">\n        <thead>\n            <tr>\n                <th class=\"col-xs-3\"><strong>Type</strong></th>\n                <th class=\"col-xs-9\"><strong>Description</strong></th>\n            </tr>\n        </thead>\n        <tbody>\n            <tr>\n                <td>Boolean</td>\n                <td>Defines the rating value as a boolean JSON data type.</td>\n            </tr>\n            <tr>\n                <td>CodeTable</td>\n                <td>Defines the rating value as a string JSON data type that refers to a code table entry.</td>\n            </tr>\n            <tr>\n                <td>Currency</td>\n                <td>Defines the rating value as a number JSON data type.</td>\n            </tr>\n            <tr>\n                <td>DateTime</td>\n                <td>Defines the rating value as a string JSON data type in <a href=\"https://tools.ietf.org/html/rfc3339\">ISO-8601 format: </a><i>1969-11-21T10:29:43</i>.</td>\n            </tr>\n            <tr>\n                <td>Number</td>\n                <td>Defines the rating value as a number JSON data type.</td>\n            </tr>\n            <tr>\n                <td>Text</td>\n                <td>Defines the rating value as a string JSON data type.</td>\n            </tr>\n        </tbody>\n    </table>\n</div>\n"
+    ApiCollectionOfRatingSourceRead:
+      description: Fetching data all at once quickly becomes unmanageable. The collection entity helps by returning paginated chunks of large data sets. This entity includes helpful metadata and properties to paginate and iterate through the data.
+      type: object
+      properties:
+        count:
+          format: int32
+          description: The number of items available for retrieval into the collection after applying any request parameters. The <b>limit</b> and <b>offset</b> parameters do not affect the <b>count</b>, but to facilitate paging, they may affect the number of items in the <b>value</b> result set.
+          type: integer
+        next_link:
+          description: For paginated responses, the URI for the next page of results.
+          type: string
+        value:
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+          type: array
+          items:
+            $ref: '#/components/schemas/RatingSourceRead'
+      x-hidden: true
+      x-base-type: '#/definitions/ApiCollection'
+    ApiCollectionOfRatingCategoryRead:
+      description: Fetching data all at once quickly becomes unmanageable. The collection entity helps by returning paginated chunks of large data sets. This entity includes helpful metadata and properties to paginate and iterate through the data.
+      type: object
+      properties:
+        count:
+          format: int32
+          description: The number of items available for retrieval into the collection after applying any request parameters. The <b>limit</b> and <b>offset</b> parameters do not affect the <b>count</b>, but to facilitate paging, they may affect the number of items in the <b>value</b> result set.
+          type: integer
+        next_link:
+          description: For paginated responses, the URI for the next page of results.
+          type: string
+        value:
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+          type: array
+          items:
+            $ref: '#/components/schemas/RatingCategoryRead'
+      x-hidden: true
+      x-base-type: '#/definitions/ApiCollection'
+    PostResponse:
+      description: Defines the shape of a post response object.
+      type: object
+      properties:
+        id:
+          description: The newly created ID
+          type: string
+      x-hidden: true
+    RatingEdit:
+      description: Ratings indicate the estimated wealth of constituents and their capacity to give. Ratings information such as overall wealth ratings, suggested ask amounts, and total identified assets can help to determine where to focus efforts, whether to pursue prospects or major gifts, and how much to ask from donors.
+      type: object
+      properties:
+        comment:
+          description: 'A comment about the rating. Character limit: 255.'
+          maxLength: 255
+          minLength: 0
+          type: string
+        date:
+          format: date-time
+          description: 'The date of the rating. Uses <a href="https://tools.ietf.org/html/rfc3339">ISO-8601 format: </a><i>1969-11-21T10:29:43</i>. This property cannot be set to null.'
+          type: string
+          x-supports-datetime-offset: false
+        value:
+          description: The value of the rating. The <code>type</code> property determines the format and the character limit.
+          type: object
+      x-hidden: true
+      x-display-name: Edit rating
+      x-display-id: EditRating
+      x-additional-info: "<a name=\"RatingTypes\"></a>\n<p>&nbsp;</p>\n<p>\n  Available values for the <b>type</b> of a <b>rating</b>:\n</p>\n\n<div class=\"table-responsive\">\n  <table class=\"table table-striped table-hover\">\n    <thead>\n      <tr>\n          <th class=\"col-xs-3\"><strong>Type</strong></th>\n          <th class=\"col-xs-9\"><strong>Description</strong></th>\n      </tr>\n    </thead>\n    <tbody>\n      <tr>\n        <td>Boolean</td>\n        <td>Defines the rating value as a boolean JSON data type.</td>\n      </tr>\n      <tr>\n        <td>CodeTable</td>\n        <td>Defines the rating value as a string JSON data type that refers to a code table entry.</td>\n      </tr>\n      <tr>\n        <td>Currency</td>\n        <td>Defines the rating value as a number JSON data type.</td>\n      </tr>\n      <tr>\n        <td>DateTime</td>\n        <td>\n          Defines the rating value as a string JSON data type in <a href=\"https://tools.ietf.org/html/rfc3339\">ISO-8601 format: </a><i>1969-11-21T10:29:43</i>.\n        </td>\n      </tr>\n      <tr>\n        <td>Number</td>\n        <td>Defines the rating value as a number JSON data type.</td>\n      </tr>\n      <tr>\n        <td>Text</td>\n        <td>Defines the rating value as a string JSON data type.</td>\n      </tr>\n    </tbody>\n  </table>\n</div>\n"
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

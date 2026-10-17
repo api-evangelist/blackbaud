@@ -1,0 +1,912 @@
+openapi: 3.2.0
+info:
+  title: Blackbaud Refunds API
+  version: '1.0'
+  x-refined-note:
+  - x-apievangelist-provenance differs across the merged source definitions and was not carried
+  description: 'Operations tagged Refunds across 2 of this provider''s published API definitions: blackbaud-payments-api-openapi.yml, blackbaud-receivables-api-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.sky.blackbaud.com/payments
+- url: https://api.sky.blackbaud.com/receivables
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Refunds
+paths:
+  /v1/refunds:
+    post:
+      operationId: CreateRefund
+      summary: Refund
+      description: Refund a processed transaction or void an authorized transaction
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefundAdd'
+            example:
+              amount: 1000
+              reference_transaction_id: c23e2b09-4c9a-401e-a177-e7c068292688
+              transaction_id: 00000000-0000-0000-0000-000000000000
+        description: The refund transaction to create
+      responses:
+        '200':
+          description: Returned when the operation successfully processes the refund transaction.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionRead'
+              example:
+                additional_fee: 25
+                amount: 1000
+                net_amount: 925
+                application: Payments API
+                billing_info:
+                  city: Charleston
+                  country: US
+                  post_code: '29492'
+                  state: SC
+                  street: 2000 Daniel Island Drive
+                comment: Recurring donation
+                credit_card:
+                  card_type: Visa
+                  exp_month: 2
+                  exp_year: 1985
+                  last_four: '1111'
+                  name: Blackbaud
+                  pay_pal_funding_source: Unknown
+                currency: USD
+                disbursement_status: NotDisbursable
+                donor_ip_address: 192.168.0.1
+                fraud_result:
+                  anonymous_proxy_result: NotProcessed
+                  bin_and_ip_country_result: NotProcessed
+                  high_risk_country_result: NotProcessed
+                  result_code: NotProcessed
+                  risk_score: 0
+                  risk_threshold: 0
+                  velocity_result: NotProcessed
+                id: 92844827-5b74-40db-907f-480b13242eb5
+                related_transactions:
+                - id: 6fef1d90-60f2-43ea-aa96-b7562286c57d
+                  transaction_type: Refund
+                is_live: false
+                state: Processed
+                token: 00000000-0000-0000-0000-000000000000
+                transaction_date: '2018-01-31T11:07:12Z'
+                transaction_type: CardNotPresent
+                total_fees: 75
+                authorization_code: '123456'
+                transaction_category: donation
+                gateway_result:
+                  message: Gateway declined
+        '400':
+          description: Returned when the request is invalid. The response body contains error details.
+        '201':
+          description: Returned when the transaction is successfully refunded or voided but an unexpected problem occurs retrieving the full details of the transaction. The response body will be null.
+      tags:
+      - Refunds
+    get:
+      operationId: ListRefunds
+      summary: Get a list of refunds by page
+      description: This returns a list of refunds.
+      parameters:
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: '25'
+        description: The maximum number of items to return.
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: How many items to skip before returning the results.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a list of refunds.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RefundListViewList'
+              example:
+                refunds:
+                - id: 84873654-2697-4b56-afc8-57dd45676276
+                  lookup_id: '190'
+                  client:
+                    contact_id: '123'
+                    contact_type: Person
+                    third_party_billing: false
+                  refund_date: '2021-01-01T12:00:00Z'
+                  post_date: '2021-01-31T12:00:00Z'
+                  post_status: NotYetPosted
+                  billing_item_id: c98dd541-4866-4806-ad56-66bca2bcc163
+                  description: Test description
+                  refund_amount: 22
+                  comment: ''
+                  balance: -28
+                  added_by: Supervisor
+                  date_added: '2021-01-01T12:00:00Z'
+                  last_changed_by: Supervisor
+                  date_changed: '2021-01-01T12:00:00Z'
+                limit: 1
+                offset: 0
+        '400':
+          description: Returned when the request is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponseTypes'
+              example:
+                type: urn:blackbaud:validation-error
+                title: One or more validation errors occurred.
+                status: 400
+                detail: 'Transaction is missing required custom fields
+
+                  '
+                values:
+                  errors:
+                    property_name: custom_fields
+                    error_message: Transaction is missing required custom fields
+                    error_code: TransactionHasRequiredCustomFields
+                trace_id: e566235f7b89ec65570213e86c42b059
+                span_id: fda5afb92a47816e
+        '403':
+          description: Returned when the user does not have permission to view refunds.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenProblemDetails'
+              example:
+                type: urn:blackbaud:forbidden
+                title: The requested action is forbidden.
+                status: 403
+                extensions: {}
+      tags:
+      - Refunds
+    servers:
+    - url: https://api.sky.blackbaud.com/payments
+  /v1/refunds/{id}:
+    get:
+      operationId: GetRefund
+      summary: Get a refund
+      description: This gets a refund by ID.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The ID of the refund.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a refund.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RefundListView'
+              example:
+                id: 84873654-2697-4b56-afc8-57dd45676276
+                lookup_id: '190'
+                client:
+                  contact_id: '123'
+                  contact_type: Person
+                  third_party_billing: false
+                refund_date: '2021-01-01T12:00:00Z'
+                post_date: '2021-01-31T12:00:00Z'
+                post_status: NotYetPosted
+                billing_item_id: c98dd541-4866-4806-ad56-66bca2bcc163
+                description: Test description
+                refund_amount: 22
+                comment: ''
+                balance: -28
+                added_by: Supervisor
+                date_added: '2021-01-01T12:00:00Z'
+                last_changed_by: Supervisor
+                date_changed: '2021-01-01T12:00:00Z'
+        '404':
+          description: Returned when the specified refund is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: urn:blackbaud:model-validation-error
+                title: One or more validation errors occurred.
+                status: 400
+                detail: Workflow Correlation Id was required but not supplied.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '400':
+          description: Returned when the request is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponseTypes'
+              example:
+                type: urn:blackbaud:validation-error
+                title: One or more validation errors occurred.
+                status: 400
+                detail: 'Transaction is missing required custom fields
+
+                  '
+                values:
+                  errors:
+                    property_name: custom_fields
+                    error_message: Transaction is missing required custom fields
+                    error_code: TransactionHasRequiredCustomFields
+                trace_id: e566235f7b89ec65570213e86c42b059
+                span_id: fda5afb92a47816e
+        '403':
+          description: Returned when the user does not have permission to view the refund.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenProblemDetails'
+              example:
+                type: urn:blackbaud:forbidden
+                title: The requested action is forbidden.
+                status: 403
+                extensions: {}
+      tags:
+      - Refunds
+    servers:
+    - url: https://api.sky.blackbaud.com/receivables
+components:
+  schemas:
+    CreditCardRead:
+      type: object
+      properties:
+        card_type:
+          type:
+          - string
+          - 'null'
+          description: The IIN value of the card.
+        exp_month:
+          type: integer
+          description: The expiration month for the card.
+          format: int32
+        exp_year:
+          type: integer
+          description: The expiration year for the card.
+          format: int32
+        last_four:
+          type:
+          - string
+          - 'null'
+          description: The last 4 digits of primary account number for this card.
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the card holder.
+        pay_pal_funding_source:
+          $ref: '#/components/schemas/PayPalFundingSource'
+      additionalProperties: false
+      description: The information of the credit card for the transaction.
+    GatewayResultRead:
+      type: object
+      properties:
+        message:
+          type:
+          - string
+          - 'null'
+          description: A message provided by the gateway that processed this transaction. Requires a direct debit return id passed in.
+      additionalProperties: false
+      description: The gateway result information for the transaction.
+    TransactionState:
+      enum:
+      - Unknown
+      - Processed
+      - Failed
+      - Refunded
+      - Pending
+      - Authorized
+      - Voided
+      - Created
+      type: string
+      description: The current processing state of the transaction.<p>Available values:</p><ul><li><i>Unknown</i></li><li><i>Processed</i></li><li><i>Failed</i></li><li><i>Refunded</i></li><li><i>Pending</i></li><li><i>Authorized</i></li><li><i>Voided</i></li><li><i>Created</i></li></ul>
+    FraudResultRead:
+      type: object
+      properties:
+        anonymous_proxy_result:
+          type:
+          - string
+          - 'null'
+          description: 'Used for clients who have opted in to Premium Fraud Service, this is the result of the anonymous proxy validation.
+
+            The possible values are NotProcessed, Pass, or Failed.'
+        bin_and_ip_country_result:
+          type:
+          - string
+          - 'null'
+          description: 'Used for clients who have opted in to Premium Fraud Service, this is the result of the bin origination country compared to the origination country of the ip.
+
+            The possible values are NotProcessed, Pass, or Failed.'
+        high_risk_country_result:
+          type:
+          - string
+          - 'null'
+          description: 'Used for clients who have opted in to Premium Fraud Service, this is the result of the high risk country validation.
+
+            The possible values are NotProcessed, Pass, or Failed.'
+        result_code:
+          type:
+          - string
+          - 'null'
+          description: 'Used for clients who have opted in to Premium Fraud Service, this is the result of the overall result of the premium fraud validation.
+
+            The possible values are NotProcessed, Passed, FailedProcessingError, FailedProfileSettings, MissingRequiredLicensekey, MissingRequiredField, or NonRoutableIP'
+        risk_score:
+          type: integer
+          description: Used for clients who have opted in to Premium Fraud Service, this is the score that was determined for this transaction.
+          format: int32
+        risk_threshold:
+          type: integer
+          description: Used for clients who have opted in to Premium Fraud Service, this is the threshold that was set by the client at the time of this transaction.
+          format: int32
+        velocity_result:
+          type:
+          - string
+          - 'null'
+          description: 'Used for clients who have opted in to Premium Fraud Service, this is the result of the velocity validation.
+
+            The possible values are NotProcessed, Pass, or Failed.'
+      additionalProperties: false
+      description: The fraud result information for the transaction.
+    RefundAdd:
+      required:
+      - reference_transaction_id
+      type: object
+      properties:
+        amount:
+          type: integer
+          description: 'The amount to be refund. If empty, will refund the entire amount of the transaction.
+
+            Measured in cents: 1000 = $10.00.'
+          format: int32
+        reference_transaction_id:
+          type: string
+          description: The unique identifier of the transaction to refund.
+          format: uuid
+        transaction_id:
+          type: string
+          description: Optional unique identifier for this transaction. If empty, will be auto-generated.
+          format: uuid
+      additionalProperties: false
+      description: Defines the data model for the refund request.
+    GrantRead:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: The source of the grant
+        id:
+          type:
+          - string
+          - 'null'
+          description: The id of the created grant
+        daf_pay_details:
+          $ref: '#/components/schemas/DAFPayDetails'
+      additionalProperties: false
+      description: Grant Read Details
+    RelatedTransactionRead:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: The unique identifier of this related transaction.
+        transaction_type:
+          type:
+          - string
+          - 'null'
+          description: "The transaction type of this related transaction. \nPossible values are Refund, DirectDebitRefund, DirectDebitReturn, ChargeBack, ReverseChargeback, or Adjustment."
+      additionalProperties: false
+      description: Represents a related transaction.
+    TransactionRead:
+      type: object
+      properties:
+        account_type:
+          type:
+          - string
+          - 'null'
+          description: 'The type of account of this transaction. Used for Direct Debit transactions.
+
+            Possible values are Checking, Savings, Corporate checkings, or Corporate savings.'
+        additional_fee:
+          type: integer
+          description: 'The additional fee amount for this transaction.
+
+            Measured in cents: 1000 = $10.00.'
+          format: int32
+        amount:
+          type: integer
+          description: 'The gross amount of this transaction. Measured in cents: 1000 = $10.00.'
+          format: int32
+        net_amount:
+          type: integer
+          description: 'The net amount of this transaction after fees. Measured in cents: 1000 = $10.00.'
+          format: int32
+        application:
+          type:
+          - string
+          - 'null'
+          description: The calling Application of this transaction.
+        billing_info:
+          $ref: '#/components/schemas/BillingInfoRead'
+        check_number:
+          type:
+          - string
+          - 'null'
+          description: The Check Number for the transaction to be processed.
+        comment:
+          type:
+          - string
+          - 'null'
+          description: The comment on this transaction.
+        credit_card:
+          $ref: '#/components/schemas/CreditCardRead'
+        currency:
+          type:
+          - string
+          - 'null'
+          description: The 3 char ISO4217 currency code used for this transaction.
+        disbursement_status:
+          type:
+          - string
+          - 'null'
+          description: 'The disbursement status of this transaction.
+
+            Possible values are Disbursable, DoNotDisburse, and Disbursed.'
+        donor_ip_address:
+          type:
+          - string
+          - 'null'
+          description: The routable IPv4 address where this transaction originated.
+        email_address:
+          type:
+          - string
+          - 'null'
+          description: The account holder’s email address.
+        fraud_result:
+          $ref: '#/components/schemas/FraudResultRead'
+        id:
+          type: string
+          description: The unique identifier of this transaction.
+          format: uuid
+        reference_transaction_id:
+          type:
+          - string
+          - 'null'
+          description: 'The unique identifier of the original transaction associated with a refund or dispute.
+
+            Present when the specified transaction_id is a refund, dispute, or direct debit return.'
+          format: uuid
+        related_transactions:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/RelatedTransactionRead'
+          description: An array of related transactions for this transaction.
+        is_live:
+          type: boolean
+          description: True if this is not a test or demo transaction.
+          x-bb-suppressions:
+          - parameter_property_name
+        pending_date:
+          type:
+          - string
+          - 'null'
+          description: The date by which decision could be made for the transaction. It will be approved or declined.
+        phone_number:
+          type:
+          - string
+          - 'null'
+          description: The account holder’s phone number.
+        routing_number:
+          type:
+          - string
+          - 'null'
+          description: The Routing Number for the transaction.
+        state:
+          $ref: '#/components/schemas/TransactionState'
+        terminal_type:
+          type:
+          - string
+          - 'null'
+          description: 'Used for card present transactions to indicate the type of terminal used.
+
+            Possible values are Unknown, AutomatedDispensingMachine, SelfServiceTerminal, LimitedAmountTerminal, MobilePayDevice, ChipAndPIN, or VerifoneP400'
+        token:
+          type: string
+          description: The stored token. Available only on creation of Transaction record.
+          format: uuid
+        transaction_date:
+          type:
+          - string
+          - 'null'
+          description: The date and time of this transaction.
+        transaction_type:
+          type:
+          - string
+          - 'null'
+          description: "The transaction type of this transaction. \nPossible values are CardNotPresent, CardPresent, DirectDebit, TransactionBatch, DirectDebitBatch, OfflineBatch, Refund, DirectDebitRefund, ChargeBack, or DirectDebitReturn."
+        application_fee:
+          type:
+          - integer
+          - 'null'
+          description: 'The application fee amount for this transaction.
+
+            Measured in cents: 1000 = $10.00.'
+          format: int32
+        total_fees:
+          type: integer
+          description: 'The total fees for this transaction.
+
+            Measured in cents: 1000 = $10.00.'
+          format: int32
+        authorization_code:
+          type:
+          - string
+          - 'null'
+          description: The authorization code for the transaction.
+        transaction_category:
+          type:
+          - string
+          - 'null'
+          description: 'The category for this transaction (ex: "donation").'
+        pay_pal_reference_id:
+          type:
+          - string
+          - 'null'
+          description: A reference number from PayPal for the transaction.
+        gateway_result:
+          $ref: '#/components/schemas/GatewayResultRead'
+        grant_read:
+          $ref: '#/components/schemas/GrantRead'
+      additionalProperties: false
+      description: Represents a created transaction.
+    BillingInfoRead:
+      type: object
+      properties:
+        city:
+          type:
+          - string
+          - 'null'
+          description: The account holder’s billing city.
+        country:
+          type:
+          - string
+          - 'null'
+          description: The account holder’s billing country - ISO standard.
+        post_code:
+          type:
+          - string
+          - 'null'
+          description: The account holder’s billing postal code.
+        state:
+          type:
+          - string
+          - 'null'
+          description: The account holder’s billing state - ISO standard.
+        street:
+          type:
+          - string
+          - 'null'
+          description: The account holder’s billing address.
+      additionalProperties: false
+      description: The billing info for the transaction.
+    PayPalFundingSource:
+      enum:
+      - Unknown
+      - PayPal
+      - Venmo
+      type: string
+      description: The type of PayPal funding source, if any, used to determine the PayPal payment source used for the transaction.<p>Available values:</p><ul><li><i>Unknown</i></li><li><i>PayPal</i></li><li><i>Venmo</i></li></ul>
+    DAFPayDetails:
+      type: object
+      properties:
+        tracking_id:
+          type:
+          - string
+          - 'null'
+          description: A 10-digit alphanumeric identifier generated by DAFpay, included in the initial grant request and usually passed to the nonprofit from the DAF.
+        external_grant_id:
+          type:
+          - string
+          - 'null'
+          description: A string identifier generated by the DAF provider following a successful grant initiation request.
+      additionalProperties: false
+      description: DAF Pay Details
+    Contact:
+      required:
+      - contact_id
+      - contact_type
+      type: object
+      properties:
+        contact_id:
+          minLength: 1
+          type: string
+          description: The ID of the contact.
+        name:
+          type:
+          - string
+          - 'null'
+          description: The contact name.
+        contact_type:
+          $ref: '#/components/schemas/ContactType'
+        third_party_billing:
+          type: boolean
+          description: Whether the client is used for third-party billing.
+        client_status:
+          type:
+          - string
+          - 'null'
+          description: The client status.
+      additionalProperties: false
+      description: The contact.
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".
+        title:
+          type:
+          - string
+          - 'null'
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type:
+          - integer
+          - 'null'
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: {}
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+    ForbiddenProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".
+        title:
+          type:
+          - string
+          - 'null'
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type:
+          - integer
+          - 'null'
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: {}
+      description: Problem details for 403 Forbidden responses
+    ValidationErrorResponseTypes:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".<br/><br/>Available values:<table><tr><th>type</th><th>detail</th></tr><tr><td>urn:blackbaud:model-validation-error</td><td>A model validation rule was violated, such as a missing required field.</td></tr><tr><td>urn:blackbaud:validation-error</td><td>One or more validation errors occurred.</td></tr></table>
+        title:
+          type:
+          - string
+          - 'null'
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type:
+          - integer
+          - 'null'
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: {}
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-bb-error-types:
+      - urn:blackbaud:model-validation-error
+      - urn:blackbaud:validation-error
+    RefundListViewList:
+      required:
+      - limit
+      - offset
+      - refunds
+      type: object
+      properties:
+        refunds:
+          type: array
+          items:
+            $ref: '#/components/schemas/RefundListView'
+          description: The list of refunds.
+        limit:
+          type: integer
+          description: The maximum number of items to return.
+          format: int32
+        offset:
+          type: integer
+          description: The number of items skipped before this list was created.
+          format: int32
+      additionalProperties: false
+      description: List of the refunds for sql list
+      x-bb-suppressions:
+      - list_operation_pagination_style
+    ContactType:
+      title: ContactType
+      enum:
+      - Unknown
+      - Person
+      - Organization
+      type: string
+      description: Contact type
+    RefundListView:
+      required:
+      - balance
+      - billing_item_id
+      - billing_item_name
+      - client
+      - id
+      - lookup_id
+      - post_date
+      - post_status
+      - refund_amount
+      - refund_date
+      type: object
+      properties:
+        id:
+          minLength: 1
+          type: string
+          description: The ID of the refund.
+        lookup_id:
+          minLength: 1
+          type: string
+          description: The lookup ID of the refund.
+        notes:
+          type:
+          - string
+          - 'null'
+          description: The optional notes.
+        client:
+          $ref: '#/components/schemas/Contact'
+        refund_date:
+          type: string
+          description: The refund transaction date.
+          format: date-time
+        post_date:
+          type: string
+          description: The refund post date.
+          format: date-time
+        post_status:
+          $ref: '#/components/schemas/PostStatus'
+        billing_item_id:
+          minLength: 1
+          type: string
+          description: The billing item.
+        billing_item_name:
+          minLength: 1
+          type: string
+          description: The billing item name.
+        description:
+          type:
+          - string
+          - 'null'
+          description: 'The description of the billing item.
+
+            Defaults from the billing item, but user can override.'
+        refund_amount:
+          type: number
+          description: The amount calculated from billing item values.
+          format: decimal
+        comment:
+          type:
+          - string
+          - 'null'
+          description: The comment.
+        balance:
+          type: number
+          description: Total amount outstanding = committed amount - paid amount
+          format: decimal
+        added_by:
+          type:
+          - string
+          - 'null'
+          description: The user name who created the record.
+        date_added:
+          type: string
+          description: The record create date.
+          format: date-time
+        last_changed_by:
+          type:
+          - string
+          - 'null'
+          description: The user name who last changed the record.
+        date_changed:
+          type:
+          - string
+          - 'null'
+          description: The record last changed date.
+          format: date-time
+      additionalProperties: false
+      description: Used to represent core refund information
+    PostStatus:
+      title: PostStatus
+      enum:
+      - DoNotPost
+      - NotYetPosted
+      - Posted
+      type: string
+      description: Post status
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+x-refined-from:
+- blackbaud-payments-api-openapi.yml
+- blackbaud-receivables-api-openapi.yml

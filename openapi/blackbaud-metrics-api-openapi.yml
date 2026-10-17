@@ -1,0 +1,1135 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: CSRconnect Metrics API'
+  description: This API is for YourCause CSRconnect from Blackbaud.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/csr-connect
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/csr-connect
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Metrics
+paths:
+  /v1/metrics/charities:
+    get:
+      operationId: GetCharityMetrics
+      summary: Get top charities (PREVIEW)
+      description: 'Returns the top charities supported by the authenticated affiliate for both giving and volunteering. Each collection contains a high-level giving or volunteering summary.
+
+
+        Each charity''s `charity_id` is the unique identifier for the organization in CSRconnect and can be used to fetch a more granular summary for that organization.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      responses:
+        '401':
+          description: Unauthorized
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: Authentication credentials were missing or invalid.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '400':
+          description: Returned when the specified request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request was invalid or missing required parameters.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '200':
+          description: Returned when the operation succeeds. The response body contains giving and volunteering summaries for the top charities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CharityMetricsResponse'
+              example:
+                give:
+                - charity_id: 1001
+                  charity_name: City Food Bank
+                  charity_registration_number: 12-3456789
+                  total_donors: 42
+                  total_transactions: 58
+                  total_amount: 9600
+                volunteer:
+                - charity_id: 1001
+                  charity_name: City Food Bank
+                  charity_registration_number: 12-3456789
+                  total_opportunities: 6
+                  total_hours: 320.5
+                  total_participants: 76
+        '403':
+          description: Returned when the user does not have rights to view charity metrics.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: You do not have permission to access this resource.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '404':
+          description: Returned when no charity metrics are found for the affiliate.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Not Found
+                status: 404
+                detail: The requested resource could not be found.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+      tags:
+      - Metrics
+  /v1/metrics/charities/{charity_id}:
+    get:
+      operationId: GetCharityMetricsById
+      summary: Get charity data (PREVIEW)
+      description: 'Returns giving and volunteering totals for a single charity. You can use the `v1/metrics/charities` endpoint to pull identifiers for the top charities; for a charity not returned there, the identifier can be found using CSRconnect admin tools and reporting.
+
+
+        Returns 400 Bad Request if charity_id does not correspond to a known charity.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: charity_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The unique identifier for the charity in CSRconnect.
+      responses:
+        '401':
+          description: Unauthorized
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: Authentication credentials were missing or invalid.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '400':
+          description: Returned when the specified request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request was invalid or missing required parameters.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '200':
+          description: Returned when the operation succeeds. The response body contains giving and volunteering totals for the specified charity.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CharityMetricsByIdResponse'
+              example:
+                charity_id: 1001
+                charity_name: City Food Bank
+                charity_registration_number: 12-3456789
+                image_url: https://example.org/images/city-food-bank.png
+                give:
+                - donation_type: OneTime
+                  total_amount: 6500
+                  total_donors: 30
+                  total_transactions: 35
+                - donation_type: Payroll
+                  total_amount: 3100
+                  total_donors: 12
+                  total_transactions: 120
+                volunteer:
+                  events:
+                    total_hours: 220
+                    total_events: 18
+                    total_participants: 60
+                  activities:
+                    total_hours: 100.5
+                    total_activities: 22
+                    total_participants: 16
+                  npo_events:
+                    total_hours: 0
+                    total_events: 0
+                    total_participants: 0
+        '403':
+          description: Returned when the user does not have rights to view charity metrics.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: You do not have permission to access this resource.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+      tags:
+      - Metrics
+  /v1/metrics/engagementelements:
+    get:
+      operationId: GetEngagementElementMetrics
+      summary: Get a collection of engagement elements (PREVIEW)
+      description: 'Returns a collection of standard engagement elements that can be tied to donations for the authenticated affiliate. Purely resource- and content-based engagement elements are not included.
+
+
+        Each engagement element''s `engagement_element_id` can be used to fetch more granular donation detail for that engagement element.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      responses:
+        '401':
+          description: Unauthorized
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: Authentication credentials were missing or invalid.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '400':
+          description: Returned when the specified request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request was invalid or missing required parameters.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of engagement element summaries.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EngagementElementMetricsResponse'
+              example:
+                data:
+                - engagement_element_id: 2a4e6c8b-1d3f-4a5b-9c7d-8e0f1a2b3c4d
+                  name: Disaster Relief Fund
+                  total_amount: 22500
+                  total_donors: 58
+                - engagement_element_id: 5b7d9f1a-3c5e-4b6d-8a9c-1e2f3a4b5c6d
+                  name: Education Access Initiative
+                  total_amount: 9800
+                  total_donors: 24
+        '403':
+          description: Returned when the user does not have rights to view engagement element metrics.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: You do not have permission to access this resource.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '404':
+          description: Returned when no engagement elements are found for the affiliate.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Not Found
+                status: 404
+                detail: The requested resource could not be found.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+      tags:
+      - Metrics
+  /v1/metrics/engagementelements/{engagement_element_id}:
+    get:
+      operationId: GetEngagementElementMetricsById
+      summary: Get data on a specific engagement element (PREVIEW)
+      description: 'Returns donation totals for a single engagement element, broken down by donation type. You can use the `v1/metrics/engagementelements` endpoint to pull all available engagement element identifiers.
+
+
+        Only processed donations are included in the metrics summary. The `Payroll` donation type reflects processed payroll donations only, not future pledges.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: engagement_element_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The unique identifier for the engagement element.
+      responses:
+        '401':
+          description: Unauthorized
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: Authentication credentials were missing or invalid.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '400':
+          description: Returned when the specified request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request was invalid or missing required parameters.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '200':
+          description: Returned when the operation succeeds. The response body contains donation totals for the specified engagement element.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EngagementElementMetricsByIdResponse'
+              example:
+                name: Disaster Relief Fund
+                data:
+                - donation_type: OneTime
+                  total_amount: 14500
+                  total_donors: 40
+                  total_transactions: 45
+                - donation_type: Payroll
+                  total_amount: 8000
+                  total_donors: 18
+                  total_transactions: 180
+        '403':
+          description: Returned when the user does not have rights to view engagement element metrics.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: You do not have permission to access this resource.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '404':
+          description: Returned when the specified engagement element is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Not Found
+                status: 404
+                detail: The requested resource could not be found.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+      tags:
+      - Metrics
+  /v1/metrics/give:
+    get:
+      operationId: GetGiveMetrics
+      summary: Get a summary of giving totals (PREVIEW)
+      description: 'Returns a summary of giving totals for the authenticated affiliate, broken down by donation type.
+
+
+        The date_type param applies only to donation metrics. It controls whether donations are included by the date the record was created or the date of the actual donation. For example, an employee can record an offline donation on one date, but the donation itself occurred on an earlier date. For a company match or incentive request that requires approval, the create date is when the employee submits the request, and the donation date is when the request is approved and becomes a donation.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: country_code
+        in: query
+        required: true
+        schema:
+          type: string
+        description: The ISO country code used to filter donations by country.
+      - name: date_type
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - Created
+          - Donated
+        description: Controls whether the date range filters by the date a donation record was created or the date the donation was made. Defaults to "created" when omitted and start or end is specified.
+      - name: start
+        in: query
+        required: false
+        schema:
+          type: string
+        description: The start of the date range to include.
+      - name: end
+        in: query
+        required: false
+        schema:
+          type: string
+        description: The end of the date range to include.
+      responses:
+        '401':
+          description: Unauthorized
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: Authentication credentials were missing or invalid.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '400':
+          description: Returned when the specified request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request was invalid or missing required parameters.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '200':
+          description: Returned when the operation succeeds. The response body contains a summary of giving totals.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GiveMetricsResponse'
+              example:
+                data:
+                - donation_type: OneTime
+                  total_amount: 12500
+                  total_donors: 80
+                  total_transactions: 95
+                - donation_type: Recurring
+                  total_amount: 34000
+                  total_donors: 48
+                  total_transactions: 576
+                total_unique_donors: 128
+        '403':
+          description: Returned when the user does not have rights to view giving metrics.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: You do not have permission to access this resource.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '404':
+          description: Returned when no giving metrics are found for the given criteria.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Not Found
+                status: 404
+                detail: The requested resource could not be found.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+      tags:
+      - Metrics
+  /v1/metrics/give/campaigns:
+    get:
+      operationId: GetGiveCampaignMetrics
+      summary: Get a collection of giving campaign summaries (PREVIEW)
+      description: 'Returns a collection of company giving campaigns for the authenticated affiliate. Each campaign includes the total amount donated and the count of unique donors.
+
+
+        Each campaign''s `campaign_id` can be used to fetch more granular donation detail for that campaign.
+
+
+        `total_amount` includes pledges made toward the campaign but excludes payroll donations.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      responses:
+        '401':
+          description: Unauthorized
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: Authentication credentials were missing or invalid.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '400':
+          description: Returned when the specified request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request was invalid or missing required parameters.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of giving campaign summaries.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GiveCampaignMetricsResponse'
+              example:
+                data:
+                - campaign_id: 3f6a9c2e-5b1d-4e8a-9c3f-1a2b3c4d5e6f
+                  campaign_name: Annual Giving Campaign 2025
+                  campaign_start_date_utc: '2025-01-01T12:00:00Z'
+                  campaign_end_date_utc: '2025-12-31T11:59:59Z'
+                  total_amount: 48500
+                  total_donors: 96
+                - campaign_id: 7d4e1a8b-2c6f-4a9d-8e5b-9f0c1d2e3a4b
+                  campaign_name: Disaster Relief Match
+                  campaign_start_date_utc: '2025-06-01T12:00:00Z'
+                  campaign_end_date_utc: '2025-06-30T11:59:59Z'
+                  total_amount: 12500
+                  total_donors: 34
+        '403':
+          description: Returned when the user does not have rights to view giving campaign metrics.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: You do not have permission to access this resource.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '404':
+          description: Returned when no giving campaigns are found for the affiliate.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Not Found
+                status: 404
+                detail: The requested resource could not be found.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+      tags:
+      - Metrics
+  /v1/metrics/give/campaigns/{campaign_id}:
+    get:
+      operationId: GetGiveCampaignMetricsById
+      summary: Get data specific to a single giving campaign (PREVIEW)
+      description: 'Returns donation totals for a single giving campaign, broken down by donation type. You can use the `v1/metrics/give/campaigns` endpoint to pull all available campaign identifiers.
+
+
+        Only processed donations are included in the metrics summary. The `Payroll` donation type reflects processed payroll donations only, not future pledges.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: campaign_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The unique identifier for the giving campaign.
+      responses:
+        '401':
+          description: Unauthorized
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: Authentication credentials were missing or invalid.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '400':
+          description: Returned when the specified request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request was invalid or missing required parameters.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '200':
+          description: Returned when the operation succeeds. The response body contains donation totals for the specified giving campaign.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GiveCampaignMetricsByCampaignIdResponse'
+              example:
+                campaign_name: Annual Giving Campaign 2025
+                campaign_start_date_utc: '2025-01-01T12:00:00Z'
+                campaign_end_date_utc: '2025-12-31T11:59:59Z'
+                data:
+                - donation_type: OneTime
+                  total_amount: 18500
+                  total_donors: 62
+                  total_transactions: 70
+                - donation_type: Payroll
+                  total_amount: 30000
+                  total_donors: 34
+                  total_transactions: 340
+        '403':
+          description: Returned when the user does not have rights to view giving campaign metrics.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: You do not have permission to access this resource.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '404':
+          description: Returned when the specified giving campaign is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Not Found
+                status: 404
+                detail: The requested resource could not be found.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+      tags:
+      - Metrics
+  /v1/metrics/volunteer:
+    get:
+      operationId: GetVolunteerMetrics
+      summary: Get a summary of volunteering totals (PREVIEW)
+      description: 'Returns a summary of volunteering totals for the authenticated affiliate, broken down into events, activities, and NPO-created events.
+
+
+        `events` reflects employee-created volunteer events. `activities` reflects individually recorded volunteer activities. `npoEvents` reflects events created by a nonprofit organization.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: country_code
+        in: query
+        required: false
+        schema:
+          type: string
+        description: The ISO country code used to filter volunteering activity by country.
+      - name: start
+        in: query
+        required: false
+        schema:
+          type: string
+        description: The start of the date range to include.
+      - name: end
+        in: query
+        required: false
+        schema:
+          type: string
+        description: The end of the date range to include.
+      responses:
+        '401':
+          description: Unauthorized
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: Authentication credentials were missing or invalid.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '400':
+          description: Returned when the specified request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request was invalid or missing required parameters.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '200':
+          description: Returned when the operation succeeds. The response body contains a summary of volunteering totals.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VolunteerMetricsResponse'
+              example:
+                events:
+                  total_hours: 320.5
+                  total_events: 42
+                  total_participants: 96
+                activities:
+                  total_hours: 58
+                  total_activities: 15
+                  total_participants: 22
+                npo_events:
+                  total_hours: 12
+                  total_events: 3
+                  total_participants: 8
+        '403':
+          description: Returned when the user does not have rights to view volunteering metrics.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: You do not have permission to access this resource.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '404':
+          description: Returned when no volunteering metrics are found for the given criteria.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: about:blank
+                title: Not Found
+                status: 404
+                detail: The requested resource could not be found.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+      tags:
+      - Metrics
+components:
+  schemas:
+    MetricsEventsResponse:
+      type: object
+      properties:
+        total_hours:
+          type: number
+          description: The total number of hours logged across these events.
+          format: double
+        total_events:
+          type: integer
+          description: The total number of events.
+          format: int32
+        total_participants:
+          type: integer
+          description: The count of unique participants across these events.
+          format: int32
+      additionalProperties: false
+      description: Represents a summary of volunteer event participation.
+    EngagementElementMetricsResponse:
+      type: object
+      properties:
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/EngagementElementInformation'
+          description: The collection of engagement element summaries.
+      additionalProperties: false
+      description: Represents a collection of engagement element summaries for the authenticated affiliate.
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference (RFC 3986) that identifies the problem type. When dereferenced, it should provide human-readable documentation for the problem. Defaults to "about:blank" when not present.<br/><br/>Available values:<table><tr><th>type</th><th>detail</th></tr><tr><td>about:blank</td><td>Type is not defined</td></tr></table>
+        title:
+          type:
+          - string
+          - 'null'
+          description: A short, human-readable summary of the problem type.
+        status:
+          type:
+          - integer
+          - 'null'
+          description: The HTTP status code for this occurrence of the problem.
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: {}
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+    ActivitiesResponse:
+      type: object
+      properties:
+        total_hours:
+          type: number
+          description: The total number of hours logged across these activities.
+          format: double
+        total_activities:
+          type: integer
+          description: The total number of activities.
+          format: int32
+        total_participants:
+          type: integer
+          description: The count of unique participants across these activities.
+          format: int32
+      additionalProperties: false
+      description: Represents a summary of individually recorded volunteer activities.
+    EngagementElementInformation:
+      type: object
+      properties:
+        engagement_element_id:
+          type: string
+          description: The unique identifier for the engagement element.
+          format: uuid
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the engagement element.
+        total_amount:
+          type: number
+          description: The total amount donated through this engagement element.
+          format: double
+        total_donors:
+          type: integer
+          description: The count of unique donors who contributed through this engagement element.
+          format: int32
+      additionalProperties: false
+      description: Represents a summary of donations tied to a single engagement element.
+    GiveCampaignMetricsByCampaignIdResponse:
+      type: object
+      properties:
+        campaign_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the giving campaign.
+        campaign_start_date_utc:
+          type: string
+          description: The UTC date and time when the campaign starts.
+          format: date-time
+        campaign_end_date_utc:
+          type: string
+          description: The UTC date and time when the campaign ends.
+          format: date-time
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/DonationsGroupByDonationType'
+          description: 'The collection of donation totals for the campaign, grouped by donation type. Only processed donations are
+
+            included; the "Payroll" donation type reflects processed payroll donations only, not future pledges.'
+      additionalProperties: false
+      description: Represents donation totals for a single giving campaign, broken down by donation type.
+    CharityVolunteerInformation:
+      type: object
+      properties:
+        charity_id:
+          type: integer
+          description: The unique identifier for the charity in CSRconnect.
+          format: int32
+        charity_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the charity.
+        charity_registration_number:
+          type:
+          - string
+          - 'null'
+          description: The charity's registration number (e.g. EIN).
+        total_opportunities:
+          type: integer
+          description: The count of volunteer opportunities associated with the charity.
+          format: int32
+        total_hours:
+          type: number
+          description: The total number of volunteer hours logged for the charity.
+          format: double
+        total_participants:
+          type: integer
+          description: The count of unique participants who volunteered with the charity.
+          format: int32
+      additionalProperties: false
+      description: Represents a summary of volunteering activity for a single charity.
+    GiveMetricsResponse:
+      type: object
+      properties:
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/DonationsGroupByDonationType'
+          description: The collection of donation totals, grouped by donation type.
+        total_unique_donors:
+          type: integer
+          description: The count of unique donors across all donation types for the given criteria.
+          format: int32
+      additionalProperties: false
+      description: Represents a summary of giving totals, broken down by donation type.
+    GiveCampaignInformation:
+      type: object
+      properties:
+        campaign_id:
+          type: string
+          description: The unique identifier for the giving campaign.
+          format: uuid
+        campaign_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the giving campaign.
+        campaign_start_date_utc:
+          type: string
+          description: The UTC date and time when the campaign starts.
+          format: date-time
+        campaign_end_date_utc:
+          type: string
+          description: The UTC date and time when the campaign ends.
+          format: date-time
+        total_amount:
+          type: number
+          description: The total amount donated to the campaign, including pledges. Payroll donations are not included in this total.
+          format: double
+        total_donors:
+          type: integer
+          description: The count of unique donors who have contributed to the campaign.
+          format: int32
+      additionalProperties: false
+      description: Represents a summary of a single company giving campaign.
+    CharityMetricsResponse:
+      type: object
+      properties:
+        give:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CharityGiveInformation'
+          description: The collection of giving summaries for the top charities.
+        volunteer:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CharityVolunteerInformation'
+          description: The collection of volunteering summaries for the top charities.
+      additionalProperties: false
+      description: Represents the top charities supported by the authenticated affiliate for giving and volunteering.
+    GiveCampaignMetricsResponse:
+      type: object
+      properties:
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/GiveCampaignInformation'
+          description: The collection of giving campaign summaries.
+      additionalProperties: false
+      description: Represents a collection of company giving campaign summaries for the authenticated affiliate.
+    EngagementElementMetricsByIdResponse:
+      type: object
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the engagement element.
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/DonationsGroupByDonationType'
+          description: 'The collection of donation totals for the engagement element, grouped by donation type. Only processed donations are
+
+            included; the "Payroll" donation type reflects processed payroll donations only, not future pledges.'
+      additionalProperties: false
+      description: Represents donation totals for a single engagement element, broken down by donation type.
+    CharityMetricsByIdResponse:
+      type: object
+      properties:
+        charity_id:
+          type: integer
+          description: The unique identifier for the charity in CSRconnect.
+          format: int32
+        charity_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the charity.
+        charity_registration_number:
+          type:
+          - string
+          - 'null'
+          description: The charity's registration number (e.g. EIN).
+        image_url:
+          type:
+          - string
+          - 'null'
+          description: The URL of the charity's image.
+        give:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/DonationsGroupByDonationType'
+          description: The collection of donation totals for the charity, grouped by donation type.
+        volunteer:
+          $ref: '#/components/schemas/VolunteerMetricsResponse'
+      additionalProperties: false
+      description: Represents giving and volunteering totals for a single charity.
+    VolunteerMetricsResponse:
+      type: object
+      properties:
+        events:
+          $ref: '#/components/schemas/MetricsEventsResponse'
+        activities:
+          $ref: '#/components/schemas/ActivitiesResponse'
+        npo_events:
+          $ref: '#/components/schemas/MetricsEventsResponse'
+      additionalProperties: false
+      description: Represents a summary of volunteering totals, broken down into events, activities, and NPO-created events.
+    CharityGiveInformation:
+      type: object
+      properties:
+        charity_id:
+          type: integer
+          description: The unique identifier for the charity in CSRconnect.
+          format: int32
+        charity_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the charity.
+        charity_registration_number:
+          type:
+          - string
+          - 'null'
+          description: The charity's registration number (e.g. EIN).
+        total_donors:
+          type: integer
+          description: The count of unique donors who contributed to the charity.
+          format: int32
+        total_transactions:
+          type: integer
+          description: The count of individual donation transactions made to the charity.
+          format: int32
+        total_amount:
+          type: number
+          description: The total amount donated to the charity.
+          format: double
+      additionalProperties: false
+      description: Represents a summary of donations made to a single charity.
+    DonationsGroupByDonationType:
+      type: object
+      properties:
+        donation_type:
+          type:
+          - string
+          - 'null'
+          description: The type of donation, e.g. "OneTime", "Recurring", or "CompanyMatch".
+        total_amount:
+          type: number
+          description: The total amount donated for this donation type.
+          format: double
+        total_donors:
+          type: integer
+          description: The count of unique donors who contributed to this donation type.
+          format: int32
+        total_transactions:
+          type: integer
+          description: The count of individual transactions for this donation type.
+          format: int32
+      additionalProperties: false
+      description: Represents donation totals for a single donation type.
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

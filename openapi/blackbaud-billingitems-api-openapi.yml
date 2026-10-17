@@ -1,0 +1,712 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Receivables Billingitems API'
+  description: This API manages receivables, including clients, billing items, credits, charges, and invoices.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/receivables
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/receivables
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Billingitems
+paths:
+  /v1/billingitems:
+    get:
+      operationId: ListBillingItems
+      summary: List of billing items by page
+      description: This returns a list of billing items limited by page size.
+      parameters:
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: '25'
+        description: The maximum number of items to return.
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: How many items to skip before returning the results.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a list of billing items.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BillingItemViewList'
+              example:
+                billing_items:
+                - id: da534d5f-f981-4be5-911d-d2c450d8dda8
+                  lookup_id: ''
+                  name: Test name
+                  status: Active
+                  type: RefundItem
+                  description: Test description
+                  valid_from_date: '2020-02-24T12:00:00Z'
+                  valid_to_date: '2020-08-24T12:00:00Z'
+                  flat_rate:
+                    amount: 25
+                    allow_changes_to_amount: false
+                  variable_rate:
+                    unit_of_measure_entry:
+                      id: 1c079590-7790-4456-9d0f-5fa50d7aacff
+                      value: Each
+                    quantity: 1
+                    quantity_decimals: 2
+                    unit_price: 1.5
+                    unit_price_decimals: 2
+                    allow_changes_quantity_and_unit_price: false
+                    trade_discount_percent: 0
+                    trade_discount_amount: 0
+                    amount: 1.5
+                  product_info:
+                    unit_of_measure: Each
+                    quantity_decimals: 2
+                    unit_price_decimals: 2
+                    allow_changes_quantity_and_unit_price: true
+                    pricing_schedule:
+                    - effective_date: '0001-01-01T12:00:00Z'
+                      description: Example Description
+                      pricing_type: SinglePrice
+                      unit_price: 25
+                      ranges:
+                      - minimum_quantity: 0
+                        maximum_quantity: 100
+                        unit_price: 25
+                        sequence: 1
+                  refund_item:
+                    allow_add_payable: true
+                    banks_id: 334
+                    bank_account_id: 1c079590-7790-4456-9d0f-5fa50d7aacff
+                    bank_account_name: Test Bank Account
+                    bank_account_active_status: Active
+                  date_added: '0001-01-01T12:00:00Z'
+                  last_changed_date: '0001-01-01T12:00:00Z'
+                  taxable: false
+                  assess_finance_charges: false
+                  allow_trade_discount: false
+                  allow_terms_discount: false
+                limit: 10
+                offset: 20
+        '400':
+          description: Returned when the request is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponseTypes'
+              example:
+                type: urn:blackbaud:validation-error
+                title: One or more validation errors occurred.
+                status: 400
+                detail: 'Transaction is missing required custom fields
+
+                  '
+                values:
+                  errors:
+                    property_name: custom_fields
+                    error_message: Transaction is missing required custom fields
+                    error_code: TransactionHasRequiredCustomFields
+                trace_id: e566235f7b89ec65570213e86c42b059
+                span_id: fda5afb92a47816e
+        '403':
+          description: Returned when the user does not have permission to view billing items.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenProblemDetails'
+              example:
+                type: urn:blackbaud:forbidden
+                title: The requested action is forbidden.
+                status: 403
+                extensions: {}
+      tags:
+      - Billingitems
+  /v1/billingitems/{id}:
+    get:
+      operationId: GetBillingItem
+      summary: Get a billing item
+      description: This gets a billing item by ID.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The ID of the billing item.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a billing item.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BillingItemListItem'
+              example:
+                id: da534d5f-f981-4be5-911d-d2c450d8dda8
+                lookup_id: ''
+                name: Test name
+                status: Active
+                type: RefundItem
+                description: Test description
+                valid_from_date: '2020-02-24T12:00:00Z'
+                valid_to_date: '2020-08-24T12:00:00Z'
+                flat_rate:
+                  amount: 25
+                  allow_changes_to_amount: false
+                variable_rate:
+                  unit_of_measure_entry:
+                    id: 1c079590-7790-4456-9d0f-5fa50d7aacff
+                    value: Each
+                  quantity: 1
+                  quantity_decimals: 2
+                  unit_price: 1.5
+                  unit_price_decimals: 2
+                  allow_changes_quantity_and_unit_price: false
+                  trade_discount_percent: 0
+                  trade_discount_amount: 0
+                  amount: 1.5
+                product_info:
+                  unit_of_measure: Each
+                  quantity_decimals: 2
+                  unit_price_decimals: 2
+                  allow_changes_quantity_and_unit_price: true
+                  pricing_schedule:
+                  - effective_date: '0001-01-01T12:00:00Z'
+                    description: Example Description
+                    pricing_type: SinglePrice
+                    unit_price: 25
+                    ranges:
+                    - minimum_quantity: 0
+                      maximum_quantity: 100
+                      unit_price: 25
+                      sequence: 1
+                refund_item:
+                  allow_add_payable: true
+                  banks_id: 334
+                  bank_account_id: 1c079590-7790-4456-9d0f-5fa50d7aacff
+                  bank_account_name: Test Bank Account
+                  bank_account_active_status: Active
+                date_added: '0001-01-01T12:00:00Z'
+                last_changed_date: '0001-01-01T12:00:00Z'
+                taxable: false
+                assess_finance_charges: false
+                allow_trade_discount: false
+                allow_terms_discount: false
+        '404':
+          description: Returned when the specified billing item is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: urn:blackbaud:model-validation-error
+                title: One or more validation errors occurred.
+                status: 400
+                detail: Workflow Correlation Id was required but not supplied.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '400':
+          description: Returned when the request is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponseTypes'
+              example:
+                type: urn:blackbaud:validation-error
+                title: One or more validation errors occurred.
+                status: 400
+                detail: 'Transaction is missing required custom fields
+
+                  '
+                values:
+                  errors:
+                    property_name: custom_fields
+                    error_message: Transaction is missing required custom fields
+                    error_code: TransactionHasRequiredCustomFields
+                trace_id: e566235f7b89ec65570213e86c42b059
+                span_id: fda5afb92a47816e
+        '403':
+          description: Returned when the user does not have permission to view the billing item.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenProblemDetails'
+              example:
+                type: urn:blackbaud:forbidden
+                title: The requested action is forbidden.
+                status: 403
+                extensions: {}
+      tags:
+      - Billingitems
+components:
+  schemas:
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".
+        title:
+          type:
+          - string
+          - 'null'
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type:
+          - integer
+          - 'null'
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: {}
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+    BillingItemListItem:
+      required:
+      - id
+      - name
+      - status
+      - type
+      type: object
+      properties:
+        id:
+          minLength: 1
+          type: string
+          description: The ID.
+        lookup_id:
+          type:
+          - string
+          - 'null'
+          description: The lookup ID.
+          readOnly: true
+        name:
+          minLength: 1
+          type: string
+          description: The name.
+        status:
+          $ref: '#/components/schemas/ItemStatus'
+        type:
+          $ref: '#/components/schemas/BillingItemType'
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description.
+        interfund_set_id:
+          type:
+          - string
+          - 'null'
+          description: The ID of the interfund set.
+        valid_from_date:
+          type:
+          - string
+          - 'null'
+          description: The from date.
+          format: date-time
+        valid_to_date:
+          type:
+          - string
+          - 'null'
+          description: The to date.
+          format: date-time
+        flat_rate:
+          $ref: '#/components/schemas/FlatRate'
+        variable_rate:
+          $ref: '#/components/schemas/VariableRate'
+        product_info:
+          $ref: '#/components/schemas/ProductInfoView'
+        refund_item:
+          $ref: '#/components/schemas/RefundItem'
+        added_by:
+          type:
+          - string
+          - 'null'
+          description: The user name who created the record.
+        date_added:
+          type: string
+          description: The record create date.
+          format: date-time
+        last_changed_by:
+          type:
+          - string
+          - 'null'
+          description: The user name who last changed the record.
+        last_changed_date:
+          type: string
+          description: The record last changed date.
+          format: date-time
+        taxable:
+          type: boolean
+          description: Whether the billing item is subject to tax.
+        assess_finance_charges:
+          type: boolean
+          description: Whether the billing item is subject to finance and late charges.
+        allow_trade_discount:
+          type: boolean
+          description: Whether the billing item is eligible for trade discount.
+        allow_terms_discount:
+          type: boolean
+          description: Whether the billing item is eligible for terms discount.
+      additionalProperties: false
+      description: Listed billing item
+    BillingItemViewList:
+      required:
+      - billing_items
+      - limit
+      - offset
+      type: object
+      properties:
+        billing_items:
+          type: array
+          items:
+            $ref: '#/components/schemas/BillingItemListItem'
+          description: Billing items
+        limit:
+          type: integer
+          description: The number of items returned.
+          format: int32
+        offset:
+          type: integer
+          description: The number of items skipped before this list was created.
+          format: int32
+      additionalProperties: false
+      description: Billing item list
+      x-bb-suppressions:
+      - list_operation_pagination_style
+    ValidationErrorResponseTypes:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".<br/><br/>Available values:<table><tr><th>type</th><th>detail</th></tr><tr><td>urn:blackbaud:model-validation-error</td><td>A model validation rule was violated, such as a missing required field.</td></tr><tr><td>urn:blackbaud:validation-error</td><td>One or more validation errors occurred.</td></tr></table>
+        title:
+          type:
+          - string
+          - 'null'
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type:
+          - integer
+          - 'null'
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: {}
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-bb-error-types:
+      - urn:blackbaud:model-validation-error
+      - urn:blackbaud:validation-error
+    ForbiddenProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".
+        title:
+          type:
+          - string
+          - 'null'
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type:
+          - integer
+          - 'null'
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: {}
+      description: Problem details for 403 Forbidden responses
+    PricingScheduleView:
+      required:
+      - effective_date
+      - pricing_type
+      type: object
+      properties:
+        effective_date:
+          type: string
+          description: Effective date
+          format: date-time
+        description:
+          type:
+          - string
+          - 'null'
+          description: Description
+        pricing_type:
+          $ref: '#/components/schemas/PricingType'
+        unit_price:
+          type:
+          - number
+          - 'null'
+          description: Unit price if Blackbaud.Receivables.Core.BillingItems.Models.Types.PricingType.SinglePrice
+          format: decimal
+        ranges:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/PricingScheduleRangeView'
+          description: List of pricing schedule ranges
+      additionalProperties: false
+      description: Pricing scheduling information.
+    FlatRate:
+      type: object
+      properties:
+        amount:
+          type:
+          - number
+          - 'null'
+          description: The default flat rate.
+          format: decimal
+        allow_changes_to_amount:
+          type: boolean
+          description: Whether the user can edit the billing item amount after it's applied. For example, on a charge.
+      additionalProperties: false
+      description: The flat rate item details.
+    BillingItemType:
+      title: BillingItemType
+      enum:
+      - FlatRate
+      - VariableRate
+      - AdvanceDeposit
+      - FinanceCharge
+      - SalesTax
+      - RefundItem
+      - Product
+      type: string
+      description: Billing item type
+    PricingScheduleRangeView:
+      required:
+      - maximum_quantity
+      - minimum_quantity
+      - sequence
+      - unit_price
+      type: object
+      properties:
+        minimum_quantity:
+          type: number
+          description: Maximum quantity
+          format: decimal
+        maximum_quantity:
+          type: number
+          description: Maximum quantity
+          format: decimal
+        unit_price:
+          type: number
+          description: Unit price
+          format: decimal
+        sequence:
+          type: integer
+          description: Sequence
+          format: int32
+      additionalProperties: false
+      description: Pricing scheduling range.
+    VariableRate:
+      required:
+      - quantity
+      - quantity_decimals
+      - unit_price_decimals
+      type: object
+      properties:
+        unit_of_measure_entry:
+          $ref: '#/components/schemas/ReceivablesCodeTableEntry'
+        quantity:
+          type: number
+          description: The quantity sold for a specified unit.
+          format: decimal
+        quantity_decimals:
+          type: integer
+          description: The number of decimals to input and round the quantity.
+          format: int32
+        unit_price:
+          type:
+          - number
+          - 'null'
+          description: The price per unit.
+          format: decimal
+        unit_price_decimals:
+          type: integer
+          description: The number of decimals to input and round the unit price.
+          format: int32
+        allow_changes_quantity_and_unit_price:
+          type: boolean
+          description: The user is allowed to edit the Billing Item's unit price after it is applied, such as on a Charge.
+        trade_discount_percent:
+          type: number
+          description: Trade Discount Percentage for Charge and Line Item calculations.
+          format: decimal
+        trade_discount_amount:
+          type: number
+          description: Calculated Trade Discount Amount for Charge and Line Item calculations.
+          format: decimal
+          readOnly: true
+        amount:
+          type: number
+          description: Amount calculated from other property values
+          format: decimal
+          readOnly: true
+      additionalProperties: false
+      description: The details for an item with variable quantity.
+    RefundItem:
+      required:
+      - allow_add_payable
+      type: object
+      properties:
+        allow_add_payable:
+          type: boolean
+          description: Billing item of type Refund is allowed for adding bank account for paybale to client
+        banks_id:
+          type:
+          - integer
+          - 'null'
+          description: Billing item of Type Refund tied to banks - ID
+          format: int32
+        bank_account_id:
+          type:
+          - string
+          - 'null'
+          description: Billing item of Type Refund tied to bank - ID
+        bank_account_name:
+          type:
+          - string
+          - 'null'
+          description: Billing item of Type Refund tied to bank - BankName
+        bank_account_active_status:
+          $ref: '#/components/schemas/BankAccountStatus'
+      additionalProperties: false
+      description: The details for a refund item.
+    ItemStatus:
+      title: ItemStatus
+      enum:
+      - Active
+      - Inactive
+      type: string
+      description: Billing item status // TODO Changing name will break API but plan to change
+    ProductInfoView:
+      required:
+      - pricing_schedule
+      - quantity_decimals
+      - unit_price_decimals
+      type: object
+      properties:
+        unit_of_measure:
+          type:
+          - string
+          - 'null'
+          description: 'Unit of measure description.
+
+            Should match entry in the code table service.'
+        quantity_decimals:
+          type: integer
+          description: The number of decimals to input and round the quantity.
+          format: int32
+        unit_price_decimals:
+          type: integer
+          description: The number of decimals to input and round the unit price.
+          format: int32
+        allow_changes_quantity_and_unit_price:
+          type: boolean
+          description: The user is allowed to edit the Billing Item's quantity and unit price after it is applied, such as on a Charge.
+        pricing_schedule:
+          type: array
+          items:
+            $ref: '#/components/schemas/PricingScheduleView'
+          description: Pricing schedule
+      additionalProperties: false
+      description: The details for an item with a pricing schedule, which may include quantity-based pricing.
+    BankAccountStatus:
+      title: BankAccountStatus
+      enum:
+      - Active
+      - Inactive
+      type: string
+      description: Bank Account status
+    ReceivablesCodeTableEntry:
+      required:
+      - id
+      - value
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the code table entry.
+        value:
+          minLength: 1
+          type: string
+          description: The value of the code table entry.
+      additionalProperties: false
+      description: The request containing info for a code table entry.
+    PricingType:
+      title: PricingType
+      enum:
+      - SinglePrice
+      - BasedOnQuantity
+      type: string
+      description: Pricing type
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

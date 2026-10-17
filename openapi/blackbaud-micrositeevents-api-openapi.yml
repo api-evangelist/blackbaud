@@ -1,0 +1,116 @@
+openapi: 3.2.0
+info:
+  title: Blackbaud Micrositeevents API
+  version: '1.0'
+  x-refined-note:
+  - x-apievangelist-provenance differs across the merged source definitions and was not carried
+  description: 'Operations tagged Micrositeevents across 2 of this provider''s published API definitions: blackbaud-altru-event-api-openapi.yml, blackbaud-crm-event-api-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.sky.blackbaud.com/alt-evtmg
+- url: https://api.sky.blackbaud.com/crm-evtmg
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Micrositeevents
+paths:
+  /micrositeevents/{event_id}/view:
+    get:
+      operationId: ViewMicrositeEvent
+      summary: View a microsite event
+      description: Displays microsite details for an event.
+      parameters:
+      - name: event_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The event id.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the specified resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MicrositeEventView'
+      tags:
+      - Micrositeevents
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-evtmg
+components:
+  schemas:
+    MicrositeEventView:
+      type: object
+      properties:
+        name:
+          maxLength: 512
+          minLength: 0
+          type: string
+          description: The event.
+        url:
+          type: string
+          description: The url.
+        active:
+          type: boolean
+          description: Indicates whether active.
+        online:
+          type: boolean
+          description: Indicates whether approved for website.
+        capacity:
+          type: integer
+          description: The capacity.
+          format: int32
+        available_capacity:
+          type: integer
+          description: The available capacity.
+          format: int32
+        start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        end_date:
+          type: string
+          description: 'The end date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        expired:
+          type: boolean
+          description: Indicates whether is expired.
+        live:
+          type: boolean
+          description: Indicates whether live on website.
+        sales_method_set:
+          type: boolean
+          description: Indicates whether is sales method set?.
+        on_sale_date_time:
+          type: string
+          description: 'The on-sale period. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        off_sale_date_time:
+          type: string
+          description: 'The off-sale date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        event_type:
+          type: string
+          description: The event type code. Available values are <i>special event</i>, <i>preregistered event</i>
+        on_sale:
+          type: boolean
+          description: Indicates whether is on sale.
+      additionalProperties: false
+      description: ViewMicrositeEvent
+      x-display-name: Microsite Event View
+      x-display-id: Microsite Event View
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+x-refined-from:
+- blackbaud-altru-event-api-openapi.yml
+- blackbaud-crm-event-api-openapi.yml

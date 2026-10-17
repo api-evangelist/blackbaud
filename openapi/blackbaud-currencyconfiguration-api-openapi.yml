@@ -1,0 +1,68 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Constituent Currencyconfiguration API'
+  description: This API manages constituent information and related entities such as addresses, phones, emails, and notes.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/56b76470069a0509c8f1c5b3
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/constituent/v1
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Currencyconfiguration
+paths:
+  /currencyconfiguration:
+    get:
+      operationId: GetCurrencyConfiguration
+      summary: Currency configuration (Get)
+      description: Returns the currency configuration settings for the tenant's default country.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a <a href="https://developer.blackbaud.com/skyapi/api/entity-reference/constituent#CurrencyConfiguration">currency configuration</a>.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CurrencyConfigurationRead'
+              example:
+                country_name: United States
+                currency_symbol: $
+                iso_alpha_2_code: US
+                currency_code: USD
+      tags:
+      - Currencyconfiguration
+components:
+  schemas:
+    CurrencyConfigurationRead:
+      description: Currency configurations combine a country and currency for an organization's monetary amounts.
+      type: object
+      properties:
+        country_name:
+          description: The country that issues the currency.
+          type: string
+        currency_symbol:
+          description: The symbol for the currency.
+          type: string
+        iso_alpha_2_code:
+          description: The ISO 3166-1 two-letter country code for the currency.
+          type: string
+        currency_code:
+          description: The ISO 4217 three-letter currency code for the currency.
+          type: string
+      x-display-name: Currency configuration
+      x-display-id: CurrencyConfiguration
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

@@ -1,0 +1,96 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Accounts Payable Departments API'
+  description: This API is used to manage accounts payable, including vendors and invoices.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/57a342f1d7dcde1c28a749fe
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/accountspayable/v1
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Departments
+paths:
+  /departments:
+    get:
+      operationId: ListAccountsPayableDepartments
+      summary: Accounts payable department (List)
+      description: Returns a list of accounts payable departments.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains a list of departments.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DepartmentApiCollection'
+              example:
+                count: 3
+                value:
+                - id: 291
+                  description: 00 - None
+                  value: 00 - None
+                  inactive: false
+                - id: 289
+                  description: 01 - Administration
+                  value: 01 - Administration
+                  inactive: false
+                - id: 288
+                  description: 02 - Development
+                  value: 02 - Development
+                  inactive: false
+      tags:
+      - Departments
+components:
+  schemas:
+    Department:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The identifier for this fob.
+          format: int32
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the fob.
+        value:
+          type:
+          - string
+          - 'null'
+          description: The value of the fob.
+        inactive:
+          type: boolean
+          description: Whether or not the department is active.
+      additionalProperties: false
+      description: Contract for department.
+    DepartmentApiCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Department'
+      additionalProperties: false
+      description: Collection Response
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

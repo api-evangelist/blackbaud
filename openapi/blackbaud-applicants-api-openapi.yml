@@ -1,0 +1,675 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: GrantsConnect Applicants API'
+  description: This API provides access to read and update data within GrantsConnect.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/grants-connect
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/grants-connect
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Applicants
+paths:
+  /v1/applicants/search:
+    post:
+      operationId: SearchApplicants
+      summary: Search applicants (PREVIEW)
+      description: 'Retrieves information about applicants.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApplyApplicantSearchFilters'
+            example:
+              id: 12345
+              application_id: 12345
+              email: example@example.com
+              sso: true
+              new_user: false
+              last_login_date: '2025-01-01T12:00:00Z'
+              country: USA
+              state: NY
+              city: New York
+              tags:
+              - tag1
+              - tag2
+              limit: 50
+              page: 1
+              date_modified: '2025-01-01T12:00:00Z'
+              include_inactive: true
+        description: Specifies the conditions of the applicants to search. If no filter is provided, the response will return all applicants.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReturnPaginatedApplicantRecords'
+              example:
+                records:
+                - id: 1
+                  first_name: John
+                  last_name: Doe
+                  email: john.doe@example.com
+                  new_user: false
+                  employee_of_client: true
+                  sso: true
+                  has_awards: true
+                  address1: 123 Main St
+                  address2: Apt 4B
+                  country: USA
+                  state: NY
+                  city: New York
+                  postal_code: '10001'
+                  phone_number: 555-123-4567
+                  language_culture: en-US
+                  email_confirmed: true
+                  user_id: 2001
+                  accepted_terms_of_service: true
+                  accepted_terms_of_service_date: '2025-01-01T12:00:00Z'
+                  last_currency_requested: USD
+                  last_login_date: '2025-01-01T12:00:00Z'
+                  inactive: false
+                  deactivated: false
+                  employee_applicant_details:
+                    region: North America
+                    employee_type_code: FT
+                    report_group_name: Engineering Group
+                    division: Development
+                    department_name: Engineering
+                    custom_char1: Custom Value 1
+                    custom_char2: Custom Value 2
+                    custom_char3: Custom Value 3
+                    custom_char4: Custom Value 4
+                    custom_char5: Custom Value 5
+                    custom_char6: Custom Value 6
+                    custom_char7: Custom Value 7
+                    custom_char8: Custom Value 8
+                    custom_char9: Custom Value 9
+                    custom_char10: Custom Value 10
+                    custom_char11: Custom Value 11
+                    custom_char12: Custom Value 12
+                    custom_char13: Custom Value 13
+                    external_employee_id: EMP12345
+                    external_employee_id2: EMP67890
+                    full_time_code_id: FT123
+                    hire_date: '2025-01-01T12:00:00Z'
+                    job_code_id: JC123
+                    site_code_id: SC123
+                    external_sso_id: SSO12345
+                    manager_employee_id: 123
+                    position_title: Software Engineer
+                    market: North America
+                    member_id: 123
+                    affiliate_corp_name: Blackbaud Inc.
+                    pay_currency_code: USD
+                    pay_periods: 12
+                    payroll_center: Payroll Center 1
+                    payroll_id: PAY123
+                    mail_stop: MS123
+                    home_address: 456 Elm St
+                    home_address2: Apt 5A
+                    home_city: Los Angeles
+                    home_state: CA
+                    home_zip_code: '90001'
+                    home_country_code: USA
+                    shift_code: Day
+                    employee_type: Full-Time
+                    employee_status: Active
+                    sub_company_code: SubCompany 1
+                    payroll_type: Monthly
+                    payroll_filter: Payroll Filter 1
+                    match_type: Exact
+                    custom_segment: Custom Segment
+                    employee_inactive: false
+                    work_address: 789 Oak St
+                    work_address2: Suite 100
+                    work_city: Chicago
+                    work_state: IL
+                    work_phone: 555-987-6543
+                    work_country: USA
+                record_count: 1
+      tags:
+      - Applicants
+components:
+  schemas:
+    ApplyApplicantSearchFilters:
+      type: object
+      properties:
+        id:
+          maximum: 2147483647
+          minimum: 1
+          type:
+          - integer
+          - 'null'
+          description: If provided, results will filter on the identifier of the applicant.
+          format: int32
+        application_id:
+          maximum: 2147483647
+          minimum: 1
+          type:
+          - integer
+          - 'null'
+          description: If provided, results will filter on the identifier of the application.
+          format: int32
+        email:
+          maxLength: 254
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: If provided, results will filter on the email address of the applicant.
+        sso:
+          type:
+          - boolean
+          - 'null'
+          description: Specifies if applicants that use single sign-on (SSO) should be returned. Value is true or false.
+        new_user:
+          type:
+          - boolean
+          - 'null'
+          description: Specifies if new user accounts should be returned. Value is true or false.
+        last_login_date:
+          type:
+          - string
+          - 'null'
+          description: If provided, only applicants that have signed in to their account since the date and time specified will be returned. Time zone is UTC.
+          format: date-time
+        country:
+          maxLength: 100
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: If provided, results will filter on the country in which the applicant is located.
+        state:
+          maxLength: 100
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: If provided, results will filter on the state in which the applicant is located.
+        city:
+          maxLength: 100
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: If provided, results will filter on the city in which the applicant is located.
+        tags:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: If provided, results will filter on the system tags assigned to the application.
+        limit:
+          maximum: 500
+          minimum: 50
+          type: integer
+          description: Specifies the maximum number of records to return per page.
+          format: int32
+          default: 50
+        page:
+          maximum: 2147483647
+          minimum: 1
+          type: integer
+          description: Specifies the page number for pagination.
+          format: int32
+          default: 1
+        date_modified:
+          type:
+          - string
+          - 'null'
+          description: If provided, only records modified since the date and time specified will be returned. Time zone is UTC.
+          format: date-time
+        include_inactive:
+          type: boolean
+          description: Specifies if inactive records should be returned. Value is true or false.
+          default: false
+      additionalProperties: false
+      description: Filters to apply to the search. Specify conditions of the applicants to return detailed information.
+    ReturnPaginatedApplicantRecords:
+      type: object
+      properties:
+        records:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ReturnApplicantInformationQueryResults'
+          description: The details returned for the current page.
+        record_count:
+          type:
+          - integer
+          - 'null'
+          description: The total number of records in the search result.
+          format: int32
+      additionalProperties: false
+      description: Returns a paginated view of applicants.
+    ReturnApplicantInformationQueryResults:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The identifier of the applicant.
+          format: int32
+        first_name:
+          type:
+          - string
+          - 'null'
+          description: The first name of the applicant.
+        last_name:
+          type:
+          - string
+          - 'null'
+          description: The last name of the applicant.
+        email:
+          type:
+          - string
+          - 'null'
+          description: The email address of the applicant.
+        new_user:
+          type: boolean
+          description: Indicates if the applicant is a new user. Value is true or false.
+        employee_of_client:
+          type: boolean
+          description: Indicates whether the applicant is an employee of the client. Value is true or false.
+        sso:
+          type: boolean
+          description: Indicates if the applicant uses single sign-on (SSO). Value is true or false. If true, the response will also return their employee information from the client’s HR file.
+        has_awards:
+          type: boolean
+          description: Indicates if the application has been awarded. Value is true or false.
+        address1:
+          type:
+          - string
+          - 'null'
+          description: The primary address of the applicant, including building number and street name.
+        address2:
+          type:
+          - string
+          - 'null'
+          description: Additional address information, such as unit number or PO Box.
+        country:
+          type:
+          - string
+          - 'null'
+          description: The country in which the applicant is located.
+        state:
+          type:
+          - string
+          - 'null'
+          description: The state in which the applicant is located.
+        city:
+          type:
+          - string
+          - 'null'
+          description: The city in which the applicant is located.
+        postal_code:
+          type:
+          - string
+          - 'null'
+          description: The postal code in which the applicant is located.
+        phone_number:
+          type:
+          - string
+          - 'null'
+          description: The phone number of the applicant.
+        language_culture:
+          type:
+          - string
+          - 'null'
+          description: The language preference of the applicant.
+        email_confirmed:
+          type: boolean
+          description: Indicates if the applicant has successfully signed in to their account. This confirms the email address provided is correct. Value is true or false.
+        user_id:
+          type: integer
+          description: The user ID of the applicant.
+          format: int32
+        accepted_terms_of_service:
+          type: boolean
+          description: Indicates if the applicant has accepted the Terms of Service in GrantsConnect. Value is true or false.
+        accepted_terms_of_service_date:
+          type:
+          - string
+          - 'null'
+          description: The date and time the applicant accepted the Terms of Service.
+          format: date-time
+        last_currency_requested:
+          type:
+          - string
+          - 'null'
+          description: The currency last requested by the applicant.
+        last_login_date:
+          type:
+          - string
+          - 'null'
+          description: The date and time the applicant last signed in to their account. Time zone is UTC.
+          format: date-time
+        inactive:
+          type: boolean
+          description: Indicates of the applicant’s account is inactive. Value is true or false.
+        deactivated:
+          type: boolean
+          description: Indicates if the applicant’s account has been deactivated. Value is true or false.
+        deactivated_date:
+          type:
+          - string
+          - 'null'
+          description: The date and time the applicant’s account was deactivated, if applicable. Time zone is UTC.
+          format: date-time
+        employee_applicant_details:
+          $ref: '#/components/schemas/ReturnEmployeeApplicantDetails'
+      additionalProperties: false
+      description: Detailed information about the applicant.
+    ReturnEmployeeApplicantDetails:
+      type: object
+      properties:
+        region:
+          type:
+          - string
+          - 'null'
+          description: The region of the employee.
+        employee_type_code:
+          type:
+          - string
+          - 'null'
+          description: The employee type code.
+        report_group_name:
+          type:
+          - string
+          - 'null'
+          description: The report group name of the employee.
+        division:
+          type:
+          - string
+          - 'null'
+          description: The division of the employee.
+        department_name:
+          type:
+          - string
+          - 'null'
+          description: The department name of the employee.
+        custom_char1:
+          type:
+          - string
+          - 'null'
+          description: Custom field 1 for the employee.
+        custom_char2:
+          type:
+          - string
+          - 'null'
+          description: Custom field 2 for the employee.
+        custom_char3:
+          type:
+          - string
+          - 'null'
+          description: Custom field 3 for the employee.
+        custom_char4:
+          type:
+          - string
+          - 'null'
+          description: Custom field 4 for the employee.
+        custom_char5:
+          type:
+          - string
+          - 'null'
+          description: Custom field 5 for the employee.
+        custom_char6:
+          type:
+          - string
+          - 'null'
+          description: Custom field 6 for the employee.
+        custom_char7:
+          type:
+          - string
+          - 'null'
+          description: Custom field 7 for the employee.
+        custom_char8:
+          type:
+          - string
+          - 'null'
+          description: Custom field 8 for the employee.
+        custom_char9:
+          type:
+          - string
+          - 'null'
+          description: Custom field 9 for the employee.
+        custom_char10:
+          type:
+          - string
+          - 'null'
+          description: Custom field 10 for the employee.
+        custom_char11:
+          type:
+          - string
+          - 'null'
+          description: Custom field 11 for the employee.
+        custom_char12:
+          type:
+          - string
+          - 'null'
+          description: Custom field 12 for the employee.
+        custom_char13:
+          type:
+          - string
+          - 'null'
+          description: Custom field 13 for the employee.
+        external_employee_id:
+          type:
+          - string
+          - 'null'
+          description: The external employee ID.
+        external_employee_id2:
+          type:
+          - string
+          - 'null'
+          description: The secondary external employee ID.
+        full_time_code_id:
+          type:
+          - string
+          - 'null'
+          description: The full-time code ID of the employee.
+        hire_date:
+          type:
+          - string
+          - 'null'
+          description: The hire date of the employee.
+          format: date-time
+        job_code_id:
+          type:
+          - string
+          - 'null'
+          description: The job code ID of the employee.
+        site_code_id:
+          type:
+          - string
+          - 'null'
+          description: The site code ID of the employee.
+        external_sso_id:
+          type:
+          - string
+          - 'null'
+          description: The external SSO ID of the employee.
+        manager_employee_id:
+          type:
+          - integer
+          - 'null'
+          description: The manager's employee ID.
+          format: int32
+        position_title:
+          type:
+          - string
+          - 'null'
+          description: The position title of the employee.
+        market:
+          type:
+          - string
+          - 'null'
+          description: The market of the employee.
+        member_id:
+          type:
+          - integer
+          - 'null'
+          description: The member ID of the employee.
+          format: int32
+        affiliate_corp_name:
+          type:
+          - string
+          - 'null'
+          description: The affiliate corporation name of the employee.
+        pay_currency_code:
+          type:
+          - string
+          - 'null'
+          description: The pay currency code of the employee.
+        pay_periods:
+          type:
+          - integer
+          - 'null'
+          description: The number of pay periods for the employee.
+          format: int32
+        payroll_center:
+          type:
+          - string
+          - 'null'
+          description: The payroll center of the employee.
+        payroll_id:
+          type:
+          - string
+          - 'null'
+          description: The payroll ID of the employee.
+        mail_stop:
+          type:
+          - string
+          - 'null'
+          description: The mail stop of the employee.
+        home_address:
+          type:
+          - string
+          - 'null'
+          description: The primary address of the employee, including building number and street name.
+        home_address2:
+          type:
+          - string
+          - 'null'
+          description: Additional address information, such as unit number or PO Box.
+        home_city:
+          type:
+          - string
+          - 'null'
+          description: The city where the employee is located.
+        home_state:
+          type:
+          - string
+          - 'null'
+          description: The state where the employee is located.
+        home_zip_code:
+          type:
+          - string
+          - 'null'
+          description: The zip code where the employee is located.
+        home_country_code:
+          type:
+          - string
+          - 'null'
+          description: The country code where the employee is located.
+        shift_code:
+          type:
+          - string
+          - 'null'
+          description: The shift code of the employee.
+        employee_type:
+          type:
+          - string
+          - 'null'
+          description: The employee type.
+        employee_status:
+          type:
+          - string
+          - 'null'
+          description: The employee status.
+        sub_company_code:
+          type:
+          - string
+          - 'null'
+          description: The sub-company code of the employee.
+        payroll_type:
+          type:
+          - string
+          - 'null'
+          description: The payroll type of the employee.
+        payroll_filter:
+          type:
+          - string
+          - 'null'
+          description: The payroll filter of the employee.
+        match_type:
+          type:
+          - string
+          - 'null'
+          description: The match type of the employee.
+        custom_segment:
+          type:
+          - string
+          - 'null'
+          description: The custom segment of the employee.
+        employee_inactive:
+          type:
+          - boolean
+          - 'null'
+          description: Indicates if the employee is inactive. Value is true or false.
+        work_address:
+          type:
+          - string
+          - 'null'
+          description: The primary address of the client, including building number and street name.
+        work_address2:
+          type:
+          - string
+          - 'null'
+          description: Additional address information, such as unit number or PO Box.
+        work_city:
+          type:
+          - string
+          - 'null'
+          description: The city where the client is located.
+        work_state:
+          type:
+          - string
+          - 'null'
+          description: The state where the client is located.
+        work_phone:
+          type:
+          - string
+          - 'null'
+          description: The work phone of the employee.
+        work_country:
+          type:
+          - string
+          - 'null'
+          description: The work country of the employee.
+      additionalProperties: false
+      description: Detailed employee information about the applicant. This is only available if the applicant is listed on the client’s HR file and uses single sign-on (SSO).
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

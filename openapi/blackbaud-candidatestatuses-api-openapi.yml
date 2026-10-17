@@ -1,0 +1,249 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Enrollment Management Candidatestatuses…'
+  description: Blackbaud Education Management API for Enrollment Management
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/afe-edems
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/afe-edems
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Candidatestatuses
+paths:
+  /v1/candidatestatuses:
+    get:
+      operationId: V1CandidatestatusesGet
+      summary: Candidate status change list (Get)
+      description: 'Returns the candidate status changes for a year.
+
+
+        Requires the following role in the Education Management system:
+
+
+        Admissions Manager
+
+
+        Admissions Staff'
+      parameters:
+      - name: school_year
+        in: query
+        required: false
+        schema:
+          type: string
+        description: The ID or label of the entering school year. Defaults to current admissions year.
+      - name: status_type
+        in: query
+        required: false
+        schema:
+          type: string
+        description: The ID or description of a candidate status type. Limits results to status changes of that type.
+      - name: start_date
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Limits results to status changes occurring on or after the specified date.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CandidateStatusChangeCollection'
+              example:
+                count: 1
+                value:
+                - candidate:
+                    id: 1
+                    prefix: Mr.
+                    first_name: Kianna
+                    middle_name: Mark
+                    last_name: Reed
+                    suffix: Jr.
+                    preferred_name: ''
+                    preferred_last_name: Reed
+                    maiden_name: ''
+                    email: kianna@example.com
+                  type:
+                    id: 1
+                    description: Inquiry
+                  date: '2024-03-31T12:00:00Z'
+      tags:
+      - Candidatestatuses
+  /v1/candidatestatuses/{candidate_id}:
+    get:
+      operationId: V1CandidatestatusesByCandidate_idGet
+      summary: Candidate status change list - single candidate (Get)
+      description: 'Returns the status history for a candidate.
+
+
+        Requires the following role in the Education Management system:
+
+
+        Admissions Manager
+
+
+        Admissions Staff'
+      parameters:
+      - name: candidate_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The user ID of the candidate.
+      - name: school_year
+        in: query
+        required: false
+        schema:
+          type: string
+        description: The ID or label of the entering school year. Defaults to current admissions year.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CandidateStatusChangeCollection'
+              example:
+                count: 1
+                value:
+                - candidate:
+                    id: 1
+                    prefix: Mr.
+                    first_name: Kianna
+                    middle_name: Mark
+                    last_name: Reed
+                    suffix: Jr.
+                    preferred_name: ''
+                    preferred_last_name: Reed
+                    maiden_name: ''
+                    email: kianna@example.com
+                  type:
+                    id: 1
+                    description: Inquiry
+                  date: '2024-03-31T12:00:00Z'
+      tags:
+      - Candidatestatuses
+components:
+  schemas:
+    CandidateStatusChangeCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items in the collection
+          format: int32
+          readOnly: true
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CandidateStatusChange'
+          description: The set of items included in the response. This may be a subset of the items in the collection
+      additionalProperties: false
+      description: A Collection
+    CandidateStatusBase:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the candidate status type
+          format: int32
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the candidate status type
+      additionalProperties: false
+      description: Candidate status type base model
+    CandidateStatusChange:
+      type: object
+      properties:
+        candidate:
+          $ref: '#/components/schemas/UserBaseRead'
+        type:
+          $ref: '#/components/schemas/CandidateStatusBase'
+        date:
+          type:
+          - string
+          - 'null'
+          description: The start date for the candidate�s status
+          format: date-time
+      additionalProperties: false
+      description: Candidate status change model
+    UserBaseRead:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The user ID of the user
+          format: int32
+        prefix:
+          type:
+          - string
+          - 'null'
+          description: The prefix of the user
+        first_name:
+          type:
+          - string
+          - 'null'
+          description: The first name of the user
+        middle_name:
+          type:
+          - string
+          - 'null'
+          description: The middle name of the user
+        last_name:
+          type:
+          - string
+          - 'null'
+          description: The last name of the user
+        suffix:
+          type:
+          - string
+          - 'null'
+          description: The suffix of the user
+        preferred_name:
+          type:
+          - string
+          - 'null'
+          description: The preferred first name of the user
+        preferred_last_name:
+          type:
+          - string
+          - 'null'
+          description: The preferred last name of the user
+        maiden_name:
+          type:
+          - string
+          - 'null'
+          description: The former or maiden name of the user
+        email:
+          type:
+          - string
+          - 'null'
+          description: The email of the user
+      additionalProperties: false
+      description: User base model
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

@@ -1,0 +1,400 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: General Ledger Periodsummary API'
+  description: This API is used to manage the general ledger, including accounts, projects, and journal entries. This API has a maximum request size limit of 8mb.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/56eb17a0a9db9516c46bff6f
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/generalledger/v1
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Periodsummary
+paths:
+  /periodsummary/processinginfo:
+    get:
+      operationId: GetSummaryProcess
+      summary: Period summary process (Get)
+      description: This endpoint reports on the current status of the summarize request, whether it is completed, still running, or failed.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the summary processing info.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SummaryProcessInfo'
+              example:
+                status: Queued
+                status_message: Beginning summary process
+                process_id: e198c932-c6a7-4f03-87ec-98997be40473
+                fiscal_period_id: 288
+        '403':
+          description: Returned when the user does not have permissions for funds or fiscal years.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Periodsummary
+  /periodsummary/summaries:
+    get:
+      operationId: ListPeriodSummaries
+      summary: Period summary (List)
+      description: Once the summarization process is complete, this is the endpoint you use to get data returned.
+      parameters:
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: 'Represents the number of records to skip.
+
+          For use with pagination.'
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: "Represents the number of records to return. \nThe default is 100. \nThe maximum allowed value is 5000."
+      - name: fiscal_period_id
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: The fiscal period identifier.
+      - name: account_number
+        in: query
+        required: false
+        schema:
+          type: string
+        description: The account number.
+      - name: ui_project_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: The project user-visible identifier.
+      - name: fiscal_year_id
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: The fiscal year.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains a list of summaries.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiCollection_LedgerSummary'
+              example:
+                count: 52548
+                value:
+                - fiscal_year: '2011'
+                  fiscal_year_id: 12
+                  fiscal_period: '8'
+                  fiscal_period_id: 133
+                  period_start_date: '2008-01-01T00:00:00Z'
+                  period_end_date: '2008-01-31T00:00:00Z'
+                  account_number: 03-7000-00
+                  ui_project_id: '1004'
+                  transaction_codes:
+                  - name: Jurisdiction
+                    value: None
+                    id: 1
+                  - name: Spendable?
+                    value: Spendable
+                    id: 2
+                  beginning_balance: 0
+                  debit: 14760.32
+                  credit: 0
+                  encumbered_beginning_balance: 0
+                  encumbered_debit: 0
+                  encumbered_credit: 0
+                - fiscal_year: '2011'
+                  fiscal_year_id: 12
+                  fiscal_period: '8'
+                  fiscal_period_id: 133
+                  period_start_date: '2008-01-01T00:00:00Z'
+                  period_end_date: '2008-01-31T00:00:00Z'
+                  account_number: 03-7000-00
+                  ui_project_id: '1018'
+                  transaction_codes:
+                  - name: Jurisdiction
+                    value: None
+                    id: 1
+                  - name: Spendable?
+                    value: Spendable
+                    id: 2
+                  beginning_balance: 0
+                  debit: 6792.52
+                  credit: 0
+                  encumbered_beginning_balance: 0
+                  encumbered_debit: 0
+                  encumbered_credit: 0
+        '403':
+          description: Returned when the user does not have permissions for funds or fiscal years.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Periodsummary
+  /periodsummary/summarize:
+    post:
+      operationId: StartPeriodSummaryProcess
+      summary: Period summary process (Start)
+      description: 'This endpoint must be called first, with the appropriate switches to select what year/period ID you wish to summarize.
+
+        The summarization process may take several minutes, but will continue processing even if you are making other API calls right after it.
+
+        Not providing a period ID or providing a period ID of 0 will summarize all open and unoptimized periods.'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StartSummarizeProcess'
+            example:
+              fiscal_period_id: 112
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the summary processing info.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SummaryProcessInfo'
+              example:
+                status: Queued
+                status_message: Beginning summary process
+                process_id: e198c932-c6a7-4f03-87ec-98997be40473
+                fiscal_period_id: 288
+        '400':
+          description: Returned when an invalid fiscal period id is provided
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DomainErrorMessage'
+              example:
+                Error: Invalid Request
+                Details:
+                - The value 'fake' is not valid for transaction_status.
+                ErrorPath: null
+        '403':
+          description: Returned when the user does not have permissions for funds or fiscal years.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Periodsummary
+components:
+  schemas:
+    DomainErrorMessage:
+      type: object
+      properties:
+        Error:
+          type: string
+          x-ms-summary: Error
+        Details:
+          type: array
+          items:
+            type: string
+          x-ms-summary: Details
+        ErrorPath:
+          type: string
+          x-ms-summary: Error path
+      x-display-name: Domain error message
+      x-ms-summary: Domain error message
+    ApiCollection_LedgerSummary:
+      type: object
+      properties:
+        count:
+          format: int32
+          type: integer
+          x-ms-summary: Count
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/LedgerSummary'
+          x-ms-summary: Value
+      x-hidden: true
+      x-display-name: Api collection `1
+      x-ms-summary: Api collection `1
+    BasicErrorMessage:
+      type: object
+      properties:
+        Error:
+          type: string
+          x-ms-summary: Error
+      x-display-name: Basic error message
+      x-ms-summary: Basic error message
+    StartSummarizeProcess:
+      description: Start summary process
+      type: object
+      properties:
+        fiscal_period_id:
+          format: int32
+          description: The fiscal period for the summary process.
+          type: integer
+          x-ms-summary: Fiscal period id
+      example:
+        fiscal_period_id: 112
+      x-display-name: Start summarize process
+      x-ms-summary: Start summarize process
+    LedgerSummary:
+      description: Summarized record of GL activity for a particular period
+      type: object
+      properties:
+        fiscal_year:
+          description: The summarized fiscal year.
+          type: string
+          x-ms-summary: Fiscal year
+        fiscal_year_id:
+          format: int32
+          description: The summarized fiscal year database identifier.
+          type: integer
+          x-ms-summary: Fiscal year id
+        fiscal_period:
+          description: The summarized fiscal period.
+          type: string
+          x-ms-summary: Fiscal period
+        fiscal_period_id:
+          format: int32
+          description: The summarized fiscal period database identifier.
+          type: integer
+          x-ms-summary: Fiscal period id
+        period_start_date:
+          format: date-time
+          description: The start date of the summarized period.
+          type: string
+          x-ms-summary: Period start date
+        period_end_date:
+          format: date-time
+          description: The end date of the summarized period.
+          type: string
+          x-ms-summary: Period end date
+        account_number:
+          description: The account number of summarized transactions.
+          type: string
+          x-ms-summary: Account number
+        ui_project_id:
+          description: The project identifier of summarized transactions.
+          type: string
+          x-ms-summary: Ui project id
+        transaction_codes:
+          description: The transaction code values of summarized transactions.
+          type: array
+          items:
+            $ref: '#/components/schemas/TransactionCodeValue'
+          x-ms-summary: Transaction codes
+        beginning_balance:
+          format: double
+          description: The total transaction balance at the beginning of the summarized period.
+          type: number
+          x-ms-summary: Beginning balance
+        debit:
+          format: double
+          description: The sum of transaction debits int he summarized period.
+          type: number
+          x-ms-summary: Debit
+        credit:
+          format: double
+          description: The sum of transaction credits int he summarized period.
+          type: number
+          x-ms-summary: Credit
+        encumbered_beginning_balance:
+          format: double
+          description: The encumbered transaction balance at the beginning of the summarized period.
+          type: number
+          x-ms-summary: Encumbered beginning balance
+        encumbered_debit:
+          format: double
+          description: The sum of encumbered transaction debits int he summarized period.
+          type: number
+          x-ms-summary: Encumbered debit
+        encumbered_credit:
+          format: double
+          description: The sum of encumbered transaction credits int he summarized period.
+          type: number
+          x-ms-summary: Encumbered credit
+      x-display-name: Ledger summary
+      x-ms-summary: Ledger summary
+    TransactionCodeValue:
+      description: Transaction code value
+      required:
+      - value
+      - id
+      type: object
+      properties:
+        name:
+          description: The transaction code name.
+          type: string
+          x-ms-summary: Name
+        value:
+          description: The transaction code value.
+          type: string
+          x-ms-summary: Value
+        id:
+          format: int32
+          description: The transaction code value id.
+          type: integer
+          x-ms-summary: Id
+        inactive:
+          description: Indicate if record is inactive or not.
+          type: boolean
+          x-ms-summary: Inactive
+      x-display-name: Transaction code value
+      x-ms-summary: Transaction code value
+    SummaryProcessInfo:
+      description: Summary process info
+      type: object
+      properties:
+        status:
+          description: The status of the summary process
+          enum:
+          - Queued
+          - Complete
+          - Processing
+          - Error
+          - Warning
+          type: string
+          x-ms-summary: Status
+        status_message:
+          description: The status message of the summary proces
+          type: string
+          x-ms-summary: Status message
+        process_id:
+          format: uuid
+          description: The process identifier for the summary process
+          type: string
+          example: 00000000-0000-0000-0000-000000000000
+          x-ms-summary: Process id
+        fiscal_period_id:
+          format: int32
+          description: The fiscal period identifier for the sumary process
+          type: integer
+          x-ms-summary: Fiscal period id
+      x-display-name: Summary process info
+      x-ms-summary: Summary process info
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

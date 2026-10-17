@@ -1,0 +1,566 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Grantmaking Requirements API'
+  description: This API manages grantmaking information.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/grantmaking
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/grantmaking
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Requirements
+paths:
+  /api/v1/requirements/classifications:
+    get:
+      operationId: GetRequirementClassifications
+      summary: Gets the classifications for Requirements
+      description: Fetches the coding tables associated with the Requirements.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationResponse'
+              example:
+                classifications:
+                - code_table_id: 0
+                  code_table:
+                  - id: 0
+                    code: string
+                    description: string
+                    description_with_code: string
+                    full_path_description_code: string
+                    full_path_description: string
+                    depth: 0
+                    parent_id: 0
+                    is_active: true
+                    full_path: string
+                    full_path_with_code: string
+      tags:
+      - Requirements
+  /api/v1/requirements/search:
+    post:
+      operationId: SearchRequirement
+      summary: Search for Requirements which meet the provided criteria
+      description: Fetches Grantmaking Requirements that meet the provided search criteria.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequirementSearchRequest'
+            example:
+              id: 0
+              type_id: 0
+              done_date:
+                start_date: string
+                end_date: string
+                is: string
+              staff_id: string
+              create_date:
+                start_date: string
+                end_date: string
+                is: string
+              change_date:
+                start_date: string
+                end_date: string
+                is: string
+              custom_fields:
+              - string
+              per_page: 0
+              page: 0
+        description: An instance of Blackbaud.CFS.MiddlewareService.DataAccess.Models.SKYAPI.Requirement.RequirementSearchRequest.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequirementSearchResponse'
+              example:
+                requirements:
+                - id: 0
+                  staff:
+                    login_id: string
+                    name: string
+                  type:
+                    classification_id: 0
+                    code: string
+                    description: string
+                  received_date: string
+                  done_date: string
+                  notes: string
+                  long_notes: string
+                  class:
+                    classification_id: 0
+                    code: string
+                    description: string
+                  organization:
+                    organization_id: string
+                    name: string
+                  contact:
+                    email: string
+                    contact_id: string
+                    name: string
+                  request:
+                    request_id: string
+                    project_title: string
+                    disposition: string
+                  payment:
+                    id: 0
+                    amount: 0
+                  schedule_date: string
+                  is_done: true
+                  branch:
+                    classification_id: 0
+                    code: string
+                    description: string
+                  is_payment_contingent: true
+                  done_user:
+                    login_id: string
+                    name: string
+                  create_date: string
+                  change_date: string
+                  custom_fields: {}
+      tags:
+      - Requirements
+  /api/v1/requirements/{requirement_id}:
+    get:
+      operationId: GetRequirement
+      summary: Return a Requirement
+      description: Fetches a Requirement from the Grantmaking system.
+      parameters:
+      - name: requirement_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: A requirement ID.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiRequirement'
+              example:
+                id: 0
+                staff:
+                  login_id: string
+                  name: string
+                type:
+                  classification_id: 0
+                  code: string
+                  description: string
+                received_date: string
+                done_date: string
+                notes: string
+                long_notes: string
+                class:
+                  classification_id: 0
+                  code: string
+                  description: string
+                organization:
+                  organization_id: string
+                  name: string
+                contact:
+                  email: string
+                  contact_id: string
+                  name: string
+                request:
+                  request_id: string
+                  project_title: string
+                  disposition: string
+                payment:
+                  id: 0
+                  amount: 0
+                schedule_date: string
+                is_done: true
+                branch:
+                  classification_id: 0
+                  code: string
+                  description: string
+                is_payment_contingent: true
+                done_user:
+                  login_id: string
+                  name: string
+                create_date: string
+                change_date: string
+                custom_fields: {}
+      tags:
+      - Requirements
+components:
+  schemas:
+    ApiRequirement:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The Requirement's ID.
+          format: int32
+        staff:
+          $ref: '#/components/schemas/Staff'
+        type:
+          $ref: '#/components/schemas/IdCodeDescription'
+        received_date:
+          type:
+          - string
+          - 'null'
+          description: The Requirement's received Date.
+          format: date-time
+        done_date:
+          type:
+          - string
+          - 'null'
+          description: The Requirement's done date.
+          format: date-time
+        notes:
+          type:
+          - string
+          - 'null'
+          description: The Requirement's notes.
+        long_notes:
+          type:
+          - string
+          - 'null'
+          description: The Requirement's long notes.
+        class:
+          $ref: '#/components/schemas/IdCodeDescription'
+        organization:
+          $ref: '#/components/schemas/OrganizationReference'
+        contact:
+          $ref: '#/components/schemas/ContactReference'
+        request:
+          $ref: '#/components/schemas/RequestReference'
+        payment:
+          $ref: '#/components/schemas/PaymentReference'
+        schedule_date:
+          type:
+          - string
+          - 'null'
+          description: The Requirement's schedule date.
+          format: date-time
+        is_done:
+          type: boolean
+          description: The Requirement's isdone.
+          x-bb-suppressions:
+          - parameter_property_name
+        branch:
+          $ref: '#/components/schemas/IdCodeDescription'
+        is_payment_contingent:
+          type: boolean
+          description: The Requirement's IsPaymentContingent.
+          x-bb-suppressions:
+          - parameter_property_name
+        done_user:
+          $ref: '#/components/schemas/Staff'
+        create_date:
+          type:
+          - string
+          - 'null'
+          description: The Requirement's created date.
+          format: date-time
+        change_date:
+          type:
+          - string
+          - 'null'
+          description: The Requirement's last modified date.
+          format: date-time
+        custom_fields:
+          type:
+          - object
+          - 'null'
+          additionalProperties: {}
+          description: The Entity's custom field data.
+      additionalProperties: false
+      description: A SKY API specific version of a Grantmaking Requirement entity.
+    CodeInfo:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the coding table value
+          format: int32
+        code:
+          type:
+          - string
+          - 'null'
+          description: The code value of the coding table value
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description value of the coding table value
+        description_with_code:
+          type:
+          - string
+          - 'null'
+          description: The code and the description shown to the user
+        full_path_description_code:
+          type:
+          - string
+          - 'null'
+          description: The code and the description shown to the user preceded by the parent values
+        full_path_description:
+          type:
+          - string
+          - 'null'
+          description: The description shown to the user
+        depth:
+          type: integer
+          description: The level that this code resides in within the coding table hierarchy
+          format: int32
+        parent_id:
+          type: integer
+          description: The ID of the parent code to this one, 0 if this is a top level code
+          format: int32
+        is_active:
+          type: boolean
+          description: To determine if this is an active code
+          x-bb-suppressions:
+          - parameter_property_name
+        full_path:
+          type:
+          - string
+          - 'null'
+          description: The full path to the description in the coding table hierarchy
+        full_path_with_code:
+          type:
+          - string
+          - 'null'
+          description: The full path including code and description to the code in the coding table hierarchy
+      additionalProperties: false
+      description: Model for coding options data
+    OrganizationReference:
+      type: object
+      properties:
+        organization_id:
+          type:
+          - string
+          - 'null'
+          description: The related Organization's ID.
+        name:
+          type:
+          - string
+          - 'null'
+          description: Related Organization's name.
+      additionalProperties: false
+      description: Represents related Contact information.
+    ClassificationResponse:
+      type: object
+      properties:
+        classifications:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CodeInfoList'
+          description: The classifications for the entity type.
+      additionalProperties: false
+      description: A response model for classifications.
+    ContactReference:
+      type: object
+      properties:
+        email:
+          type:
+          - string
+          - 'null'
+          description: The contact's email address.
+        contact_id:
+          type:
+          - string
+          - 'null'
+          description: The related contact's ID.
+        name:
+          type:
+          - string
+          - 'null'
+          description: The contact's full name.
+      additionalProperties: false
+      description: Represents related Contact information.
+    PaymentReference:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The related Payment's ID.
+          format: int32
+        amount:
+          type:
+          - number
+          - 'null'
+          description: The related Payment's Amount.
+          format: double
+      additionalProperties: false
+      description: Represents related Payment information.
+    RequestReference:
+      type: object
+      properties:
+        request_id:
+          type:
+          - string
+          - 'null'
+          description: The related request's ID.
+        project_title:
+          type:
+          - string
+          - 'null'
+          description: The request's project title.
+        disposition:
+          type:
+          - string
+          - 'null'
+          description: The request's disposition.
+      additionalProperties: false
+      description: Represents related Request information
+    RequirementSearchResponse:
+      type: object
+      properties:
+        requirements:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ApiRequirement'
+          description: The results of the requirement search.
+      additionalProperties: false
+      description: A response model for the requirement search.
+    Staff:
+      type: object
+      properties:
+        login_id:
+          type:
+          - string
+          - 'null'
+          description: The staff member's login ID.
+        name:
+          type:
+          - string
+          - 'null'
+          description: The staff member's name.
+      additionalProperties: false
+      description: Represents a Grantmaking staff user.
+    CodeInfoList:
+      type: object
+      properties:
+        code_table_id:
+          type: integer
+          description: Gets or sets the table ID.
+          format: int32
+        code_table:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CodeInfo'
+          description: Gets or sets the list of coding values in the table.
+      additionalProperties: false
+      description: Coding table model.
+    DateSearchCriteria:
+      type: object
+      properties:
+        start_date:
+          type:
+          - string
+          - 'null'
+          description: An earliest date criteria.
+          format: date-time
+        end_date:
+          type:
+          - string
+          - 'null'
+          description: A latest date criteria.
+          format: date-time
+        is:
+          type:
+          - string
+          - 'null'
+          description: An exact match criteria.
+          format: date-time
+      additionalProperties: false
+      description: A model with date search criteria.
+    IdCodeDescription:
+      type: object
+      properties:
+        classification_id:
+          type: integer
+          description: Classification's ID.
+          format: int32
+        code:
+          type:
+          - string
+          - 'null'
+          description: Classification's code.
+        description:
+          type:
+          - string
+          - 'null'
+          description: Classification's description.
+      additionalProperties: false
+      description: Represents a Classification value.
+    RequirementSearchRequest:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: A Requirement ID.
+          format: int32
+        type_id:
+          type:
+          - integer
+          - 'null'
+          description: A requirement type ID.
+          format: int32
+        done_date:
+          $ref: '#/components/schemas/DateSearchCriteria'
+        staff_id:
+          type:
+          - string
+          - 'null'
+          description: A string value representing the associated staff member.
+        create_date:
+          $ref: '#/components/schemas/DateSearchCriteria'
+        change_date:
+          $ref: '#/components/schemas/DateSearchCriteria'
+        custom_fields:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: Represents the list of custom fields to return on the entities in the result.
+        per_page:
+          maximum: 100
+          minimum: 1
+          type: integer
+          description: The page size for paged output.
+          format: int32
+        page:
+          type: integer
+          description: The page number for paged output.
+          format: int32
+      additionalProperties: false
+      description: A request model for searching Requirements.
+      x-bb-suppressions:
+      - request_body_has_required_property
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

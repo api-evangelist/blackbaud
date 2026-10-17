@@ -1,0 +1,273 @@
+openapi: 3.2.0
+info:
+  title: Blackbaud Dataforms API
+  version: '1.0'
+  x-refined-note:
+  - x-apievangelist-provenance differs across the merged source definitions and was not carried
+  description: 'Operations tagged Dataforms across 2 of this provider''s published API definitions: blackbaud-altru-administration-api-openapi.yml, blackbaud-crm-administration-api-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.sky.blackbaud.com/alt-adnmg
+- url: https://api.sky.blackbaud.com/crm-adnmg
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Dataforms
+paths:
+  /dataforms/{form_id}/defaults:
+    get:
+      operationId: GetDataFormDefaults
+      summary: Get data form defaults
+      description: Loads the default field values for a new record on the Infinity add data form identified by form_id, without creating a record. Use context_record_id to resolve defaults that depend on a parent record for child forms. The returned values map is keyed by the form's field IDs.
+      parameters:
+      - name: form_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The GUID of the Infinity add data form to load defaults for.
+      - name: context_record_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Optional parent/context record ID for child forms.
+      responses:
+        '200':
+          description: The form defaults were loaded. Default field values are returned in the values map, keyed by the form's field IDs.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoadDataFormRecordResponse'
+        '400':
+          description: The request was invalid (for example, form_id is not a valid GUID).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Dataforms
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-adnmg
+  /dataforms/{form_id}/records:
+    post:
+      operationId: CreateDataFormRecord
+      summary: Create a data form record
+      description: Saves a new record through the Infinity add data form identified by form_id. Field values are supplied in the values map keyed by the form's field IDs; use field_meta to override a field's data type (for example guid) or supply a code-table translation. context_record_id attaches the new record to a parent record for child forms.
+      parameters:
+      - name: form_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The GUID of the Infinity add data form to save through.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SaveDataFormRecordRequest'
+            example:
+              values:
+                NAME: Spring Membership Drive
+                DESCRIPTION: Annual spring membership campaign
+                STARTDATE: '2026-03-01T12:00:00Z'
+                SITEID: 1a2b3c4d-1111-4a00-9c00-0000000000aa
+              field_meta:
+                SITEID:
+                  type: guid
+              context_record_id: b7e6d5c4-2222-4000-8000-0000000000bb
+        description: The field values to save, keyed by the form's field IDs.
+      responses:
+        '200':
+          description: The record was created. Returns the new record ID and its optimistic-concurrency token.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SaveDataFormRecordResponse'
+        '400':
+          description: The request was invalid (for example, form_id is not a valid GUID, or ts_long was not an integer).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Dataforms
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-adnmg
+  /dataforms/{form_id}/records/{record_id}:
+    get:
+      operationId: GetDataFormRecord
+      summary: Get a data form record
+      description: Loads an existing record through the Infinity data form identified by form_id. The values map is keyed by the form's field IDs. The returned ts_long is an optimistic-concurrency token to send back on a subsequent update.
+      parameters:
+      - name: form_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The GUID of the Infinity data form to load through.
+      - name: record_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The ID of the record to load.
+      - name: context_record_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Optional parent/context record ID for child forms.
+      responses:
+        '200':
+          description: The record was loaded. Field values are returned in the values map, keyed by the form's field IDs.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoadDataFormRecordResponse'
+        '400':
+          description: The request was invalid (for example, form_id is not a valid GUID).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Dataforms
+    patch:
+      operationId: UpdateDataFormRecord
+      summary: Update a data form record
+      description: Saves changes to an existing record through the Infinity edit data form identified by form_id. Supply the field values to change in the values map, keyed by the form's field IDs. Include ts_long (the optimistic-concurrency token from a prior GET) so the save can detect a concurrent edit.
+      parameters:
+      - name: form_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The GUID of the Infinity edit data form to save through.
+      - name: record_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The ID of the record to update.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SaveDataFormRecordRequest'
+            example:
+              values:
+                DESCRIPTION: Annual spring membership campaign (revised)
+              ts_long: 72339069014638600
+        description: The field values to change, keyed by the form's field IDs, plus the ts_long concurrency token from a prior GET.
+      responses:
+        '200':
+          description: The record was updated.
+        '400':
+          description: The request was invalid (for example, form_id is not a valid GUID, or ts_long was not an integer).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Dataforms
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-adnmg
+components:
+  schemas:
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type: integer
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type: string
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: false
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-display-name: Problem details
+      x-display-id: ProblemDetails
+    SaveDataFormRecordRequest:
+      required:
+      - values
+      type: object
+      properties:
+        values:
+          type: object
+          description: Field ID to value map for the form.
+        field_meta:
+          type: object
+          description: Optional per-field { type, translation } overrides.
+        context_record_id:
+          type:
+          - string
+          - 'null'
+          description: Parent/context record ID (e.g. the constituent a child form attaches to).
+        ts_long:
+          type:
+          - integer
+          - 'null'
+          description: Optimistic-concurrency token from a prior GET.
+          format: int64
+    LoadDataFormRecordResponse:
+      type: object
+      properties:
+        form_id:
+          type:
+          - string
+          - 'null'
+        last_updated:
+          type:
+          - string
+          - 'null'
+        ts_long:
+          type:
+          - integer
+          - 'null'
+          format: int64
+        values:
+          type: object
+    SaveDataFormRecordResponse:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+        ts_long:
+          type:
+          - integer
+          - 'null'
+          format: int64
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+x-refined-from:
+- blackbaud-altru-administration-api-openapi.yml
+- blackbaud-crm-administration-api-openapi.yml

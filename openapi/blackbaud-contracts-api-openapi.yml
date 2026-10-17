@@ -1,0 +1,1133 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Enrollment Management Contracts API'
+  description: Blackbaud Education Management API for Enrollment Management
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/afe-edems
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/afe-edems
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Contracts
+paths:
+  /v1/contracts/{user_id}:
+    get:
+      operationId: V1ContractsByUser_idGet
+      summary: Contract list - single student (Get) (PREVIEW)
+      description: 'Return the list of contracts for a candidate or student.
+
+
+        Requires the following role in the Education Management system:
+
+
+        Admissions Manager
+
+
+        Admissions Staff
+
+
+        Parent, Parent of incoming student, Parent of candidate
+
+
+        Candidate, Incoming student, Student
+
+
+        ReEnrollment Manager
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: user_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The user ID of the candidate or student
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserContractReadCollection'
+              example:
+                count: 1
+                value:
+                - user:
+                    id: 1
+                    prefix: Mr.
+                    first_name: John
+                    middle_name: Quincy
+                    last_name: Smith
+                    suffix: Jr.
+                    preferred_name: Jack
+                    email: john@example.com
+                  contract:
+                    id: 1
+                    name: 2027 Standard Contract
+                    type:
+                      id: 1
+                      description: New contract type
+                    school_year:
+                      id: 1
+                      description: 2025 - 2026
+                    publish_date: '2026-11-01T12:00:00Z'
+                    expire_date: '2027-05-01T12:00:00Z'
+                    is_inactive: false
+                  date_generated: '2026-11-01T12:00:00Z'
+                  due_date: '2027-05-01T12:00:00Z'
+                  date_sent: '2027-05-01T12:00:00Z'
+                  date_returned: '2027-05-01T12:00:00Z'
+                  date_processed: '2027-05-01T12:00:00Z'
+                  tuition: 10000
+                  tuition_insurance: false
+                  deposits:
+                  - amount_due: 1000
+                    amount_received: 1000
+                    received_date: '2027-05-01T12:00:00Z'
+                    paid_by:
+                      id: 1
+                      prefix: Mr.
+                      first_name: Kianna
+                      middle_name: Mark
+                      last_name: Reed
+                      suffix: Jr.
+                      preferred_name: ''
+                      preferred_last_name: Reed
+                      maiden_name: ''
+                      email: kianna@example.com
+                  fees:
+                  - name:
+                      id: 4
+                      description: Enrollment Fees
+                    amount: 100
+                    category: Enrollment Fees
+                  signers:
+                  - user:
+                      id: 1
+                      prefix: Mr.
+                      first_name: John
+                      middle_name: Quincy
+                      last_name: Smith
+                      suffix: Jr.
+                      preferred_name: Jack
+                      email: john@example.com
+                    date_signed: '2027-05-01T12:00:00Z'
+                    date_accepted: '2027-05-01T12:00:00Z'
+                  hold:
+                    on_hold: false
+                    type: Financial
+                    comment: The hold truth
+                  not_returning:
+                    not_returning: false
+                    confirmed_date: '2027-05-01T12:00:00Z'
+                    confirmed_by:
+                      id: 1
+                      prefix: Mr.
+                      first_name: Kianna
+                      middle_name: Mark
+                      last_name: Reed
+                      suffix: Jr.
+                      preferred_name: ''
+                      preferred_last_name: Reed
+                      maiden_name: ''
+                      email: kianna@example.com
+                    reason: The reasonable reason
+                  special_text: The special contract text
+                  comment: Uncommon comments
+                  attachment: …/files/contract.pdf
+                  status: Submitted
+                  financial_aid_awards:
+                  - type:
+                      id: 5
+                      description: Financial Aid
+                    amount: 100
+                  selected_payment_plans:
+                  - payment_plan:
+                      id: 1
+                      name: 4-Pay Plan
+                      number_of_payments: 4
+                      is_inactive: false
+                      insurance_required: Required
+                    split:
+                      is_split: true
+                      method: Percentage
+                      percentage: 0.5
+                    responsible_signers:
+                    - id: 1
+                      prefix: Mr.
+                      first_name: John
+                      middle_name: Quincy
+                      last_name: Smith
+                      suffix: Jr.
+                      preferred_name: Jack
+                      email: john@example.com
+                    - id: 2
+                      prefix: Mrs.
+                      first_name: Jane
+                      middle_name: Avery
+                      last_name: Smith
+                      suffix: ''
+                      preferred_name: Jane
+                      email: jane@example.com
+                    payers:
+                    - id: 1
+                      prefix: Mr.
+                      first_name: John
+                      middle_name: Quincy
+                      last_name: Smith
+                      suffix: Jr.
+                      preferred_name: Jack
+                      email: john@example.com
+                    payments_remaining: 3
+                    insurance_needed: true
+                    insurance:
+                      provider: Vertical Insure
+                      has_purchased_insurance: true
+                      enrollment_date: '2027-04-15T12:00:00Z'
+                      policy_number: VI-12345
+                      amount_paid: 150
+                      amount_covered: 10000
+      tags:
+      - Contracts
+  /v1/contracts/{user_id}/{contract_id}:
+    patch:
+      operationId: V1ContractsByUser_idByContract_idPatch
+      summary: Contract (Edit) (PREVIEW)
+      description: 'Update contract tuition insurance information for a candidate or student contract.
+
+
+        Requires the following role in the Education Management system:
+
+
+        Admissions Manager
+
+
+        Admissions Staff
+
+
+        ReEnrollment Manager
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: user_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The user ID of the candidate or student
+      - name: contract_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The ID of the candidate or student’s contract instance
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserContractEdit'
+            example:
+              hold:
+                on_hold: false
+                type: Financial
+                comment: Account is in arrears.
+              comment: Comment for contract.
+        description: The contract edit request.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContractEditResponse'
+              example:
+                id: 0
+        '400':
+          description: Invalid parameters or authorization token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseBaseResponse'
+              example:
+                errors:
+                - message: string
+                  error_code: 0
+                  error_name: string
+                  raw_message: string
+                data: {}
+      tags:
+      - Contracts
+    get:
+      operationId: V1ContractsByUser_idByContract_idGet
+      summary: Contract (Get) (PREVIEW)
+      description: 'Return information about a contract.
+
+
+        Requires the following role in the Education Management system:
+
+
+        Admissions Manager
+
+
+        Admissions Staff
+
+
+        Parent, Parent of incoming student, Parent of candidate
+
+
+        Candidate, Incoming student, Student
+
+
+        ReEnrollment Manager
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: user_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The user ID of the candidate or student
+      - name: contract_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The ID of the candidate or student’s instance of the contract
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserContractRead'
+              example:
+                user:
+                  id: 1
+                  prefix: Mr.
+                  first_name: John
+                  middle_name: Quincy
+                  last_name: Smith
+                  suffix: Jr.
+                  preferred_name: Jack
+                  email: john@example.com
+                contract:
+                  id: 1
+                  name: 2027 Standard Contract
+                  type:
+                    id: 1
+                    description: New contract type
+                  school_year:
+                    id: 1
+                    description: 2025 - 2026
+                  publish_date: '2026-11-01T12:00:00Z'
+                  expire_date: '2027-05-01T12:00:00Z'
+                  is_inactive: false
+                date_generated: '2026-11-01T12:00:00Z'
+                due_date: '2027-05-01T12:00:00Z'
+                date_sent: '2027-05-01T12:00:00Z'
+                date_returned: '2027-05-01T12:00:00Z'
+                date_processed: '2027-05-01T12:00:00Z'
+                tuition: 1000
+                tuition_insurance: false
+                deposits:
+                - amount_due: 1000
+                  amount_received: 1000
+                  received_date: '2027-05-01T12:00:00Z'
+                  paid_by:
+                    id: 1
+                    prefix: Mr.
+                    first_name: Kianna
+                    middle_name: Mark
+                    last_name: Reed
+                    suffix: Jr.
+                    preferred_name: ''
+                    preferred_last_name: Reed
+                    maiden_name: ''
+                    email: kianna@example.com
+                fees:
+                - name:
+                    id: 4
+                    description: Enrollment Fees
+                  amount: 100
+                  category: Enrollment Fees
+                signers:
+                - user:
+                    id: 1
+                    prefix: Mr.
+                    first_name: John
+                    middle_name: Quincy
+                    last_name: Smith
+                    suffix: Jr.
+                    preferred_name: Jack
+                    email: john@example.com
+                  date_signed: '2027-05-01T12:00:00Z'
+                  date_accepted: '2027-05-01T12:00:00Z'
+                hold:
+                  on_hold: false
+                  type: Financial
+                  comment: The hold truth
+                not_returning:
+                  not_returning: false
+                  confirmed_date: '2027-05-01T12:00:00Z'
+                  confirmed_by:
+                    id: 1
+                    prefix: Mr.
+                    first_name: Kianna
+                    middle_name: Mark
+                    last_name: Reed
+                    suffix: Jr.
+                    preferred_name: ''
+                    preferred_last_name: Reed
+                    maiden_name: ''
+                    email: kianna@example.com
+                  reason: The reasonable reason
+                special_text: The special contract text
+                comment: Uncommon comments
+                attachment: …/files/contract.pdf
+                status: Submitted
+                financial_aid_awards:
+                - type:
+                    id: 5
+                    description: Financial Aid
+                  amount: 100
+                selected_payment_plans:
+                - payment_plan:
+                    id: 1
+                    name: 4-Pay Plan
+                    number_of_payments: 4
+                    is_inactive: false
+                    insurance_required: None
+                  split:
+                    is_split: true
+                    method: Percentage
+                    percentage: 0.5
+                  responsible_signers:
+                  - id: 1
+                    prefix: Mr.
+                    first_name: John
+                    middle_name: Quincy
+                    last_name: Smith
+                    suffix: Jr.
+                    preferred_name: Jack
+                    email: john@example.com
+                  - id: 2
+                    prefix: Mrs.
+                    first_name: Jane
+                    middle_name: Avery
+                    last_name: Smith
+                    suffix: ''
+                    preferred_name: Jane
+                    email: jane@example.com
+                  payers:
+                  - id: 1
+                    prefix: Mr.
+                    first_name: John
+                    middle_name: Quincy
+                    last_name: Smith
+                    suffix: Jr.
+                    preferred_name: Jack
+                    email: john@example.com
+                  payments_remaining: 3
+                  insurance_needed: true
+                  insurance:
+                    provider: Vertical Insure
+                    has_purchased_insurance: true
+                    enrollment_date: '2027-04-15T12:00:00Z'
+                    policy_number: VI-12345
+                    amount_paid: 150
+                    amount_covered: 10000
+      tags:
+      - Contracts
+  /v1/contracts/{user_id}/{contract_id}/paymentplans/{signer_id}/insurance:
+    patch:
+      operationId: V1ContractsByUser_idByContract_idPaymentplansBySigner_idInsurancePatch
+      summary: Contract insurance (Edit) (PREVIEW)
+      description: 'Update insurance information for a specific payment plan of a contract.
+
+
+        Requires the following role in the Education Management system:
+
+
+        Admissions Manager
+
+
+        Admissions Staff
+
+
+        ReEnrollment Manager
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: user_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The user ID of the candidate or student
+      - name: contract_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The ID of the candidate or student's contract instance
+      - name: signer_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The user ID of the responsible signer identifying which payment plan's insurance to update
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContractInsuranceEdit'
+            example:
+              insurance_token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
+              provider: TRP Fee
+              has_purchased_insurance: true
+              enrollment_date: '2027-01-15T12:00:00Z'
+              policy_number: POL-2027-123456
+              amount_paid: 450
+              amount_covered: 5000
+        description: The insurance edit request.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContractEditResponse'
+              example:
+                id: 0
+        '400':
+          description: Invalid parameters or authorization token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseBaseResponse'
+              example:
+                errors:
+                - message: string
+                  error_code: 0
+                  error_name: string
+                  raw_message: string
+                data: {}
+      tags:
+      - Contracts
+components:
+  schemas:
+    UserBaseRead:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The user ID of the user
+          format: int32
+        prefix:
+          type:
+          - string
+          - 'null'
+          description: The prefix of the user
+        first_name:
+          type:
+          - string
+          - 'null'
+          description: The first name of the user
+        middle_name:
+          type:
+          - string
+          - 'null'
+          description: The middle name of the user
+        last_name:
+          type:
+          - string
+          - 'null'
+          description: The last name of the user
+        suffix:
+          type:
+          - string
+          - 'null'
+          description: The suffix of the user
+        preferred_name:
+          type:
+          - string
+          - 'null'
+          description: The preferred first name of the user
+        preferred_last_name:
+          type:
+          - string
+          - 'null'
+          description: The preferred last name of the user
+        maiden_name:
+          type:
+          - string
+          - 'null'
+          description: The former or maiden name of the user
+        email:
+          type:
+          - string
+          - 'null'
+          description: The email of the user
+      additionalProperties: false
+      description: User base model
+    TableValueBase:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the table value
+          format: int32
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the table value
+      additionalProperties: false
+      description: 'Table value base model. Used for table entry fields (i.e. dropdown controls) to provide both ID and Description information for the selected value. General system tables can be retrieved by School API endpoints: GET Types table types and GET Types table values.'
+    ContractInsuranceEdit:
+      type: object
+      properties:
+        insurance_token:
+          type:
+          - string
+          - 'null'
+          description: The token value authorizing edit access to insurance data. This token is delivered by the add-in context data
+        provider:
+          type:
+          - string
+          - 'null'
+          description: 'The provider of the insurance policy. Allowed values: TRP Fee, Vertical Insure'
+        has_purchased_insurance:
+          type:
+          - boolean
+          - 'null'
+          description: True if insurance has been purchased.
+        enrollment_date:
+          type:
+          - string
+          - 'null'
+          description: The insurance enrollment date.
+          format: date-time
+        policy_number:
+          type:
+          - string
+          - 'null'
+          description: The insurance policy number.
+        amount_paid:
+          type:
+          - number
+          - 'null'
+          description: The amount paid for insurance.
+          format: double
+        amount_covered:
+          type:
+          - number
+          - 'null'
+          description: The amount covered by insurance.
+          format: double
+      additionalProperties: false
+      description: An object with insurance details, including purchased status, provider, amount paid, amount covered, policy number and an authorization token. Updating the fields in this object requires the confirmation token. This token is available from the context data of the contract's SKY Add-in.
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type:
+          - string
+          - 'null'
+          description: ''
+        error_code:
+          type: integer
+          description: ''
+          format: int32
+        error_name:
+          type:
+          - string
+          - 'null'
+          description: ''
+        raw_message:
+          type:
+          - string
+          - 'null'
+          description: ''
+      additionalProperties: false
+      description: ''
+    ContractNotReturning:
+      type: object
+      properties:
+        not_returning:
+          type:
+          - boolean
+          - 'null'
+          description: True if not returning
+        confirmed_date:
+          type:
+          - string
+          - 'null'
+          description: The date confirmed as not returning
+          format: date-time
+        confirmed_by:
+          $ref: '#/components/schemas/UserBaseRead'
+        reason:
+          type:
+          - string
+          - 'null'
+          description: The reason for not returning
+      additionalProperties: false
+      description: An object with information about not returning, including reason and confirmed when and by whom
+    ContractFinancialAid:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/TableValueBase'
+        amount:
+          type: number
+          description: The amount of the financial aid
+          format: float
+      additionalProperties: false
+      description: An object with financial aid award information, including financial aid type and amount
+    ContractSplit:
+      type: object
+      properties:
+        is_split:
+          type:
+          - boolean
+          - 'null'
+          description: True if the contract has split families.
+        method:
+          type:
+          - string
+          - 'null'
+          description: The split method.
+        percentage:
+          type:
+          - number
+          - 'null'
+          description: The percentage of the contract amount this split is responsible for.
+          format: float
+      additionalProperties: false
+      description: An object describing how a contract payment plan is split.
+    UserContractReadCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items in the collection
+          format: int32
+          readOnly: true
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UserContractRead'
+          description: The set of items included in the response. This may be a subset of the items in the collection
+      additionalProperties: false
+      description: A Collection
+    ContractFee:
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/TableValueBase'
+        amount:
+          type:
+          - number
+          - 'null'
+          description: The amount of the fee
+          format: float
+        category:
+          type:
+          - string
+          - 'null'
+          description: The category of the fee
+      additionalProperties: false
+      description: An object with fee information, including type and amount
+    ContractInsuranceRead:
+      type: object
+      properties:
+        provider:
+          type:
+          - string
+          - 'null'
+          description: The insurance provider. Returns `TRP Fee` if the school manages this, otherwise `Vertical Insure`.
+        has_purchased_insurance:
+          type:
+          - boolean
+          - 'null'
+          description: True if insurance has been purchased.
+        enrollment_date:
+          type:
+          - string
+          - 'null'
+          description: The insurance enrollment date.
+          format: date-time
+        policy_number:
+          type:
+          - string
+          - 'null'
+          description: The insurance policy number.
+        amount_paid:
+          type:
+          - number
+          - 'null'
+          description: The amount paid for insurance.
+          format: float
+        amount_covered:
+          type:
+          - number
+          - 'null'
+          description: The amount covered by insurance.
+          format: float
+      additionalProperties: false
+      description: An object with insurance details, including purchased status, provider, amount paid, amount covered and policy number.
+    BaseBaseResponse:
+      type: object
+      properties:
+        errors:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+          readOnly: true
+        data:
+          $ref: '#/components/schemas/Base'
+      additionalProperties: false
+      description: ''
+    ContractBase:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the contract form
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the contract
+        type:
+          $ref: '#/components/schemas/TableValueBase'
+        school_year:
+          $ref: '#/components/schemas/TableValueBase'
+        publish_date:
+          type:
+          - string
+          - 'null'
+          description: The start date of the contract’s published date range
+          format: date-time
+        expire_date:
+          type:
+          - string
+          - 'null'
+          description: The end date of the contract’s published date range
+          format: date-time
+        is_inactive:
+          type:
+          - boolean
+          - 'null'
+          description: True if the contract form is inactive
+      additionalProperties: false
+      description: An object with basic contract form information, including name, type, year and publish dates.
+    ContractEditResponse:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The updated contract ID.
+          format: int32
+      additionalProperties: false
+      description: An object with the updated contract identifier.
+    ContractPaymentPlan:
+      type: object
+      properties:
+        payment_plan:
+          $ref: '#/components/schemas/PaymentPlanBase'
+        split:
+          $ref: '#/components/schemas/ContractSplit'
+        responsible_signers:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UserBaseRead'
+          description: An array of responsible signer objects.
+        payers:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UserBaseRead'
+          description: An array of payer objects
+        payments_remaining:
+          type:
+          - integer
+          - 'null'
+          description: The number of payments remaining when contract was submitted
+          format: int32
+        insurance_needed:
+          type:
+          - boolean
+          - 'null'
+          description: True if insurance is needed for the selected payment plan.
+        insurance:
+          $ref: '#/components/schemas/ContractInsuranceRead'
+      additionalProperties: false
+      description: An object with contract payment plan model information, including payment plan, split, responsible signers, payers, remaining payments, and insurance.
+    ContractSigner:
+      type: object
+      properties:
+        user:
+          $ref: '#/components/schemas/UserBaseRead'
+        date_signed:
+          type:
+          - string
+          - 'null'
+          description: The date the user signed the contract
+          format: date-time
+        date_accepted:
+          type:
+          - string
+          - 'null'
+          description: The date the user accepted the contract
+          format: date-time
+      additionalProperties: false
+      description: An object with contract signer information, including user, date signed and date accepted
+    UserContractEdit:
+      type: object
+      properties:
+        hold:
+          $ref: '#/components/schemas/ContractHold'
+        comment:
+          type:
+          - string
+          - 'null'
+          description: The contract comment.
+      additionalProperties: false
+      description: An object with editable contract information.
+    UserContractRead:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the user’s contract
+          format: int32
+        user:
+          $ref: '#/components/schemas/UserBaseRead'
+        contract:
+          $ref: '#/components/schemas/ContractBase'
+        date_generated:
+          type:
+          - string
+          - 'null'
+          description: The date the contract was generated
+          format: date-time
+        due_date:
+          type:
+          - string
+          - 'null'
+          description: The date the contract was generated
+          format: date-time
+        date_sent:
+          type:
+          - string
+          - 'null'
+          description: The date the contract was sent to signers
+          format: date-time
+        date_returned:
+          type:
+          - string
+          - 'null'
+          description: The date the contract was returned from signers
+          format: date-time
+        date_processed:
+          type:
+          - string
+          - 'null'
+          description: The date the contract was processed
+          format: date-time
+        tuition:
+          type:
+          - number
+          - 'null'
+          description: The tuition amount expected to be paid
+          format: float
+        tuition_insurance:
+          type:
+          - boolean
+          - 'null'
+          description: True if tuition insurance is desired
+        deposits:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ContractDeposit'
+          description: An array of contract deposits
+        fees:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ContractFee'
+          description: An array of contract fees
+        signers:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ContractSigner'
+          description: An array of contract signers
+        hold:
+          $ref: '#/components/schemas/ContractHold'
+        not_returning:
+          $ref: '#/components/schemas/ContractNotReturning'
+        special_text:
+          type:
+          - string
+          - 'null'
+          description: The special contract text
+        comment:
+          type:
+          - string
+          - 'null'
+          description: The contract comments
+        attachment:
+          type:
+          - string
+          - 'null'
+          description: The URL for the contract’s file attachemnt
+        status:
+          type:
+          - string
+          - 'null'
+          description: The status of the user’s contract
+        financial_aid_awards:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ContractFinancialAid'
+          description: An array of financial aid awards
+        selected_payment_plans:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ContractPaymentPlan'
+          description: An array of contract payment plans
+      additionalProperties: false
+      description: An object with information about a candidate or student’s contract, including user information, contract details, tuition, fees, dates and signers.
+    ContractDeposit:
+      type: object
+      properties:
+        amount_due:
+          type:
+          - number
+          - 'null'
+          description: The deposit amount due for the contract
+          format: float
+        amount_received:
+          type:
+          - number
+          - 'null'
+          description: The deposit amount received
+          format: float
+        received_date:
+          type:
+          - string
+          - 'null'
+          description: The date the deposit was received
+          format: date-time
+        paid_by:
+          $ref: '#/components/schemas/UserBaseRead'
+      additionalProperties: false
+      description: An object with deposit information, inluding amount due, amount received, date paid and paid by
+    PaymentPlanBase:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The id of The id of the payment planthe payment plan
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the payment plan
+        number_of_payments:
+          type:
+          - integer
+          - 'null'
+          description: The number of payments for the plan
+          format: int32
+        is_inactive:
+          type:
+          - boolean
+          - 'null'
+          description: True if payment plan is inactive
+        insurance_required:
+          type:
+          - string
+          - 'null'
+          description: 'The setting for whether insurance is required or optional for the payment plan. Possible values: Required, Optional, Optional - Opt-out, None.'
+      additionalProperties: false
+      description: An object with payment plan information, including ID, name and number of payments.
+    Base:
+      type: object
+      additionalProperties: false
+      description: ''
+    ContractHold:
+      type: object
+      properties:
+        on_hold:
+          type:
+          - boolean
+          - 'null'
+          description: True if contract is on hold
+        type:
+          type:
+          - string
+          - 'null'
+          description: 'The type of hold. Allowed values: Financial, Academic, Other'
+        comment:
+          type:
+          - string
+          - 'null'
+          description: The comments for the hold
+      additionalProperties: false
+      description: An object with contract hold information, including type and comments
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

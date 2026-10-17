@@ -1,0 +1,475 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Enrollment Management Studentchecklists…'
+  description: Blackbaud Education Management API for Enrollment Management
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/afe-edems
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/afe-edems
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Studentchecklists
+paths:
+  /v1/studentchecklists:
+    get:
+      operationId: V1StudentchecklistsGet
+      summary: Student checklist list (Get)
+      description: 'Returns list of student checklists for a school year.
+
+
+        Requires the following role in the Education Management system:
+
+
+        Admissions Manager
+
+
+        Admissions Staff'
+      parameters:
+      - name: school_year
+        in: query
+        required: false
+        schema:
+          type: string
+        description: The ID or label of a school year. Defaults to current admissions year.
+      - name: student_checklist_type_id
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Provide the ID of the student checklist type to limit results to that checklist.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1StudentchecklistsGet200ApplicationJsonResponse'
+              example:
+              - id: 17
+                candidate:
+                  id: 1574394
+                  first_name: Samantha
+                  middle_name: J.
+                  last_name: Hill
+                  email: SamanthH@sis.org
+                type:
+                  id: 17
+                  name: Re-Enrollment Checklist
+                  is_inactive: true
+                  is_archived: true
+                  school_year:
+                    id: 530
+                    description: 2019 - 2020
+              - id: 17
+                candidate:
+                  id: 1574551
+                  first_name: Tina
+                  last_name: Young
+                  email: tiny@sisacademy.com
+                type:
+                  id: 17
+                  name: Re-Enrollment Checklist
+                  is_inactive: true
+                  is_archived: true
+                  school_year:
+                    id: 530
+                    description: 2019 - 2020
+      tags:
+      - Studentchecklists
+  /v1/studentchecklists/{student_id}:
+    get:
+      operationId: V1StudentchecklistsByStudent_idGet
+      summary: Student checklist list - single student (Get)
+      description: 'Returns a student''s checklists and their steps for a specified year.
+
+
+        Requires the following role in the Education Management system:
+
+
+        Admissions Manager
+
+
+        Admissions Staff'
+      parameters:
+      - name: student_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The user ID of the student
+      - name: school_year
+        in: query
+        required: false
+        schema:
+          type: string
+        description: The ID or label of the school year. Defaults to current admissions year.
+      - name: student_checklist_type_id
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: The ID of student checklist type
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Studentchecklists-student_id-Get200ApplicationJsonResponse'
+              example:
+              - checklist:
+                  id: 1
+                  type:
+                    id: 1
+                    name: Re-enrollment
+                    is_inactive: false
+                    is_archived: false
+                    school_year:
+                      id: 1
+                      description: 2024 - 2025
+                steps:
+                - id: 1
+                  type:
+                    id: 1
+                    name: Update medical history
+                    type: Medical form
+                    description: Provide necessary medical info
+                    due_date: '2022-03-31T12:00:00Z'
+                    is_inactive: false
+                    is_required: false
+                    link: www.example.com
+                    link_text: Medical form
+                    file: filename.doc
+                  status: Awaiting
+                  date_completed: '2022-03-31T12:00:00Z'
+                  file: med_history.pdf
+                  comment: Comment
+      tags:
+      - Studentchecklists
+  /v1/studentchecklists/{student_id}/{student_checklist_id}/steps/{step_id}:
+    patch:
+      operationId: V1StudentchecklistsByStudent_idByStudent_checklist_idStepsByStep_idPatch
+      summary: Student checklist step (Edit)
+      description: 'Updates a step on a student checklist.
+
+
+        Requires the following role in the Education Management system:
+
+
+        Admissions Manager
+
+
+        Admissions Staff'
+      parameters:
+      - name: student_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The user ID of the student
+      - name: step_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The ID of the student�s instance of the checklist step
+      - name: student_checklist_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The ID of the student's instance of the student checklist
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StudentChecklistStepUpdate'
+            example:
+              status: Submitted
+              date_completed: '2025-08-31T12:00:00Z'
+              comment: A stependous comment
+        description: The step model to update
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Studentchecklists-student_id-student_checklist_id-Steps-step_id-Patch200ApplicationJsonResponse'
+              example: 0
+      tags:
+      - Studentchecklists
+components:
+  schemas:
+    StudentChecklistStep:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the checklist step for the candidate
+          format: int32
+        type:
+          $ref: '#/components/schemas/StudentChecklistStepType'
+        status:
+          type:
+          - string
+          - 'null'
+          description: The student's status for this step.
+        date_completed:
+          type:
+          - string
+          - 'null'
+          description: The date the step was completed
+          format: date-time
+        file:
+          type:
+          - string
+          - 'null'
+          description: The file submitted for the step
+        comment:
+          type:
+          - string
+          - 'null'
+          description: The comment for the step
+      additionalProperties: false
+      description: Student checklist step
+    UserBaseRead:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The user ID of the user
+          format: int32
+        prefix:
+          type:
+          - string
+          - 'null'
+          description: The prefix of the user
+        first_name:
+          type:
+          - string
+          - 'null'
+          description: The first name of the user
+        middle_name:
+          type:
+          - string
+          - 'null'
+          description: The middle name of the user
+        last_name:
+          type:
+          - string
+          - 'null'
+          description: The last name of the user
+        suffix:
+          type:
+          - string
+          - 'null'
+          description: The suffix of the user
+        preferred_name:
+          type:
+          - string
+          - 'null'
+          description: The preferred first name of the user
+        preferred_last_name:
+          type:
+          - string
+          - 'null'
+          description: The preferred last name of the user
+        maiden_name:
+          type:
+          - string
+          - 'null'
+          description: The former or maiden name of the user
+        email:
+          type:
+          - string
+          - 'null'
+          description: The email of the user
+      additionalProperties: false
+      description: User base model
+    V1StudentchecklistsGet200ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/StudentChecklist'
+      x-apim-inline: true
+    TableValueBase:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the table value
+          format: int32
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the table value
+      additionalProperties: false
+      description: 'Table value base model. Used for table entry fields (i.e. dropdown controls) to provide both ID and Description information for the selected value. General system tables can be retrieved by School API endpoints: GET Types table types and GET Types table values.'
+    StudentChecklist:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the student�s student checklist
+          format: int32
+        candidate:
+          $ref: '#/components/schemas/UserBaseRead'
+        type:
+          $ref: '#/components/schemas/StudentChecklistType'
+      additionalProperties: false
+      description: Student Checklist type
+    V1Studentchecklists-student_id-Get200ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/StudentChecklistsResponse'
+      x-apim-inline: true
+    StudentChecklistsResponse:
+      type: object
+      properties:
+        checklist:
+          $ref: '#/components/schemas/StudentChecklist'
+        steps:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/StudentChecklistStep'
+          description: list of student checklist step
+      additionalProperties: false
+      description: Student Checklist with steps
+    StudentChecklistStepUpdate:
+      type: object
+      properties:
+        status:
+          type:
+          - string
+          - 'null'
+          description: 'The student''s status for this step. Allowed values: Awaiting, Requested, Waived, Submitted, Completed, Hidden'
+        date_completed:
+          type:
+          - string
+          - 'null'
+          description: The date the step was completed
+          format: date-time
+        comment:
+          type:
+          - string
+          - 'null'
+          description: The comment for the step
+      additionalProperties: false
+      description: Student checklist step update model
+    V1Studentchecklists-student_id-student_checklist_id-Steps-step_id-Patch200ApplicationJsonResponse:
+      type: integer
+      format: int32
+      x-apim-inline: true
+    StudentChecklistType:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the checklist
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the checklist
+        is_inactive:
+          type:
+          - boolean
+          - 'null'
+          description: True if checklist is inactive
+        is_archived:
+          type:
+          - boolean
+          - 'null'
+          description: True if checklist is archived
+        school_year:
+          $ref: '#/components/schemas/TableValueBase'
+      additionalProperties: false
+      description: Student Checklist type
+    StudentChecklistStepType:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the checklist step
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the checklist step
+        type:
+          type:
+          - string
+          - 'null'
+          description: The type of the checklist step
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the checklist step
+        due_date:
+          type:
+          - string
+          - 'null'
+          description: The date the checklist step is due by default
+          format: date-time
+        is_inactive:
+          type:
+          - boolean
+          - 'null'
+          description: True if checklist step is inactive
+        is_required:
+          type:
+          - boolean
+          - 'null'
+          description: True if checklist step is required
+        link:
+          type:
+          - string
+          - 'null'
+          description: The link of the checklist step
+        link_text:
+          type:
+          - string
+          - 'null'
+          description: The text for the link
+        file:
+          type:
+          - string
+          - 'null'
+          description: The file to publish for the checklist step
+      additionalProperties: false
+      description: Student Checklist type step
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

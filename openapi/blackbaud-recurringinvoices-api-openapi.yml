@@ -1,0 +1,834 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Receivables Recurringinvoices API'
+  description: This API manages receivables, including clients, billing items, credits, charges, and invoices.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/receivables
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/receivables
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Recurringinvoices
+paths:
+  /v1/recurringinvoices:
+    get:
+      operationId: ListRecurringInvoices
+      summary: Get a list of recurring invoices by page
+      description: This returns a list of recurring invoices.
+      parameters:
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: '25'
+        description: The maximum number of items to return.
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: How many items to skip before returning the results.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a list of recurring invoices.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecurringInvoiceListItemList'
+              example:
+                recurring_invoices:
+                - id: '119'
+                  client_id: '105'
+                  client_name: Community Foundation
+                  lookup_id: '103'
+                  invoice_amount: 25.21
+                  added_by: Test
+                  purchase_order_number: '103'
+                  purchaser: Test
+                  purchase_date: '2020-02-24T12:00:00Z'
+                  recurring_invoice_status: Generated
+                  next_invoice_date: '2020-02-24T12:00:00Z'
+                  schedule_type: Fixed
+                  date_added: '2020-02-24T12:00:00Z'
+                  last_changed_by: Test
+                  last_changed_date: '2020-02-24T12:00:00Z'
+                limit: 10
+                offset: 20
+        '400':
+          description: Returned when the request is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponseTypes'
+              example:
+                type: urn:blackbaud:validation-error
+                title: One or more validation errors occurred.
+                status: 400
+                detail: 'Transaction is missing required custom fields
+
+                  '
+                values:
+                  errors:
+                    property_name: custom_fields
+                    error_message: Transaction is missing required custom fields
+                    error_code: TransactionHasRequiredCustomFields
+                trace_id: e566235f7b89ec65570213e86c42b059
+                span_id: fda5afb92a47816e
+        '403':
+          description: Returned when the user does not have permission to view recurring invoices.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenProblemDetails'
+              example:
+                type: urn:blackbaud:forbidden
+                title: The requested action is forbidden.
+                status: 403
+                extensions: {}
+      tags:
+      - Recurringinvoices
+  /v1/recurringinvoices/{id}:
+    get:
+      operationId: GetRecurringInvoice
+      summary: Get a recurring invoice
+      description: This gets a recurring invoice by ID.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The ID of the recurring invoice.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a recurring invoice.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecurringInvoiceListItem'
+              example:
+                id: '119'
+                client_id: '105'
+                client_name: Community Foundation
+                lookup_id: '103'
+                invoice_amount: 25.21
+                added_by: Test
+                purchase_order_number: '103'
+                purchaser: Test
+                purchase_date: '2020-02-24T12:00:00Z'
+                recurring_invoice_status: Generated
+                next_invoice_date: '2020-02-24T12:00:00Z'
+                schedule_type: Fixed
+                date_added: '2020-02-24T12:00:00Z'
+                last_changed_by: Test
+                last_changed_date: '2020-02-24T12:00:00Z'
+        '404':
+          description: Returned when the specified recurring invoice is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: urn:blackbaud:model-validation-error
+                title: One or more validation errors occurred.
+                status: 400
+                detail: Workflow Correlation Id was required but not supplied.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '400':
+          description: Returned when the request is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponseTypes'
+              example:
+                type: urn:blackbaud:validation-error
+                title: One or more validation errors occurred.
+                status: 400
+                detail: 'Transaction is missing required custom fields
+
+                  '
+                values:
+                  errors:
+                    property_name: custom_fields
+                    error_message: Transaction is missing required custom fields
+                    error_code: TransactionHasRequiredCustomFields
+                trace_id: e566235f7b89ec65570213e86c42b059
+                span_id: fda5afb92a47816e
+        '403':
+          description: Returned when the user does not have permission to view the recurring invoice.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenProblemDetails'
+              example:
+                type: urn:blackbaud:forbidden
+                title: The requested action is forbidden.
+                status: 403
+                extensions: {}
+      tags:
+      - Recurringinvoices
+  /v1/recurringinvoices/{recurring_invoice_id}/lineitems:
+    get:
+      operationId: GetRecurringInvoiceLineItems
+      summary: Get line items from a recurring invoice
+      description: This gets the line items from a recurring invoice.
+      parameters:
+      - name: recurring_invoice_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The ID of the recurring invoice.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the recurring invoice line items associated to a recurring invoice.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecurringInvoiceLineItemListViewList'
+              example:
+                recurring_invoice_line_items:
+                - id: 84873654-2697-4b56-afc8-57dd45676276
+                  lookup_id: '190'
+                  recurring_invoice_id: '456'
+                  recurring_invoice_lookup_id: '86'
+                  notes: This is a sample note.
+                  client:
+                    contact_id: '123'
+                    contact_type: Person
+                    third_party_billing: false
+                  billing_item_id: c98dd541-4866-4806-ad56-66bca2bcc163
+                  billing_item_name: Service Charge
+                  description: Monthly service charge
+                  comment: Sample comment
+                  flat_rate:
+                    amount: 100
+                    allow_changes_to_amount: false
+                  variable_rate:
+                    unit_of_measure_entry:
+                      id: 1c079590-7790-4456-9d0f-5fa50d7aacff
+                      value: Each
+                    quantity: 1
+                    quantity_decimals: 2
+                    unit_price: 1.5
+                    unit_price_decimals: 2
+                    allow_changes_quantity_and_unit_price: false
+                    trade_discount_percent: 0
+                    trade_discount_amount: 0
+                    amount: 1.5
+                  line_item_amount: 22
+                  added_by: Supervisor
+                  date_added: '2021-01-01T12:00:00Z'
+                  last_changed_by: Supervisor
+                  last_changed_date: '2021-01-01T12:00:00Z'
+        '404':
+          description: Returned when the recurring invoice is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: urn:blackbaud:model-validation-error
+                title: One or more validation errors occurred.
+                status: 400
+                detail: Workflow Correlation Id was required but not supplied.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '400':
+          description: Returned when the request is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponseTypes'
+              example:
+                type: urn:blackbaud:validation-error
+                title: One or more validation errors occurred.
+                status: 400
+                detail: 'Transaction is missing required custom fields
+
+                  '
+                values:
+                  errors:
+                    property_name: custom_fields
+                    error_message: Transaction is missing required custom fields
+                    error_code: TransactionHasRequiredCustomFields
+                trace_id: e566235f7b89ec65570213e86c42b059
+                span_id: fda5afb92a47816e
+        '403':
+          description: Returned when the user does not have permission to view recurring invoice line items.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenProblemDetails'
+              example:
+                type: urn:blackbaud:forbidden
+                title: The requested action is forbidden.
+                status: 403
+                extensions: {}
+      tags:
+      - Recurringinvoices
+  /v1/recurringinvoices/{recurring_invoice_id}/lineitems/{line_item_id}:
+    get:
+      operationId: GetRecurringInvoiceLineItem
+      summary: Get a recurring invoice line item
+      description: This gets a recurring invoice line item by ID.
+      parameters:
+      - name: recurring_invoice_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The ID of the recurring invoice.
+      - name: line_item_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The ID of the recurring invoice line item.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a recurring invoice line item.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecurringLineItemListView'
+              example:
+                id: 84873654-2697-4b56-afc8-57dd45676276
+                lookup_id: '190'
+                recurring_invoice_id: '456'
+                recurring_invoice_lookup_id: '86'
+                notes: This is a sample note.
+                client:
+                  contact_id: '123'
+                  contact_type: Person
+                  third_party_billing: false
+                billing_item_id: c98dd541-4866-4806-ad56-66bca2bcc163
+                billing_item_name: Service Charge
+                description: Monthly service charge
+                comment: Sample comment
+                flat_rate:
+                  amount: 100
+                  allow_changes_to_amount: false
+                variable_rate:
+                  unit_of_measure_entry:
+                    id: 1c079590-7790-4456-9d0f-5fa50d7aacff
+                    value: Each
+                  quantity: 1
+                  quantity_decimals: 2
+                  unit_price: 1.5
+                  unit_price_decimals: 2
+                  allow_changes_quantity_and_unit_price: false
+                  trade_discount_percent: 0
+                  trade_discount_amount: 0
+                  amount: 1.5
+                line_item_amount: 22
+                added_by: Supervisor
+                date_added: '2021-01-01T12:00:00Z'
+                last_changed_by: Supervisor
+                last_changed_date: '2021-01-01T12:00:00Z'
+        '404':
+          description: Returned when the specified recurring invoice line item is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: urn:blackbaud:model-validation-error
+                title: One or more validation errors occurred.
+                status: 400
+                detail: Workflow Correlation Id was required but not supplied.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '400':
+          description: Returned when the request is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponseTypes'
+              example:
+                type: urn:blackbaud:validation-error
+                title: One or more validation errors occurred.
+                status: 400
+                detail: 'Transaction is missing required custom fields
+
+                  '
+                values:
+                  errors:
+                    property_name: custom_fields
+                    error_message: Transaction is missing required custom fields
+                    error_code: TransactionHasRequiredCustomFields
+                trace_id: e566235f7b89ec65570213e86c42b059
+                span_id: fda5afb92a47816e
+        '403':
+          description: Returned when the user does not have permission to view the recurring invoice line item.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenProblemDetails'
+              example:
+                type: urn:blackbaud:forbidden
+                title: The requested action is forbidden.
+                status: 403
+                extensions: {}
+      tags:
+      - Recurringinvoices
+components:
+  schemas:
+    RecurringInvoiceLineItemListViewList:
+      required:
+      - recurring_invoice_line_items
+      type: object
+      properties:
+        recurring_invoice_line_items:
+          type: array
+          items:
+            $ref: '#/components/schemas/RecurringLineItemListView'
+          description: The list of recurring invoice line items.
+      additionalProperties: false
+      description: Recurring invoice line item list
+    RecurringLineItemListView:
+      required:
+      - billing_item_id
+      - billing_item_name
+      - client
+      - id
+      - line_item_amount
+      - lookup_id
+      type: object
+      properties:
+        id:
+          minLength: 1
+          type: string
+          description: The ID of the charge.
+        lookup_id:
+          minLength: 1
+          type: string
+          description: The ID of the lookup.
+        recurring_invoice_id:
+          type:
+          - string
+          - 'null'
+          description: The optional link to a parent invoice.
+        recurring_invoice_lookup_id:
+          type:
+          - string
+          - 'null'
+          description: The optional link to a parent invoice.
+        notes:
+          type:
+          - string
+          - 'null'
+          description: The optional notes.
+        client:
+          $ref: '#/components/schemas/Contact'
+        billing_item_id:
+          minLength: 1
+          type: string
+          description: The ID of the associated billing item.
+        billing_item_name:
+          minLength: 1
+          type: string
+          description: The name of the associated billing item.
+        description:
+          type:
+          - string
+          - 'null'
+          description: 'The description of the product or billing item..
+
+            Default from billing item, but user can override.'
+        comment:
+          type:
+          - string
+          - 'null'
+          description: The comment.
+        flat_rate:
+          $ref: '#/components/schemas/FlatRate'
+        variable_rate:
+          $ref: '#/components/schemas/VariableRate'
+        line_item_amount:
+          type: number
+          description: The amount calculated from billing item values.
+          format: decimal
+        added_by:
+          type:
+          - string
+          - 'null'
+          description: The user name who created the record.
+        date_added:
+          type: string
+          description: The record create date.
+          format: date-time
+        last_changed_by:
+          type:
+          - string
+          - 'null'
+          description: The user name who last changed the record.
+        last_changed_date:
+          type:
+          - string
+          - 'null'
+          description: The record last changed date.
+          format: date-time
+      additionalProperties: false
+      description: Used to represent core recurring invoice line item information
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".
+        title:
+          type:
+          - string
+          - 'null'
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type:
+          - integer
+          - 'null'
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: {}
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+    ForbiddenProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".
+        title:
+          type:
+          - string
+          - 'null'
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type:
+          - integer
+          - 'null'
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: {}
+      description: Problem details for 403 Forbidden responses
+    Contact:
+      required:
+      - contact_id
+      - contact_type
+      type: object
+      properties:
+        contact_id:
+          minLength: 1
+          type: string
+          description: The ID of the contact.
+        name:
+          type:
+          - string
+          - 'null'
+          description: The contact name.
+        contact_type:
+          $ref: '#/components/schemas/ContactType'
+        third_party_billing:
+          type: boolean
+          description: Whether the client is used for third-party billing.
+        client_status:
+          type:
+          - string
+          - 'null'
+          description: The client status.
+      additionalProperties: false
+      description: The contact.
+    ValidationErrorResponseTypes:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".<br/><br/>Available values:<table><tr><th>type</th><th>detail</th></tr><tr><td>urn:blackbaud:model-validation-error</td><td>A model validation rule was violated, such as a missing required field.</td></tr><tr><td>urn:blackbaud:validation-error</td><td>One or more validation errors occurred.</td></tr></table>
+        title:
+          type:
+          - string
+          - 'null'
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type:
+          - integer
+          - 'null'
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: {}
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-bb-error-types:
+      - urn:blackbaud:model-validation-error
+      - urn:blackbaud:validation-error
+    ContactType:
+      title: ContactType
+      enum:
+      - Unknown
+      - Person
+      - Organization
+      type: string
+      description: Contact type
+    FlatRate:
+      type: object
+      properties:
+        amount:
+          type:
+          - number
+          - 'null'
+          description: The default flat rate.
+          format: decimal
+        allow_changes_to_amount:
+          type: boolean
+          description: Whether the user can edit the billing item amount after it's applied. For example, on a charge.
+      additionalProperties: false
+      description: The flat rate item details.
+    RecurringInvoiceStatus:
+      title: RecurringInvoiceStatus
+      enum:
+      - Ungenerated
+      - PartiallyGenerated
+      - Generated
+      type: string
+      description: The recurring invoice status
+    VariableRate:
+      required:
+      - quantity
+      - quantity_decimals
+      - unit_price_decimals
+      type: object
+      properties:
+        unit_of_measure_entry:
+          $ref: '#/components/schemas/ReceivablesCodeTableEntry'
+        quantity:
+          type: number
+          description: The quantity sold for a specified unit.
+          format: decimal
+        quantity_decimals:
+          type: integer
+          description: The number of decimals to input and round the quantity.
+          format: int32
+        unit_price:
+          type:
+          - number
+          - 'null'
+          description: The price per unit.
+          format: decimal
+        unit_price_decimals:
+          type: integer
+          description: The number of decimals to input and round the unit price.
+          format: int32
+        allow_changes_quantity_and_unit_price:
+          type: boolean
+          description: The user is allowed to edit the Billing Item's unit price after it is applied, such as on a Charge.
+        trade_discount_percent:
+          type: number
+          description: Trade Discount Percentage for Charge and Line Item calculations.
+          format: decimal
+        trade_discount_amount:
+          type: number
+          description: Calculated Trade Discount Amount for Charge and Line Item calculations.
+          format: decimal
+          readOnly: true
+        amount:
+          type: number
+          description: Amount calculated from other property values
+          format: decimal
+          readOnly: true
+      additionalProperties: false
+      description: The details for an item with variable quantity.
+    RecurringInvoiceScheduleType:
+      title: RecurringInvoiceScheduleType
+      enum:
+      - Fixed
+      - Unlimited
+      type: string
+      description: Recurring invoice schedule type
+    RecurringInvoiceListItem:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: ID
+        client_id:
+          type:
+          - string
+          - 'null'
+          description: The ID of the client.
+        client_name:
+          type:
+          - string
+          - 'null'
+          description: The client name.
+        lookup_id:
+          type:
+          - string
+          - 'null'
+          description: The ID of the invoice lookup.
+        invoice_amount:
+          type: number
+          description: The invoice amount.
+          format: decimal
+        added_by:
+          type:
+          - string
+          - 'null'
+          description: The user name who created the record.
+        purchase_order_number:
+          type:
+          - string
+          - 'null'
+          description: The client purchase order number or purchase order number.
+        purchaser:
+          type:
+          - string
+          - 'null'
+          description: The purchase order name.
+        purchase_date:
+          type:
+          - string
+          - 'null'
+          description: The purchase date.
+          format: date-time
+        recurring_invoice_status:
+          $ref: '#/components/schemas/RecurringInvoiceStatus'
+        next_invoice_date:
+          type:
+          - string
+          - 'null'
+          description: The next invoice date for recurring invoice.
+          format: date-time
+        invoices_scheduled:
+          type:
+          - integer
+          - 'null'
+          description: The total number of invoices to send (both generated and scheduled) for Fixed schedules. Null for Unlimited schedules.
+          format: int32
+        schedule_type:
+          $ref: '#/components/schemas/RecurringInvoiceScheduleType'
+        date_added:
+          type: string
+          description: The record create date.
+          format: date-time
+        last_changed_by:
+          type:
+          - string
+          - 'null'
+          description: The user name who last changed the record.
+        last_changed_date:
+          type: string
+          description: The record last changed date.
+          format: date-time
+      additionalProperties: false
+      description: Recurring invoice
+    ReceivablesCodeTableEntry:
+      required:
+      - id
+      - value
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the code table entry.
+        value:
+          minLength: 1
+          type: string
+          description: The value of the code table entry.
+      additionalProperties: false
+      description: The request containing info for a code table entry.
+    RecurringInvoiceListItemList:
+      required:
+      - limit
+      - offset
+      - recurring_invoices
+      type: object
+      properties:
+        recurring_invoices:
+          type: array
+          items:
+            $ref: '#/components/schemas/RecurringInvoiceListItem'
+          description: The list of recurring invoices.
+        limit:
+          type: integer
+          description: The number of items returned.
+          format: int32
+        offset:
+          type: integer
+          description: The number of items skipped before this list was created.
+          format: int32
+      additionalProperties: false
+      description: Recurring invoice list item list
+      x-bb-suppressions:
+      - list_operation_pagination_style
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

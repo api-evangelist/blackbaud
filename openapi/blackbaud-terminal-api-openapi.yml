@@ -1,0 +1,96 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Payments Terminal API'
+  description: This API enables users to accept and manage payments via Blackbaud Merchant Services.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/payments
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/payments
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Terminal
+paths:
+  /v1/terminal/connectiontokens:
+    post:
+      operationId: CreateTerminalConnectionToken
+      summary: Connection token (PREVIEW)
+      description: 'Create a connection token that later facilitates a Card Present transaction via a Terminal point-of-sale device.
+
+
+        ***This endpoint is in PREVIEW and may be subject to change.***'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TerminalConnectionTokenAdd'
+            example:
+              payment_configuration_id: 646acda6-e199-4ae2-b5a3-f6e06ec940a3
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the connection token.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TerminalConnectionTokenRead'
+              example:
+                terminal_location_id: tml_ABckXQG8bQk4Mm
+                client_account_id: acct_DEf0FGQ9RKHgCVdK
+                secret: pst_live_YW****_****abC
+        '400':
+          description: Returned when the request body is not in the appropriate format. The response body contains error details.
+        '404':
+          description: Returned when the specified merchant or client record is not found. The response body contains error details.
+        '403':
+          description: Returned when the requested action is forbidden. The response body contains error details.
+      tags:
+      - Terminal
+components:
+  schemas:
+    TerminalConnectionTokenRead:
+      type: object
+      properties:
+        terminal_location_id:
+          type:
+          - string
+          - 'null'
+          description: The terminal location id.
+        client_account_id:
+          type:
+          - string
+          - 'null'
+          description: The client account id.
+        secret:
+          type:
+          - string
+          - 'null'
+          description: The connection token secret.
+      additionalProperties: false
+      description: Defines the data model for the terminal connection token endpoint response.
+    TerminalConnectionTokenAdd:
+      required:
+      - payment_configuration_id
+      type: object
+      properties:
+        payment_configuration_id:
+          minLength: 1
+          type: string
+          description: The unique identifier of the payment configuration.
+      additionalProperties: false
+      description: Defines the data model for the terminal connection token request.
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

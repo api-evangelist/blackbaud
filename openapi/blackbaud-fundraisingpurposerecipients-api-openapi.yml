@@ -1,0 +1,684 @@
+openapi: 3.2.0
+info:
+  title: Blackbaud Fundraisingpurposerecipients API
+  version: '1.0'
+  x-refined-note:
+  - x-apievangelist-provenance differs across the merged source definitions and was not carried
+  description: 'Operations tagged Fundraisingpurposerecipients across 2 of this provider''s published API definitions: blackbaud-altru-fundraising-api-openapi.yml, blackbaud-crm-fundraising-api-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.sky.blackbaud.com/alt-fndmg
+- url: https://api.sky.blackbaud.com/crm-fndmg
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Fundraisingpurposerecipients
+paths:
+  /fundraisingpurposerecipients:
+    post:
+      operationId: CreateFundraisingPurposeRecipient
+      summary: Create a fundraising purpose recipient
+      description: Operation for adding a recipient for a fundraising purpose.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewFundraisingPurposeRecipient'
+            example:
+              designation_level_id: 834C287E-C865-45B4-8CBA-FC0FD4C3AB2B
+              constituent_id: 2913CDDF-A739-4471-8325-499BB207B67F
+              educational_history: ''
+              date: '2018-01-03T12:00:00Z'
+              amount: 120
+              status: ''
+              type: ''
+              comments: ''
+              published_name: ''
+              scholarship_term: ''
+              ferpa: false
+              base_currency_id: ''
+              user_defined_id: ''
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully creates the resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to create the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Fundraisingpurposerecipients
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-fndmg
+  /fundraisingpurposerecipients/{fundraising_purpose_recipient_id}:
+    delete:
+      operationId: DeleteFundraisingPurposeRecipient
+      summary: Delete a fundraising purpose recipient
+      description: This delete method handles the basic deletion rules for a fundraising purpose recipient.
+      parameters:
+      - name: fundraising_purpose_recipient_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The fundraising purpose recipient id
+      responses:
+        '200':
+          description: Returned when the operation successfully deletes the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to delete the resource.
+      tags:
+      - Fundraisingpurposerecipients
+    patch:
+      operationId: EditFundraisingPurposeRecipient
+      summary: Edit a fundraising purpose recipient
+      description: This operation is for editing a given fundraising purpose recipient.
+      parameters:
+      - name: fundraising_purpose_recipient_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The fundraising purpose recipient id.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditFundraisingPurposeRecipient'
+            example:
+              date: '2016-02-18T12:00:00Z'
+              amount: 100
+              constituent: Robert Hernandez
+              constituent_id: 38F89C2B-F27D-4219-AEB0-2882766B9B9B
+              individual: true
+              educational_history: ''
+              status: ''
+              type: ''
+              comments: ''
+              published_name: ''
+              scholarship_term: ''
+              ferpa: false
+              base_currency_id: ''
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully edits the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to edit the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Fundraisingpurposerecipients
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-fndmg
+  /fundraisingpurposerecipients/{fundraising_purpose_recipient_id}/view:
+    get:
+      operationId: GetFundraisingPurposeRecipient
+      summary: Get a fundraising purpose recipient
+      description: This operation is for editing a given fundraising purpose recipient.
+      parameters:
+      - name: fundraising_purpose_recipient_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The fundraising purpose recipient id.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the specified resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FundraisingPurposeRecipient'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to get the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Fundraisingpurposerecipients
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-fndmg
+  /fundraisingpurposerecipients/search:
+    get:
+      operationId: SearchFundraisingPurposeRecipients
+      summary: Search for fundraising purpose recipients
+      description: Search for a fundraising purpose recipient.
+      parameters:
+      - name: user_defined_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: user-defined id
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Limits the number of records to return.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of result entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FundraisingPurposeRecipientSearchCollection'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to view the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+      tags:
+      - Fundraisingpurposerecipients
+    servers:
+    - url: https://api.sky.blackbaud.com/crm-fndmg
+components:
+  schemas:
+    NewFundraisingPurposeRecipient:
+      required:
+      - designation_level_id
+      - constituent_id
+      - amount
+      type: object
+      properties:
+        designation_level_id:
+          type: string
+          description: The designation level ID.
+        constituent_id:
+          type: string
+          description: The constituent.
+        educational_history:
+          type: string
+          description: The education. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/69864b69-5d2e-4bda-93b6-fae5b0c375cf?parameters=constituent_id,{constituent_id}.
+        date:
+          type: string
+          description: 'The award date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        amount:
+          type: number
+          description: The award amount.
+          format: double
+        status:
+          type: string
+          description: The status. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/purposerecipientstatuscode/entries
+        type:
+          type: string
+          description: The type. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/purposerecipienttypecode/entries
+        comments:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The comments.
+        published_name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The published name.
+        scholarship_term:
+          type: string
+          description: The scholarship term. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/d3e6db7f-9da3-410b-a34f-9366ba20008d.
+        ferpa:
+          type: boolean
+          description: Indicates whether ferpa documentation received.
+        base_currency_id:
+          type: string
+          description: The currency. Read-only in the SOAP API.
+      additionalProperties: false
+      description: CreateFundraisingPurposeRecipient
+      example:
+        designation_level_id: 834C287E-C865-45B4-8CBA-FC0FD4C3AB2B
+        constituent_id: 2913CDDF-A739-4471-8325-499BB207B67F
+        educational_history: ''
+        date: '2018-01-03T12:00:00Z'
+        amount: 120
+        status: ''
+        type: ''
+        comments: ''
+        published_name: ''
+        scholarship_term: ''
+        ferpa: false
+        base_currency_id: ''
+        user_defined_id: ''
+      x-display-name: Fundraising Purpose Recipient Add Form
+      x-display-id: Fundraising Purpose Recipient Add Form
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type: integer
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type: string
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: false
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-display-name: Problem details
+      x-display-id: ProblemDetails
+    EditFundraisingPurposeRecipient:
+      type: object
+      properties:
+        date:
+          type: string
+          description: 'The award date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        amount:
+          type: number
+          description: The award amount.
+          format: double
+        constituent:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The constituent. Read-only in the SOAP API.
+        constituent_id:
+          type: string
+          description: The ID. Read-only in the SOAP API.
+        individual:
+          type: boolean
+          description: Indicates whether isindividual. Read-only in the SOAP API.
+        educational_history:
+          type: string
+          description: The education. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/69864b69-5d2e-4bda-93b6-fae5b0c375cf?parameters=constituent_id,{constituent_id}.
+        status:
+          type: string
+          description: The status. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/purposerecipientstatuscode/entries
+        type:
+          type: string
+          description: The type. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/purposerecipienttypecode/entries
+        comments:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The comments.
+        published_name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The published name.
+        scholarship_term:
+          type: string
+          description: The scholarship term. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/d3e6db7f-9da3-410b-a34f-9366ba20008d.
+        ferpa:
+          type: boolean
+          description: Indicates whether ferpa documentation received.
+        base_currency_id:
+          type: string
+          description: The currency. Read-only in the SOAP API.
+      additionalProperties: false
+      description: EditFundraisingPurposeRecipient
+      example:
+        date: '2016-02-18T12:00:00Z'
+        amount: 100
+        constituent: Robert Hernandez
+        constituent_id: 38F89C2B-F27D-4219-AEB0-2882766B9B9B
+        individual: true
+        educational_history: ''
+        status: ''
+        type: ''
+        comments: ''
+        published_name: ''
+        scholarship_term: ''
+        ferpa: false
+        base_currency_id: ''
+      x-display-name: Fundraising Purpose Recipient Edit Form 2
+      x-display-id: Fundraising Purpose Recipient Edit Form 2
+    FundraisingPurposeRecipient:
+      required:
+      - amount
+      type: object
+      properties:
+        date:
+          type: string
+          description: 'The award date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        amount:
+          type: number
+          description: The award amount.
+          format: double
+        constituent:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The constituent. Read-only in the SOAP API.
+        constituent_id:
+          type: string
+          description: The ID. Read-only in the SOAP API.
+        individual:
+          type: boolean
+          description: Indicates whether isindividual. Read-only in the SOAP API.
+        educational_history:
+          type: string
+          description: The education. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/69864b69-5d2e-4bda-93b6-fae5b0c375cf?parameters=constituent_id,{constituent_id}.
+        status:
+          type: string
+          description: The status. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/purposerecipientstatuscode/entries
+        type:
+          type: string
+          description: The type. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/purposerecipienttypecode/entries
+        comments:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The comments.
+        published_name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The published name.
+        scholarship_term:
+          type: string
+          description: The scholarship term. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/d3e6db7f-9da3-410b-a34f-9366ba20008d.
+        ferpa:
+          type: boolean
+          description: Indicates whether ferpa documentation received.
+        base_currency_id:
+          type: string
+          description: The currency. Read-only in the SOAP API.
+      additionalProperties: false
+      description: GetFundraisingPurposeRecipient
+      x-display-name: Fundraising Purpose Recipient Edit Form 2
+      x-display-id: Fundraising Purpose Recipient Edit Form 2
+    PostResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The newly created ID.
+      additionalProperties: false
+      description: Defines the shape of a post response object.
+    NewFundraisingPurposeRecipient_2:
+      required:
+      - designation_level_id
+      - constituent_id
+      - amount
+      type: object
+      properties:
+        designation_level_id:
+          type: string
+          description: The designation level ID.
+        constituent_id:
+          type: string
+          description: The constituent.
+        educational_history:
+          type: string
+          description: The education. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/69864b69-5d2e-4bda-93b6-fae5b0c375cf?parameters=constituent_id,{constituent_id}.
+        date:
+          type: string
+          description: 'The award date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        amount:
+          type: number
+          description: The award amount.
+          format: double
+        status:
+          type: string
+          description: The status. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/purposerecipientstatuscode/entries
+        type:
+          type: string
+          description: The type. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/purposerecipienttypecode/entries
+        comments:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The comments.
+        published_name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The published name.
+        scholarship_term:
+          type: string
+          description: The scholarship term. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/d3e6db7f-9da3-410b-a34f-9366ba20008d.
+        ferpa:
+          type: boolean
+          description: Indicates whether ferpa documentation received.
+        base_currency_id:
+          type: string
+          description: The currency. Read-only in the SOAP API.
+        user_defined_id:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The user-defined ID.
+      additionalProperties: false
+      description: CreateFundraisingPurposeRecipient
+      example:
+        designation_level_id: 834C287E-C865-45B4-8CBA-FC0FD4C3AB2B
+        constituent_id: 2913CDDF-A739-4471-8325-499BB207B67F
+        educational_history: ''
+        date: '2018-01-03T12:00:00Z'
+        amount: 120
+        status: ''
+        type: ''
+        comments: ''
+        published_name: ''
+        scholarship_term: ''
+        ferpa: false
+        base_currency_id: ''
+        user_defined_id: ''
+      x-display-name: Fundraising Purpose Recipient Add Form
+      x-display-id: Fundraising Purpose Recipient Add Form
+    EditFundraisingPurposeRecipient_2:
+      type: object
+      properties:
+        date:
+          type: string
+          description: 'The award date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        amount:
+          type: number
+          description: The award amount.
+          format: double
+        constituent:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The constituent. Read-only in the SOAP API.
+        constituent_id:
+          type: string
+          description: The ID. Read-only in the SOAP API.
+        individual:
+          type: boolean
+          description: Indicates whether isindividual. Read-only in the SOAP API.
+        educational_history:
+          type: string
+          description: The education. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/69864b69-5d2e-4bda-93b6-fae5b0c375cf?parameters=constituent_id,{constituent_id}.
+        status:
+          type: string
+          description: The status. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/purposerecipientstatuscode/entries
+        type:
+          type: string
+          description: The type. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/purposerecipienttypecode/entries
+        comments:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The comments.
+        published_name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The published name.
+        scholarship_term:
+          type: string
+          description: The scholarship term. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/d3e6db7f-9da3-410b-a34f-9366ba20008d.
+        ferpa:
+          type: boolean
+          description: Indicates whether ferpa documentation received.
+        base_currency_id:
+          type: string
+          description: The currency. Read-only in the SOAP API.
+      additionalProperties: false
+      description: EditFundraisingPurposeRecipient
+      example:
+        date: '2016-02-18T12:00:00Z'
+        amount: 100
+        constituent: Robert Hernandez
+        constituent_id: 38F89C2B-F27D-4219-AEB0-2882766B9B9B
+        individual: true
+        educational_history: ''
+        status: ''
+        type: ''
+        comments: ''
+        published_name: ''
+        scholarship_term: ''
+        ferpa: false
+        base_currency_id: ''
+      x-display-name: Fundraising Purpose Recipient Edit Form 2
+      x-display-id: Fundraising Purpose Recipient Edit Form 2
+    FundraisingPurposeRecipientSearchCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items available for retrieval into the collection after applying any request parameters.
+          format: int32
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/FundraisingPurposeRecipientSearchSummary'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+      additionalProperties: false
+      description: A collection of items. Data lists can contain paginated results.
+    FundraisingPurposeRecipient_2:
+      required:
+      - amount
+      type: object
+      properties:
+        date:
+          type: string
+          description: 'The award date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        amount:
+          type: number
+          description: The award amount.
+          format: double
+        constituent:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The constituent. Read-only in the SOAP API.
+        constituent_id:
+          type: string
+          description: The ID. Read-only in the SOAP API.
+        individual:
+          type: boolean
+          description: Indicates whether isindividual. Read-only in the SOAP API.
+        educational_history:
+          type: string
+          description: The education. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/69864b69-5d2e-4bda-93b6-fae5b0c375cf?parameters=constituent_id,{constituent_id}.
+        status:
+          type: string
+          description: The status. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/purposerecipientstatuscode/entries
+        type:
+          type: string
+          description: The type. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/purposerecipienttypecode/entries
+        comments:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The comments.
+        published_name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The published name.
+        scholarship_term:
+          type: string
+          description: The scholarship term. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/d3e6db7f-9da3-410b-a34f-9366ba20008d.
+        ferpa:
+          type: boolean
+          description: Indicates whether ferpa documentation received.
+        base_currency_id:
+          type: string
+          description: The currency. Read-only in the SOAP API.
+      additionalProperties: false
+      description: GetFundraisingPurposeRecipient
+      x-display-name: Fundraising Purpose Recipient Edit Form 2
+      x-display-id: Fundraising Purpose Recipient Edit Form 2
+    FundraisingPurposeRecipientSearchSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The fundraising purpose recipient ID.
+      additionalProperties: false
+      description: SearchFundraisingPurposeRecipients
+      x-display-name: Fundraising Purpose Recipient Search
+      x-display-id: Fundraising Purpose Recipient Search
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+x-refined-from:
+- blackbaud-altru-fundraising-api-openapi.yml
+- blackbaud-crm-fundraising-api-openapi.yml

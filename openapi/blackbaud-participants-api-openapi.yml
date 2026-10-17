@@ -1,0 +1,1815 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Event Participants API'
+  description: This API manages event information and related entities such as participant.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/event
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/event
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Participants
+paths:
+  /v1/participants/{participant_id}:
+    delete:
+      operationId: DeleteParticipant
+      summary: Delete a participant
+      description: Deletes a participant.
+      parameters:
+      - name: participant_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The ID of the participant.
+      responses:
+        '200':
+          description: Returned when the operation succeeds.
+        '400':
+          description: Returned when the specified participant ID is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Participants-participant_id-Delete400ApplicationJsonResponse'
+              example:
+              - message: The request body is not in the appropriate format.
+                error_name: BadRequest
+                error_code: 400
+                raw_message: The request body is not in the appropriate format.
+        '403':
+          description: Returned when the user does not have permission to delete the participant.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Participants-participant_id-Delete403ApplicationJsonResponse'
+              example:
+              - message: The user does not have the necessary permissions for this task.
+                error_name: Forbidden
+                error_code: 403
+                raw_message: The user does not have the necessary permissions for this task.
+      tags:
+      - Participants
+    patch:
+      operationId: EditParticipant
+      summary: Edit a participant
+      description: Edits the details about a participant.
+      parameters:
+      - name: participant_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The ID of the participant.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditParticipant'
+            example:
+              host_id: '181'
+              rsvp_status: Attending
+              attended: false
+              invitation_status: Invited
+              rsvp_date:
+                d: 1
+                m: 1
+                y: 2020
+              invitation_date:
+                d: 1
+                m: 1
+                y: 2020
+              participation_level:
+                id: '1493'
+                name: Coordinator
+                is_inactive: false
+              summary_note: Major donor who invites a lot of people.
+        description: An object that represents the changes to the participant.
+      responses:
+        '200':
+          description: Returned when the operation succeeds.
+        '400':
+          description: Returned when the specified request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Participants-participant_id-Patch400ApplicationJsonResponse'
+              example:
+              - message: The request body is not in the appropriate format.
+                error_name: BadRequest
+                error_code: 400
+                raw_message: The request body is not in the appropriate format.
+        '403':
+          description: Returned when the user does not have permission to edit the participant.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Participants-participant_id-Patch403ApplicationJsonResponse'
+              example:
+              - message: The user does not have the necessary permissions for this task.
+                error_name: Forbidden
+                error_code: 403
+                raw_message: The user does not have the necessary permissions for this task.
+        '404':
+          description: Returned when the specified participant is not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Participants-participant_id-Patch404ApplicationJsonResponse'
+              example:
+              - message: The requested resource could not be found.
+                error_name: ResourceNotFound
+                error_code: 404
+                raw_message: The requested resource could not be found.
+      tags:
+      - Participants
+    get:
+      operationId: GetParticipant
+      summary: Get a participant
+      description: Returns information about a specific participant.
+      parameters:
+      - name: participant_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The ID of the participant.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the participant record.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Participant'
+              example:
+                id: '2'
+                constituent_id: '34'
+                event_id: '5'
+                date_added: '2017-09-15T01:00:00Z'
+                date_modified: '2017-09-15T01:00:00Z'
+                host_id: '181'
+                rsvp_status: Attending
+                attended: false
+                invitation_status: Invited
+                rsvp_date:
+                  d: 1
+                  m: 1
+                  y: 2020
+                invitation_date:
+                  d: 1
+                  m: 1
+                  y: 2020
+                participation_level:
+                  id: '1493'
+                  name: Coordinator
+                  is_inactive: false
+                summary_note: Major donor who invites a lot of people.
+        '400':
+          description: Returned when the route does not contain a valid ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Participants-participant_id-Get400ApplicationJsonResponse'
+              example:
+              - message: The request body is not in the appropriate format.
+                error_name: BadRequest
+                error_code: 400
+                raw_message: The request body is not in the appropriate format.
+        '403':
+          description: Returned when the user does not have rights to view the participant record.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Participants-participant_id-Get403ApplicationJsonResponse'
+              example:
+              - message: The user does not have the necessary permissions for this task.
+                error_name: Forbidden
+                error_code: 403
+                raw_message: The user does not have the necessary permissions for this task.
+        '404':
+          description: Returned when the specified participant is not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Participants-participant_id-Get404ApplicationJsonResponse'
+              example:
+              - message: The requested resource could not be found.
+                error_name: ResourceNotFound
+                error_code: 404
+                raw_message: The requested resource could not be found.
+      tags:
+      - Participants
+  /v1/participants/{participant_id}/donations:
+    post:
+      operationId: CreateParticipantDonation
+      summary: Create a participant donation
+      description: Creates a new donation for a participant.
+      parameters:
+      - name: participant_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The ID of the participant.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateParticipantDonation'
+            example:
+              gift_id: '189'
+        description: An object that represents the participant donation to create.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the ID of the new donation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdResponse'
+              example:
+                id: '4343'
+        '400':
+          description: Returned when the route does not contain a valid ID or the specified request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Participants-participant_id-DonationsPost400ApplicationJsonResponse'
+              example:
+              - message: The request body is not in the appropriate format.
+                error_name: BadRequest
+                error_code: 400
+                raw_message: The request body is not in the appropriate format.
+        '403':
+          description: Returned when the user does not have rights to modify the participant record.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Participants-participant_id-DonationsPost403ApplicationJsonResponse'
+              example:
+              - message: The user does not have the necessary permissions for this task.
+                error_name: Forbidden
+                error_code: 403
+                raw_message: The user does not have the necessary permissions for this task.
+        '404':
+          description: Returned when the specified participant is not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Participants-participant_id-DonationsPost404ApplicationJsonResponse'
+              example:
+              - message: The requested resource could not be found.
+                error_name: ResourceNotFound
+                error_code: 404
+                raw_message: The requested resource could not be found.
+      tags:
+      - Participants
+    get:
+      operationId: GetParticipantDonations
+      summary: Get participant donations
+      description: Returns the donations for a participant.
+      parameters:
+      - name: participant_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The ID of the participant.
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: '500'
+        description: Represents the number of records to return. The default is 500.
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Represents the number of records to skip. For use with pagination. The default is 0.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of participant donations.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ParticipantDonationCollection'
+              example:
+                count: 2
+                value:
+                - id: '196'
+                  gift_id: '290'
+                - id: '323'
+                  gift_id: '146'
+        '400':
+          description: Returned when the route does not contain a valid ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Participants-participant_id-DonationsGet400ApplicationJsonResponse'
+              example:
+              - message: The request body is not in the appropriate format.
+                error_name: BadRequest
+                error_code: 400
+                raw_message: The request body is not in the appropriate format.
+        '403':
+          description: Returned when the user does not have rights to view the participant record.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Participants-participant_id-DonationsGet403ApplicationJsonResponse'
+              example:
+              - message: The user does not have the necessary permissions for this task.
+                error_name: Forbidden
+                error_code: 403
+                raw_message: The user does not have the necessary permissions for this task.
+        '404':
+          description: Returned when the specified participant is not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Participants-participant_id-DonationsGet404ApplicationJsonResponse'
+              example:
+              - message: The requested resource could not be found.
+                error_name: ResourceNotFound
+                error_code: 404
+                raw_message: The requested resource could not be found.
+      tags:
+      - Participants
+  /v1/participants/{participant_id}/feepayments:
+    post:
+      operationId: CreateParticipantFeePayment
+      summary: Create a participant fee payment
+      description: Creates a new fee payment for a participant.
+      parameters:
+      - name: participant_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The ID of the participant.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateParticipantFeePayment'
+            example:
+              gift_id: '189'
+              applied_amount: 15.99
+        description: An object that represents the participant fee payment to create.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the ID of the new fee payment.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdResponse'
+              example:
+                id: e7bc9d1b-ab27-428c-b561-27093b51374f
+        '400':
+          description: Returned when the route does not contain a valid ID or the specified request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Participants-participant_id-FeepaymentsPost400ApplicationJsonResponse'
+              example:
+              - message: The request body is not in the appropriate format.
+                error_name: BadRequest
+                error_code: 400
+                raw_message: The request body is not in the appropriate format.
+        '403':
+          description: Returned when the user does not have rights to modify the participant record.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Participants-participant_id-FeepaymentsPost403ApplicationJsonResponse'
+              example:
+              - message: The user does not have the necessary permissions for this task.
+                error_name: Forbidden
+                error_code: 403
+                raw_message: The user does not have the necessary permissions for this task.
+        '404':
+          description: Returned when the specified participant is not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Participants-participant_id-FeepaymentsPost404ApplicationJsonResponse'
+              example:
+              - message: The requested resource could not be found.
+                error_name: ResourceNotFound
+                error_code: 404
+                raw_message: The requested resource could not be found.
+      tags:
+      - Participants
+    get:
+      operationId: GetParticipantFeePayments
+      summary: Get participant fee payments
+      description: Returns the fee payments for a participant.
+      parameters:
+      - name: participant_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The ID of the participant.
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: '500'
+        description: Represents the number of records to return. The default is 500.
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Represents the number of records to skip. For use with pagination. The default is 0.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of participant fees.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ParticipantFeePaymentCollection'
+              example:
+                count: 12
+                value:
+                - id: '196'
+                  participant_id: '109'
+                  gift_id: '290'
+                  applied_amount: 26
+                - id: '323'
+                  participant_id: '109'
+                  gift_id: '146'
+                  applied_amount: 10
+        '400':
+          description: Returned when the route does not contain a valid ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Participants-participant_id-FeepaymentsGet400ApplicationJsonResponse'
+              example:
+              - message: The request body is not in the appropriate format.
+                error_name: BadRequest
+                error_code: 400
+                raw_message: The request body is not in the appropriate format.
+        '403':
+          description: Returned when the user does not have rights to view the participant record.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Participants-participant_id-FeepaymentsGet403ApplicationJsonResponse'
+              example:
+              - message: The user does not have the necessary permissions for this task.
+                error_name: Forbidden
+                error_code: 403
+                raw_message: The user does not have the necessary permissions for this task.
+        '404':
+          description: Returned when the specified participant is not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Participants-participant_id-FeepaymentsGet404ApplicationJsonResponse'
+              example:
+              - message: The requested resource could not be found.
+                error_name: ResourceNotFound
+                error_code: 404
+                raw_message: The requested resource could not be found.
+      tags:
+      - Participants
+  /v1/participants/{participant_id}/fees:
+    post:
+      operationId: CreateParticipantFee
+      summary: Create a participant fee
+      description: Creates a new fee for a participant.
+      parameters:
+      - name: participant_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The ID of the participant.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateParticipantFee'
+            example:
+              quantity: 3
+              fee_amount: 10.99
+              contribution_amount: 5.5
+              date:
+                d: 1
+                m: 1
+                y: 2020
+              event_fee_id: '234'
+        description: An object that represents the participant fee to create.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the ID of the new participant fee.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdResponse'
+              example:
+                id: '4343'
+        '400':
+          description: Returned when the route does not contain a valid ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Participants-participant_id-FeesPost400ApplicationJsonResponse'
+              example:
+              - message: The request body is not in the appropriate format.
+                error_name: BadRequest
+                error_code: 400
+                raw_message: The request body is not in the appropriate format.
+        '403':
+          description: Returned when the user does not have rights to create the participant fee.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Participants-participant_id-FeesPost403ApplicationJsonResponse'
+              example:
+              - message: The user does not have the necessary permissions for this task.
+                error_name: Forbidden
+                error_code: 403
+                raw_message: The user does not have the necessary permissions for this task.
+        '404':
+          description: Returned when the specified participant is not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Participants-participant_id-FeesPost404ApplicationJsonResponse'
+              example:
+              - message: The requested resource could not be found.
+                error_name: ResourceNotFound
+                error_code: 404
+                raw_message: The requested resource could not be found.
+      tags:
+      - Participants
+    get:
+      operationId: GetParticipantFees
+      summary: Get participant fees
+      description: Returns a list of fees for a participant.
+      parameters:
+      - name: participant_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The ID of the participant.
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: '500'
+        description: Represents the number of records to return. The default is 500.
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Represents the number of records to skip. For use with pagination. The default is 0.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of participant fees.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ParticipantFeeCollection'
+              example:
+                count: 12
+                value:
+                - id: '196'
+                  participant_id: '109'
+                  quantity: 1
+                  fee_amount: 30.99
+                  tax_receiptable_amount: 25
+                  date:
+                    d: 1
+                    m: 1
+                    y: 2020
+                  event_fee:
+                    id: '17'
+                    name: Individual
+                    event_id: '9'
+                    cost: 30.99
+                    contribution_amount: 25
+                    number_sold: 5
+                    pending: 0
+                    registrants_included: 1
+                    fee_type: Registration
+                    limit: 10
+                - id: '323'
+                  participant_id: '109'
+                  quantity: 1
+                  fee_amount: 18.5
+                  tax_receiptable_amount: 10
+                  date:
+                    d: 1
+                    m: 1
+                    y: 2020
+                  event_fee:
+                    id: '20'
+                    name: Couple
+                    event_id: '134'
+                    cost: 18.5
+                    contribution_amount: 10
+                    number_sold: 5
+                    pending: 0
+                    registrants_included: 2
+                    fee_type: Registration
+                    limit: 20
+        '400':
+          description: Returned when the route does not contain a valid ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Participants-participant_id-FeesGet400ApplicationJsonResponse'
+              example:
+              - message: The request body is not in the appropriate format.
+                error_name: BadRequest
+                error_code: 400
+                raw_message: The request body is not in the appropriate format.
+        '403':
+          description: Returned when the user does not have rights to view the participant record.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Participants-participant_id-FeesGet403ApplicationJsonResponse'
+              example:
+              - message: The user does not have the necessary permissions for this task.
+                error_name: Forbidden
+                error_code: 403
+                raw_message: The user does not have the necessary permissions for this task.
+        '404':
+          description: Returned when the specified participant is not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Participants-participant_id-FeesGet404ApplicationJsonResponse'
+              example:
+              - message: The requested resource could not be found.
+                error_name: ResourceNotFound
+                error_code: 404
+                raw_message: The requested resource could not be found.
+      tags:
+      - Participants
+  /v1/participants/{participant_id}/participantoptions:
+    post:
+      operationId: CreateParticipantOption
+      summary: Create a participant option
+      description: Creates a new participant option for a participant.
+      parameters:
+      - name: participant_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The ID of the participant.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateParticipantOption'
+            example:
+              event_participant_option_id: da6c3536-8ba4-42af-9496-f6dabede5a1a
+              option_value: Chicken dinner
+        description: An object that represents the participant option to create.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the ID of the new participant option.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdResponse'
+              example:
+                id: e7bc9d1b-ab27-428c-b561-27093b51374f
+        '400':
+          description: Returned when the route does not contain a valid ID or the specified request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Participants-participant_id-ParticipantoptionsPost400ApplicationJsonResponse'
+              example:
+              - message: The request body is not in the appropriate format.
+                error_name: BadRequest
+                error_code: 400
+                raw_message: The request body is not in the appropriate format.
+        '403':
+          description: Returned when the user does not have rights to modify the participant record.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Participants-participant_id-ParticipantoptionsPost403ApplicationJsonResponse'
+              example:
+              - message: The user does not have the necessary permissions for this task.
+                error_name: Forbidden
+                error_code: 403
+                raw_message: The user does not have the necessary permissions for this task.
+        '404':
+          description: Returned when the specified participant is not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Participants-participant_id-ParticipantoptionsPost404ApplicationJsonResponse'
+              example:
+              - message: The requested resource could not be found.
+                error_name: ResourceNotFound
+                error_code: 404
+                raw_message: The requested resource could not be found.
+      tags:
+      - Participants
+    get:
+      operationId: GetParticipantOptions
+      summary: Get participant options
+      description: Returns the participant options for a participant.
+      parameters:
+      - name: participant_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The ID of the participant.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of participant options.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ParticipantOptionCollection'
+              example:
+                count: 3
+                value:
+                - id: aa52b48c-4784-4a0f-907b-987454826fd6
+                  participant_id: '2'
+                  event_id: '1'
+                  event_participant_option_id: f351b298-f5aa-4386-b13f-364622fbdbdd
+                  option_value: 00cf35e7-128e-429b-a6bb-a8e5254f3c7b
+                  added_by_user: be042830-9ab3-4781-97d0-13298ba0d3c8
+                  updated_by_user: be042830-9ab3-4781-97d0-13298ba0d3c8
+                  date_added: '2020-01-21T04:12:54Z'
+                  date_updated: '2020-01-21T04:12:54Z'
+                - id: cebaeec8-0da1-4e1e-a245-760cbd84a0ba
+                  participant_id: '2'
+                  event_id: '1'
+                  event_participant_option_id: 20ff68f2-130f-4c12-b574-5fab1fdca7bc
+                  option_value: 'true'
+                  added_by_user: be042830-9ab3-4781-97d0-13298ba0d3c8
+                  updated_by_user: 93b196dd-6422-402e-a6dd-855b1d98917d
+                  date_added: '2020-01-05T08:46:23Z'
+                  date_updated: '2020-01-19T01:44:12Z'
+                - id: 7d1f0c94-3a5e-4b62-8f27-2c9b4de51a30
+                  participant_id: '2'
+                  event_id: '1'
+                  event_participant_option_id: c3ae3afa-6aec-4639-be84-153fa02769c9
+                  option_value: No nuts, please
+                  added_by_user: be042830-9ab3-4781-97d0-13298ba0d3c8
+                  updated_by_user: be042830-9ab3-4781-97d0-13298ba0d3c8
+                  date_added: '2020-01-09T10:21:05Z'
+                  date_updated: '2020-01-09T10:21:05Z'
+        '400':
+          description: Returned when the route does not contain a valid ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Participants-participant_id-ParticipantoptionsGet400ApplicationJsonResponse'
+              example:
+              - message: The request body is not in the appropriate format.
+                error_name: BadRequest
+                error_code: 400
+                raw_message: The request body is not in the appropriate format.
+        '403':
+          description: Returned when the user does not have rights to view the participant record.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Participants-participant_id-ParticipantoptionsGet403ApplicationJsonResponse'
+              example:
+              - message: The user does not have the necessary permissions for this task.
+                error_name: Forbidden
+                error_code: 403
+                raw_message: The user does not have the necessary permissions for this task.
+        '404':
+          description: Returned when the specified participant is not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Participants-participant_id-ParticipantoptionsGet404ApplicationJsonResponse'
+              example:
+              - message: The requested resource could not be found.
+                error_name: ResourceNotFound
+                error_code: 404
+                raw_message: The requested resource could not be found.
+      tags:
+      - Participants
+  /v1/participants/{participant_id}/pledges:
+    get:
+      operationId: GetParticipantPledges
+      summary: Get participant pledges (PREVIEW)
+      description: 'Returns the pledges for a participant.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: participant_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The ID of the participant.
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Represents the number of records to return. The default is 500.
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Represents the number of records to skip. For use with pagination. The default is 0.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of participant pledges.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ParticipantPledgeCollection'
+              example:
+                count: 5
+                value:
+                - id: '645'
+                  gift_id: '520'
+                  type: RegistrationFee
+                  applied_amount: 23.45
+                - id: '850'
+                  gift_id: '491'
+                  type: OtherDonation
+                  applied_amount: 67.89
+        '400':
+          description: Returned when the route does not contain a valid ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Participants-participant_id-PledgesGet400ApplicationJsonResponse'
+              example:
+              - message: The request body is not in the appropriate format.
+                error_name: BadRequest
+                error_code: 400
+                raw_message: The request body is not in the appropriate format.
+        '403':
+          description: Returned when the user does not have rights to view the participant record.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Participants-participant_id-PledgesGet403ApplicationJsonResponse'
+              example:
+              - message: The user does not have the necessary permissions for this task.
+                error_name: Forbidden
+                error_code: 403
+                raw_message: The user does not have the necessary permissions for this task.
+        '404':
+          description: Returned when the specified participant is not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Participants-participant_id-PledgesGet404ApplicationJsonResponse'
+              example:
+              - message: The requested resource could not be found.
+                error_name: ResourceNotFound
+                error_code: 404
+                raw_message: The requested resource could not be found.
+      tags:
+      - Participants
+  /v1/participants/{participant_id}/seating:
+    patch:
+      operationId: EditParticipantSeating
+      summary: Edit participant seating (PREVIEW)
+      description: 'Edits the seating details for a participant.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: participant_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The ID of the participant.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditParticipantSeating'
+            example:
+              seat: 1 - Section 1\1 - Table 1\3 - Seat C
+              seating_group: VIP
+              seating_notes: Seat with Mark Adamson.
+        description: An object that represents the changes to the seating details.
+      responses:
+        '200':
+          description: Returned when the operation succeeds.
+        '400':
+          description: Returned when the specified request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Participants-participant_id-SeatingPatch400ApplicationJsonResponse'
+              example:
+              - message: The request body is not in the appropriate format.
+                error_name: BadRequest
+                error_code: 400
+                raw_message: The request body is not in the appropriate format.
+        '403':
+          description: Returned when the user does not have permission to edit the participant seating.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Participants-participant_id-SeatingPatch403ApplicationJsonResponse'
+              example:
+              - message: The user does not have the necessary permissions for this task.
+                error_name: Forbidden
+                error_code: 403
+                raw_message: The user does not have the necessary permissions for this task.
+        '404':
+          description: Returned when the specified participant is not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Participants-participant_id-SeatingPatch404ApplicationJsonResponse'
+              example:
+              - message: The requested resource could not be found.
+                error_name: ResourceNotFound
+                error_code: 404
+                raw_message: The requested resource could not be found.
+      tags:
+      - Participants
+    get:
+      operationId: GetParticipantSeating
+      summary: Get participant seating details (PREVIEW)
+      description: 'Returns participant seating information.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: participant_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The participant ID
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains participant seating information.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ParticipantSeating'
+              example:
+                seat: 1 - Section 1\1 - Table 1\3 - Seat C
+                seating_group: VIP
+                seating_notes: Seat with Mark.
+        '400':
+          description: Returned when the specified request parameters are not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Participants-participant_id-SeatingGet400ApplicationJsonResponse'
+              example:
+              - message: The request body is not in the appropriate format.
+                error_name: BadRequest
+                error_code: 400
+                raw_message: The request body is not in the appropriate format.
+        '403':
+          description: Returned when the user does not have rights to view the participant.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Participants-participant_id-SeatingGet403ApplicationJsonResponse'
+              example:
+              - message: The user does not have the necessary permissions for this task.
+                error_name: Forbidden
+                error_code: 403
+                raw_message: The user does not have the necessary permissions for this task.
+        '404':
+          description: Returned when the specified participant is not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Participants-participant_id-SeatingGet404ApplicationJsonResponse'
+              example:
+              - message: The requested resource could not be found.
+                error_name: ResourceNotFound
+                error_code: 404
+                raw_message: The requested resource could not be found.
+      tags:
+      - Participants
+components:
+  schemas:
+    V1Participants-participant_id-SeatingPatch400ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    CreateParticipantFeePayment:
+      required:
+      - applied_amount
+      - gift_id
+      type: object
+      properties:
+        gift_id:
+          type: string
+          description: The ID of the gift or pledge that the participant fee is linked to.
+        applied_amount:
+          type: number
+          description: The amount of the payment that applies toward the participant fees.
+          format: double
+      additionalProperties: false
+      description: Participant fee payments are payments toward the participant's fees.
+    V1Participants-participant_id-Patch403ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    IdResponse:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: The ID response
+      additionalProperties: false
+      description: Class used to return a single ID property
+    V1Participants-participant_id-ParticipantoptionsPost403ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    V1Participants-participant_id-FeesGet400ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    V1Participants-participant_id-FeesGet404ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    V1Participants-participant_id-FeepaymentsGet400ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    ParticipantDonation:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: The ID of the participant donation.
+        gift_id:
+          type:
+          - string
+          - 'null'
+          description: The ID of the gift that the participant donation is linked to.
+      additionalProperties: false
+      description: Defines a data model for a participant donation
+    V1Participants-participant_id-PledgesGet400ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    V1Participants-participant_id-Get403ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    V1Participants-participant_id-FeepaymentsPost400ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    V1Participants-participant_id-FeepaymentsGet404ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    FuzzyDate:
+      type: object
+      properties:
+        d:
+          type:
+          - integer
+          - 'null'
+          description: The day in the fuzzy date.
+          format: int32
+        m:
+          type:
+          - integer
+          - 'null'
+          description: The month in the fuzzy date.
+          format: int32
+        y:
+          type:
+          - integer
+          - 'null'
+          description: The year in the fuzzy date.
+          format: int32
+      additionalProperties: false
+      description: Fuzzy dates provide a versatile date type to create partial dates such as February 9 (with no year indicated).
+    V1Participants-participant_id-PledgesGet403ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    V1Participants-participant_id-ParticipantoptionsGet404ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    CreateParticipantOption:
+      required:
+      - event_participant_option_id
+      - option_value
+      type: object
+      properties:
+        event_participant_option_id:
+          type: string
+          description: The ID of the event participant option.
+        option_value:
+          type: string
+          description: "The participant's response to the option. For an event participant option with an input type of <i>List</i>, this is the ID of the selected list option. \nFor an input type of <i>Boolean</i>, this is <i>true</i> or <i>false</i>. For an input type of <i>String</i>, this is the text the participant supplied."
+      additionalProperties: false
+      description: Participant options are the responses to an event participant option.
+    ParticipantPledge:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: The ID of the participant pledge.
+        gift_id:
+          type:
+          - string
+          - 'null'
+          description: The ID of the gift that the participant pledge is linked to.
+        type:
+          $ref: '#/components/schemas/ParticipantGiftType'
+        applied_amount:
+          type: number
+          description: The portion of the gift amount being applied to this participant's pledge.
+          format: double
+      additionalProperties: false
+      description: Defines a data model for a participant pledge
+    V1Participants-participant_id-ParticipantoptionsGet400ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    V1Participants-participant_id-DonationsPost404ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    EditParticipant:
+      type: object
+      properties:
+        constituent_id:
+          type:
+          - string
+          - 'null'
+          description: The constituent ID or contact ID of the participant, including non-constituent IDs.
+        host_id:
+          type:
+          - string
+          - 'null'
+          description: The ID of the host's participant record.
+        rsvp_status:
+          $ref: '#/components/schemas/RSVPStatus'
+        attended:
+          type: boolean
+          description: Whether the participant attended the event.
+        invitation_status:
+          $ref: '#/components/schemas/InvitationStatus'
+        rsvp_date:
+          $ref: '#/components/schemas/FuzzyDate'
+        invitation_date:
+          $ref: '#/components/schemas/FuzzyDate'
+        participation_level:
+          $ref: '#/components/schemas/ParticipationLevel'
+        summary_note:
+          type:
+          - string
+          - 'null'
+          description: Quick reference information pinned to the participant's record.
+      additionalProperties: false
+      description: "Participants are individuals or organizations who engage with the organization through an event. \nThey can include constituents who receive invitations or register for the event."
+    ParticipationLevel:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: The ID of the participation level.
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the participation level.
+        is_inactive:
+          type: boolean
+          description: Whether the participation level is inactive. True if inactive.
+      additionalProperties: false
+      description: Participation levels are the level of involvement participants have in an event.
+    V1Participants-participant_id-FeepaymentsGet403ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    V1Participants-participant_id-SeatingPatch404ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    V1Participants-participant_id-ParticipantoptionsGet403ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    V1Participants-participant_id-SeatingPatch403ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    ParticipantFeeCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The total number of items in the collection before limit/offset.
+          format: int32
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ParticipantFee'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+      additionalProperties: false
+      description: Defines a collection of participant fees.
+    V1Participants-participant_id-FeesPost400ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    V1Participants-participant_id-FeepaymentsPost404ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    ParticipantDonationCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The total number of items in the collection before limit/offset.
+          format: int32
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ParticipantDonation'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+      additionalProperties: false
+      description: Defines a collection of participant donations.
+    V1Participants-participant_id-Delete403ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    EditParticipantSeating:
+      type: object
+      properties:
+        seat:
+          type:
+          - string
+          - 'null'
+          description: The seat assigned to the participant.
+        seating_group:
+          type:
+          - string
+          - 'null'
+          description: The grouping details of the participant's seat.
+        seating_notes:
+          type:
+          - string
+          - 'null'
+          description: Any additional notes or instructions related to the seat assigned to the participant.
+      additionalProperties: false
+      description: A participant's seat is their seating assignment for an event.
+    V1Participants-participant_id-Patch400ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    ParticipantOption:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: The ID of the participant option.
+        participant_id:
+          type:
+          - string
+          - 'null'
+          description: The ID of the participant.
+        event_id:
+          type:
+          - string
+          - 'null'
+          description: The ID of the event.
+        event_participant_option_id:
+          type:
+          - string
+          - 'null'
+          description: The ID of the event participant option.
+        option_value:
+          type:
+          - string
+          - 'null'
+          description: "The participant's response to the option. For an event participant option with an input type of <i>List</i>, this is the ID of the selected list option. \nFor an input type of <i>Boolean</i>, this is <i>true</i> or <i>false</i>. For an input type of <i>String</i>, this is the text the participant supplied."
+        added_by_user:
+          type:
+          - string
+          - 'null'
+          description: The ID of the user that added the participant option.
+        updated_by_user:
+          type:
+          - string
+          - 'null'
+          description: The ID of the user who updated the participant option.
+        added_by_service:
+          type:
+          - string
+          - 'null'
+          description: The name of the service that added this participant option.
+        updated_by_service:
+          type:
+          - string
+          - 'null'
+          description: The name of the service that updated this participant option.
+        date_added:
+          type: string
+          description: 'The date the participant option was added. Includes an offset from UTC in <a href="https://tools.ietf.org/html/rfc3339">ISO-8601 format</a>: <i>1969-11-21T10:29:43-04:00</i>.'
+          format: date-time
+        date_updated:
+          type: string
+          description: 'The date the participant option was updated. Includes an offset from UTC in <a href="https://tools.ietf.org/html/rfc3339">ISO-8601 format</a>: <i>1969-11-21T10:29:43-04:00</i>.'
+          format: date-time
+      additionalProperties: false
+      description: The participant option associated with a given participant
+    V1Participants-participant_id-FeepaymentsPost403ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    V1Participants-participant_id-FeesPost404ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    V1Participants-participant_id-DonationsPost403ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    ParticipantFee:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: The ID of the participant fee.
+        participant_id:
+          type:
+          - string
+          - 'null'
+          description: The ID of the record that the participant fee is linked to.
+        quantity:
+          type: integer
+          description: The quantity purchased.
+          format: int32
+        fee_amount:
+          type: number
+          description: The amount of the participant fee.
+          format: double
+        tax_receiptable_amount:
+          type: number
+          description: The tax receiptable amount of the participant fee.
+          format: double
+        date:
+          $ref: '#/components/schemas/FuzzyDate'
+        event_fee:
+          $ref: '#/components/schemas/EventFee'
+      additionalProperties: false
+      description: Defines a data model for a participant fee
+    ParticipantFeePayment:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: The ID of the participant fee.
+        participant_id:
+          type:
+          - string
+          - 'null'
+          description: The ID of the participant that the participant fee is linked to.
+        gift_id:
+          type:
+          - string
+          - 'null'
+          description: The ID of the gift that the participant fee is linked to.
+        applied_amount:
+          type:
+          - number
+          - 'null'
+          description: The applied amount of the participant fee payment.
+          format: double
+      additionalProperties: false
+      description: Defines a data model for a participant fee payment
+    CreateParticipantFee:
+      required:
+      - contribution_amount
+      - event_fee_id
+      - fee_amount
+      - quantity
+      type: object
+      properties:
+        quantity:
+          type: integer
+          description: The quantity purchased.
+          format: int32
+        fee_amount:
+          type: number
+          description: The amount of money associated with the fee.
+          format: double
+        contribution_amount:
+          type: number
+          description: The amount of the fee that's a donation above the costs of the event. This is the amount that typically appears on receipts.
+          format: double
+        date:
+          $ref: '#/components/schemas/FuzzyDate'
+        event_fee_id:
+          type: string
+          description: The event Fee ID that corresponds to the participant fee.
+      additionalProperties: false
+      description: Participant fees are how much an individual or organization pays to participate in or attend the event.
+    Participant:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: The ID of the participant.
+        constituent_id:
+          type:
+          - string
+          - 'null'
+          description: The constituent ID or contact ID of the participant, including non-constituent IDs.
+        event_id:
+          type:
+          - string
+          - 'null'
+          description: ID of the event being attended.
+        date_added:
+          type: string
+          description: 'The date when the participant was created. Uses<a href="https://tools.ietf.org/html/rfc3339"> ISO-8601 format</a>: <i>1969-11-21T10:29:43-04:00</i>.'
+          format: date-time
+        date_modified:
+          type: string
+          description: 'The date when the participant was last modified. Uses<a href="https://tools.ietf.org/html/rfc3339"> ISO-8601 format</a>: <i>1969-11-21T10:29:43-04:00</i>.'
+          format: date-time
+        host_id:
+          type:
+          - string
+          - 'null'
+          description: The ID of the host's participant record.
+        rsvp_status:
+          $ref: '#/components/schemas/RSVPStatus'
+        attended:
+          type: boolean
+          description: Whether the participant attended the event.
+        invitation_status:
+          $ref: '#/components/schemas/InvitationStatus'
+        rsvp_date:
+          $ref: '#/components/schemas/FuzzyDate'
+        invitation_date:
+          $ref: '#/components/schemas/FuzzyDate'
+        participation_level:
+          $ref: '#/components/schemas/ParticipationLevel'
+        summary_note:
+          type:
+          - string
+          - 'null'
+          description: Quick reference information pinned to the participant's record.
+      additionalProperties: false
+      description: "Participants are individuals or organizations who engage with the organization through an event. \nThey can include constituents who receive invitations or register for the event."
+    V1Participants-participant_id-FeesPost403ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    ParticipantSeating:
+      type: object
+      properties:
+        seat:
+          type:
+          - string
+          - 'null'
+          description: The seat assigned to the participant.
+        seating_group:
+          type:
+          - string
+          - 'null'
+          description: The grouping details of the participant's seat.
+        seating_notes:
+          type:
+          - string
+          - 'null'
+          description: Any additional notes or instructions related to the seat assigned to the participant.
+      additionalProperties: false
+      description: Represents the seating information for the participant.
+    ParticipantPledgeCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The total number of items in the collection before limit/offset.
+          format: int32
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ParticipantPledge'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+      additionalProperties: false
+      description: Defines a collection of participant pledges.
+    V1Participants-participant_id-Get400ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    V1Participants-participant_id-ParticipantoptionsPost400ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    V1Participants-participant_id-DonationsGet403ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    V1Participants-participant_id-FeesGet403ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    V1Participants-participant_id-DonationsGet404ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    V1Participants-participant_id-Get404ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    V1Participants-participant_id-Delete400ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    V1Participants-participant_id-PledgesGet404ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    RSVPStatus:
+      enum:
+      - NoResponse
+      - Attending
+      - Declined
+      - Interested
+      - Canceled
+      - Waitlisted
+      - NotApplicable
+      type: string
+      description: The possible states for a participant's RSVP for an event.<p>Available values:</p><ul><li><i>NoResponse</i> - No response.</li><li><i>Attending</i> - Attending.</li><li><i>Declined</i> - Declined.</li><li><i>Interested</i> - Interested.</li><li><i>Canceled</i> - Canceled.</li><li><i>Waitlisted</i> - Waitlisted.</li><li><i>NotApplicable</i> - Not applicable.</li></ul>
+    V1Participants-participant_id-SeatingGet404ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    ServiceError:
+      type: object
+      properties:
+        message:
+          type:
+          - string
+          - 'null'
+          description: The description of the error.
+        error_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the error.
+        error_code:
+          type: integer
+          description: The number associated with the error.
+          format: int32
+        raw_message:
+          type:
+          - string
+          - 'null'
+          description: The description of the error which can include argument placeholders.
+        error_args:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: The argument data for the placeholders.
+      additionalProperties: false
+      description: Explains the reason for an error.
+    V1Participants-participant_id-SeatingGet403ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    ParticipantOptionCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The total number of items in the collection before limit/offset.
+          format: int32
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ParticipantOption'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+      additionalProperties: false
+      description: Defines a collection of participant options.
+    ParticipantFeePaymentCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The total number of items in the collection before limit/offset.
+          format: int32
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ParticipantFeePayment'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+      additionalProperties: false
+      description: Defines a collection of participant fee payments.
+    V1Participants-participant_id-SeatingGet400ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    EventFeeType:
+      enum:
+      - Registration
+      - Other
+      type: string
+      description: Possible Fee Types. Currently there are 2 types, Registration and Other.  Registration fees must have a registrants_included value of 1 or more. Other fees are for fees without a registration and will have a registrants_included of 0.<p>Available values:</p><ul><li><i>Registration</i> - Represents fees for individuals, couples, and more.</li><li><i>Other</i> - Represents fees for other charges, such as parking passes or event merchandise.</li></ul>
+    CreateParticipantDonation:
+      required:
+      - gift_id
+      type: object
+      properties:
+        gift_id:
+          type: string
+          description: The ID of the gift or pledge that the donation is linked to.
+      additionalProperties: false
+      description: Participant donations are donations made toward the event.
+    EventFee:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: The ID of the event fee.
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the event fee.
+        event_id:
+          type:
+          - string
+          - 'null'
+          description: The ID of the event the fee is linked to.
+        cost:
+          type: number
+          description: The fee's cost.
+          format: double
+        contribution_amount:
+          type: number
+          description: The tax deductible amount for this fee.
+          format: double
+        number_sold:
+          type: integer
+          description: The number of fees sold.
+          format: int32
+        pending:
+          type: integer
+          description: The number of fees pending from online registrations.
+          format: int32
+        registrants_included:
+          type: integer
+          description: If the fee is for registrations, the number of registrants it includes.
+          format: int32
+        fee_type:
+          $ref: '#/components/schemas/EventFeeType'
+        limit:
+          type:
+          - integer
+          - 'null'
+          description: The limit of an event fee.
+          format: int32
+      additionalProperties: false
+      description: Event fees are how much an organization charges for individuals or organizations to participate in or attend the event. An organization might also charge for other add-on items such as parking passes or event merchandise.
+    V1Participants-participant_id-ParticipantoptionsPost404ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    InvitationStatus:
+      enum:
+      - NotApplicable
+      - NotInvited
+      - Invited
+      type: string
+      description: The possible states for a constituent's invitation to an event.<p>Available values:</p><ul><li><i>NotApplicable</i> - Not applicable.</li><li><i>NotInvited</i> - Not invited.</li><li><i>Invited</i> - Invited.</li></ul>
+    V1Participants-participant_id-DonationsPost400ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    ParticipantGiftType:
+      enum:
+      - RegistrationFee
+      - OtherDonation
+      type: string
+      description: A model that represents a participant gift link type.<p>Available values:</p><ul><li><i>RegistrationFee</i> - "Registration Fee" Participant Gift Link Type</li><li><i>OtherDonation</i> - "Other Donation" Participant Gift Link Type</li></ul>
+    V1Participants-participant_id-DonationsGet400ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    V1Participants-participant_id-Patch404ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

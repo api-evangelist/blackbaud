@@ -1,0 +1,147 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Statistical Unit Elements API'
+  description: This API manages information related to tracking statistical units for financial reporting and allocations.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/statistical-unit
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/statistical-unit
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Elements
+paths:
+  /v1/elements:
+    get:
+      operationId: ListElements
+      summary: Element (List)
+      description: 'Searches available elements.
+
+
+        Elements categorize units. For example, you can break down a square footage unit by department to track, compare, and analyze the amount of office space different departments use.
+
+
+        Elements are generic, which allows consuming applications to define their meaning in the context of an application. By convention, elements are defined as follows:
+
+
+        Project - 1
+
+
+        Project type - 2
+
+
+        Project status - 3
+
+
+        Project division - 4
+
+
+        Project department - 5
+
+
+        Project location - 6
+
+
+        Grant type - 8
+
+
+        Grant status - 9
+
+
+        Account segment 1 - 10
+
+
+        Account segment 2 - 11
+
+
+        Account segment 3 - 12
+
+
+        Account segment 4 - 13
+
+
+        Account segment 5 - 14
+
+
+        Account segment 6 - 15
+
+
+        Account segment 7 - 16
+
+
+        Account segment 8 - 17
+
+
+        Account segment 9 - 18
+
+
+        Account segment 10 - 19
+
+
+        Transaction code 1 - 20
+
+
+        Transaction code 2 - 21
+
+
+        Transaction code 3 - 22
+
+
+        Transaction code 4 - 23
+
+
+        Transaction code 5 - 24'
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of element entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ElementCollection'
+              example:
+                count: 4
+                value:
+                - id: 1
+                - id: 2
+                - id: 3
+                - id: 4
+      tags:
+      - Elements
+components:
+  schemas:
+    ElementCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Element'
+      additionalProperties: false
+    Element:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+      additionalProperties: false
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

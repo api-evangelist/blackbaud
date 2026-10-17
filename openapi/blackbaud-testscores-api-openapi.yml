@@ -1,0 +1,566 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: School Testscores API'
+  description: This API is used to provide access to school information such as users, academics, admissions, athletics, content, lists, and general school info.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/school
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/school
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Testscores
+paths:
+  /v1/testscores:
+    get:
+      operationId: V1TestscoresGet
+      summary: Test scores by user ID
+      description: 'Returns a collection of test scores.
+
+
+        Requires the following role in the Education Management system:
+
+
+        Grading Manager'
+      parameters:
+      - name: user_id
+        in: query
+        required: true
+        schema:
+          type: integer
+        description: The ID of the user.
+      - name: size
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: '100'
+        description: The number of records per page (Default record size is 100).
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: '1'
+        description: The page of results to start from (Default start page is 1 and records per page is 100).
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TestScoreCollection'
+              example:
+                count: 1
+                value:
+                - id: 123456
+                  comment: Comment
+                  overall_score: 99.5
+                  printon_report_card: false
+                  printon_transcript: true
+                  sub_tests:
+                  - sub_test_type: SubTest
+                    test_subtype_id: 1234
+                  test_date: '2018-08-30T12:00:00Z'
+                  test_type: SAT
+                  test_type_id: 110
+                  user:
+                    id: 1
+                    email: JohnJr@domain.com
+                    first_name: John
+                    last_name: Smith
+                    maiden_name: Brannigan
+                    middle_name: Robert
+                    preferred_name: Jack
+                    preferred_last_name: Brannigan
+                    prefix: Mr.
+                    suffix: Jr.
+      tags:
+      - Testscores
+  /v1/testscores/all:
+    get:
+      operationId: V1TestscoresAllGet
+      summary: Test scores
+      description: 'Returns a collection of test scores.
+
+
+        Requires one of the following role in the Education Management system:
+
+
+        Grading Manager
+
+
+        Admissions Manager'
+      parameters:
+      - name: size
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: '100'
+        description: The number of records per page (Default record size is 100).
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: '1'
+        description: The page of results to start from (Default start page is 1).
+      - name: test_type
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Provide the ID or name of a test type to limit results to that test type.
+      - name: start_date
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Limits results to tests with a test date on or after the specified date. Use ISO 8601 date format.
+      - name: end_date
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Limits results to tests with a test date on or before the specified date. Use ISO 8601 date format.
+      - name: last_modified
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Limits results to tests created or modified after the specified date.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TestScoreCollection'
+              example:
+                count: 1
+                value:
+                - id: 123456
+                  comment: Comment
+                  overall_score: 99.5
+                  printon_report_card: false
+                  printon_transcript: true
+                  sub_tests:
+                  - sub_test_type: SubTest
+                    test_subtype_id: 1234
+                  test_date: '2018-08-30T12:00:00Z'
+                  test_type: SAT
+                  test_type_id: 110
+                  user:
+                    id: 1
+                    email: JohnJr@domain.com
+                    first_name: John
+                    last_name: Smith
+                    maiden_name: Brannigan
+                    middle_name: Robert
+                    preferred_name: Jack
+                    preferred_last_name: Brannigan
+                    prefix: Mr.
+                    suffix: Jr.
+      tags:
+      - Testscores
+  /v1/testscores/testtypes:
+    get:
+      operationId: V1TestscoresTesttypesGet
+      summary: Test and Subtest types
+      description: 'Returns a collection of test and subtest types for a school.
+
+
+        Requires the following role in the Education Management system:
+
+
+        Grading Manager
+
+
+        Any Manager Role'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TestTypeCollection'
+              example:
+                count: 1
+                value:
+                - id: 100
+                  sub_tests:
+                  - test_type_id: 100
+                    sub_test_type: SubTest
+                    test_subtype_id: 1234
+                  test_name: SAT
+      tags:
+      - Testscores
+  /v1/testscores/{user_id}:
+    post:
+      operationId: V1TestscoresByUser_idPost
+      summary: Test Score create
+      description: 'Creates a test score for a student ```user_id```
+
+
+        Requires the following role in the Education Management system:
+
+
+        Grading Manager'
+      parameters:
+      - name: user_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The ID of the user.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TestScoreAdd'
+            example:
+              id: 0
+              comment: string
+              overall_score: 0
+              printon_report_card: true
+              printon_transcript: true
+              sub_tests:
+              - test_type_id: 0
+                sub_test_type: string
+                score: 0
+                test_subtype_id: 0
+                percentile: 0
+                scale: 0
+                stanie: 0
+              test_date: string
+              attachment:
+                temp_name: string
+                original_name: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Testscores-user_id-Post200ApplicationJsonResponse'
+              example: 465879213
+      tags:
+      - Testscores
+components:
+  schemas:
+    V1Testscores-user_id-Post200ApplicationJsonResponse:
+      type: integer
+      format: int64
+      x-apim-inline: true
+    TestScore:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The Test Score Id
+          format: int32
+        comment:
+          type:
+          - string
+          - 'null'
+          description: The Comments on the Test
+        overall_score:
+          type:
+          - number
+          - 'null'
+          description: The Overall Score
+          format: double
+        printon_report_card:
+          type:
+          - boolean
+          - 'null'
+          description: Print on Report Card?
+        printon_transcript:
+          type:
+          - boolean
+          - 'null'
+          description: Print on Transcript?
+        sub_tests:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SubTest'
+          description: List of Subtests
+        test_date:
+          type:
+          - string
+          - 'null'
+          description: The Test Date
+          format: date-time
+        last_modified:
+          type:
+          - string
+          - 'null'
+          description: Last Modified Date
+          format: date-time
+        test_type:
+          type:
+          - string
+          - 'null'
+          description: The Test Type
+        test_type_id:
+          type:
+          - integer
+          - 'null'
+          description: The Test Type Id
+          format: int32
+        user:
+          $ref: '#/components/schemas/UserBaseRead'
+      additionalProperties: false
+      description: TestScores Model
+    UserBaseRead:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID associated with a user
+          format: int32
+        email:
+          type:
+          - string
+          - 'null'
+          description: The email address of a user
+        first_name:
+          type:
+          - string
+          - 'null'
+          description: The first name of a user
+        last_name:
+          type:
+          - string
+          - 'null'
+          description: The last name of a user
+        maiden_name:
+          type:
+          - string
+          - 'null'
+          description: The maiden name of a user
+        middle_name:
+          type:
+          - string
+          - 'null'
+          description: The middle name of a user
+        preferred_name:
+          type:
+          - string
+          - 'null'
+          description: The nickname of a user
+        preferred_last_name:
+          type:
+          - string
+          - 'null'
+          description: The preferred last name of a user
+        prefix:
+          type:
+          - string
+          - 'null'
+          description: The prefix of a user
+        suffix:
+          type:
+          - string
+          - 'null'
+          description: The suffix of a user
+      additionalProperties: false
+      description: UserBaseRead Model
+    SubTest:
+      type: object
+      properties:
+        test_type_id:
+          type:
+          - integer
+          - 'null'
+          description: The Test Type ID
+          format: int32
+        sub_test_type:
+          type:
+          - string
+          - 'null'
+          description: The SubTest Type
+        score:
+          type:
+          - number
+          - 'null'
+          description: The SubTest Score
+          format: double
+        test_subtype_id:
+          type:
+          - integer
+          - 'null'
+          description: The SubTest Type Id
+          format: int32
+        percentile:
+          type:
+          - number
+          - 'null'
+          description: The SubTest Percentile
+          format: double
+        scale:
+          type:
+          - number
+          - 'null'
+          description: The SubTest Scale
+          format: double
+        stanie:
+          type:
+          - number
+          - 'null'
+          description: The SubTest Stanie
+          format: double
+      additionalProperties: false
+      description: SubTest Model
+    TestScoreCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items in the collection
+          format: int32
+          readOnly: true
+        next_link:
+          type:
+          - string
+          - 'null'
+          description: For paginated responses, the URI for the next page of results
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/TestScore'
+          description: The set of items included in the response. This may be a subset of the items in the collection
+      additionalProperties: false
+      description: A Collection
+    TestScoreAdd:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The Test Type Id
+          format: int32
+        comment:
+          type:
+          - string
+          - 'null'
+          description: The Comments on the Test
+        overall_score:
+          type:
+          - number
+          - 'null'
+          description: The Overall Score
+          format: double
+        printon_report_card:
+          type:
+          - boolean
+          - 'null'
+          description: Print on Report Card?
+        printon_transcript:
+          type:
+          - boolean
+          - 'null'
+          description: Print on Transcript?
+        sub_tests:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SubTest'
+          description: List of Subtests
+        test_date:
+          type:
+          - string
+          - 'null'
+          description: The Test Date
+          format: date-time
+        attachment:
+          $ref: '#/components/schemas/NewAttachment'
+      additionalProperties: false
+      description: TestScores Model
+    TestTypeCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items in the collection
+          format: int32
+          readOnly: true
+        next_link:
+          type:
+          - string
+          - 'null'
+          description: For paginated responses, the URI for the next page of results
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/TestType'
+          description: The set of items included in the response. This may be a subset of the items in the collection
+      additionalProperties: false
+      description: A Collection
+    NewAttachment:
+      type: object
+      properties:
+        temp_name:
+          type:
+          - string
+          - 'null'
+          description: The temporary file location provided by the Attachment (Create) process.
+        original_name:
+          type:
+          - string
+          - 'null'
+          description: The original name of the file that may be shown in the UI.
+      additionalProperties: false
+      description: An object with attachment file information, including the reference name for the attachment’s temporary storage location. and the original file name. The file's reference information is produced using the upload process that begins with the <a href="https://developer.sky.blackbaud.com/api#api=afe-edcor&operation=V1AttachmentsGet" target="_blank">Attachment (Upload)</a> endpoint. See also <a href="https://developer.blackbaud.com/skyapi/docs/in-depth-topics/physical-attachments" target="_blank">Creating physical attachments</a>. This field is in Preview.
+    TestType:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The Test Score Id
+          format: int32
+        sub_tests:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SubTest'
+          description: List of Subtests
+        test_name:
+          type:
+          - string
+          - 'null'
+          description: The Test Type
+      additionalProperties: false
+      description: ''
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

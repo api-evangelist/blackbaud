@@ -1,0 +1,407 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: School Customfields API'
+  description: This API is used to provide access to school information such as users, academics, admissions, athletics, content, lists, and general school info.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/school
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/school
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Customfields
+paths:
+  /v1/customfields:
+    get:
+      operationId: V1CustomfieldsGet
+      summary: Core custom fields
+      description: 'Returns a collection of admin custom fields.
+
+
+        Requires at least one of the following roles in the Education Management system:
+
+
+        Platform Manager'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminCustomFieldsCollection'
+              example:
+                count: 3
+                value:
+                - field_id: 1837
+                  field_name: Custom Field Test
+                  table_id: 462
+                  table_name: Custom Field Test
+                  data_type_id: 5
+                  data_type: Drop Down
+                  location_index_id: 1
+                  location: Contact Card > General Information
+                  active: true
+                  unique: true
+                  required: false
+                  in_use: true
+                  usage_not_unique: false
+                  location_id: 0
+                  sub_location_id: 0
+                  use_abbreviation: false
+                  table:
+                    table_id: 462
+                    table_name: Custom Field Test
+                    use_abbreviations: false
+                    in_use: false
+                    base_table: false
+                    system_table: false
+                    require_abbreviation: false
+                    modify_user: Susan Sloan
+                    values:
+                    - table_id: 462
+                      table_value_id: 31316
+                      value_name: Test 2
+                      in_use: false
+                      active: true
+                      sort: 0
+                      base_value: false
+                    - table_id: 462
+                      table_value_id: 31315
+                      value_name: Test 1
+                      in_use: true
+                      active: true
+                      sort: 1
+                      base_value: false
+                - field_id: 1815
+                  field_name: Test EK
+                  table_id: 31
+                  table_name: Course Level
+                  data_type_id: 2
+                  data_type: Check Box List
+                  location_index_id: 2
+                  location: Contact Card > Address
+                  active: true
+                  unique: true
+                  required: false
+                  in_use: false
+                  usage_not_unique: false
+                  location_id: 0
+                  sub_location_id: 0
+                  use_abbreviation: false
+                  table:
+                    table_id: 31
+                    table_name: Course Level
+                    use_abbreviations: false
+                    in_use: false
+                    base_table: false
+                    system_table: false
+                    require_abbreviation: false
+                    modify_user: Carliñ Colé
+                    values:
+                    - table_id: 31
+                      table_value_id: 9578
+                      value_name: Junior Level1
+                      value_abbreviation: JR1
+                      in_use: false
+                      active: true
+                      sort: 0
+                      base_value: false
+                    - table_id: 31
+                      table_value_id: 9562
+                      value_name: Junior Level
+                      value_abbreviation: JR
+                      in_use: false
+                      active: true
+                      sort: 1
+                      base_value: false
+                    - table_id: 31
+                      table_value_id: 2470
+                      value_name: Honors
+                      value_abbreviation: Hon
+                      in_use: true
+                      active: true
+                      sort: 2
+                      base_value: false
+                    - table_id: 31
+                      table_value_id: 2469
+                      value_name: Advanced
+                      value_abbreviation: ADV
+                      in_use: false
+                      active: true
+                      sort: 3
+                      base_value: false
+                - field_id: 1756
+                  field_name: First Time/Transfer
+                  table_id: -2147483648
+                  table_name: ''
+                  data_type_id: 7
+                  data_type: Text Input
+                  location_index_id: 1
+                  location: Contact Card > General Information
+                  active: true
+                  unique: false
+                  required: false
+                  in_use: false
+                  usage_not_unique: false
+                  location_id: 0
+                  sub_location_id: 0
+                  use_abbreviation: false
+      tags:
+      - Customfields
+components:
+  schemas:
+    AdminCustomFieldsCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items in the collection
+          format: int32
+          readOnly: true
+        next_link:
+          type:
+          - string
+          - 'null'
+          description: For paginated responses, the URI for the next page of results
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/AdminCustomFields'
+          description: The set of items included in the response. This may be a subset of the items in the collection
+      additionalProperties: false
+      description: A Collection
+    UserDefinedTable:
+      type: object
+      properties:
+        table_id:
+          type:
+          - integer
+          - 'null'
+          description: ''
+          format: int32
+        table_name:
+          type:
+          - string
+          - 'null'
+          description: ''
+        use_abbreviations:
+          type:
+          - boolean
+          - 'null'
+          description: ''
+        in_use:
+          type:
+          - boolean
+          - 'null'
+          description: ''
+        base_table:
+          type:
+          - boolean
+          - 'null'
+          description: ''
+        system_table:
+          type:
+          - boolean
+          - 'null'
+          description: ''
+        require_abbreviation:
+          type:
+          - boolean
+          - 'null'
+          description: ''
+        modify_user:
+          type:
+          - string
+          - 'null'
+          description: ''
+        vendor_id:
+          type:
+          - integer
+          - 'null'
+          description: ''
+          format: int32
+        values:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UserDefinedTableValue'
+          description: ''
+      additionalProperties: false
+      description: User Defined Table
+    UserDefinedTableValue:
+      type: object
+      properties:
+        table_id:
+          type:
+          - integer
+          - 'null'
+          description: ''
+          format: int32
+        table_value_id:
+          type:
+          - integer
+          - 'null'
+          description: ''
+          format: int32
+        value_name:
+          type:
+          - string
+          - 'null'
+          description: ''
+        value_abbreviation:
+          type:
+          - string
+          - 'null'
+          description: ''
+        in_use:
+          type:
+          - boolean
+          - 'null'
+          description: ''
+        active:
+          type:
+          - boolean
+          - 'null'
+          description: ''
+        sort:
+          type:
+          - integer
+          - 'null'
+          description: ''
+          format: int32
+        base_table_value_id:
+          type:
+          - integer
+          - 'null'
+          description: ''
+          format: int32
+        base_value:
+          type:
+          - boolean
+          - 'null'
+          description: ''
+      additionalProperties: false
+      description: User Defined Table Values
+    AdminCustomFields:
+      type: object
+      properties:
+        field_id:
+          type:
+          - integer
+          - 'null'
+          description: ''
+          format: int32
+        field_name:
+          type:
+          - string
+          - 'null'
+          description: ''
+        table_id:
+          type:
+          - integer
+          - 'null'
+          description: ''
+          format: int32
+        table_name:
+          type:
+          - string
+          - 'null'
+          description: ''
+        data_type_id:
+          type:
+          - integer
+          - 'null'
+          description: ''
+          format: int32
+        data_type:
+          type:
+          - string
+          - 'null'
+          description: ''
+        location_index_id:
+          type:
+          - integer
+          - 'null'
+          description: ''
+          format: int32
+        location:
+          type:
+          - string
+          - 'null'
+          description: ''
+        active:
+          type:
+          - boolean
+          - 'null'
+          description: ''
+        unique:
+          type:
+          - boolean
+          - 'null'
+          description: ''
+        required:
+          type:
+          - boolean
+          - 'null'
+          description: ''
+        in_use:
+          type:
+          - boolean
+          - 'null'
+          description: ''
+        usage_not_unique:
+          type:
+          - boolean
+          - 'null'
+          description: ''
+        location_id:
+          type:
+          - integer
+          - 'null'
+          description: ''
+          format: int32
+        sub_location_id:
+          type:
+          - integer
+          - 'null'
+          description: ''
+          format: int32
+        sub_location:
+          type:
+          - string
+          - 'null'
+          description: ''
+        use_abbreviation:
+          type:
+          - boolean
+          - 'null'
+          description: ''
+        vendor_id:
+          type:
+          - integer
+          - 'null'
+          description: ''
+          format: int32
+        table:
+          $ref: '#/components/schemas/UserDefinedTable'
+      additionalProperties: false
+      description: ''
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

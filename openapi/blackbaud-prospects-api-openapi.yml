@@ -1,0 +1,1208 @@
+openapi: 3.2.0
+info:
+  title: Blackbaud Prospects API
+  version: '1.0'
+  x-refined-note:
+  - x-apievangelist-provenance differs across the merged source definitions and was not carried
+  description: 'Operations tagged Prospects across 3 of this provider''s published API definitions: blackbaud-altru-prospect-api-openapi.yml, blackbaud-crm-prospect-api-openapi.yml, blackbaud-prospect-api-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.sky.blackbaud.com/alt-prsmg
+- url: https://api.sky.blackbaud.com/crm-prsmg
+- url: https://api.sky.blackbaud.com/prospect
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Prospects
+paths:
+  /prospects:
+    post:
+      operationId: CreateProspect
+      summary: Create a prospect
+      description: Add dataoperation for a prospect.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewProspect'
+            example:
+              constituent_id: ''
+              prospect_id: ''
+              prospect_manager_fundraiser_id: ''
+              prospect_plan_prospectplan_type: ''
+              prospect_plan_plan_outline: ''
+              prospect_plan_primary_manager_fundraiser_id: ''
+              prospect_plan_secondary_manager_fundraiser_id: ''
+              secondary_fundraisers:
+              - id: ''
+                sequence: 0
+                fundraiser_id: ''
+                solicitorrole: ''
+                date_from: ''
+              prospect_plan_name: ''
+              prospect_plan_participants:
+              - constituent_id: ''
+                plan_participant_role: ''
+              sites:
+              - id: ''
+                site_id: ''
+              prospect_plan_site_required: false
+              prospect_team:
+              - id: ''
+                member_id: ''
+                prospect_team_role: ''
+                date_from: ''
+                site_name: ''
+              prospect_plan_primary_manager_date_from: ''
+              prospect_plan_secondary_manager_date_from: ''
+              prospect_manager_date_from: ''
+              prospect_plan_start_date: ''
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully creates the resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to create the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Prospects
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-prsmg
+  /prospects/search:
+    get:
+      operationId: SearchProspects
+      summary: Search for prospects
+      description: Search for prospects.
+      parameters:
+      - name: constituent_type
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: constituent type
+      - name: key_name
+        in: query
+        required: false
+        schema:
+          type: string
+        description: last/org name
+      - name: first_name
+        in: query
+        required: false
+        schema:
+          type: string
+        description: first name
+      - name: full_name
+        in: query
+        required: false
+        schema:
+          type: string
+        description: name
+      - name: lookup_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: lookup id
+      - name: address_block
+        in: query
+        required: false
+        schema:
+          type: string
+        description: address
+      - name: city
+        in: query
+        required: false
+        schema:
+          type: string
+        description: city
+      - name: state
+        in: query
+        required: false
+        schema:
+          type: string
+        description: state SimpleDataListID=7fa91401-596c-4f7c-936d-6e41683121d7.
+      - name: post_code
+        in: query
+        required: false
+        schema:
+          type: string
+        description: zip/postal code
+      - name: country
+        in: query
+        required: false
+        schema:
+          type: string
+        description: country SimpleDataListID=c9649672-353d-42e8-8c25-4d34bbabfbba.
+      - name: include_inactive
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: include inactive
+      - name: include_deceased
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: include deceased
+      - name: only_primary_address
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: only search primary addresses
+      - name: exact_match_only
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: match all criteria exactly
+      - name: only_prospects
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: only prospects
+      - name: only_fundraisers
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: only fundraisers
+      - name: only_staff
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: only staff
+      - name: only_volunteers
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: only volunteers
+      - name: ssn
+        in: query
+        required: false
+        schema:
+          type: string
+        description: ssn
+      - name: fuzzy_search_on_name
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: include fuzzy search on name
+      - name: phone_number
+        in: query
+        required: false
+        schema:
+          type: string
+        description: phone number
+      - name: suffix
+        in: query
+        required: false
+        schema:
+          type: string
+        description: suffix This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/SUFFIXCODE/entries
+      - name: constituency
+        in: query
+        required: false
+        schema:
+          type: string
+        description: constituency SimpleDataListID=7821c1ab-3001-485b-aec7-f55749f959e6.
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Limits the number of records to return.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of result entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProspectSearchCollection'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to view the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+      tags:
+      - Prospects
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-prsmg
+  /prospects/{constituent_id}:
+    patch:
+      operationId: EditProspect
+      summary: Edit a prospect
+      description: Edit operation for setting details on the prospect record.
+      parameters:
+      - name: constituent_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The constituent id.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditProspect'
+            example:
+              prospect: ''
+              prospect_manager_fundraiser_id: ''
+              prospect_status: ''
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully edits the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to edit the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Prospects
+    get:
+      operationId: GetProspect
+      summary: Get a prospect
+      description: Edit operation for setting details on the prospect record.
+      parameters:
+      - name: constituent_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The constituent id.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the specified resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Prospect'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to get the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Prospects
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-prsmg
+  /prospects/{constituent_id}/prospectplans:
+    get:
+      operationId: ListProspectPlans
+      summary: List prospect plans
+      description: List of prospect plans.
+      parameters:
+      - name: constituent_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The constituent id.
+      - name: include_inactive_plans
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: include historical plans
+      - name: site_filter_mode
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - All sites
+          - My site
+          - My site's branch
+          - Selected sites
+        description: sites
+      - name: sites_selected
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Format - XML. sites selected
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Limits the number of records to return.
+      - name: session_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: A unique key provided by user for paging results. The same key will be returned in a successful response.
+      - name: infinity_session
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Values for cookies related to the Infinity load balancer session.
+      - name: more_rows_range_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Key for accessing cached results on subsequent calls to this data list.
+      - name: start_row_index
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Number of rows to skip,get result after these rows.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of result entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProspectPlanListCollection'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to view the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+      tags:
+      - Prospects
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-prsmg
+  /prospects/{constituent_id}/prospectstatus:
+    get:
+      operationId: ViewProspectStatus
+      summary: View a prospect status
+      description: Defines the fields for the prospects tile.
+      parameters:
+      - name: constituent_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The constituent id.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the specified resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProspectStatusView'
+      tags:
+      - Prospects
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-prsmg
+  /prospects/{constituent_id}/view:
+    get:
+      operationId: ViewProspect
+      summary: View a prospect
+      description: This view operation provides summary inoperationation about the prospect.
+      parameters:
+      - name: constituent_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The constituent id.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the specified resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProspectView'
+      tags:
+      - Prospects
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-prsmg
+  /prospects/{opportunity_id}/prospectopportunities:
+    delete:
+      operationId: DeleteProspectOpportunity
+      summary: Delete a prospect opportunity
+      description: This delete method handles the basic deletion rules for an opportunity.
+      parameters:
+      - name: opportunity_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The opportunity id
+      responses:
+        '200':
+          description: Returned when the operation successfully deletes the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to delete the resource.
+      tags:
+      - Prospects
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-prsmg
+  /v1/prospects/{prospect_id}/constituent:
+    get:
+      operationId: GetConstituentIdByProspectId
+      summary: Get the constituent identifier for a prospect (PREVIEW)
+      description: 'Translates a prospect ID to its associated constituent ID.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: prospect_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The immutable system record ID of the prospect.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConstituentIdRead'
+              example:
+                constituent_id: '280'
+      tags:
+      - Prospects
+    servers:
+    - url: https://api.sky.blackbaud.com/prospect
+components:
+  schemas:
+    EditProspect:
+      type: object
+      properties:
+        prospect:
+          maxLength: 154
+          minLength: 0
+          type: string
+          description: The prospect. Read-only in the SOAP API.
+        prospect_manager_fundraiser_id:
+          type: string
+          description: The prospect manager.
+        prospect_status:
+          type: string
+          description: The prospect status. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/prospectstatuscode/entries
+      additionalProperties: false
+      description: EditProspect
+      example:
+        prospect: ''
+        prospect_manager_fundraiser_id: ''
+        prospect_status: ''
+      x-display-name: Prospect Edit Form
+      x-display-id: Prospect Edit Form
+    Prospect:
+      type: object
+      properties:
+        prospect:
+          maxLength: 154
+          minLength: 0
+          type: string
+          description: The prospect. Read-only in the SOAP API.
+        prospect_manager_fundraiser_id:
+          type: string
+          description: The prospect manager.
+        prospect_status:
+          type: string
+          description: The prospect status. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/prospectstatuscode/entries
+      additionalProperties: false
+      description: GetProspect
+      x-display-name: Prospect Edit Form
+      x-display-id: Prospect Edit Form
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type: integer
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type: string
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: false
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-display-name: Problem details
+      x-display-id: ProblemDetails
+    ProspectSearchSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID.
+        name:
+          type: string
+          description: The name.
+        prospect_manager:
+          type: string
+          description: The prospect manager.
+        primary_managers:
+          type: string
+          description: The primary plan manager(s).
+        address:
+          type: string
+          description: The address.
+        city:
+          type: string
+          description: The city.
+        state:
+          type: string
+          description: The state.
+        post_code:
+          type: string
+          description: The zip/postal code.
+        phone:
+          type: string
+          description: The phone.
+        constituent_type:
+          type: string
+          description: The constituent type.
+        sort_constituent_name:
+          type: string
+          description: The name.
+        lookup_id:
+          type: string
+          description: The lookup ID.
+      additionalProperties: false
+      description: SearchProspects
+      x-display-name: Prospect Search
+      x-display-id: Prospect Search
+    ProspectView:
+      type: object
+      properties:
+        prospect_manager_fundraiser_id:
+          type: string
+          description: The prospectmanagerfundraiserid.
+        prospect_manager:
+          maxLength: 700
+          minLength: 0
+          type: string
+          description: The prospect manager.
+        prospect_status:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The prospect status.
+        prospect_manager_start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+      additionalProperties: false
+      description: ViewProspect
+      x-display-name: Prospect Summary View Form
+      x-display-id: Prospect Summary View Form
+    NewProspectSecondaryFundraisers:
+      required:
+      - fundraiser_id
+      type: object
+      properties:
+        id:
+          type: string
+          description: id
+        sequence:
+          type: integer
+          description: sequence
+        fundraiser_id:
+          type: string
+          description: secondary solicitors
+        solicitorrole:
+          type: string
+          description: The role. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/solicitorrolecode/entries
+        date_from:
+          type: string
+          description: start date
+          format: date
+      description: NewProspectSecondaryFundraisers
+      x-display-name: secondary_fundraisers
+      x-display-id: secondary_fundraisers
+    NewProspectProspectPlanParticipants:
+      required:
+      - constituent_id
+      type: object
+      properties:
+        constituent_id:
+          type: string
+          description: plan participants
+        plan_participant_role:
+          type: string
+          description: The role. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/planparticipantrolecode/entries
+      description: NewProspectProspectPlanParticipants
+      x-display-name: prospect_plan_participants
+      x-display-id: prospect_plan_participants
+    ProspectPlanListSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID.
+        view_data_form_id:
+          type: string
+          description: The view dataform ID.
+        next_interaction_id:
+          type: string
+          description: The nextinteractionid.
+        active:
+          type: boolean
+          description: Indicates whether isactive.
+        stewardship_plan:
+          type: boolean
+          description: Indicates whether is stewardship plan.
+        plan_type:
+          type: string
+          description: The plan type.
+        plan_name:
+          type: string
+          description: The plan name.
+        sites:
+          type: string
+          description: The sites.
+        constituent_name:
+          type: string
+          description: The constituent.
+        start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        date_added:
+          type: string
+          description: 'The date added. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+      additionalProperties: false
+      description: ListProspectPlans
+      x-display-name: Prospect Plan List
+      x-display-id: Prospect Plan List
+    ProspectSearchCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items available for retrieval into the collection after applying any request parameters.
+          format: int32
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProspectSearchSummary'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+      additionalProperties: false
+      description: A collection of items. Data lists can contain paginated results.
+    ProspectStatusView:
+      type: object
+      properties:
+        prospect:
+          type: boolean
+          description: Indicates whether isprospect.
+        prospect_manager_fundraiser_id:
+          type: string
+          description: The prospectmanagerfundraiserid.
+        flagged:
+          type: boolean
+          description: Indicates whether isflagged.
+        prospect_manager_name:
+          maxLength: 700
+          minLength: 0
+          type: string
+          description: The prospect manager.
+        prospect_status:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The prospect status.
+        prospect_manager_start_date:
+          type: string
+          description: 'The prospect manager since. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+      additionalProperties: false
+      description: ViewProspectStatus
+      x-display-name: Constituent Summary Prospect Tile View Data Form
+      x-display-id: Constituent Summary Prospect Tile View Data Form
+    NewProspectSites:
+      required:
+      - site_id
+      type: object
+      properties:
+        id:
+          type: string
+          description: id
+        site_id:
+          type: string
+          description: site
+      description: NewProspectSites
+      x-display-name: sites
+      x-display-id: sites
+    ProspectPlanListCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items available for retrieval into the collection after applying any request parameters.
+          format: int32
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProspectPlanListSummary'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+        infinity_session:
+          type: string
+          description: Values for cookies related to the Infinity load balancer session.
+          format: string
+        session_key:
+          type: string
+          description: Session key for paging provided by user in request query parameter.
+          format: string
+        total_available_rows:
+          type: integer
+          description: The number of total rows available.
+          format: int32
+        more_rows_range_key:
+          type: string
+          description: Key for accessing cached results on subsequent calls to this data list.
+          format: string
+        data_no_longer_available:
+          type: boolean
+          description: Indicates data is no longer available in the context of this session.
+          format: boolean
+      additionalProperties: false
+      description: A collection of items. Data lists can contain paginated results.
+    NewProspect:
+      required:
+      - constituent_id
+      - prospect_id
+      type: object
+      properties:
+        constituent_id:
+          type: string
+          description: The constituent ID.
+        prospect_id:
+          type: string
+          description: The constituent.
+        prospect_manager_fundraiser_id:
+          type: string
+          description: The prospect manager.
+        prospect_plan_prospectplan_type:
+          type: string
+          description: The plan type. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/prospectplantypecode/entries
+        prospect_plan_plan_outline:
+          type: string
+          description: The plan outline. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/f387516c-3e52-46cf-9b8c-9b03fdafab62.
+        prospect_plan_primary_manager_fundraiser_id:
+          type: string
+          description: The primary manager.
+        prospect_plan_secondary_manager_fundraiser_id:
+          type: string
+          description: The secondary manager.
+        secondary_fundraisers:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewProspectSecondaryFundraisers'
+          description: Secondary fundraisers.
+        prospect_plan_name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The plan name.
+        prospect_plan_participants:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewProspectProspectPlanParticipants'
+          description: Prospect plan participants.
+        sites:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewProspectSites'
+          description: Sites.
+        prospect_plan_site_required:
+          type: boolean
+          description: Indicates whether prospect plan site required. Read-only in the SOAP API.
+        prospect_team:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewProspectProspectTeam'
+          description: Prospect team.
+        prospect_plan_primary_manager_date_from:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        prospect_plan_secondary_manager_date_from:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        prospect_manager_date_from:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        prospect_plan_start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+      additionalProperties: false
+      description: CreateProspect
+      example:
+        constituent_id: ''
+        prospect_id: ''
+        prospect_manager_fundraiser_id: ''
+        prospect_plan_prospectplan_type: ''
+        prospect_plan_plan_outline: ''
+        prospect_plan_primary_manager_fundraiser_id: ''
+        prospect_plan_secondary_manager_fundraiser_id: ''
+        secondary_fundraisers:
+        - id: ''
+          sequence: 0
+          fundraiser_id: ''
+          solicitorrole: ''
+          date_from: ''
+        prospect_plan_name: ''
+        prospect_plan_participants:
+        - constituent_id: ''
+          plan_participant_role: ''
+        sites:
+        - id: ''
+          site_id: ''
+        prospect_plan_site_required: false
+        prospect_team:
+        - id: ''
+          member_id: ''
+          prospect_team_role: ''
+          date_from: ''
+          site_name: ''
+        prospect_plan_primary_manager_date_from: ''
+        prospect_plan_secondary_manager_date_from: ''
+        prospect_manager_date_from: ''
+        prospect_plan_start_date: ''
+      x-display-name: Prospect Add Form
+      x-display-id: Prospect Add Form
+    PostResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The newly created ID.
+      additionalProperties: false
+      description: Defines the shape of a post response object.
+    NewProspectProspectTeam:
+      required:
+      - member_id
+      - prospect_team_role
+      - date_from
+      type: object
+      properties:
+        id:
+          type: string
+          description: id
+        member_id:
+          type: string
+          description: team members
+        prospect_team_role:
+          type: string
+          description: The role. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/prospectteamrolecode/entries
+        date_from:
+          type: string
+          description: start date
+          format: date
+        site_name:
+          type: string
+          description: position site
+      description: NewProspectProspectTeam
+      x-display-name: prospect_team
+      x-display-id: prospect_team
+    EditProspect_2:
+      type: object
+      properties:
+        prospect:
+          maxLength: 154
+          minLength: 0
+          type: string
+          description: The prospect. Read-only in the SOAP API.
+        prospect_manager_fundraiser_id:
+          type: string
+          description: The prospect manager.
+        prospect_status:
+          type: string
+          description: The prospect status. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/prospectstatuscode/entries
+      additionalProperties: false
+      description: EditProspect
+      example:
+        prospect: ''
+        prospect_manager_fundraiser_id: ''
+        prospect_status: ''
+      x-display-name: Prospect Edit Form
+      x-display-id: Prospect Edit Form
+    Prospect_2:
+      type: object
+      properties:
+        prospect:
+          maxLength: 154
+          minLength: 0
+          type: string
+          description: The prospect. Read-only in the SOAP API.
+        prospect_manager_fundraiser_id:
+          type: string
+          description: The prospect manager.
+        prospect_status:
+          type: string
+          description: The prospect status. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/prospectstatuscode/entries
+      additionalProperties: false
+      description: GetProspect
+      x-display-name: Prospect Edit Form
+      x-display-id: Prospect Edit Form
+    NewProspectSecondaryFundraisers_2:
+      required:
+      - fundraiser_id
+      type: object
+      properties:
+        id:
+          type: string
+          description: id
+        sequence:
+          type: integer
+          description: sequence
+        fundraiser_id:
+          type: string
+          description: secondary solicitors
+        solicitorrole:
+          type: string
+          description: The role. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/solicitorrolecode/entries
+        date_from:
+          type: string
+          description: start date
+          format: date
+      description: NewProspectSecondaryFundraisers
+      x-display-name: secondary_fundraisers
+      x-display-id: secondary_fundraisers
+    NewProspectProspectPlanParticipants_2:
+      required:
+      - constituent_id
+      type: object
+      properties:
+        constituent_id:
+          type: string
+          description: plan participants
+        plan_participant_role:
+          type: string
+          description: The role. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/planparticipantrolecode/entries
+      description: NewProspectProspectPlanParticipants
+      x-display-name: prospect_plan_participants
+      x-display-id: prospect_plan_participants
+    NewProspect_2:
+      required:
+      - constituent_id
+      - prospect_id
+      type: object
+      properties:
+        constituent_id:
+          type: string
+          description: The constituent ID.
+        prospect_id:
+          type: string
+          description: The constituent.
+        prospect_manager_fundraiser_id:
+          type: string
+          description: The prospect manager.
+        prospect_plan_prospectplan_type:
+          type: string
+          description: The plan type. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/prospectplantypecode/entries
+        prospect_plan_plan_outline:
+          type: string
+          description: The plan outline. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/f387516c-3e52-46cf-9b8c-9b03fdafab62.
+        prospect_plan_primary_manager_fundraiser_id:
+          type: string
+          description: The primary manager.
+        prospect_plan_secondary_manager_fundraiser_id:
+          type: string
+          description: The secondary manager.
+        secondary_fundraisers:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewProspectSecondaryFundraisers_2'
+          description: Secondary fundraisers.
+        prospect_plan_name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The plan name.
+        prospect_plan_participants:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewProspectProspectPlanParticipants_2'
+          description: Prospect plan participants.
+        sites:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewProspectSites'
+          description: Sites.
+        prospect_plan_site_required:
+          type: boolean
+          description: Indicates whether prospect plan site required. Read-only in the SOAP API.
+        prospect_team:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewProspectProspectTeam_2'
+          description: Prospect team.
+        prospect_plan_primary_manager_date_from:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        prospect_plan_secondary_manager_date_from:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        prospect_manager_date_from:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        prospect_plan_start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+      additionalProperties: false
+      description: CreateProspect
+      example:
+        constituent_id: ''
+        prospect_id: ''
+        prospect_manager_fundraiser_id: ''
+        prospect_plan_prospectplan_type: ''
+        prospect_plan_plan_outline: ''
+        prospect_plan_primary_manager_fundraiser_id: ''
+        prospect_plan_secondary_manager_fundraiser_id: ''
+        secondary_fundraisers:
+        - id: ''
+          sequence: 0
+          fundraiser_id: ''
+          solicitorrole: ''
+          date_from: ''
+        prospect_plan_name: ''
+        prospect_plan_participants:
+        - constituent_id: ''
+          plan_participant_role: ''
+        sites:
+        - id: ''
+          site_id: ''
+        prospect_plan_site_required: false
+        prospect_team:
+        - id: ''
+          member_id: ''
+          prospect_team_role: ''
+          date_from: ''
+          site_name: ''
+        prospect_plan_primary_manager_date_from: ''
+        prospect_plan_secondary_manager_date_from: ''
+        prospect_manager_date_from: ''
+        prospect_plan_start_date: ''
+      x-display-name: Prospect Add Form
+      x-display-id: Prospect Add Form
+    NewProspectProspectTeam_2:
+      required:
+      - member_id
+      - prospect_team_role
+      - date_from
+      type: object
+      properties:
+        id:
+          type: string
+          description: id
+        member_id:
+          type: string
+          description: team members
+        prospect_team_role:
+          type: string
+          description: The role. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/prospectteamrolecode/entries
+        date_from:
+          type: string
+          description: start date
+          format: date
+        site_name:
+          type: string
+          description: position site
+      description: NewProspectProspectTeam
+      x-display-name: prospect_team
+      x-display-id: prospect_team
+    ConstituentIdRead:
+      type: object
+      properties:
+        constituent_id:
+          type:
+          - string
+          - 'null'
+          description: The immutable system record ID of the constituent.
+      additionalProperties: false
+      description: Contains the constituent ID associated with a prospect.
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+x-refined-from:
+- blackbaud-altru-prospect-api-openapi.yml
+- blackbaud-crm-prospect-api-openapi.yml
+- blackbaud-prospect-api-openapi.yml

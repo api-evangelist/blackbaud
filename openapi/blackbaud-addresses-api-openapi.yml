@@ -1,0 +1,2492 @@
+openapi: 3.2.0
+info:
+  title: Blackbaud Addresses API
+  version: '1.0'
+  x-refined-note:
+  - x-apievangelist-provenance differs across the merged source definitions and was not carried
+  description: 'Operations tagged Addresses across 3 of this provider''s published API definitions: blackbaud-altru-constituent-api-openapi.yml, blackbaud-constituent-api-openapi.yml, blackbaud-crm-constituent-api-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.sky.blackbaud.com/alt-conmg
+- url: https://api.sky.blackbaud.com/constituent/v1
+- url: https://api.sky.blackbaud.com/crm-conmg
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Addresses
+paths:
+  /addresses:
+    post:
+      operationId: CreateConstituentAddress
+      summary: Create a constituent address
+      description: This operation is used to add an address.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewConstituentAddress'
+            example:
+              constituent_id: 4B358EDA-9374-4DED-BE55-7C404BB5E4AB
+              address_type: ''
+              address_block: ''
+              city: ''
+              state: ''
+              postcode: ''
+              country: ''
+              do_not_mail: false
+              cart: ''
+              lot: ''
+              dpc: ''
+              start_date:
+                year: 2014
+                month: 4
+                day: 13
+              end_date:
+                year: 2024
+                month: 4
+                day: 13
+              primary: false
+              historical_start_date: '2014-11-04T10:04:00Z'
+              recent_move: false
+              old_address: ''
+              spouse_name: ''
+              update_matching_spouse_addresses: false
+              omit_from_validation: false
+              county: ''
+              congressional_district: ''
+              state_house_district: ''
+              state_senate_district: ''
+              local_precinct: ''
+              info_source: ''
+              region: ''
+              last_validation_attempt_date: '2019-11-04T10:04:00Z'
+              validation_message: ''
+              certification_data: 0
+              zip_lookup_countries:
+              - country_id: 4B358EDA-9374-4DED-BE55-7C404BB5E3AB
+                country_name: us
+              household: false
+              household_member: false
+              update_matching_household_addresses: false
+              validation_countries:
+              - country_id: ''
+                browsable: false
+              do_not_mail_reason: ''
+              info_source_comments: ''
+              confidential: false
+              constituent_data_review_rollback_reason: ''
+              forced_primary: false
+              can_edit_primary: false
+              invalid_fields: ''
+              origin: User
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully creates the resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to create the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Addresses
+    get:
+      operationId: ListConstituentAddressesAllConstituents
+      summary: Address list (All constituents)
+      description: 'Returns a paginated list of addresses.
+
+
+        The default sorting behavior is to list addresses in ascending order based on when they were created.
+
+
+        However, the last_modified parameter overrides the default sorting behavior to list addresses in ascending order based on when they were last modified. The last_modified and date_added parameters also add the sort_token parameter to the next_link URL to ensure that addresses are stably sorted and that order persists when changes occur while working through a paginated list.
+
+
+        If the last_modified and date_added parameters are both specified, the sorting behavior is to list addresses based on when they were last modified.
+
+
+        Note: This endpoint returns data with an average latency of about 30 minutes.'
+      parameters:
+      - name: date_added
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Represents a filter for addresses created on or after the specified date. The filter respects time offsets from UTC per the ISO-8601 format: 2016-05-05T17:59:31.1600745-04:00.'
+      - name: last_modified
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Represents a filter for addresses modified on or after the specified date. The filter respects time offsets from UTC per the ISO-8601 format: 2016-05-05T17:59:31.1600745-04:00.'
+      - name: sort_token
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Represents a token filter to provide the next stable-sorted list of addresses. This will be provided on the next_link collection response property when last_modified or sort_token filters are specified on the request.
+      - name: include_inactive
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: Set this parameter to "true" to include inactive addresses in the response.
+      - name: constituent_id
+        in: query
+        required: false
+        schema:
+          type: array
+        description: Represents a list of constituent identifiers. Returns addresses if any of the specified constituent identifiers match any of the addresses' associated constituents. For example, "constituent_id=280&amp;constituent_id=1232" returns addresses with either "280" or "1232" constituent identifiers.
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Represents the number of records to return. The default is 500. The maximum is 5000.
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Represents the number of records to skip. For use with pagination.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a <a href="https://developer.blackbaud.com/skyapi/api/entity-reference/constituent#Collection">collection</a> of <a href="https://developer.blackbaud.com/skyapi/api/entity-reference/constituent#Address">address</a> entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiCollectionOfAddressRead'
+              example:
+                count: 774
+                next_link: https://api.sky.blackbaud.com/constituent/v1/addresses?offset=4&limit=4
+                value:
+                - id: '184'
+                  address_lines: '248 Twin Lane
+
+                    Building #3299'
+                  city: Birmingham
+                  constituent_id: '185'
+                  country: United States
+                  county: Bailey
+                  date_added: '1999-05-20T18:52:54Z'
+                  date_modified: '2016-10-19T19:42:38.775Z'
+                  do_not_mail: false
+                  end: '2025-03-26T00:00:00Z'
+                  inactive: false
+                  postal_code: '35220'
+                  preferred: true
+                  seasonal_end:
+                    d: 26
+                    m: 8
+                  seasonal_start:
+                    d: 12
+                    m: 6
+                  start: '2003-03-26T00:00:00Z'
+                  state: AL
+                  type: Home
+                - id: '185'
+                  address_lines: 2457 Morrison Drive
+                  city: Savannah
+                  constituent_id: '186'
+                  country: United States
+                  date_added: '1999-05-20T18:52:55Z'
+                  date_modified: '2016-10-19T19:42:38.775Z'
+                  do_not_mail: false
+                  inactive: false
+                  postal_code: '31406'
+                  preferred: true
+                  seasonal_end:
+                    d: 26
+                    m: 8
+                  seasonal_start:
+                    d: 12
+                    m: 6
+                  start: '2001-02-26T00:00:00Z'
+                  state: GA
+                  type: Home
+                - id: '186'
+                  address_lines: 125 Smokerise Way
+                  city: Charleston
+                  constituent_id: '187'
+                  country: United States
+                  county: Charleston
+                  date_added: '1999-05-20T18:52:55Z'
+                  date_modified: '2016-10-19T19:42:38.775Z'
+                  do_not_mail: false
+                  inactive: false
+                  postal_code: '29401'
+                  preferred: true
+                  start: '1994-03-26T00:00:00Z'
+                  state: SC
+                  type: Home
+                - id: '187'
+                  address_lines: 4859 Philpot Lane
+                  city: Minneapolis
+                  constituent_id: '188'
+                  country: United States
+                  date_added: '1999-05-20T18:52:56Z'
+                  date_modified: '2016-10-19T19:42:38.775Z'
+                  do_not_mail: false
+                  inactive: false
+                  postal_code: '55403'
+                  preferred: true
+                  state: MN
+                  type: Home
+        '400':
+          description: Returned when the specified request parameters are not in the appropriate format.
+        '403':
+          description: Returned when the user does not have permission to view the addresses.
+      tags:
+      - Addresses
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-conmg
+  /addresses/search:
+    get:
+      operationId: SearchConstituentAddresses
+      summary: Search for constituent addresses
+      description: This provides the ability to search for a constituent's addresses.
+      parameters:
+      - name: key_name
+        in: query
+        required: false
+        schema:
+          type: string
+        description: last/org name
+      - name: first_name
+        in: query
+        required: false
+        schema:
+          type: string
+        description: first name
+      - name: lookup_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: lookup id
+      - name: address_block
+        in: query
+        required: false
+        schema:
+          type: string
+        description: address
+      - name: city
+        in: query
+        required: false
+        schema:
+          type: string
+        description: city
+      - name: state
+        in: query
+        required: false
+        schema:
+          type: string
+        description: state SimpleDataListID=7fa91401-596c-4f7c-936d-6e41683121d7.
+      - name: post_code
+        in: query
+        required: false
+        schema:
+          type: string
+        description: post code
+      - name: country
+        in: query
+        required: false
+        schema:
+          type: string
+        description: country SimpleDataListID=c9649672-353d-42e8-8c25-4d34bbabfbba.
+      - name: only_primary_address
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: only search primary addresses
+      - name: exact_match_only
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: match all criteria exactly
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Limits the number of records to return.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of result entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConstituentAddressSearchCollection'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to view the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+      tags:
+      - Addresses
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-conmg
+  /addresses/{address_id}:
+    delete:
+      operationId: DeleteConstituentAddress
+      summary: Delete a constituent address
+      description: This deletion handles only the basic deletion rules for an address (currently none).
+      parameters:
+      - name: address_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The address id
+      responses:
+        '200':
+          description: Returned when the operation successfully deletes the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to delete the resource.
+      tags:
+      - Addresses
+    patch:
+      operationId: EditConstituentAddress
+      summary: Edit a constituent address
+      description: This operation is used to edit an address.
+      parameters:
+      - name: address_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The address id.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditConstituentAddress'
+            example:
+              address_type: ''
+              address_block: ''
+              city: ''
+              state_: ''
+              postcode: ''
+              country_: ''
+              cart: ''
+              dpc: ''
+              lot: ''
+              start_date:
+                year: 2014
+                month: 4
+                day: 13
+              end_date:
+                year: 2024
+                month: 4
+                day: 13
+              primary: false
+              do_not_mail: false
+              omit_from_validation: false
+              county: ''
+              congressional_district: ''
+              state_house_district: ''
+              state_senate_district: ''
+              local_precinct: ''
+              info_source: ''
+              region: ''
+              last_validation_attempt_date: '2019-11-04T10:04:00Z'
+              validation_message: ''
+              certification_data: 0
+              ncoa_last_submit_date: '2019-11-04T10:04:00Z'
+              ncoa_return: ''
+              ncoa_footnote: ''
+              ncoa_dpv_footnote: ''
+              ncoa_move_date:
+                year: 2024
+                month: 4
+                day: 13
+              ncoa_dma_suppression: false
+              ncoa_mail_grade: ''
+              zip_lookup_countries:
+              - country_id: ''
+                country_name: ''
+              validation_countries:
+              - country_id: ''
+                browsable: false
+              update_contacts: false
+              has_contacts: false
+              do_not_mail_reason: ''
+              household: false
+              household_member: false
+              update_matching_household_addresses: false
+              matching_household_members:
+              - constituent_id: ''
+                name: ''
+                relationship_to_primary: ''
+              historical_start_date: '2014-11-04T10:04:00Z'
+              historical_end_date: '2024-11-04T10:04:00Z'
+              date_added: '2014-11-04T11:04:00Z'
+              info_source_comments: ''
+              confidential: false
+              constituent_data_review_rollback_reason: ''
+              forced_primary: false
+              can_edit_primary: false
+              invalid_fields: ''
+              origin: User
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully edits the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to edit the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Addresses
+    get:
+      operationId: GetConstituentAddress
+      summary: Get a constituent address
+      description: This operation is used to edit an address.
+      parameters:
+      - name: address_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The address id.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the specified resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConstituentAddress'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to get the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Addresses
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-conmg
+  /addresses/{address_id}/view:
+    get:
+      operationId: ViewConstituentAddress
+      summary: View a constituent address
+      description: This operation is used for viewing basic address inoperationation.
+      parameters:
+      - name: address_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The address id.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the specified resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConstituentAddressView'
+      tags:
+      - Addresses
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-conmg
+components:
+  schemas:
+    ConstituentAddressView:
+      type: object
+      properties:
+        address_type:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: The type.
+        country_id:
+          type: string
+          description: The country ID.
+        country:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The country.
+        address_block:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: The address.
+        city:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: The city.
+        state:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The state.
+        post_code:
+          maxLength: 12
+          minLength: 0
+          type: string
+          description: The post code.
+        primary:
+          type: boolean
+          description: Indicates whether is primary.
+        do_not_mail:
+          type: boolean
+          description: Indicates whether do not mail.
+        do_not_mail_reason_code:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: The do not mail reason code.
+        confidential:
+          type: boolean
+          description: Indicates whether is confidential.
+        start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        end_date:
+          type: string
+          description: 'The end date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        date_added:
+          type: string
+          description: 'The date added. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        seasonal_start_date:
+          $ref: '#/components/schemas/MonthDay'
+        seasonal_end_date:
+          $ref: '#/components/schemas/MonthDay'
+        info_source_code:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The information source.
+        info_source_comments:
+          maxLength: 256
+          minLength: 0
+          type: string
+          description: The comments.
+        state_abbreviation:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: The state abbreviation.
+      additionalProperties: false
+      description: ViewConstituentAddress
+      x-display-name: Address Information View Form
+      x-display-id: Address Information View Form
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type: integer
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type: string
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: false
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-display-name: Problem details
+      x-display-id: ProblemDetails
+    NewConstituentAddress:
+      required:
+      - constituent_id
+      - country
+      type: object
+      properties:
+        constituent_id:
+          type: string
+          description: The constituent ID.
+        address_type:
+          type: string
+          description: The type. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/addresstypecode/entries
+        address_block:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: The address.
+        city:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: The city.
+        state:
+          type: string
+          description: The state. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/7fa91401-596c-4f7c-936d-6e41683121d7?parameters=countryid,{countryid}.
+        postcode:
+          maxLength: 12
+          minLength: 0
+          type: string
+          description: The zip.
+        country:
+          type: string
+          description: The country. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/c9649672-353d-42e8-8c25-4d34bbabfbba.
+        do_not_mail:
+          type: boolean
+          description: Indicates whether do not send mail to this address.
+        cart:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: The cart.
+        lot:
+          maxLength: 5
+          minLength: 0
+          type: string
+          description: The lot.
+        dpc:
+          maxLength: 8
+          minLength: 0
+          type: string
+          description: The dpc.
+        start_date:
+          $ref: '#/components/schemas/MonthDay'
+        end_date:
+          $ref: '#/components/schemas/MonthDay'
+        primary:
+          type: boolean
+          description: Indicates whether set as primary address.
+        historical_start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        recent_move:
+          type: boolean
+          description: Indicates whether recently moved/changed from this address?.
+        old_address:
+          type: string
+          description: The old address. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/bc075172-8103-4ccb-8285-658180e603a1?parameters=constituent_id,{constituent_id}.
+        spouse_name:
+          maxLength: 154
+          minLength: 0
+          type: string
+          description: The spouse name. Read-only in the SOAP API.
+        update_matching_spouse_addresses:
+          type: boolean
+          description: Indicates whether update matching address information for spouse.
+        omit_from_validation:
+          type: boolean
+          description: Indicates whether omit this address from validation.
+        county:
+          type: string
+          description: The county. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/countycode/entries
+        congressional_district:
+          type: string
+          description: The congressional district. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/congressionaldistrictcode/entries
+        state_house_district:
+          type: string
+          description: The state house district. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/statehousedistrictcode/entries
+        state_senate_district:
+          type: string
+          description: The state senate district. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/statesenatedistrictcode/entries
+        local_precinct:
+          type: string
+          description: The local precinct. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/localprecinctcode/entries
+        info_source:
+          type: string
+          description: The information source. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/infosourcecode/entries
+        region:
+          type: string
+          description: The region. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/regioncode/entries
+        last_validation_attempt_date:
+          type: string
+          description: 'The last attempt. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        validation_message:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The validation message.
+        certification_data:
+          type: integer
+          description: The certification data.
+          format: int32
+        zip_lookup_countries:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewConstituentAddressZipLookupCountries'
+          description: Zip lookup countries.
+        household:
+          type: boolean
+          description: Indicates whether household. Read-only in the SOAP API.
+        household_member:
+          type: boolean
+          description: Indicates whether household member. Read-only in the SOAP API.
+        update_matching_household_addresses:
+          type: boolean
+          description: Indicates whether copy address information to household members.
+        validation_countries:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewConstituentAddressValidationCountries'
+          description: Validation countries.
+        do_not_mail_reason:
+          type: string
+          description: The reason. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/donotmailreasoncode/entries
+        info_source_comments:
+          maxLength: 256
+          minLength: 0
+          type: string
+          description: The comments.
+        confidential:
+          type: boolean
+          description: Indicates whether this address is confidential.
+        constituent_data_review_rollback_reason:
+          type: string
+          description: The reason. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/484441bc-f0e6-4f5f-a6bf-49f02881dd13.
+        forced_primary:
+          type: boolean
+          description: Indicates whether forced primary. Read-only in the SOAP API.
+        can_edit_primary:
+          type: boolean
+          description: Indicates whether can edit primary. Read-only in the SOAP API.
+        invalid_fields:
+          maxLength: 256
+          minLength: 0
+          type: string
+          description: The invalid fields. Read-only in the SOAP API.
+        origin:
+          type: string
+          description: The origin. Available values are <i>user</i>, <i>web forms</i>
+      additionalProperties: false
+      description: CreateConstituentAddress
+      example:
+        constituent_id: 4B358EDA-9374-4DED-BE55-7C404BB5E4AB
+        address_type: ''
+        address_block: ''
+        city: ''
+        state: ''
+        postcode: ''
+        country: ''
+        do_not_mail: false
+        cart: ''
+        lot: ''
+        dpc: ''
+        start_date:
+          year: 2014
+          month: 4
+          day: 13
+        end_date:
+          year: 2024
+          month: 4
+          day: 13
+        primary: false
+        historical_start_date: '2014-11-04T10:04:00Z'
+        recent_move: false
+        old_address: ''
+        spouse_name: ''
+        update_matching_spouse_addresses: false
+        omit_from_validation: false
+        county: ''
+        congressional_district: ''
+        state_house_district: ''
+        state_senate_district: ''
+        local_precinct: ''
+        info_source: ''
+        region: ''
+        last_validation_attempt_date: '2019-11-04T10:04:00Z'
+        validation_message: ''
+        certification_data: 0
+        zip_lookup_countries:
+        - country_id: 4B358EDA-9374-4DED-BE55-7C404BB5E3AB
+          country_name: us
+        household: false
+        household_member: false
+        update_matching_household_addresses: false
+        validation_countries:
+        - country_id: ''
+          browsable: false
+        do_not_mail_reason: ''
+        info_source_comments: ''
+        confidential: false
+        constituent_data_review_rollback_reason: ''
+        forced_primary: false
+        can_edit_primary: false
+        invalid_fields: ''
+        origin: User
+      x-display-name: Address Add Form 2
+      x-display-id: Address Add Form 2
+    ConstituentAddressSearchSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID.
+        name:
+          type: string
+          description: The name.
+        address:
+          type: string
+          description: The address.
+        city:
+          type: string
+          description: The city.
+        state:
+          type: string
+          description: The state.
+        post_code:
+          type: string
+          description: The post code.
+        full_address:
+          type: string
+          description: The full address.
+        key_name:
+          type: string
+          description: The last name.
+        first_name:
+          type: string
+          description: The first name.
+        primary:
+          type: boolean
+          description: Indicates whether is primary address.
+      additionalProperties: false
+      description: SearchConstituentAddresses
+      x-display-name: Address With Name Search
+      x-display-id: Address With Name Search
+    ConstituentAddressZipLookupCountries:
+      type: object
+      properties:
+        country_id:
+          type: string
+          description: countryid
+        country_name:
+          type: string
+          description: name
+      description: ConstituentAddressZipLookupCountries
+      x-display-name: zip_lookup_countries
+      x-display-id: zip_lookup_countries
+    NewConstituentAddressZipLookupCountries:
+      type: object
+      properties:
+        country_id:
+          type: string
+          description: countryid
+        country_name:
+          type: string
+          description: name
+      description: NewConstituentAddressZipLookupCountries
+      x-display-name: zip_lookup_countries
+      x-display-id: zip_lookup_countries
+    ConstituentAddress:
+      required:
+      - country
+      type: object
+      properties:
+        address_type:
+          type: string
+          description: The type. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/addresstypecode/entries
+        address_block:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: The address.
+        city:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: The city.
+        state:
+          type: string
+          description: The state. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/7fa91401-596c-4f7c-936d-6e41683121d7?parameters=countryid,{countryid}.
+        postcode:
+          maxLength: 12
+          minLength: 0
+          type: string
+          description: The zip.
+        country:
+          type: string
+          description: The country. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/c9649672-353d-42e8-8c25-4d34bbabfbba.
+        cart:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: The cart.
+        dpc:
+          maxLength: 8
+          minLength: 0
+          type: string
+          description: The dpc.
+        lot:
+          maxLength: 5
+          minLength: 0
+          type: string
+          description: The lot.
+        start_date:
+          $ref: '#/components/schemas/MonthDay'
+        end_date:
+          $ref: '#/components/schemas/MonthDay'
+        primary:
+          type: boolean
+          description: Indicates whether set as primary address.
+        do_not_mail:
+          type: boolean
+          description: Indicates whether do not send mail to this address.
+        omit_from_validation:
+          type: boolean
+          description: Indicates whether omit this address from validation.
+        county:
+          type: string
+          description: The county. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/countycode/entries
+        congressional_district:
+          type: string
+          description: The congressional district. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/congressionaldistrictcode/entries
+        state_house_district:
+          type: string
+          description: The state house district. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/statehousedistrictcode/entries
+        state_senate_district:
+          type: string
+          description: The state senate district. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/statesenatedistrictcode/entries
+        local_precinct:
+          type: string
+          description: The local precinct. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/localprecinctcode/entries
+        info_source:
+          type: string
+          description: The information source. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/infosourcecode/entries
+        region:
+          type: string
+          description: The region. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/regioncode/entries
+        last_validation_attempt_date:
+          type: string
+          description: 'The last attempt. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        validation_message:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: The validation message.
+        certification_data:
+          type: integer
+          description: The certification data.
+          format: int32
+        ncoa_last_submit_date:
+          type: string
+          description: 'The last submit date. Read-only in the SOAP API. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        ncoa_return:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: The return code. Read-only in the SOAP API.
+        ncoa_footnote:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: The footnote. Read-only in the SOAP API.
+        ncoa_dpv_footnote:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: The dpv footnote. Read-only in the SOAP API.
+        ncoa_move_date:
+          $ref: '#/components/schemas/FuzzyDate'
+        ncoa_dma_suppression:
+          type: boolean
+          description: Indicates whether dma suppression. Read-only in the SOAP API.
+        ncoa_mail_grade:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: The mail grade. Read-only in the SOAP API.
+        zip_lookup_countries:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConstituentAddressZipLookupCountries'
+          description: Zip lookup countries.
+        validation_countries:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConstituentAddressValidationCountries'
+          description: Validation countries.
+        update_contacts:
+          type: boolean
+          description: Indicates whether update contacts that use this address.
+        has_contacts:
+          type: boolean
+          description: Indicates whether has contacts. Read-only in the SOAP API.
+        do_not_mail_reason:
+          type: string
+          description: The reason. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/donotmailreasoncode/entries
+        household:
+          type: boolean
+          description: Indicates whether household. Read-only in the SOAP API.
+        household_member:
+          type: boolean
+          description: Indicates whether household member. Read-only in the SOAP API.
+        update_matching_household_addresses:
+          type: boolean
+          description: Indicates whether update matching addresses in household.
+        matching_household_members:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConstituentAddressMatchingHouseholdMembers'
+          description: Matching household members.
+        historical_start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        historical_end_date:
+          type: string
+          description: 'The end date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        date_added:
+          type: string
+          description: 'The date added. Read-only in the SOAP API. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        info_source_comments:
+          maxLength: 256
+          minLength: 0
+          type: string
+          description: The comments.
+        confidential:
+          type: boolean
+          description: Indicates whether this address is confidential.
+        constituent_data_review_rollback_reason:
+          type: string
+          description: The reason. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/484441bc-f0e6-4f5f-a6bf-49f02881dd13.
+        forced_primary:
+          type: boolean
+          description: Indicates whether forced primary. Read-only in the SOAP API.
+        can_edit_primary:
+          type: boolean
+          description: Indicates whether can edit primary. Read-only in the SOAP API.
+        invalid_fields:
+          maxLength: 256
+          minLength: 0
+          type: string
+          description: The invalid fields. Read-only in the SOAP API.
+        origin:
+          type: string
+          description: The origin. Read-only in the SOAP API. Available values are <i>user</i>, <i>web forms</i>
+      additionalProperties: false
+      description: GetConstituentAddress
+      x-display-name: Address Edit Form 4
+      x-display-id: Address Edit Form 4
+    EditConstituentAddressValidationCountries:
+      type: object
+      properties:
+        country_id:
+          type: string
+          description: countryid
+        browsable:
+          type: boolean
+          description: browsable
+      description: EditConstituentAddressValidationCountries
+      x-display-name: validation_countries
+      x-display-id: validation_countries
+    NewConstituentAddressValidationCountries:
+      type: object
+      properties:
+        country_id:
+          type: string
+          description: countryid
+        browsable:
+          type: boolean
+          description: browsable
+      description: NewConstituentAddressValidationCountries
+      x-display-name: validation_countries
+      x-display-id: validation_countries
+    EditConstituentAddress:
+      type: object
+      properties:
+        address_type:
+          type: string
+          description: The type. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/addresstypecode/entries
+        address_block:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: The address.
+        city:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: The city.
+        state:
+          type: string
+          description: The state. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/7fa91401-596c-4f7c-936d-6e41683121d7?parameters=countryid,{countryid}.
+        postcode:
+          maxLength: 12
+          minLength: 0
+          type: string
+          description: The zip.
+        country:
+          type: string
+          description: The country. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/c9649672-353d-42e8-8c25-4d34bbabfbba.
+        cart:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: The cart.
+        dpc:
+          maxLength: 8
+          minLength: 0
+          type: string
+          description: The dpc.
+        lot:
+          maxLength: 5
+          minLength: 0
+          type: string
+          description: The lot.
+        start_date:
+          $ref: '#/components/schemas/MonthDay'
+        end_date:
+          $ref: '#/components/schemas/MonthDay'
+        primary:
+          type: boolean
+          description: Indicates whether set as primary address.
+        do_not_mail:
+          type: boolean
+          description: Indicates whether do not send mail to this address.
+        omit_from_validation:
+          type: boolean
+          description: Indicates whether omit this address from validation.
+        county:
+          type: string
+          description: The county. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/countycode/entries
+        congressional_district:
+          type: string
+          description: The congressional district. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/congressionaldistrictcode/entries
+        state_house_district:
+          type: string
+          description: The state house district. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/statehousedistrictcode/entries
+        state_senate_district:
+          type: string
+          description: The state senate district. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/statesenatedistrictcode/entries
+        local_precinct:
+          type: string
+          description: The local precinct. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/localprecinctcode/entries
+        info_source:
+          type: string
+          description: The information source. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/infosourcecode/entries
+        region:
+          type: string
+          description: The region. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/regioncode/entries
+        last_validation_attempt_date:
+          type: string
+          description: 'The last attempt. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        validation_message:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: The validation message.
+        certification_data:
+          type: integer
+          description: The certification data.
+          format: int32
+        ncoa_last_submit_date:
+          type: string
+          description: 'The last submit date. Read-only in the SOAP API. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        ncoa_return:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: The return code. Read-only in the SOAP API.
+        ncoa_footnote:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: The footnote. Read-only in the SOAP API.
+        ncoa_dpv_footnote:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: The dpv footnote. Read-only in the SOAP API.
+        ncoa_move_date:
+          $ref: '#/components/schemas/FuzzyDate'
+        ncoa_dma_suppression:
+          type: boolean
+          description: Indicates whether dma suppression. Read-only in the SOAP API.
+        ncoa_mail_grade:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: The mail grade. Read-only in the SOAP API.
+        zip_lookup_countries:
+          type: array
+          items:
+            $ref: '#/components/schemas/EditConstituentAddressZipLookupCountries'
+          description: Zip lookup countries.
+        validation_countries:
+          type: array
+          items:
+            $ref: '#/components/schemas/EditConstituentAddressValidationCountries'
+          description: Validation countries.
+        update_contacts:
+          type: boolean
+          description: Indicates whether update contacts that use this address.
+        has_contacts:
+          type: boolean
+          description: Indicates whether has contacts. Read-only in the SOAP API.
+        do_not_mail_reason:
+          type: string
+          description: The reason. This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/donotmailreasoncode/entries
+        household:
+          type: boolean
+          description: Indicates whether household. Read-only in the SOAP API.
+        household_member:
+          type: boolean
+          description: Indicates whether household member. Read-only in the SOAP API.
+        update_matching_household_addresses:
+          type: boolean
+          description: Indicates whether update matching addresses in household.
+        matching_household_members:
+          type: array
+          items:
+            $ref: '#/components/schemas/EditConstituentAddressMatchingHouseholdMembers'
+          description: Matching household members.
+        historical_start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        historical_end_date:
+          type: string
+          description: 'The end date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        date_added:
+          type: string
+          description: 'The date added. Read-only in the SOAP API. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        info_source_comments:
+          maxLength: 256
+          minLength: 0
+          type: string
+          description: The comments.
+        confidential:
+          type: boolean
+          description: Indicates whether this address is confidential.
+        constituent_data_review_rollback_reason:
+          type: string
+          description: The reason. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/484441bc-f0e6-4f5f-a6bf-49f02881dd13.
+        forced_primary:
+          type: boolean
+          description: Indicates whether forced primary. Read-only in the SOAP API.
+        can_edit_primary:
+          type: boolean
+          description: Indicates whether can edit primary. Read-only in the SOAP API.
+        invalid_fields:
+          maxLength: 256
+          minLength: 0
+          type: string
+          description: The invalid fields. Read-only in the SOAP API.
+        origin:
+          type: string
+          description: The origin. Read-only in the SOAP API. Available values are <i>user</i>, <i>web forms</i>
+      additionalProperties: false
+      description: EditConstituentAddress
+      example:
+        address_type: ''
+        address_block: ''
+        city: ''
+        state_: ''
+        postcode: ''
+        country_: ''
+        cart: ''
+        dpc: ''
+        lot: ''
+        start_date:
+          year: 2014
+          month: 4
+          day: 13
+        end_date:
+          year: 2024
+          month: 4
+          day: 13
+        primary: false
+        do_not_mail: false
+        omit_from_validation: false
+        county: ''
+        congressional_district: ''
+        state_house_district: ''
+        state_senate_district: ''
+        local_precinct: ''
+        info_source: ''
+        region: ''
+        last_validation_attempt_date: '2019-11-04T10:04:00Z'
+        validation_message: ''
+        certification_data: 0
+        ncoa_last_submit_date: '2019-11-04T10:04:00Z'
+        ncoa_return: ''
+        ncoa_footnote: ''
+        ncoa_dpv_footnote: ''
+        ncoa_move_date:
+          year: 2024
+          month: 4
+          day: 13
+        ncoa_dma_suppression: false
+        ncoa_mail_grade: ''
+        zip_lookup_countries:
+        - country_id: ''
+          country_name: ''
+        validation_countries:
+        - country_id: ''
+          browsable: false
+        update_contacts: false
+        has_contacts: false
+        do_not_mail_reason: ''
+        household: false
+        household_member: false
+        update_matching_household_addresses: false
+        matching_household_members:
+        - constituent_id: ''
+          name: ''
+          relationship_to_primary: ''
+        historical_start_date: '2014-11-04T10:04:00Z'
+        historical_end_date: '2024-11-04T10:04:00Z'
+        date_added: '2014-11-04T11:04:00Z'
+        info_source_comments: ''
+        confidential: false
+        constituent_data_review_rollback_reason: ''
+        forced_primary: false
+        can_edit_primary: false
+        invalid_fields: ''
+        origin: User
+      x-display-name: Address Edit Form 4
+      x-display-id: Address Edit Form 4
+    ConstituentAddressMatchingHouseholdMembers:
+      type: object
+      properties:
+        constituent_id:
+          type: string
+          description: constituent id
+        name:
+          type: string
+          description: household member
+        relationship_to_primary:
+          type: string
+          description: relationship to primary
+      description: ConstituentAddressMatchingHouseholdMembers
+      x-display-name: matching_household_members
+      x-display-id: matching_household_members
+    MonthDay:
+      type: object
+      properties:
+        month:
+          type: integer
+          description: The month.
+          format: int32
+        day:
+          type: integer
+          description: The day.
+          format: int32
+      description: MonthDay
+      example:
+        month: 4
+        day: 13
+      x-display-name: Month Day
+      x-display-id: Month Day
+    EditConstituentAddressMatchingHouseholdMembers:
+      type: object
+      properties:
+        constituent_id:
+          type: string
+          description: constituent id
+        name:
+          type: string
+          description: household member
+        relationship_to_primary:
+          type: string
+          description: relationship to primary
+      description: EditConstituentAddressMatchingHouseholdMembers
+      x-display-name: matching_household_members
+      x-display-id: matching_household_members
+    PostResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The newly created ID.
+      additionalProperties: false
+      description: Defines the shape of a post response object.
+    EditConstituentAddressZipLookupCountries:
+      type: object
+      properties:
+        country_id:
+          type: string
+          description: countryid
+        country_name:
+          type: string
+          description: name
+      description: EditConstituentAddressZipLookupCountries
+      x-display-name: zip_lookup_countries
+      x-display-id: zip_lookup_countries
+    FuzzyDate:
+      type: object
+      properties:
+        year:
+          type: integer
+          description: The year.
+          format: int32
+        month:
+          type: integer
+          description: The month.
+          format: int32
+        day:
+          type: integer
+          description: The day.
+          format: int32
+      description: FuzzyDate
+      example:
+        year: 2024
+        month: 4
+        day: 13
+      x-display-name: Month Day
+      x-display-id: Month Day
+    ConstituentAddressValidationCountries:
+      type: object
+      properties:
+        country_id:
+          type: string
+          description: countryid
+        browsable:
+          type: boolean
+          description: browsable
+      description: ConstituentAddressValidationCountries
+      x-display-name: validation_countries
+      x-display-id: validation_countries
+    ConstituentAddressSearchCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items available for retrieval into the collection after applying any request parameters.
+          format: int32
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConstituentAddressSearchSummary'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+      additionalProperties: false
+      description: A collection of items. Data lists can contain paginated results.
+    AddressEdit:
+      description: Addresses store information about constituent residences and other addresses along with information about where or whether to send mail.
+      type: object
+      properties:
+        address_lines:
+          description: 'The address lines. Character limit: 150.'
+          maxLength: 150
+          minLength: 0
+          type: string
+        city:
+          description: 'The city of the address. Character limit: 50.'
+          maxLength: 50
+          minLength: 0
+          type: string
+        country:
+          description: The country of the address, can be the country's ID, name, or abbreviation.
+          type: string
+        county:
+          description: The county of the address.
+          type: string
+        do_not_mail:
+          description: Indicates whether the constituent requests not to be contacted at this address.
+          type: boolean
+        end:
+          format: date-time
+          description: 'The date when the constituent ceased to reside at this address. Uses <a href="https://tools.ietf.org/html/rfc3339">ISO-8601 format: </a><i>1969-11-21T10:29:43</i>.'
+          type: string
+          x-supports-datetime-offset: false
+        postal_code:
+          description: 'The postal code of the address. Character limit: 12.'
+          maxLength: 12
+          minLength: 0
+          type: string
+        preferred:
+          description: Indicates whether this is the constituent's preferred address.
+          type: boolean
+        seasonal_end:
+          $ref: '#/components/schemas/FuzzyDate_2'
+          description: The time of the year ceases to reside at this address.
+        seasonal_start:
+          $ref: '#/components/schemas/FuzzyDate_2'
+          description: The time of year that the constituent begins residing at this address.
+        start:
+          format: date-time
+          description: 'The date when the constituent began residing at this address. Uses <a href="https://tools.ietf.org/html/rfc3339">ISO-8601 format: </a><i>1969-11-21T10:29:43</i>.'
+          type: string
+          x-supports-datetime-offset: false
+        state:
+          description: The state of the address.
+          type: string
+        suburb:
+          description: The suburb of the address.
+          type: string
+        type:
+          description: The address type. Available values are the entries in the <a href="https://developer.sky.blackbaud.com/docs/services/56b76470069a0509c8f1c5b3/operations/ListAddressTypes"><b>Address Types</b></a> table. This property cannot be set to null.
+          type: string
+        information_source:
+          description: The information source for the address.
+          type: string
+        lot:
+          description: The Line of Travel (LOT) for the address.
+          type: string
+        cart:
+          description: The Carrier Route (CART) for the address.
+          maxLength: 20
+          minLength: 0
+          type: string
+        dpc:
+          description: The Delivery Point Code (DPC) for the address.
+          maxLength: 8
+          minLength: 0
+          type: string
+        region:
+          description: The region for the address.
+          type: string
+      x-hidden: true
+      x-display-name: Edit address
+      x-display-id: EditAddress
+      x-additional-info: "\n<p>Some <b>Address</b> entity properties include international address support.</p>\n\n<div class=\"table-responsive\">\n    <table class=\"table table-striped table-hover\">\n        <thead>\n            <tr>\n                <th><strong>Property</strong></th>\n                <th><strong>United States</strong></th>\n                <th><strong>Canada</strong></th>\n                <th><strong>United Kingdom</strong></th>\n                <th><strong>Australia</strong></th>\n                <th><strong>New Zealand</strong></th>\n            </tr>\n        </thead>\n        <tbody>\n            <tr>\n                <td>address_lines</td>\n                <td><i class=\"fa fa-check\"></i></td>\n                <td><i class=\"fa fa-check\"></i></td>\n                <td><i class=\"fa fa-check\"></i></td>\n                <td><i class=\"fa fa-check\"></i></td>\n                <td><i class=\"fa fa-check\"></i></td>\n            </tr>\n            <tr>\n                <td>city</td>\n                <td><i class=\"fa fa-check\"></i></td>\n                <td><i class=\"fa fa-check\"></i></td>\n                <td><i class=\"fa fa-check\"></i></td>\n                <td><i class=\"fa fa-check\"></i>*</td>\n                <td><i class=\"fa fa-check\"></i></td>\n            </tr>\n            <tr>\n                <td>suburb</td>\n                <td></td>\n                <td></td>\n                <td></td>\n                <td></td>\n                <td><i class=\"fa fa-check\"></i></td>\n            </tr>\n            <tr>\n                <td>state</td>\n                <td><i class=\"fa fa-check\"></i></td>\n                <td><i class=\"fa fa-check\"></i>!</td>\n                <td></td>\n                <td><i class=\"fa fa-check\"></i></td>\n                <td></td>\n            </tr>\n            <tr>\n                <td>postal_code</td>\n                <td><i class=\"fa fa-check\"></i></td>\n                <td><i class=\"fa fa-check\"></i></td>\n                <td><i class=\"fa fa-check\"></i></td>\n                <td><i class=\"fa fa-check\"></i></td>\n                <td><i class=\"fa fa-check\"></i></td>\n            </tr>\n            <tr>\n                <td>county</td>\n                <td><i class=\"fa fa-check\"></i></td>\n                <td><i class=\"fa fa-check\"></i></td>\n                <td><i class=\"fa fa-check\"></i></td>\n                <td></td>\n                <td></td>\n            </tr>\n            <tr>\n                <td>country</td>\n                <td><i class=\"fa fa-check\"></i></td>\n                <td><i class=\"fa fa-check\"></i></td>\n                <td><i class=\"fa fa-check\"></i></td>\n                <td><i class=\"fa fa-check\"></i></td>\n                <td><i class=\"fa fa-check\"></i></td>\n            </tr>\n        </tbody>\n    </table>\n</div>\n\n<div class=\"footnotes\">\n    <p class=\"footnote\">* <b>Australia</b> &mdash; For <code>GET</code> operations, the <code>city</code> property returns city or suburb data. For <code>POST</code> and <code>PATCH</code> operations, you can use either the <code>suburb</code> or <code>city</code> properties, but not both. An error occurs if you provide values for both properties.</p>\n    <p class=\"footnote\">! <b>Canada</b> &mdash; Use the <code>state</code> property to track provinces.</p>\n</div>"
+    AddressAdd:
+      description: Addresses store information about constituent residences and other addresses along with information about where or whether to send mail.
+      required:
+      - constituent_id
+      - type
+      type: object
+      properties:
+        address_lines:
+          description: 'The address lines. Character limit: 150.'
+          maxLength: 150
+          minLength: 0
+          type: string
+        city:
+          description: 'The city of the address.  Do not use in combination with the <code>suburb</code> property for Australian addresses. Character limit: 50.'
+          maxLength: 50
+          minLength: 0
+          type: string
+        constituent_id:
+          description: The immutable system record ID of the constituent associated with the address.
+          type: string
+        country:
+          description: The country of the address, can be the country's ID, name, or abbreviation.
+          type: string
+        county:
+          description: The county of the address.
+          type: string
+        do_not_mail:
+          description: Indicates whether the constituent requests not to be contacted at this address.
+          type: boolean
+        end:
+          format: date-time
+          description: 'The date when the constituent ceased to reside at this address. Uses <a href="https://tools.ietf.org/html/rfc3339">ISO-8601 format: </a><i>1969-11-21T10:29:43</i>.'
+          type: string
+          x-supports-datetime-offset: false
+        postal_code:
+          description: 'The postal code of the address. Character limit: 12.'
+          maxLength: 12
+          minLength: 0
+          type: string
+        preferred:
+          description: Indicates whether this is the constituent's preferred address.
+          type: boolean
+        seasonal_end:
+          $ref: '#/components/schemas/FuzzyDate_2'
+          description: The time of the year ceases to reside at this address.
+        seasonal_start:
+          $ref: '#/components/schemas/FuzzyDate_2'
+          description: The time of year that the constituent begins residing at this address.
+        start:
+          format: date-time
+          description: 'The date when the constituent began residing at this address. Uses <a href="https://tools.ietf.org/html/rfc3339">ISO-8601 format: </a><i>1969-11-21T10:29:43</i>.'
+          type: string
+          x-supports-datetime-offset: false
+        state:
+          description: The state of the address.
+          type: string
+        suburb:
+          description: The suburb of the address. Do not use in combination with the <code>city</code> property for Australian addresses.
+          type: string
+        type:
+          description: The address type. Available values are the entries in the <a href="https://developer.sky.blackbaud.com/docs/services/56b76470069a0509c8f1c5b3/operations/ListAddressTypes"><b>Address Types</b></a> table.
+          type: string
+        information_source:
+          description: The information source for the address.
+          type: string
+        lot:
+          description: The Line of Travel (LOT) for the address.
+          type: string
+        cart:
+          description: The Carrier Route (CART) for the address.
+          maxLength: 20
+          minLength: 0
+          type: string
+        dpc:
+          description: The Delivery Point Code (DPC) for the address.
+          maxLength: 8
+          minLength: 0
+          type: string
+        region:
+          description: The region for the address.
+          type: string
+      x-hidden: true
+      x-display-name: Create address
+      x-display-id: CreateAddress
+      x-additional-info: "\n<p>Some <b>Address</b> entity properties include international address support.</p>\n\n<div class=\"table-responsive\">\n    <table class=\"table table-striped table-hover\">\n        <thead>\n            <tr>\n                <th><strong>Property</strong></th>\n                <th><strong>United States</strong></th>\n                <th><strong>Canada</strong></th>\n                <th><strong>United Kingdom</strong></th>\n                <th><strong>Australia</strong></th>\n                <th><strong>New Zealand</strong></th>\n            </tr>\n        </thead>\n        <tbody>\n            <tr>\n                <td>address_lines</td>\n                <td><i class=\"fa fa-check\"></i></td>\n                <td><i class=\"fa fa-check\"></i></td>\n                <td><i class=\"fa fa-check\"></i></td>\n                <td><i class=\"fa fa-check\"></i></td>\n                <td><i class=\"fa fa-check\"></i></td>\n            </tr>\n            <tr>\n                <td>city</td>\n                <td><i class=\"fa fa-check\"></i></td>\n                <td><i class=\"fa fa-check\"></i></td>\n                <td><i class=\"fa fa-check\"></i></td>\n                <td><i class=\"fa fa-check\"></i>*</td>\n                <td><i class=\"fa fa-check\"></i></td>\n            </tr>\n            <tr>\n                <td>suburb</td>\n                <td></td>\n                <td></td>\n                <td></td>\n                <td></td>\n                <td><i class=\"fa fa-check\"></i></td>\n            </tr>\n            <tr>\n                <td>state</td>\n                <td><i class=\"fa fa-check\"></i></td>\n                <td><i class=\"fa fa-check\"></i>!</td>\n                <td></td>\n                <td><i class=\"fa fa-check\"></i></td>\n                <td></td>\n            </tr>\n            <tr>\n                <td>postal_code</td>\n                <td><i class=\"fa fa-check\"></i></td>\n                <td><i class=\"fa fa-check\"></i></td>\n                <td><i class=\"fa fa-check\"></i></td>\n                <td><i class=\"fa fa-check\"></i></td>\n                <td><i class=\"fa fa-check\"></i></td>\n            </tr>\n            <tr>\n                <td>county</td>\n                <td><i class=\"fa fa-check\"></i></td>\n                <td><i class=\"fa fa-check\"></i></td>\n                <td><i class=\"fa fa-check\"></i></td>\n                <td></td>\n                <td></td>\n            </tr>\n            <tr>\n                <td>country</td>\n                <td><i class=\"fa fa-check\"></i></td>\n                <td><i class=\"fa fa-check\"></i></td>\n                <td><i class=\"fa fa-check\"></i></td>\n                <td><i class=\"fa fa-check\"></i></td>\n                <td><i class=\"fa fa-check\"></i></td>\n            </tr>\n        </tbody>\n    </table>\n</div>\n\n<div class=\"footnotes\">\n    <p class=\"footnote\">* <b>Australia</b> &mdash; For <code>GET</code> operations, the <code>city</code> property returns city or suburb data. For <code>POST</code> and <code>PATCH</code> operations, you can use either the <code>suburb</code> or <code>city</code> properties, but not both. An error occurs if you provide values for both properties.</p>\n    <p class=\"footnote\">! <b>Canada</b> &mdash; Use the <code>state</code> property to track provinces.</p>\n</div>"
+    ApiCollectionOfAddressRead:
+      description: Fetching data all at once quickly becomes unmanageable. The collection entity helps by returning paginated chunks of large data sets. This entity includes helpful metadata and properties to paginate and iterate through the data.
+      type: object
+      properties:
+        count:
+          format: int32
+          description: The number of items available for retrieval into the collection after applying any request parameters. The <b>limit</b> and <b>offset</b> parameters do not affect the <b>count</b>, but to facilitate paging, they may affect the number of items in the <b>value</b> result set.
+          type: integer
+        next_link:
+          description: For paginated responses, the URI for the next page of results.
+          type: string
+        value:
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+          type: array
+          items:
+            $ref: '#/components/schemas/AddressRead'
+      x-hidden: true
+      x-base-type: '#/definitions/ApiCollection'
+    AddressRead:
+      description: Addresses store information about constituent residences and other addresses along with information about where or whether to send mail.
+      type: object
+      properties:
+        id:
+          description: The immutable system record ID of the address.
+          type: string
+        address_lines:
+          description: The address lines.
+          type: string
+        city:
+          description: The city of the address.
+          type: string
+        constituent_id:
+          description: The immutable system record ID of the constituent associated with the address.
+          type: string
+        country:
+          description: The country of the address.
+          type: string
+        county:
+          description: The county of the address.
+          type: string
+        date_added:
+          format: date-time
+          description: 'The date when the address was created. Includes an offset from UTC in <a href="https://tools.ietf.org/html/rfc3339">ISO-8601 format: </a><i>1969-11-21T10:29:43-04:00</i>.'
+          type: string
+          x-supports-datetime-offset: true
+        date_modified:
+          format: date-time
+          description: 'The date when the address was last modified. Includes an offset from UTC in <a href="https://tools.ietf.org/html/rfc3339">ISO-8601 format: </a><i>1969-11-21T10:29:43-04:00</i>.'
+          type: string
+          x-supports-datetime-offset: true
+        do_not_mail:
+          description: Indicates whether the constituent requests not to be contacted at this address.
+          type: boolean
+        end:
+          format: date-time
+          description: 'The date when the constituent ceased to reside at this address. Uses <a href="https://tools.ietf.org/html/rfc3339">ISO-8601 format: </a><i>1969-11-21T10:29:43</i>.'
+          type: string
+          x-supports-datetime-offset: false
+        formatted_address:
+          description: This computed field retrieves the formatted address in the configured format of the country.
+          type: string
+        inactive:
+          description: This computed field indicates that the address is active if the current date is before any <code>end</code> date.
+          type: boolean
+        postal_code:
+          description: The postal code of the address.
+          type: string
+        preferred:
+          description: Indicates whether this is the constituent's preferred address.
+          type: boolean
+        seasonal_end:
+          $ref: '#/components/schemas/FuzzyDate_2'
+          description: The time of the year ceases to reside at this address.
+        seasonal_start:
+          $ref: '#/components/schemas/FuzzyDate_2'
+          description: The time of year that the constituent begins residing at this address.
+        start:
+          format: date-time
+          description: 'The date when the constituent began residing at this address. Uses <a href="https://tools.ietf.org/html/rfc3339">ISO-8601 format: </a><i>1969-11-21T10:29:43</i>.'
+          type: string
+          x-supports-datetime-offset: false
+        state:
+          description: The state of the address.
+          type: string
+        suburb:
+          description: The suburb of the address.
+          type: string
+        type:
+          description: The address type. Available values are the entries in the <a href="https://developer.sky.blackbaud.com/docs/services/56b76470069a0509c8f1c5b3/operations/ListAddressTypes"><b>Address Types</b></a> table.
+          type: string
+      x-display-name: Address
+      x-display-id: Address
+      x-additional-info: "\n<p>Some <b>Address</b> entity properties include international address support.</p>\n\n<div class=\"table-responsive\">\n    <table class=\"table table-striped table-hover\">\n        <thead>\n            <tr>\n                <th><strong>Property</strong></th>\n                <th><strong>United States</strong></th>\n                <th><strong>Canada</strong></th>\n                <th><strong>United Kingdom</strong></th>\n                <th><strong>Australia</strong></th>\n                <th><strong>New Zealand</strong></th>\n            </tr>\n        </thead>\n        <tbody>\n            <tr>\n                <td>address_lines</td>\n                <td><i class=\"fa fa-check\"></i></td>\n                <td><i class=\"fa fa-check\"></i></td>\n                <td><i class=\"fa fa-check\"></i></td>\n                <td><i class=\"fa fa-check\"></i></td>\n                <td><i class=\"fa fa-check\"></i></td>\n            </tr>\n            <tr>\n                <td>city</td>\n                <td><i class=\"fa fa-check\"></i></td>\n                <td><i class=\"fa fa-check\"></i></td>\n                <td><i class=\"fa fa-check\"></i></td>\n                <td><i class=\"fa fa-check\"></i>*</td>\n                <td><i class=\"fa fa-check\"></i></td>\n            </tr>\n            <tr>\n                <td>suburb</td>\n                <td></td>\n                <td></td>\n                <td></td>\n                <td></td>\n                <td><i class=\"fa fa-check\"></i></td>\n            </tr>\n            <tr>\n                <td>state</td>\n                <td><i class=\"fa fa-check\"></i></td>\n                <td><i class=\"fa fa-check\"></i>!</td>\n                <td></td>\n                <td><i class=\"fa fa-check\"></i></td>\n                <td></td>\n            </tr>\n            <tr>\n                <td>postal_code</td>\n                <td><i class=\"fa fa-check\"></i></td>\n                <td><i class=\"fa fa-check\"></i></td>\n                <td><i class=\"fa fa-check\"></i></td>\n                <td><i class=\"fa fa-check\"></i></td>\n                <td><i class=\"fa fa-check\"></i></td>\n            </tr>\n            <tr>\n                <td>county</td>\n                <td><i class=\"fa fa-check\"></i></td>\n                <td><i class=\"fa fa-check\"></i></td>\n                <td><i class=\"fa fa-check\"></i></td>\n                <td></td>\n                <td></td>\n            </tr>\n            <tr>\n                <td>country</td>\n                <td><i class=\"fa fa-check\"></i></td>\n                <td><i class=\"fa fa-check\"></i></td>\n                <td><i class=\"fa fa-check\"></i></td>\n                <td><i class=\"fa fa-check\"></i></td>\n                <td><i class=\"fa fa-check\"></i></td>\n            </tr>\n        </tbody>\n    </table>\n</div>\n\n<div class=\"footnotes\">\n    <p class=\"footnote\">* <b>Australia</b> &mdash; For <code>GET</code> operations, the <code>city</code> property returns city or suburb data. For <code>POST</code> and <code>PATCH</code> operations, you can use either the <code>suburb</code> or <code>city</code> properties, but not both. An error occurs if you provide values for both properties.</p>\n    <p class=\"footnote\">! <b>Canada</b> &mdash; Use the <code>state</code> property to track provinces.</p>\n</div>"
+    PostResponse_2:
+      description: Defines the shape of a post response object.
+      type: object
+      properties:
+        id:
+          description: The newly created ID
+          type: string
+      x-hidden: true
+    FuzzyDate_2:
+      description: Fuzzy dates provide a versatile date type to create partial dates such as February 9 (with no year indicated).
+      type: object
+      properties:
+        d:
+          format: int32
+          description: The day in the fuzzy date.
+          type: integer
+        m:
+          format: int32
+          description: The month in the fuzzy date.
+          type: integer
+        y:
+          format: int32
+          description: The year in the fuzzy date.
+          type: integer
+      x-display-name: Fuzzy date
+      x-display-id: FuzzyDate
+    NewConstituentAddress_2:
+      required:
+      - constituent_id
+      - country
+      type: object
+      properties:
+        constituent_id:
+          type: string
+          description: The constituent ID.
+        address_type:
+          type: string
+          description: The type. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/addresstypecode/entries
+        address_block:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: The address.
+        city:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: The city.
+        state:
+          type: string
+          description: The state. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/7fa91401-596c-4f7c-936d-6e41683121d7?parameters=countryid,{countryid}.
+        postcode:
+          maxLength: 12
+          minLength: 0
+          type: string
+          description: The zip.
+        country:
+          type: string
+          description: The country. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/c9649672-353d-42e8-8c25-4d34bbabfbba.
+        do_not_mail:
+          type: boolean
+          description: Indicates whether do not send mail to this address.
+        cart:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: The cart.
+        lot:
+          maxLength: 5
+          minLength: 0
+          type: string
+          description: The lot.
+        dpc:
+          maxLength: 8
+          minLength: 0
+          type: string
+          description: The dpc.
+        start_date:
+          $ref: '#/components/schemas/MonthDay'
+        end_date:
+          $ref: '#/components/schemas/MonthDay'
+        primary:
+          type: boolean
+          description: Indicates whether set as primary address.
+        historical_start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        recent_move:
+          type: boolean
+          description: Indicates whether recently moved/changed from this address?.
+        old_address:
+          type: string
+          description: The old address. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/bc075172-8103-4ccb-8285-658180e603a1?parameters=constituent_id,{constituent_id}.
+        spouse_name:
+          maxLength: 154
+          minLength: 0
+          type: string
+          description: The spouse name. Read-only in the SOAP API.
+        update_matching_spouse_addresses:
+          type: boolean
+          description: Indicates whether update matching address information for spouse.
+        omit_from_validation:
+          type: boolean
+          description: Indicates whether omit this address from validation.
+        county:
+          type: string
+          description: The county. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/countycode/entries
+        congressional_district:
+          type: string
+          description: The congressional district. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/congressionaldistrictcode/entries
+        state_house_district:
+          type: string
+          description: The state house district. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/statehousedistrictcode/entries
+        state_senate_district:
+          type: string
+          description: The state senate district. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/statesenatedistrictcode/entries
+        local_precinct:
+          type: string
+          description: The local precinct. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/localprecinctcode/entries
+        info_source:
+          type: string
+          description: The information source. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/infosourcecode/entries
+        region:
+          type: string
+          description: The region. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/regioncode/entries
+        last_validation_attempt_date:
+          type: string
+          description: 'The last attempt. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        validation_message:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: The validation message.
+        certification_data:
+          type: integer
+          description: The certification data.
+          format: int32
+        zip_lookup_countries:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewConstituentAddressZipLookupCountries'
+          description: Zip lookup countries.
+        household:
+          type: boolean
+          description: Indicates whether household. Read-only in the SOAP API.
+        household_member:
+          type: boolean
+          description: Indicates whether household member. Read-only in the SOAP API.
+        update_matching_household_addresses:
+          type: boolean
+          description: Indicates whether copy address information to household members.
+        validation_countries:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewConstituentAddressValidationCountries'
+          description: Validation countries.
+        do_not_mail_reason:
+          type: string
+          description: The reason. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/donotmailreasoncode/entries
+        info_source_comments:
+          maxLength: 256
+          minLength: 0
+          type: string
+          description: The comments.
+        confidential:
+          type: boolean
+          description: Indicates whether this address is confidential.
+        constituent_data_review_rollback_reason:
+          type: string
+          description: The reason. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/484441bc-f0e6-4f5f-a6bf-49f02881dd13.
+        forced_primary:
+          type: boolean
+          description: Indicates whether forced primary. Read-only in the SOAP API.
+        can_edit_primary:
+          type: boolean
+          description: Indicates whether can edit primary. Read-only in the SOAP API.
+        invalid_fields:
+          maxLength: 256
+          minLength: 0
+          type: string
+          description: The invalid fields. Read-only in the SOAP API.
+        origin:
+          type: string
+          description: The origin. Available values are <i>user</i>, <i>web forms</i>
+      additionalProperties: false
+      description: CreateConstituentAddress
+      example:
+        constituent_id: 4B358EDA-9374-4DED-BE55-7C404BB5E4AB
+        address_type: ''
+        address_block: ''
+        city: ''
+        state: ''
+        postcode: ''
+        country: ''
+        do_not_mail: false
+        cart: ''
+        lot: ''
+        dpc: ''
+        start_date:
+          year: 2014
+          month: 4
+          day: 13
+        end_date:
+          year: 2024
+          month: 4
+          day: 13
+        primary: false
+        historical_start_date: '2014-11-04T10:04:00Z'
+        recent_move: false
+        old_address: ''
+        spouse_name: ''
+        update_matching_spouse_addresses: false
+        omit_from_validation: false
+        county: ''
+        congressional_district: ''
+        state_house_district: ''
+        state_senate_district: ''
+        local_precinct: ''
+        info_source: ''
+        region: ''
+        last_validation_attempt_date: '2019-11-04T10:04:00Z'
+        validation_message: ''
+        certification_data: 0
+        zip_lookup_countries:
+        - country_id: 4B358EDA-9374-4DED-BE55-7C404BB5E3AB
+          country_name: us
+        household: false
+        household_member: false
+        update_matching_household_addresses: false
+        validation_countries:
+        - country_id: ''
+          browsable: false
+        do_not_mail_reason: ''
+        info_source_comments: ''
+        confidential: false
+        constituent_data_review_rollback_reason: ''
+        forced_primary: false
+        can_edit_primary: false
+        invalid_fields: ''
+        origin: User
+      x-display-name: Address Add Form 2
+      x-display-id: Address Add Form 2
+    ConstituentAddress_2:
+      required:
+      - country
+      type: object
+      properties:
+        address_type:
+          type: string
+          description: The type. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/addresstypecode/entries
+        address_block:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: The address.
+        city:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: The city.
+        state:
+          type: string
+          description: The state. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/7fa91401-596c-4f7c-936d-6e41683121d7?parameters=countryid,{countryid}.
+        postcode:
+          maxLength: 12
+          minLength: 0
+          type: string
+          description: The zip.
+        country:
+          type: string
+          description: The country. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/c9649672-353d-42e8-8c25-4d34bbabfbba.
+        cart:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: The cart.
+        dpc:
+          maxLength: 8
+          minLength: 0
+          type: string
+          description: The dpc.
+        lot:
+          maxLength: 5
+          minLength: 0
+          type: string
+          description: The lot.
+        start_date:
+          $ref: '#/components/schemas/MonthDay'
+        end_date:
+          $ref: '#/components/schemas/MonthDay'
+        primary:
+          type: boolean
+          description: Indicates whether set as primary address.
+        do_not_mail:
+          type: boolean
+          description: Indicates whether do not send mail to this address.
+        omit_from_validation:
+          type: boolean
+          description: Indicates whether omit this address from validation.
+        county:
+          type: string
+          description: The county. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/countycode/entries
+        congressional_district:
+          type: string
+          description: The congressional district. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/congressionaldistrictcode/entries
+        state_house_district:
+          type: string
+          description: The state house district. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/statehousedistrictcode/entries
+        state_senate_district:
+          type: string
+          description: The state senate district. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/statesenatedistrictcode/entries
+        local_precinct:
+          type: string
+          description: The local precinct. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/localprecinctcode/entries
+        info_source:
+          type: string
+          description: The information source. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/infosourcecode/entries
+        region:
+          type: string
+          description: The region. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/regioncode/entries
+        last_validation_attempt_date:
+          type: string
+          description: 'The last attempt. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        validation_message:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: The validation message.
+        certification_data:
+          type: integer
+          description: The certification data.
+          format: int32
+        ncoa_last_submit_date:
+          type: string
+          description: 'The last submit date. Read-only in the SOAP API. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        ncoa_return:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: The return code. Read-only in the SOAP API.
+        ncoa_footnote:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: The footnote. Read-only in the SOAP API.
+        ncoa_dpv_footnote:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: The dpv footnote. Read-only in the SOAP API.
+        ncoa_move_date:
+          $ref: '#/components/schemas/FuzzyDate'
+        ncoa_dma_suppression:
+          type: boolean
+          description: Indicates whether dma suppression. Read-only in the SOAP API.
+        ncoa_mail_grade:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: The mail grade. Read-only in the SOAP API.
+        zip_lookup_countries:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConstituentAddressZipLookupCountries'
+          description: Zip lookup countries.
+        validation_countries:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConstituentAddressValidationCountries'
+          description: Validation countries.
+        update_contacts:
+          type: boolean
+          description: Indicates whether update contacts that use this address.
+        has_contacts:
+          type: boolean
+          description: Indicates whether has contacts. Read-only in the SOAP API.
+        do_not_mail_reason:
+          type: string
+          description: The reason. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/donotmailreasoncode/entries
+        household:
+          type: boolean
+          description: Indicates whether household. Read-only in the SOAP API.
+        household_member:
+          type: boolean
+          description: Indicates whether household member. Read-only in the SOAP API.
+        update_matching_household_addresses:
+          type: boolean
+          description: Indicates whether update matching addresses in household.
+        matching_household_members:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConstituentAddressMatchingHouseholdMembers'
+          description: Matching household members.
+        historical_start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        historical_end_date:
+          type: string
+          description: 'The end date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        date_added:
+          type: string
+          description: 'The date added. Read-only in the SOAP API. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        info_source_comments:
+          maxLength: 256
+          minLength: 0
+          type: string
+          description: The comments.
+        confidential:
+          type: boolean
+          description: Indicates whether this address is confidential.
+        constituent_data_review_rollback_reason:
+          type: string
+          description: The reason. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/484441bc-f0e6-4f5f-a6bf-49f02881dd13.
+        forced_primary:
+          type: boolean
+          description: Indicates whether forced primary. Read-only in the SOAP API.
+        can_edit_primary:
+          type: boolean
+          description: Indicates whether can edit primary. Read-only in the SOAP API.
+        invalid_fields:
+          maxLength: 256
+          minLength: 0
+          type: string
+          description: The invalid fields. Read-only in the SOAP API.
+        origin:
+          type: string
+          description: The origin. Read-only in the SOAP API. Available values are <i>user</i>, <i>web forms</i>
+      additionalProperties: false
+      description: GetConstituentAddress
+      x-display-name: Address Edit Form 4
+      x-display-id: Address Edit Form 4
+    EditConstituentAddress_2:
+      type: object
+      properties:
+        address_type:
+          type: string
+          description: The type. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/addresstypecode/entries
+        address_block:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: The address.
+        city:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: The city.
+        state:
+          type: string
+          description: The state. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/7fa91401-596c-4f7c-936d-6e41683121d7?parameters=countryid,{countryid}.
+        postcode:
+          maxLength: 12
+          minLength: 0
+          type: string
+          description: The zip.
+        country:
+          type: string
+          description: The country. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/c9649672-353d-42e8-8c25-4d34bbabfbba.
+        cart:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: The cart.
+        dpc:
+          maxLength: 8
+          minLength: 0
+          type: string
+          description: The dpc.
+        lot:
+          maxLength: 5
+          minLength: 0
+          type: string
+          description: The lot.
+        start_date:
+          $ref: '#/components/schemas/MonthDay'
+        end_date:
+          $ref: '#/components/schemas/MonthDay'
+        primary:
+          type: boolean
+          description: Indicates whether set as primary address.
+        do_not_mail:
+          type: boolean
+          description: Indicates whether do not send mail to this address.
+        omit_from_validation:
+          type: boolean
+          description: Indicates whether omit this address from validation.
+        county:
+          type: string
+          description: The county. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/countycode/entries
+        congressional_district:
+          type: string
+          description: The congressional district. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/congressionaldistrictcode/entries
+        state_house_district:
+          type: string
+          description: The state house district. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/statehousedistrictcode/entries
+        state_senate_district:
+          type: string
+          description: The state senate district. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/statesenatedistrictcode/entries
+        local_precinct:
+          type: string
+          description: The local precinct. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/localprecinctcode/entries
+        info_source:
+          type: string
+          description: The information source. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/infosourcecode/entries
+        region:
+          type: string
+          description: The region. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/regioncode/entries
+        last_validation_attempt_date:
+          type: string
+          description: 'The last attempt. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        validation_message:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: The validation message.
+        certification_data:
+          type: integer
+          description: The certification data.
+          format: int32
+        ncoa_last_submit_date:
+          type: string
+          description: 'The last submit date. Read-only in the SOAP API. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        ncoa_return:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: The return code. Read-only in the SOAP API.
+        ncoa_footnote:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: The footnote. Read-only in the SOAP API.
+        ncoa_dpv_footnote:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: The dpv footnote. Read-only in the SOAP API.
+        ncoa_move_date:
+          $ref: '#/components/schemas/FuzzyDate'
+        ncoa_dma_suppression:
+          type: boolean
+          description: Indicates whether dma suppression. Read-only in the SOAP API.
+        ncoa_mail_grade:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: The mail grade. Read-only in the SOAP API.
+        zip_lookup_countries:
+          type: array
+          items:
+            $ref: '#/components/schemas/EditConstituentAddressZipLookupCountries'
+          description: Zip lookup countries.
+        validation_countries:
+          type: array
+          items:
+            $ref: '#/components/schemas/EditConstituentAddressValidationCountries'
+          description: Validation countries.
+        update_contacts:
+          type: boolean
+          description: Indicates whether update contacts that use this address.
+        has_contacts:
+          type: boolean
+          description: Indicates whether has contacts. Read-only in the SOAP API.
+        do_not_mail_reason:
+          type: string
+          description: The reason. This code table can be queried at https://api.sky.blackbaud.com/crm-adnmg/codetables/donotmailreasoncode/entries
+        household:
+          type: boolean
+          description: Indicates whether household. Read-only in the SOAP API.
+        household_member:
+          type: boolean
+          description: Indicates whether household member. Read-only in the SOAP API.
+        update_matching_household_addresses:
+          type: boolean
+          description: Indicates whether update matching addresses in household.
+        matching_household_members:
+          type: array
+          items:
+            $ref: '#/components/schemas/EditConstituentAddressMatchingHouseholdMembers'
+          description: Matching household members.
+        historical_start_date:
+          type: string
+          description: 'The start date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        historical_end_date:
+          type: string
+          description: 'The end date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        date_added:
+          type: string
+          description: 'The date added. Read-only in the SOAP API. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        info_source_comments:
+          maxLength: 256
+          minLength: 0
+          type: string
+          description: The comments.
+        confidential:
+          type: boolean
+          description: Indicates whether this address is confidential.
+        constituent_data_review_rollback_reason:
+          type: string
+          description: The reason. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/484441bc-f0e6-4f5f-a6bf-49f02881dd13.
+        forced_primary:
+          type: boolean
+          description: Indicates whether forced primary. Read-only in the SOAP API.
+        can_edit_primary:
+          type: boolean
+          description: Indicates whether can edit primary. Read-only in the SOAP API.
+        invalid_fields:
+          maxLength: 256
+          minLength: 0
+          type: string
+          description: The invalid fields. Read-only in the SOAP API.
+        origin:
+          type: string
+          description: The origin. Read-only in the SOAP API. Available values are <i>user</i>, <i>web forms</i>
+      additionalProperties: false
+      description: EditConstituentAddress
+      example:
+        address_type: ''
+        address_block: ''
+        city: ''
+        state_: ''
+        postcode: ''
+        country_: ''
+        cart: ''
+        dpc: ''
+        lot: ''
+        start_date:
+          year: 2014
+          month: 4
+          day: 13
+        end_date:
+          year: 2024
+          month: 4
+          day: 13
+        primary: false
+        do_not_mail: false
+        omit_from_validation: false
+        county: ''
+        congressional_district: ''
+        state_house_district: ''
+        state_senate_district: ''
+        local_precinct: ''
+        info_source: ''
+        region: ''
+        last_validation_attempt_date: '2019-11-04T10:04:00Z'
+        validation_message: ''
+        certification_data: 0
+        ncoa_last_submit_date: '2019-11-04T10:04:00Z'
+        ncoa_return: ''
+        ncoa_footnote: ''
+        ncoa_dpv_footnote: ''
+        ncoa_move_date:
+          year: 2024
+          month: 4
+          day: 13
+        ncoa_dma_suppression: false
+        ncoa_mail_grade: ''
+        zip_lookup_countries:
+        - country_id: ''
+          country_name: ''
+        validation_countries:
+        - country_id: ''
+          browsable: false
+        update_contacts: false
+        has_contacts: false
+        do_not_mail_reason: ''
+        household: false
+        household_member: false
+        update_matching_household_addresses: false
+        matching_household_members:
+        - constituent_id: ''
+          name: ''
+          relationship_to_primary: ''
+        historical_start_date: '2014-11-04T10:04:00Z'
+        historical_end_date: '2024-11-04T10:04:00Z'
+        date_added: '2014-11-04T11:04:00Z'
+        info_source_comments: ''
+        confidential: false
+        constituent_data_review_rollback_reason: ''
+        forced_primary: false
+        can_edit_primary: false
+        invalid_fields: ''
+        origin: User
+      x-display-name: Address Edit Form 4
+      x-display-id: Address Edit Form 4
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+x-refined-from:
+- blackbaud-altru-constituent-api-openapi.yml
+- blackbaud-constituent-api-openapi.yml
+- blackbaud-crm-constituent-api-openapi.yml

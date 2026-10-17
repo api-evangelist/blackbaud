@@ -1,0 +1,93 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Education Core Attachments API'
+  description: This API is used to provide access to core school settings, such as school years and roles, as well as user information and other common features, such as retrieving lists and content.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/afe-edcor
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/afe-edcor
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Attachments
+paths:
+  /v1/attachments:
+    get:
+      operationId: V1AttachmentsGet
+      summary: Attachment (Upload) (PREVIEW)
+      description: 'Provisions a temporary file location to upload attachments to Education Management. This is a two-step process.
+
+        This Get call’s response includes a unique URL and token combination you will use in a separate Post call to upload the file data.
+
+        That upload call will return a temporary filename that will be used with the appropriate Post or Patch endpoint - e.g. Test score (Create) in the Enrollment Management API and UserRecord in the User Create/Update API''s. See Creating physical attachments for more information.
+
+
+        Requires at least one of the following roles in the Education Management system:
+
+
+        Any user can provision a file
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: type
+        in: query
+        required: true
+        schema:
+          type: string
+        description: "The type of attachment. These file types correspond with the Post/Patch calls that allow an attachment in their request body.\\\n            Allowed types:\\\n            TestScore, UserRecord, LearningProfile"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NewAttachmentProvision'
+              example:
+                url: https://someutilityurl.org/attachments
+                token: somerandomtokenstring==
+      tags:
+      - Attachments
+components:
+  schemas:
+    NewAttachmentProvision:
+      type: object
+      properties:
+        environment_id:
+          type:
+          - string
+          - 'null'
+          description: Your environment ID
+        blackbaud_id:
+          type:
+          - string
+          - 'null'
+          description: The Blackbaud ID of the user that provisioned the attachment file location
+        url:
+          type:
+          - string
+          - 'null'
+          description: The URL to use to upload the data for the attachment.
+        token:
+          type:
+          - string
+          - 'null'
+          description: The temporary, unique token for the provisioned attachment.
+      additionalProperties: false
+      description: NewAttachmentProvision object model
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

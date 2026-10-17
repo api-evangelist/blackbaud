@@ -1,0 +1,997 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: General Ledger Accounts API'
+  description: This API is used to manage the general ledger, including accounts, projects, and journal entries. This API has a maximum request size limit of 8mb.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/56eb17a0a9db9516c46bff6f
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/generalledger/v1
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Accounts
+paths:
+  /accounts:
+    get:
+      operationId: SearchAccounts
+      summary: Account (Search)
+      description: Returns a list of accounts.
+      parameters:
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: 'Represents the number of records to skip.
+
+          For use with pagination.'
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: "Represents the number of records to return. \nThe default is 100. \nThe maximum allowed value is 5000."
+      - name: search_text
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Text to match. Can match account number, description, or class. A blank search will match all accounts.
+      - name: from_account
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Search by From account number. A blank search will match all accounts.
+      - name: to_account
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Search by To account number. A blank search will match all accounts.
+      - name: from_account_code
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Search by From account code. A blank search will match all codes.
+      - name: to_account_code
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Search by To account code. A blank search will match all codes.
+      - name: last_modified
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Returns modified records based on or after a specified date.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the accounts matching the search.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiCollection_AccountDetail'
+              example:
+                count: 679
+                value:
+                - account_id: 1
+                  account_number: 01-1000-00
+                  description: Operating Cash Account-Default
+                  prevent_data_entry: false
+                  prevent_posting_date: '2015-06-03T00:00:00Z'
+                  class: Unrestricted Net Assets
+                  cashflow: Cash and Cash Equivalents
+                  working_capital: Items Requiring no Outlay of Working Capital
+                  custom_fields:
+                  - custom_field_id: 3
+                    field_name: 'Reference Account #'
+                    value: 10 - Cash
+                    comments: Test
+                    type: Number
+                    date: '2025-06-03T00:00:00Z'
+                  default_transaction_codes:
+                  - name: Jurisdiction
+                    value: None
+                    id: 0
+                  date_added: '2002-01-08T00:00:00Z'
+                  added_by: Supervisor
+                  date_modified: '2017-04-04T12:16:27.577Z'
+                  modified_by: Ben Cook
+                - account_id: 2
+                  account_number: 01-1050-00
+                  description: Petty Cash-Default
+                  prevent_data_entry: false
+                  prevent_posting_date: '2015-06-03T00:00:00Z'
+                  class: Unrestricted Net Assets
+                  cashflow: Cash and Cash Equivalents
+                  working_capital: Current Assets
+                  custom_fields: []
+                  default_transaction_codes:
+                  - name: Spendable?
+                    value: Spendable
+                    id: 0
+                  date_added: '2002-01-08T00:00:00Z'
+                  added_by: Supervisor
+                  date_modified: '2012-12-07T12:47:25.1Z'
+                  modified_by: Supervisor
+        '400':
+          description: Returned when the request is not in the correct format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DomainErrorMessage'
+              example:
+                Error: Invalid Request
+                Details:
+                - The value 'fake' is not valid for transaction_status.
+                ErrorPath: null
+        '403':
+          description: Returned when the user does not have permission to view accounts.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Accounts
+  /accounts/cashflows:
+    get:
+      operationId: ListAccountCashflows
+      summary: Account cashflows (List)
+      description: Returns the list of available cashflow values
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the list of cashflow values.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiCollection_Cashflow'
+              example:
+                count: 4
+                value:
+                - cashflow_id: 200
+                  description: Cash Flows from Operating Activities
+                  value: Cash Flows from Operating Activities
+                - cashflow_id: 201
+                  description: Cash Flows from Investing Activities
+                  value: Cash Flows from Investing Activities
+                - cashflow_id: 202
+                  description: Cash Flows from Financing Activities
+                  value: Cash Flows from Financing Activities
+                - cashflow_id: 203
+                  description: Cash and Cash Equivalents
+                  value: Cash and Cash Equivalents
+      tags:
+      - Accounts
+  /accounts/codes:
+    get:
+      operationId: ListAccountCodes
+      summary: Account code (List)
+      description: Returns the account codes.
+      parameters:
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: The number of records to skip, for use with pagination.
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: "The number of records to return. \nIf not specified, the default is 100. \nThe maximum allowed value is 500."
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains a list of account codes.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiCollection_AccountCode'
+              example:
+                count: 137
+                value:
+                - account_code_id: 1
+                  account_code_value: '1000'
+                  category: Asset
+                  class: Unrestricted Net Assets
+                  is_contra: false
+                  is_control: true
+                  description: Operating Cash Account
+                - account_code_id: 2
+                  account_code_value: '1050'
+                  category: Asset
+                  class: Unrestricted Net Assets
+                  is_contra: false
+                  is_control: false
+                  description: Petty Cash
+                - account_code_id: 3
+                  account_code_value: '1010'
+                  category: Asset
+                  class: Unrestricted Net Assets
+                  is_contra: false
+                  is_control: false
+                  description: Money Market
+        '403':
+          description: Returned when the user does not have permission to view account codes.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Accounts
+  /accounts/customfields:
+    get:
+      operationId: ListAccountCustomFields
+      summary: Account custom fields (List)
+      description: Returns a list of custom field options.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the list of custom fields.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedResponse_CustomFieldOptions'
+              example:
+                count: 6
+                results:
+                - custom_field_id: 4
+                  name: 'Reference Account #'
+                  type: Number
+                  is_required: false
+                  table_values:
+                  - Adminstrative Costs
+                  - Shelter
+                  - Supplies
+                - custom_field_id: 5
+                  name: Budget Manager
+                  type: Table
+                  is_required: false
+                  table_values:
+                  - Bill Smith
+                  - David Kilmer
+                - custom_field_id: 10
+                  name: Accountability Grouping
+                  type: Table
+                  is_required: false
+                  table_values:
+                  - Education
+                  - Food
+                  - Adminstrative Costs
+                  - Shelter
+                  - Supplies
+      tags:
+      - Accounts
+  /accounts/funds:
+    get:
+      operationId: ListAccountFunds
+      summary: Account fund (List)
+      description: Returns the account funds.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains a list of account funds.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiCollection_Fund'
+              example:
+                count: 5
+                value:
+                - fund_id: 1
+                  value: '01'
+                  description: Operating Fund
+                  beginning_balances_locked: '2000-01-01T00:00:00Z'
+                  fund_balance_account: 01-3000-00
+                  fund_requirements:
+                  - name: Class
+                    type: ''
+                    preserve_details_during_closing: true
+                    require_to_balance: true
+                    require_on_accounts_specified: All Accounts
+                    default: Unrestricted Net Assets
+                  - name: Projects
+                    type: ''
+                    preserve_details_during_closing: true
+                    require_to_balance: false
+                    require_on_accounts_specified: Income Statement Accounts
+                    default: '9999'
+                  - name: Segment
+                    type: Department
+                    preserve_details_during_closing: false
+                    require_to_balance: false
+                    require_on_accounts_specified: ''
+                    default: ''
+      tags:
+      - Accounts
+  /accounts/segments/{segment_id}:
+    get:
+      operationId: GetAccountSegment
+      summary: Account segment value
+      description: Returns the specified account segment value.
+      parameters:
+      - name: segment_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The identifier for the account segment.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the specified account segment.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountSegmentDetail'
+              example:
+                segment_id: 3
+                type: Department
+                values:
+                - value: '00'
+                  description: Default
+                - value: '01'
+                  description: Administration
+                - value: '02'
+                  description: Development
+        '404':
+          description: Returned when the specified account segment could not be found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Accounts
+  /accounts/structure:
+    get:
+      operationId: ListAccountStructures
+      summary: Account structure (List)
+      description: Returns a list of account structures.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains a list of account structures.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiCollection_AccountStructureDetail'
+              example:
+                count: 3
+                value:
+                - segment_id: 1
+                  separator: Hyphen
+                  type: Fund
+                  length: 2
+                  sequence: 1
+                - segment_id: 2
+                  separator: Hyphen
+                  type: Account code
+                  length: 4
+                  sequence: 2
+                - segment_id: 3
+                  separator: ''
+                  type: Department
+                  length: 2
+                  sequence: 3
+      tags:
+      - Accounts
+  /accounts/workingcapitals:
+    get:
+      operationId: ListAccountWorkingCapitals
+      summary: Account working capitals (List)
+      description: Returns the list of available working capital values
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the list of working capital options.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiCollection_WorkingCapital'
+              example:
+                count: 4
+                value:
+                - working_capital_id: 196
+                  description: Items Requiring no Outlay of Working Capital
+                  value: Items Requiring no Outlay of Working Capital
+                - working_capital_id: 197
+                  description: Current Assets
+                  value: Current Assets
+                - working_capital_id: 198
+                  description: Current Liabilities
+                  value: Current Liabilities
+                - working_capital_id: 209
+                  description: Noncurrent Assets, Liabilities, and Fund Balance
+                  value: Noncurrent Assets, Liabilities, and Fund Balance
+      tags:
+      - Accounts
+  /accounts/{account_id}:
+    get:
+      operationId: GetAccount
+      summary: Account (Get)
+      description: Returns the specified account record.
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The identifier for the account to retrieve.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the specified account.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountDetail'
+              example:
+                account_id: 1
+                account_number: 01-1000-00
+                description: Operating Cash Account-Default
+                prevent_data_entry: false
+                prevent_posting_date: '2015-06-03T00:00:00Z'
+                class: Unrestricted Net Assets
+                cashflow: Cash and Cash Equivalents
+                working_capital: Items Requiring no Outlay of Working Capital
+                custom_fields:
+                - custom_field_id: 3
+                  field_name: 'Reference Account #'
+                  value: 10 - Cash
+                  comments: Test
+                  type: Number
+                  date: '2025-06-03T00:00:00Z'
+                default_transaction_codes:
+                - name: Jurisdiction
+                  value: None
+                  id: 0
+                date_added: '2002-01-08T00:00:00Z'
+                added_by: Supervisor
+                date_modified: '2017-04-04T12:16:27.577Z'
+                modified_by: Ben Cook
+        '403':
+          description: Returned when the user does not have permission to view accounts.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+        '404':
+          description: Returned when the specified account could not be found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Accounts
+components:
+  schemas:
+    PagedResponse_CustomFieldOptions:
+      type: object
+      properties:
+        count:
+          format: int32
+          type: integer
+          x-ms-summary: Count
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomFieldOptions'
+          x-ms-summary: Results
+      x-hidden: true
+      x-display-name: Paged response `1
+      x-ms-summary: Paged response `1
+    ApiCollection_AccountDetail:
+      type: object
+      properties:
+        count:
+          format: int32
+          type: integer
+          x-ms-summary: Count
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccountDetail'
+          x-ms-summary: Value
+      x-hidden: true
+      x-display-name: Api collection `1
+      x-ms-summary: Api collection `1
+    DomainErrorMessage:
+      type: object
+      properties:
+        Error:
+          type: string
+          x-ms-summary: Error
+        Details:
+          type: array
+          items:
+            type: string
+          x-ms-summary: Details
+        ErrorPath:
+          type: string
+          x-ms-summary: Error path
+      x-display-name: Domain error message
+      x-ms-summary: Domain error message
+    BasicErrorMessage:
+      type: object
+      properties:
+        Error:
+          type: string
+          x-ms-summary: Error
+      x-display-name: Basic error message
+      x-ms-summary: Basic error message
+    Cashflow:
+      description: Account cashflow value.
+      type: object
+      properties:
+        cashflow_id:
+          format: int32
+          description: The cashflow identifier.
+          type: integer
+          x-ms-summary: Cashflow id
+        description:
+          description: The description for this cashflow.
+          type: string
+          x-ms-summary: Description
+        value:
+          description: The value for this cashflow.
+          type: string
+          x-ms-summary: Value
+      x-display-name: Cashflow
+      x-ms-summary: Cashflow
+    AccountSegmentValue:
+      type: object
+      properties:
+        value:
+          description: The value for this account segment.
+          type: string
+          x-ms-summary: Value
+        description:
+          description: The description of this account segment.
+          type: string
+          x-ms-summary: Description
+      x-display-name: Account segment value
+      x-ms-summary: Account segment value
+    AccountCode:
+      type: object
+      properties:
+        account_code_id:
+          format: int32
+          description: The identifier for this account code.
+          type: integer
+          x-ms-summary: Account code id
+        value:
+          format: int32
+          description: This value is deprecated. You must use account_code_value in place of this to avoid potential datatype or length issues.
+          type: integer
+          x-ms-summary: Value
+        account_code_value:
+          description: The value of this account code.
+          type: string
+          x-ms-summary: Account code value
+        category:
+          description: The category for this account code.
+          type: string
+          x-ms-summary: Category
+        class:
+          description: The class of this account code.
+          type: string
+          x-ms-summary: Class
+        is_contra:
+          description: If this is a contra account.
+          type: boolean
+          x-ms-summary: Is contra
+        is_control:
+          description: If this account is a controlled account.
+          type: boolean
+          x-ms-summary: Is control
+        description:
+          description: The description for this account code.
+          type: string
+          x-ms-summary: Description
+      x-display-name: Account code
+      x-ms-summary: Account code
+    ApiCollection_Cashflow:
+      type: object
+      properties:
+        count:
+          format: int32
+          type: integer
+          x-ms-summary: Count
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/Cashflow'
+          x-ms-summary: Value
+      x-hidden: true
+      x-display-name: Api collection `1
+      x-ms-summary: Api collection `1
+    WorkingCapital:
+      description: Account working capital value.
+      type: object
+      properties:
+        working_capital_id:
+          format: int32
+          description: The working capital value identifier.
+          type: integer
+          x-ms-summary: Working capital id
+        description:
+          description: The description for this working capital value.
+          type: string
+          x-ms-summary: Description
+        value:
+          description: The value for this working capital value.
+          type: string
+          x-ms-summary: Value
+      x-display-name: Working capital
+      x-ms-summary: Working capital
+    ApiCollection_AccountCode:
+      type: object
+      properties:
+        count:
+          format: int32
+          type: integer
+          x-ms-summary: Count
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccountCode'
+          x-ms-summary: Value
+      x-hidden: true
+      x-display-name: Api collection `1
+      x-ms-summary: Api collection `1
+    TransactionCodeValue:
+      description: Transaction code value
+      required:
+      - value
+      - id
+      type: object
+      properties:
+        name:
+          description: The transaction code name.
+          type: string
+          x-ms-summary: Name
+        value:
+          description: The transaction code value.
+          type: string
+          x-ms-summary: Value
+        id:
+          format: int32
+          description: The transaction code value id.
+          type: integer
+          x-ms-summary: Id
+        inactive:
+          description: Indicate if record is inactive or not.
+          type: boolean
+          x-ms-summary: Inactive
+      x-display-name: Transaction code value
+      x-ms-summary: Transaction code value
+    CustomFieldOptions:
+      type: object
+      properties:
+        custom_field_id:
+          format: int32
+          description: The identifier for this custom field.
+          type: integer
+          x-ms-summary: Custom field id
+        name:
+          description: The name of this custom field.
+          type: string
+          x-ms-summary: Name
+        type:
+          description: The type (boolean, table, etc) of this custom field.
+          enum:
+          - Text
+          - Number
+          - DateTime
+          - Currency
+          - Boolean
+          - Table
+          - FuzzyDate
+          type: string
+          x-ms-summary: Type
+        is_required:
+          description: If this custom field is required.
+          type: boolean
+          x-ms-summary: Is required
+        table_values:
+          description: 'List of table values.
+
+            Only applicable if type = ''Table''.'
+          type: array
+          items:
+            type: string
+          x-ms-summary: Table values
+      x-display-name: Custom field options
+      x-ms-summary: Custom field options
+    ApiCollection_WorkingCapital:
+      type: object
+      properties:
+        count:
+          format: int32
+          type: integer
+          x-ms-summary: Count
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkingCapital'
+          x-ms-summary: Value
+      x-hidden: true
+      x-display-name: Api collection `1
+      x-ms-summary: Api collection `1
+    ApiCollection_AccountStructureDetail:
+      type: object
+      properties:
+        count:
+          format: int32
+          type: integer
+          x-ms-summary: Count
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccountStructureDetail'
+          x-ms-summary: Value
+      x-hidden: true
+      x-display-name: Api collection `1
+      x-ms-summary: Api collection `1
+    AccountSegmentDetail:
+      type: object
+      properties:
+        segment_id:
+          format: int32
+          description: The identifier for this account segment.
+          type: integer
+          x-ms-summary: Segment id
+        type:
+          description: The type for this account segment.
+          type: string
+          x-ms-summary: Type
+        values:
+          description: The values for this account segment.
+          type: array
+          items:
+            $ref: '#/components/schemas/AccountSegmentValue'
+          x-ms-summary: Values
+      x-display-name: Account segment detail
+      x-ms-summary: Account segment detail
+    AccountDetail:
+      description: AccountDetail class.
+      type: object
+      properties:
+        account_id:
+          format: int32
+          description: The identifier for this account.
+          type: integer
+          x-ms-summary: Account id
+        account_number:
+          description: The account number for this account.
+          type: string
+          x-ms-summary: Account number
+        description:
+          description: The description for this account.
+          type: string
+          x-ms-summary: Description
+        prevent_data_entry:
+          description: 'If to prevent data entry.
+
+            If a date is given for prevent posting, this value is set to true.'
+          type: boolean
+          x-ms-summary: Prevent data entry
+        prevent_posting_date:
+          format: date-time
+          description: 'If, and the date after which, to prevent posting.
+
+            Filling out this field will automatically set the prevent data entry field to ''true''.'
+          type: string
+          x-ms-summary: Prevent posting date
+        class:
+          description: The class for this account.
+          type: string
+          x-ms-summary: Class
+        cashflow:
+          description: The cash flow for this account.
+          type: string
+          x-ms-summary: Cashflow
+        working_capital:
+          description: The working capital schedule for this account.
+          type: string
+          x-ms-summary: Working capital
+        custom_fields:
+          description: The custom fields on this account.
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomField'
+          x-ms-summary: Custom fields
+        default_transaction_codes:
+          description: The default transaction codes on this account.
+          type: array
+          items:
+            $ref: '#/components/schemas/TransactionCodeValue'
+          x-ms-summary: Default transaction codes
+        date_added:
+          format: date-time
+          description: The created date of the account.
+          type: string
+          x-ms-summary: Date added
+        added_by:
+          description: The creator of the account.
+          type: string
+          x-ms-summary: Added by
+        date_modified:
+          format: date-time
+          description: The modified date of the account.
+          type: string
+          x-ms-summary: Date modified
+        modified_by:
+          description: The modifier of the account.
+          type: string
+          x-ms-summary: Modified by
+      x-display-name: Account detail
+      x-ms-summary: Account detail
+    ApiCollection_Fund:
+      type: object
+      properties:
+        count:
+          format: int32
+          type: integer
+          x-ms-summary: Count
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/Fund'
+          x-ms-summary: Value
+      x-hidden: true
+      x-display-name: Api collection `1
+      x-ms-summary: Api collection `1
+    FundRequirement:
+      type: object
+      properties:
+        name:
+          description: The name for this fund requirement.
+          type: string
+          x-ms-summary: Name
+        type:
+          description: The type for this fund requirement.
+          type: string
+          x-ms-summary: Type
+        preserve_details_during_closing:
+          description: If or not this fund requirements preserves details during closing.
+          type: boolean
+          x-ms-summary: Preserve details during closing
+        require_to_balance:
+          description: If or not this fund requirement is required to balance.
+          type: boolean
+          x-ms-summary: Require to balance
+        require_on_accounts_specified:
+          description: The require on accounts specified for this fund requirement.
+          type: string
+          x-ms-summary: Require on accounts specified
+        default:
+          description: The default for this fund requirement.
+          type: string
+          x-ms-summary: Default
+      x-display-name: Fund requirement
+      x-ms-summary: Fund requirement
+    CustomField:
+      description: Custom field definition.
+      type: object
+      properties:
+        custom_field_id:
+          format: int32
+          description: The identifier for this custom field.
+          type: integer
+          x-ms-summary: Custom field id
+        field_name:
+          description: The name of the custom field.
+          type: string
+          x-ms-summary: Field name
+        value:
+          description: The value for this custom field.
+          type: string
+          x-ms-summary: Value
+        comments:
+          description: The description for this custom field.
+          type: string
+          x-ms-summary: Comments
+        type:
+          description: The type of this custom field.
+          enum:
+          - Text
+          - Number
+          - DateTime
+          - Currency
+          - Boolean
+          - Table
+          - FuzzyDate
+          type: string
+          x-ms-summary: Type
+        date:
+          format: date-time
+          description: The date on this custom field.
+          type: string
+          x-ms-summary: Date
+      x-display-name: Custom field
+      x-ms-summary: Custom field
+    AccountStructureDetail:
+      type: object
+      properties:
+        segment_id:
+          format: int32
+          description: The identifier for this account segment.
+          type: integer
+          x-ms-summary: Segment id
+        separator:
+          description: The separator for this account segment.
+          type: string
+          x-ms-summary: Separator
+        type:
+          description: The type for this account segment.
+          type: string
+          x-ms-summary: Type
+        length:
+          format: int32
+          description: The length of this account segment.
+          type: integer
+          x-ms-summary: Length
+        sequence:
+          format: int32
+          description: The sequence for this account segment.
+          type: integer
+          x-ms-summary: Sequence
+      x-display-name: Account structure detail
+      x-ms-summary: Account structure detail
+    Fund:
+      type: object
+      properties:
+        fund_id:
+          format: int32
+          description: The identifier for this fund.
+          type: integer
+          x-ms-summary: Fund id
+        value:
+          description: The value for this fund.
+          type: string
+          x-ms-summary: Value
+        description:
+          description: The description for this fund.
+          type: string
+          x-ms-summary: Description
+        beginning_balances_locked:
+          format: date-time
+          description: The beginning balances locked date for this fund.
+          type: string
+          x-ms-summary: Beginning balances locked
+        fund_balance_account:
+          description: The fund balance account for this fund.
+          type: string
+          x-ms-summary: Fund balance account
+        fund_requirements:
+          description: The fund requirements for this fund.
+          type: array
+          items:
+            $ref: '#/components/schemas/FundRequirement'
+          x-ms-summary: Fund requirements
+      x-display-name: Fund
+      x-ms-summary: Fund
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

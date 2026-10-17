@@ -1,0 +1,1303 @@
+openapi: 3.2.0
+info:
+  title: Blackbaud Volunteers API
+  version: '1.0'
+  x-refined-note:
+  - x-apievangelist-provenance differs across the merged source definitions and was not carried
+  description: 'Operations tagged Volunteers across 3 of this provider''s published API definitions: blackbaud-altru-volunteer-api-openapi.yml, blackbaud-crm-volunteer-api-openapi.yml, blackbaud-volunteer-api-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.sky.blackbaud.com/alt-volmg
+- url: https://api.sky.blackbaud.com/crm-volmg
+- url: https://api.sky.blackbaud.com/volunteer
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Volunteers
+paths:
+  /volunteers:
+    post:
+      operationId: CreateVolunteer
+      summary: Create a volunteer
+      description: Add a volunteer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewVolunteer'
+            example:
+              constituent_id: F39270BA-90EB-4A0E-B7BD-31998E56E569
+              emergency_contact_name: Robert Adamson
+              emergency_contact_phone: 205-568-4200
+              sponsor_id: ''
+              default_country_id: ''
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully creates the resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to create the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Volunteers
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-volmg
+  /volunteers/search:
+    get:
+      operationId: SearchVolunteers
+      summary: Search for volunteers
+      description: This search is for finding constituents who are members of the volunteer.
+      parameters:
+      - name: constituent_type
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: constituent type
+      - name: key_name
+        in: query
+        required: false
+        schema:
+          type: string
+        description: last/org name
+      - name: first_name
+        in: query
+        required: false
+        schema:
+          type: string
+        description: first name
+      - name: lookup_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: lookup id
+      - name: address_block
+        in: query
+        required: false
+        schema:
+          type: string
+        description: address
+      - name: city
+        in: query
+        required: false
+        schema:
+          type: string
+        description: city
+      - name: state
+        in: query
+        required: false
+        schema:
+          type: string
+        description: state SimpleDataListID=7fa91401-596c-4f7c-936d-6e41683121d7.
+      - name: post_code
+        in: query
+        required: false
+        schema:
+          type: string
+        description: zip/postal code
+      - name: country
+        in: query
+        required: false
+        schema:
+          type: string
+        description: country SimpleDataListID=c9649672-353d-42e8-8c25-4d34bbabfbba.
+      - name: include_inactive
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: include inactive
+      - name: include_deceased
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: include deceased
+      - name: only_primary_address
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: only search primary addresses
+      - name: exact_match_only
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: match all criteria exactly
+      - name: only_prospects
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: only prospects
+      - name: only_fundraisers
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: only fundraisers
+      - name: only_staff
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: only staff
+      - name: only_volunteers
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: only volunteers
+      - name: ssn
+        in: query
+        required: false
+        schema:
+          type: string
+        description: ssn
+      - name: check_nickname
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: check nickname
+      - name: check_aliases
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: check aliases
+      - name: full_name
+        in: query
+        required: false
+        schema:
+          type: string
+        description: full name
+      - name: check_merged_constituents
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: check merged constituents
+      - name: minimum_date
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Format - date (as full-date in RFC3339). minimum date
+      - name: include_individuals
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: individuals
+      - name: include_organizations
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: organizations
+      - name: include_groups
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: groups/households
+      - name: check_alternate_lookup_ids
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: check alternate lookup ids
+      - name: fuzzy_search_on_name
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: include fuzzy search on name
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Limits the number of records to return.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of result entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VolunteerSearchCollection'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to view the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+      tags:
+      - Volunteers
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-volmg
+  /volunteers/{volunteer_date_range_id}:
+    delete:
+      operationId: DeleteVolunteer
+      summary: Delete a volunteer
+      description: This record operation is used to handle the rules of deleting a volunteer constituency.
+      parameters:
+      - name: volunteer_date_range_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The volunteer date range id
+      responses:
+        '200':
+          description: Returned when the operation successfully deletes the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to delete the resource.
+      tags:
+      - Volunteers
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-volmg
+  /volunteers/{volunteer_id}:
+    patch:
+      operationId: EditVolunteer
+      summary: Edit a volunteer
+      parameters:
+      - name: volunteer_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The volunteer id.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditVolunteer'
+            example:
+              emergency_contact_name: Robert Adamson
+              emergency_contact_phone: 205-568-4100
+              sponsor_id: ''
+              default_country_id: ''
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully edits the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to edit the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Volunteers
+    get:
+      operationId: GetVolunteer
+      summary: Get a volunteer
+      description: Edit a volunteer
+      parameters:
+      - name: volunteer_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The volunteer id.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the specified resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Volunteer'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to get the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Volunteers
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-volmg
+  /volunteers/{volunteer_id}/view:
+    get:
+      operationId: ViewVolunteer
+      summary: View a volunteer
+      description: Shows general inoperationation about a volunteer.
+      parameters:
+      - name: volunteer_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The volunteer id.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the specified resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VolunteerView'
+      tags:
+      - Volunteers
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-volmg
+  /v1/volunteers/interests/{volunteer_interest_id}:
+    delete:
+      operationId: DeleteVolunteerInterest
+      summary: Delete a volunteer interest (PREVIEW)
+      description: 'Deletes an existing volunteer interest entry.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: volunteer_interest_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The unique record ID of the volunteer interest. This is the ID returned from GET /constituents/{constituent_id}/interests.
+      responses:
+        '200':
+          description: Returned when the operation succeeds.
+        '400':
+          description: Returned when the request is invalid.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/VolunteerInterestDeleteErrorCodes'
+              example:
+                type: urn:blackbaud:invalid-value
+                title: The request is invalid.
+                status: 400
+                detail: '''abc'' is not a valid record ID.'
+        '401':
+          description: Returned when the caller is not authenticated.
+        '403':
+          description: Returned when the caller does not have permission to perform this operation.
+      tags:
+      - Volunteers
+    patch:
+      operationId: EditVolunteerInterest
+      summary: Update a volunteer interest (PREVIEW)
+      description: 'Updates an existing volunteer interest entry.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: volunteer_interest_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The unique record ID of the volunteer interest. This is the ID returned from GET /constituents/{constituent_id}/interests.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VolunteerInterestEdit'
+            example:
+              interest:
+                value: Community Outreach
+        description: The volunteer interest information to update
+      responses:
+        '200':
+          description: Returned when the operation succeeds.
+        '400':
+          description: Returned when the request is invalid.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/VolunteerInterestEditErrorCodes'
+              example:
+                type: urn:blackbaud:invalid-value
+                title: The request is invalid.
+                status: 400
+                detail: '''abc'' is not a valid record ID.'
+        '401':
+          description: Returned when the caller is not authenticated.
+        '403':
+          description: Returned when the caller does not have permission to perform this operation.
+        '404':
+          description: Returned when the specified volunteer interest is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails_2'
+              example:
+                type: urn:blackbaud:resource-not-found
+                title: The requested resource could not be found.
+                status: 404
+                detail: Volunteer interest not found.
+      tags:
+      - Volunteers
+    servers:
+    - url: https://api.sky.blackbaud.com/volunteer
+  /v1/volunteers/skills/{volunteer_skill_id}:
+    delete:
+      operationId: DeleteVolunteerSkill
+      summary: Delete a volunteer skill (PREVIEW)
+      description: 'Deletes an existing volunteer skill/experience entry.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: volunteer_skill_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The unique record ID of the volunteer skill. This is the ID returned from GET /constituents/{constituent_id}/skills.
+      responses:
+        '200':
+          description: Returned when the operation succeeds.
+        '400':
+          description: Returned when the request is invalid.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/VolunteerSkillDeleteErrorCodes'
+              example:
+                type: urn:blackbaud:invalid-value
+                title: The request is invalid.
+                status: 400
+                detail: '''abc'' is not a valid record ID.'
+        '401':
+          description: Returned when the caller is not authenticated.
+        '403':
+          description: Returned when the caller does not have permission to perform this operation.
+      tags:
+      - Volunteers
+    patch:
+      operationId: EditVolunteerSkill
+      summary: Update a volunteer skill (PREVIEW)
+      description: 'Updates an existing volunteer skill/experience entry.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: volunteer_skill_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The unique record ID of the volunteer skill. This is the ID returned from GET /constituents/{constituent_id}/skills.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VolunteerSkillEdit'
+            example:
+              skill:
+                value: First Aid
+              skill_level:
+                value: Advanced
+              license_type:
+                value: CPR Certification
+              expiration_date:
+                y: 2027
+                m: 6
+                d: 15
+              comments: Red Cross certified
+        description: The volunteer skill information to update
+      responses:
+        '200':
+          description: Returned when the operation succeeds.
+        '400':
+          description: Returned when the request is invalid.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/VolunteerSkillEditErrorCodes'
+              example:
+                type: urn:blackbaud:invalid-value
+                title: The request is invalid.
+                status: 400
+                detail: '''abc'' is not a valid record ID.'
+        '401':
+          description: Returned when the caller is not authenticated.
+        '403':
+          description: Returned when the caller does not have permission to perform this operation.
+        '404':
+          description: Returned when the specified volunteer skill is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails_2'
+              example:
+                type: urn:blackbaud:resource-not-found
+                title: The requested resource could not be found.
+                status: 404
+                detail: Volunteer skill not found.
+      tags:
+      - Volunteers
+    servers:
+    - url: https://api.sky.blackbaud.com/volunteer
+  /v1/volunteers/types/{volunteer_type_id}:
+    delete:
+      operationId: DeleteVolunteerType
+      summary: Delete a volunteer type (PREVIEW)
+      description: 'Deletes an existing volunteer type classification.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: volunteer_type_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The unique record ID of the volunteer type assignment (not the type category ID). This is the ID returned from GET /constituents/{constituent_id}/types.
+      responses:
+        '200':
+          description: Returned when the operation succeeds.
+        '400':
+          description: Returned when the request is invalid.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/VolunteerTypeDeleteErrorCodes'
+              example:
+                type: urn:blackbaud:invalid-value
+                title: The request is invalid.
+                status: 400
+                detail: '''abc'' is not a valid record ID.'
+        '401':
+          description: Returned when the caller is not authenticated.
+        '403':
+          description: Returned when the caller does not have permission to perform this operation.
+      tags:
+      - Volunteers
+    patch:
+      operationId: EditVolunteerType
+      summary: Update a volunteer type (PREVIEW)
+      description: 'Updates an existing volunteer type classification.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: volunteer_type_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The unique record ID of the volunteer type assignment (not the type category ID). This is the ID returned from GET /constituents/{constituent_id}/types.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VolunteerTypeEdit'
+            example:
+              type:
+                value: Computer Operator
+              status:
+                value: Active
+              date_started:
+                y: 2024
+                m: 1
+                d: 15
+              date_finished:
+                y: 2024
+                m: 12
+                d: 31
+              reason_finished: Completed program
+        description: The volunteer type information to update
+      responses:
+        '200':
+          description: Returned when the operation succeeds.
+        '400':
+          description: Returned when the request is invalid.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/VolunteerTypeEditErrorCodes'
+              example:
+                type: urn:blackbaud:invalid-value
+                title: The request is invalid.
+                status: 400
+                detail: '''abc'' is not a valid record ID.'
+        '401':
+          description: Returned when the caller is not authenticated.
+        '403':
+          description: Returned when the caller does not have permission to perform this operation.
+        '404':
+          description: Returned when the specified volunteer type is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails_2'
+              example:
+                type: urn:blackbaud:resource-not-found
+                title: The requested resource could not be found.
+                status: 404
+                detail: Volunteer type not found.
+      tags:
+      - Volunteers
+    servers:
+    - url: https://api.sky.blackbaud.com/volunteer
+components:
+  schemas:
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type: integer
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type: string
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: false
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-display-name: Problem details
+      x-display-id: ProblemDetails
+    NewVolunteer:
+      required:
+      - constituent_id
+      type: object
+      properties:
+        constituent_id:
+          type: string
+          description: The record.
+        emergency_contact_name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The name.
+        emergency_contact_phone:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The phone.
+        sponsor_id:
+          type: string
+          description: The sponsor.
+        default_country_id:
+          type: string
+          description: The default country ID. Read-only in the SOAP API.
+      additionalProperties: false
+      description: CreateVolunteer
+      example:
+        constituent_id: F39270BA-90EB-4A0E-B7BD-31998E56E569
+        emergency_contact_name: Robert Adamson
+        emergency_contact_phone: 205-568-4200
+        sponsor_id: ''
+        default_country_id: ''
+      x-display-name: Volunteer Add Form
+      x-display-id: Volunteer Add Form
+    VolunteerSearchSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID.
+        name:
+          type: string
+          description: The name.
+        address:
+          type: string
+          description: The address.
+        city:
+          type: string
+          description: The city.
+        state:
+          type: string
+          description: The state.
+        post_code:
+          type: string
+          description: The zip/postal code.
+        lookup_id:
+          type: string
+          description: The lookup ID.
+        constituent_type:
+          type: string
+          description: The constituent type.
+        sort_constituent_name:
+          type: string
+          description: The name.
+      additionalProperties: false
+      description: SearchVolunteers
+      x-display-name: Volunteer Search
+      x-display-id: Volunteer Search
+    EditVolunteer:
+      type: object
+      properties:
+        emergency_contact_name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The name.
+        emergency_contact_phone:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The phone.
+        sponsor_id:
+          type: string
+          description: The sponsor.
+        countryid:
+          type: string
+          description: The country ID. Read-only in the SOAP API.
+      additionalProperties: false
+      description: EditVolunteer
+      example:
+        emergency_contact_name: Robert Adamson
+        emergency_contact_phone: 205-568-4100
+        sponsor_id: ''
+        default_country_id: ''
+      x-display-name: Volunteer Edit Form
+      x-display-id: Volunteer Edit Form
+    VolunteerView:
+      type: object
+      properties:
+        sponsor_name:
+          maxLength: 400
+          minLength: 0
+          type: string
+          description: The sponsor.
+        emergency_contact_name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The emergency contact name.
+        emergency_contact_phone:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The emergency contact phone.
+      additionalProperties: false
+      description: ViewVolunteer
+      x-display-name: Volunteer General View Form
+      x-display-id: Volunteer General View Form
+    VolunteerSearchCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items available for retrieval into the collection after applying any request parameters.
+          format: int32
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/VolunteerSearchSummary'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+      additionalProperties: false
+      description: A collection of items. Data lists can contain paginated results.
+    Volunteer:
+      type: object
+      properties:
+        emergency_contact_name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The name.
+        emergency_contact_phone:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The phone.
+        sponsor_id:
+          type: string
+          description: The sponsor.
+        country_id:
+          type: string
+          description: The country ID. Read-only in the SOAP API.
+      additionalProperties: false
+      description: GetVolunteer
+      x-display-name: Volunteer Edit Form
+      x-display-id: Volunteer Edit Form
+    PostResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The newly created ID.
+      additionalProperties: false
+      description: Defines the shape of a post response object.
+    VolunteerTypeDeleteErrorCodes:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".<br/><br/>Available values:<table><tr><th>type</th><th>detail</th></tr><tr><td>urn:blackbaud:model-validation-error</td><td>A model validation rule was violated, such as a missing required field.</td></tr><tr><td>urn:blackbaud:required-field</td><td>The required field '{0}' does not have a value.</td></tr><tr><td>urn:blackbaud:invalid-value</td><td>'{0}' is not a valid value for {1}.</td></tr></table>
+        title:
+          type:
+          - string
+          - 'null'
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type:
+          - integer
+          - 'null'
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: {}
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-bb-error-types:
+      - urn:blackbaud:model-validation-error
+      - urn:blackbaud:required-field
+      - urn:blackbaud:invalid-value
+    ProblemDetails_2:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".
+        title:
+          type:
+          - string
+          - 'null'
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type:
+          - integer
+          - 'null'
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: {}
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+    VolunteerTypeEdit:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: The volunteer type record ID.
+        type:
+          $ref: '#/components/schemas/CodeTableEntry'
+        status:
+          $ref: '#/components/schemas/CodeTableEntry'
+        date_started:
+          $ref: '#/components/schemas/FuzzyDate'
+        date_finished:
+          $ref: '#/components/schemas/FuzzyDate'
+        reason_finished:
+          maxLength: 50
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: The reason the classification ceased to be valid.
+        sequence:
+          type:
+          - integer
+          - 'null'
+          description: Optional 1-based position in the list; defaults to the list position on PUT / next available on POST.
+          format: int32
+      additionalProperties: false
+      description: Represents an editable volunteer type.
+    CodeTableEntry:
+      type: object
+      properties:
+        legacy_id:
+          type:
+          - string
+          - 'null'
+          description: The legacy ID of the code table entry.
+        value:
+          type:
+          - string
+          - 'null'
+          description: The value of the code table entry.
+      additionalProperties: false
+      description: A predefined entry in a code table.
+    VolunteerInterestEdit:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: The interest record ID.
+        interest:
+          $ref: '#/components/schemas/CodeTableEntry'
+        sequence:
+          type:
+          - integer
+          - 'null'
+          description: Optional 1-based position in the list; defaults to the list position on PUT / next available on POST.
+          format: int32
+      additionalProperties: false
+      description: Represents an editable volunteer interest.
+    VolunteerSkillEditErrorCodes:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".<br/><br/>Available values:<table><tr><th>type</th><th>detail</th></tr><tr><td>urn:blackbaud:model-validation-error</td><td>A model validation rule was violated, such as a missing required field.</td></tr><tr><td>urn:blackbaud:required-field</td><td>The required field '{0}' does not have a value.</td></tr><tr><td>urn:blackbaud:invalid-value</td><td>'{0}' is not a valid value for {1}.</td></tr><tr><td>urn:blackbaud:invalid-integer-value</td><td>{0} is not a valid value for {1}.</td></tr><tr><td>urn:blackbaud:table-entry-not-found</td><td>Invalid {0} table entry.</td></tr><tr><td>urn:blackbaud:table-entry-inactive</td><td>Inactive {0} table entry.</td></tr><tr><td>urn:blackbaud:table-entry-value-required</td><td>{0} requires legacy_id or value.</td></tr><tr><td>urn:blackbaud:invalid-string-length</td><td>The value provided for {0} must be {1} characters or less.</td></tr><tr><td>urn:blackbaud:invalid-date</td><td>InvalidDate</td></tr></table>
+        title:
+          type:
+          - string
+          - 'null'
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type:
+          - integer
+          - 'null'
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: {}
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-bb-error-types:
+      - urn:blackbaud:model-validation-error
+      - urn:blackbaud:required-field
+      - urn:blackbaud:invalid-value
+      - urn:blackbaud:invalid-integer-value
+      - urn:blackbaud:table-entry-not-found
+      - urn:blackbaud:table-entry-inactive
+      - urn:blackbaud:table-entry-value-required
+      - urn:blackbaud:invalid-string-length
+      - urn:blackbaud:invalid-date
+    VolunteerSkillDeleteErrorCodes:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".<br/><br/>Available values:<table><tr><th>type</th><th>detail</th></tr><tr><td>urn:blackbaud:model-validation-error</td><td>A model validation rule was violated, such as a missing required field.</td></tr><tr><td>urn:blackbaud:required-field</td><td>The required field '{0}' does not have a value.</td></tr><tr><td>urn:blackbaud:invalid-value</td><td>'{0}' is not a valid value for {1}.</td></tr></table>
+        title:
+          type:
+          - string
+          - 'null'
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type:
+          - integer
+          - 'null'
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: {}
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-bb-error-types:
+      - urn:blackbaud:model-validation-error
+      - urn:blackbaud:required-field
+      - urn:blackbaud:invalid-value
+    VolunteerTypeEditErrorCodes:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".<br/><br/>Available values:<table><tr><th>type</th><th>detail</th></tr><tr><td>urn:blackbaud:model-validation-error</td><td>A model validation rule was violated, such as a missing required field.</td></tr><tr><td>urn:blackbaud:required-field</td><td>The required field '{0}' does not have a value.</td></tr><tr><td>urn:blackbaud:invalid-value</td><td>'{0}' is not a valid value for {1}.</td></tr><tr><td>urn:blackbaud:invalid-integer-value</td><td>{0} is not a valid value for {1}.</td></tr><tr><td>urn:blackbaud:table-entry-not-found</td><td>Invalid {0} table entry.</td></tr><tr><td>urn:blackbaud:table-entry-inactive</td><td>Inactive {0} table entry.</td></tr><tr><td>urn:blackbaud:table-entry-value-required</td><td>{0} requires legacy_id or value.</td></tr><tr><td>urn:blackbaud:invalid-string-length</td><td>The value provided for {0} must be {1} characters or less.</td></tr><tr><td>urn:blackbaud:invalid-date</td><td>InvalidDate</td></tr><tr><td>urn:blackbaud:start-date-after-end-date</td><td>{0} must be on or before {1}.</td></tr></table>
+        title:
+          type:
+          - string
+          - 'null'
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type:
+          - integer
+          - 'null'
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: {}
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-bb-error-types:
+      - urn:blackbaud:model-validation-error
+      - urn:blackbaud:required-field
+      - urn:blackbaud:invalid-value
+      - urn:blackbaud:invalid-integer-value
+      - urn:blackbaud:table-entry-not-found
+      - urn:blackbaud:table-entry-inactive
+      - urn:blackbaud:table-entry-value-required
+      - urn:blackbaud:invalid-string-length
+      - urn:blackbaud:invalid-date
+      - urn:blackbaud:start-date-after-end-date
+    VolunteerSkillEdit:
+      type: object
+      properties:
+        skill:
+          $ref: '#/components/schemas/CodeTableEntry'
+        skill_level:
+          $ref: '#/components/schemas/CodeTableEntry'
+        license_type:
+          $ref: '#/components/schemas/CodeTableEntry'
+        expiration_date:
+          $ref: '#/components/schemas/FuzzyDate'
+        comments:
+          maxLength: 50
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: Gets or sets user comments associated with the skill
+        sequence:
+          type:
+          - integer
+          - 'null'
+          description: The ordinal position of the skill.
+          format: int32
+      additionalProperties: false
+      description: Represents volunteer skill update information for a volunteer
+    VolunteerInterestEditErrorCodes:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".<br/><br/>Available values:<table><tr><th>type</th><th>detail</th></tr><tr><td>urn:blackbaud:model-validation-error</td><td>A model validation rule was violated, such as a missing required field.</td></tr><tr><td>urn:blackbaud:required-field</td><td>The required field '{0}' does not have a value.</td></tr><tr><td>urn:blackbaud:invalid-value</td><td>'{0}' is not a valid value for {1}.</td></tr><tr><td>urn:blackbaud:invalid-integer-value</td><td>{0} is not a valid value for {1}.</td></tr><tr><td>urn:blackbaud:table-entry-not-found</td><td>Invalid {0} table entry.</td></tr><tr><td>urn:blackbaud:table-entry-inactive</td><td>Inactive {0} table entry.</td></tr><tr><td>urn:blackbaud:table-entry-value-required</td><td>{0} requires legacy_id or value.</td></tr></table>
+        title:
+          type:
+          - string
+          - 'null'
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type:
+          - integer
+          - 'null'
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: {}
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-bb-error-types:
+      - urn:blackbaud:model-validation-error
+      - urn:blackbaud:required-field
+      - urn:blackbaud:invalid-value
+      - urn:blackbaud:invalid-integer-value
+      - urn:blackbaud:table-entry-not-found
+      - urn:blackbaud:table-entry-inactive
+      - urn:blackbaud:table-entry-value-required
+    VolunteerInterestDeleteErrorCodes:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".<br/><br/>Available values:<table><tr><th>type</th><th>detail</th></tr><tr><td>urn:blackbaud:model-validation-error</td><td>A model validation rule was violated, such as a missing required field.</td></tr><tr><td>urn:blackbaud:required-field</td><td>The required field '{0}' does not have a value.</td></tr><tr><td>urn:blackbaud:invalid-value</td><td>'{0}' is not a valid value for {1}.</td></tr></table>
+        title:
+          type:
+          - string
+          - 'null'
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type:
+          - integer
+          - 'null'
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: {}
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-bb-error-types:
+      - urn:blackbaud:model-validation-error
+      - urn:blackbaud:required-field
+      - urn:blackbaud:invalid-value
+    FuzzyDate:
+      type: object
+      properties:
+        y:
+          type:
+          - integer
+          - 'null'
+          description: The year.
+          format: int32
+        m:
+          type:
+          - integer
+          - 'null'
+          description: The month.
+          format: int32
+        d:
+          type:
+          - integer
+          - 'null'
+          description: The day.
+          format: int32
+      additionalProperties: false
+      description: Represents a fuzzy date that may contain only a year, year and month, or a complete date.
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+x-refined-from:
+- blackbaud-altru-volunteer-api-openapi.yml
+- blackbaud-crm-volunteer-api-openapi.yml
+- blackbaud-volunteer-api-openapi.yml

@@ -1,0 +1,138 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Accounts Payable Activitytypes API'
+  description: This API is used to manage accounts payable, including vendors and invoices.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/57a342f1d7dcde1c28a749fe
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/accountspayable/v1
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Activitytypes
+paths:
+  /activitytypes:
+    get:
+      operationId: ListActivityTypes
+      summary: Activity types (List)
+      description: Returns a list of activity types.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the list of activity types.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActivityTypeSummaryApiCollection'
+              example:
+                count: 2
+                value:
+                - activity_type_id: 1
+                  activity_code: 300
+                  description: Local sales
+                  gst_rebate_factor: 15
+                  pst_rebate_factor: 15
+                  eligible_for_rebate: false
+                  gst_receivable_account_number: 01-5400-00
+                  pst_receivable_account_number: '5400-01-01'
+                - activity_type_id: 2
+                  activity_code: 620
+                  description: Library
+                  gst_rebate_factor: 30
+                  pst_rebate_factor: 30
+                  eligible_for_rebate: true
+                  receivable_account_mask: '**-5400-00'
+                  pst_receivable_account_number: '5400-01-01'
+        '403':
+          description: Returned when the user does not have permission to view activity types.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                Error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Activitytypes
+components:
+  schemas:
+    ActivityTypeSummary:
+      type: object
+      properties:
+        activity_type_id:
+          type: integer
+          description: Activity type identifier.
+          format: int32
+        activity_code:
+          type: integer
+          description: The activity type code.
+          format: int32
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description for the activity type.
+        gst_rebate_factor:
+          type: number
+          description: The gst rebate factor for the activity type.
+          format: decimal
+        pst_rebate_factor:
+          type: number
+          description: The pst rebate factor for the activity type.
+          format: decimal
+        eligible_for_rebate:
+          type: boolean
+          description: If eligible for rebate.
+        gst_receivable_account_number:
+          type:
+          - string
+          - 'null'
+          description: The gst receivable account number for the activity type.
+        receivable_account_mask:
+          type:
+          - string
+          - 'null'
+          description: The masked receivable account for the activity type.
+        pst_receivable_account_number:
+          type:
+          - string
+          - 'null'
+          description: The pst receivable account number for the activity type.
+      additionalProperties: false
+      description: Brief activity type information.
+    BasicErrorMessage:
+      type: object
+      properties:
+        Error:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ActivityTypeSummaryApiCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ActivityTypeSummary'
+      additionalProperties: false
+      description: Collection Response
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

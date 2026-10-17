@@ -1,0 +1,324 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Constituent Onlinepresences API'
+  description: This API manages constituent information and related entities such as addresses, phones, emails, and notes.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/56b76470069a0509c8f1c5b3
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/constituent/v1
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Onlinepresences
+paths:
+  /onlinepresences:
+    post:
+      operationId: CreateConstituentOnlinePresence
+      summary: Online presence (Create)
+      description: Creates a constituent online presence.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OnlinePresenceAdd'
+            example:
+              address: http://www.myspace.com/drbobhernandez
+              constituent_id: '280'
+              inactive: false
+              primary: false
+              type: Web address
+        description: An object that represents the online presence to create.
+      responses:
+        '200':
+          description: Returned when the operation successfully creates an online presence. The response body contains the ID of the new online presence.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse'
+              example:
+                id: '1281'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+        '403':
+          description: Returned when the user does not have permission to create the online presence.
+        '404':
+          description: Returned when the specified constituent is not found.
+      tags:
+      - Onlinepresences
+    get:
+      operationId: ListConstituentOnlinePresencesAllConstituents
+      summary: Online presence list (All constituents)
+      description: 'Returns a paginated list of online presences.
+
+
+        The default sorting behavior is to list online presences in ascending order based on when they were created.
+
+
+        However, the last_modified parameter overrides the default sorting behavior to list online presences in ascending order based on when they were last modified. The last_modified parameter also adds the sort_token parameter to the next_link URL to ensure that online presences are stably sorted and that order persists when changes occur while working through a paginated list.
+
+
+        If the last_modified and date_added parameters are both specified, the sorting behavior is to list online presences based on when they were last modified.
+
+
+        Note: This endpoint returns data with an average latency of about 30 minutes. In addition, historic records have a default date_added timestamp of 1600-01-01 00:00:00.000 +00:00. The timestamp for newer records reflects when the records were added.'
+      parameters:
+      - name: date_added
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Represents a filter for online presences created on or after the specified date. The filter respects time offsets from UTC per the ISO-8601 format: 2016-05-05T17:59:31.1600745-04:00.'
+      - name: last_modified
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Represents a filter for online presences modified on or after the specified date. The filter respects time offsets from UTC per the ISO-8601 format: 2016-05-05T17:59:31.1600745-04:00.'
+      - name: include_inactive
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: Set this parameter to "true" to include inactive online presences in the response.
+      - name: sort_token
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Represents a token filter to provide the next stable-sorted list of online presences. This will be provided on the next_link collection response property when last_modified or sort_token filters are specified on the request.
+      - name: constituent_id
+        in: query
+        required: false
+        schema:
+          type: array
+        description: Represents a list of constituent identifiers. Returns online presences if any of the specified constituent identifiers match any of the online presences' associated constituents. For example, "constituent_id=280&amp;constituent_id=1232" returns online presences with either "280" or "1232" constituent identifiers.
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Represents the number of records to return. The default is 500. The maximum is 5000.
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Represents the number of records to skip. For use with pagination.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a <a href="https://developer.blackbaud.com/skyapi/api/entity-reference/constituent#Collection">collection</a> of <a href="https://developer.blackbaud.com/skyapi/api/entity-reference/constituent#OnlinePresence">online presence</a> entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiCollectionOfOnlinePresenceRead'
+              example:
+                count: 34
+                next_link: https://api.sky.blackbaud.com/constituent/v1/onlinepresences?offset=3&limit=3
+                value:
+                - id: '811'
+                  address: http://www.myspace.com/drhernandez
+                  constituent_id: '280'
+                  date_added: '1600-01-01T00:00:00Z'
+                  date_modified: '2016-09-26T14:27:46.288Z'
+                  inactive: false
+                  primary: false
+                  type: Web address
+                - id: '3444'
+                  address: www.facebook.com/blackbaud
+                  constituent_id: '8730'
+                  date_added: '2016-09-26T14:27:46.288Z'
+                  date_modified: '2016-09-26T14:27:46.288Z'
+                  inactive: false
+                  primary: false
+                  type: Web address
+                - id: '5756'
+                  address: http://www.example.com/aaa_concrete
+                  constituent_id: '13520'
+                  date_added: '2016-09-26T14:27:46.288Z'
+                  date_modified: '2016-09-26T14:27:46.288Z'
+                  inactive: false
+                  primary: true
+                  type: Web address
+        '400':
+          description: Returned when the specified request parameters are not in the appropriate format.
+        '403':
+          description: Returned when the user does not have permission to view the online presences.
+      tags:
+      - Onlinepresences
+  /onlinepresences/{online_presence_id}:
+    delete:
+      operationId: DeleteConstituentOnlinePresence
+      summary: Online presence (Delete)
+      description: Deletes a constituent online presence.
+      parameters:
+      - name: online_presence_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The immutable system record ID of the constituent online presence to delete.
+      responses:
+        '200':
+          description: Returned when the operation successfully deletes the online presence.
+        '400':
+          description: Returned when the specified online presence ID in the request URL is not in the appropriate format.
+        '403':
+          description: Returned when the user does not have permission to delete the online presence.
+      tags:
+      - Onlinepresences
+    patch:
+      operationId: EditConstituentOnlinePresence
+      summary: Online presence (Edit)
+      description: Edits a constituent online presence.
+      parameters:
+      - name: online_presence_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The immutable system record ID of the online presence to edit.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OnlinePresenceEdit'
+            example:
+              address: http://www.myspace.com/drbobhernandez
+              inactive: false
+              primary: false
+              type: Web address
+        description: An object that represents the properties of the online presence to edit.
+      responses:
+        '200':
+          description: Returned when the operation successfully edits the online presence.
+        '400':
+          description: Returned when the specified online presence ID in the request URL or the specified request parameters are not in the appropriate format.
+        '403':
+          description: Returned when the user does not have permission to edit the online presence.
+        '404':
+          description: Returned when the specified online presence is not found.
+      tags:
+      - Onlinepresences
+components:
+  schemas:
+    OnlinePresenceEdit:
+      description: Online presence entities store a constituent’s social media accounts, websites, and other means of reaching out or gaining more information about the constituent.
+      type: object
+      properties:
+        address:
+          description: The web address for the online presence. This property cannot be set to null.
+          type: string
+        inactive:
+          description: Indicates whether the online presence is inactive.
+          type: boolean
+        primary:
+          description: Indicates whether this is the constituent's primary online presence.
+          type: boolean
+        type:
+          description: The online presence type. Available values are the entries in the <a href="https://developer.sky.blackbaud.com/docs/services/56b76470069a0509c8f1c5b3/operations/ListOnlinePresenceTypes"><b>Phone Types</b></a> table. This property cannot be set to null.
+          type: string
+      x-hidden: true
+      x-display-name: Edit online presence
+      x-display-id: EditOnlinePresence
+    OnlinePresenceAdd:
+      description: Online presence entities store a constituent’s social media accounts, websites, and other means of reaching out or gaining more information about the constituent.
+      required:
+      - address
+      - constituent_id
+      - type
+      type: object
+      properties:
+        address:
+          description: The web address for the online presence.
+          type: string
+        constituent_id:
+          description: The immutable system record ID of the constituent associated with the online presence.
+          type: string
+        inactive:
+          description: Indicates whether the online presence is inactive.
+          type: boolean
+        primary:
+          description: Indicates whether this is the constituent's primary online presence.
+          type: boolean
+        type:
+          description: The online presence type. Available values are the entries in the <a href="https://developer.sky.blackbaud.com/docs/services/56b76470069a0509c8f1c5b3/operations/ListOnlinePresenceTypes"><b>Phone Types</b></a> table.
+          type: string
+      x-hidden: true
+      x-display-name: Create online presence
+      x-display-id: CreateOnlinePresence
+    OnlinePresenceRead:
+      description: Online presence entities store a constituent’s social media accounts, websites, and other means of reaching out or gaining more information about the constituent.
+      type: object
+      properties:
+        id:
+          description: The immutable system record ID of the online presence.
+          type: string
+        address:
+          description: The web address for the online presence.
+          type: string
+        constituent_id:
+          description: The immutable system record ID of the constituent associated with the online presence.
+          type: string
+        date_added:
+          format: date-time
+          description: 'The date when the online presence was created. Includes an offset from UTC in <a href="https://tools.ietf.org/html/rfc3339">ISO-8601 format: </a><i>1969-11-21T10:29:43-04:00</i>.'
+          type: string
+          x-supports-datetime-offset: true
+        date_modified:
+          format: date-time
+          description: 'The date when the online presence was last modified. Includes an offset from UTC in <a href="https://tools.ietf.org/html/rfc3339">ISO-8601 format: </a><i>1969-11-21T10:29:43-04:00</i>.'
+          type: string
+          x-supports-datetime-offset: true
+        inactive:
+          description: Indicates whether the online presence is inactive.
+          type: boolean
+        primary:
+          description: Indicates whether this is the constituent's primary online presence.
+          type: boolean
+        type:
+          description: The online presence type. Available values are the entries in the <a href="https://developer.sky.blackbaud.com/docs/services/56b76470069a0509c8f1c5b3/operations/ListOnlinePresenceTypes"><b>Phone Types</b></a> table.
+          type: string
+      x-display-name: Online presence
+      x-display-id: OnlinePresence
+    PostResponse:
+      description: Defines the shape of a post response object.
+      type: object
+      properties:
+        id:
+          description: The newly created ID
+          type: string
+      x-hidden: true
+    ApiCollectionOfOnlinePresenceRead:
+      description: Fetching data all at once quickly becomes unmanageable. The collection entity helps by returning paginated chunks of large data sets. This entity includes helpful metadata and properties to paginate and iterate through the data.
+      type: object
+      properties:
+        count:
+          format: int32
+          description: The number of items available for retrieval into the collection after applying any request parameters. The <b>limit</b> and <b>offset</b> parameters do not affect the <b>count</b>, but to facilitate paging, they may affect the number of items in the <b>value</b> result set.
+          type: integer
+        next_link:
+          description: For paginated responses, the URI for the next page of results.
+          type: string
+        value:
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+          type: array
+          items:
+            $ref: '#/components/schemas/OnlinePresenceRead'
+      x-hidden: true
+      x-base-type: '#/definitions/ApiCollection'
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

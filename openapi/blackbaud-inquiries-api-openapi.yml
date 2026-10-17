@@ -1,0 +1,1805 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Enrollment Management Inquiries API'
+  description: Blackbaud Education Management API for Enrollment Management
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/afe-edems
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/afe-edems
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Inquiries
+paths:
+  /v1/inquiries:
+    post:
+      operationId: V1InquiriesPost
+      summary: Inquiry (Create)
+      description: 'Create an inquiry.
+
+
+        Requires the following role in the Education Management system:
+
+
+        Admissions Manager
+
+
+        Admissions Staff'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateInquiryRequest'
+            example:
+              candidate:
+                first_name: John
+                last_name: Smith
+                middle_name: Holmes
+                preferred_name: Jack
+                prefix: Mr.
+                suffix: Jr.
+                gender: Male
+                birthdate: '2015-05-31T12:00:00Z'
+                home_address:
+                  addressline1: 123 Main St
+                  addressline2: Apt 4B
+                  addressline3: ''
+                  city: Anytown
+                  state: CA
+                  province: ''
+                  zipcode: '12345'
+                  region: West
+                  country: USA
+                home_number: 555-1234
+                business_number: 555-5678
+                email: jsmith@example.com
+                races:
+                - White
+                - Asian
+                ethnicity: Korean
+                citizenship: Korea
+                boarding_or_day: D
+                is_international: false
+                school_program: 5-Day Program
+                religion: Hindu
+                languages_at_home:
+                - language: English
+                - language: Korean
+                person_inquiring:
+                  name: Suwen Cho
+                  relationship_type: Mother
+              entering:
+                school_year: 2026-2027
+                grade_level: Ninth
+                session: Fall Session
+              households:
+              - address_same_as_student: true
+                home_address:
+                  addressline1: 123 Main St
+                  addressline2: Apt 4B
+                  addressline3: ''
+                  city: Anytown
+                  state: CA
+                  province: ''
+                  zipcode: '12345'
+                  region: West
+                  country: USA
+                home_phone: 555-1234
+                resides_with: true
+                relationship1:
+                  relationship_to_student: parent
+                  is_custodial_parent: true
+                  user:
+                    first_name: Jane
+                    middle_name: Ellen
+                    last_name: Smith
+                    preferred_name: Janie
+                    email: janesmith@gmail.com
+                    prefix: Mrs.
+                    suffix: esquire
+                    gender: Female
+                    pronouns: She/Her/Hers
+                    living_status: Married
+                    wireless_phone: 555-1234
+                    business:
+                      job_title: Product Manager
+                      name: Blackbaud
+                      business_phone: 555-1234
+                      business_fax: 555-1234
+                      business_address:
+                        addressline1: 123 Main St
+                        addressline2: Apt 4B
+                        addressline3: ''
+                        city: Anytown
+                        state: CA
+                        province: ''
+                        zipcode: '12345'
+                        region: West
+                        country: USA
+                relationship2:
+                  relationship_to_student: parent
+                  is_custodial_parent: true
+                  user:
+                    first_name: Jane
+                    middle_name: Ellen
+                    last_name: Smith
+                    preferred_name: Janie
+                    email: janesmith@gmail.com
+                    prefix: Mrs.
+                    suffix: esquire
+                    gender: Female
+                    pronouns: She/Her/Hers
+                    living_status: Married
+                    wireless_phone: 555-1234
+                    business:
+                      job_title: Product Manager
+                      name: Blackbaud
+                      business_phone: 555-1234
+                      business_fax: 555-1234
+                      business_address:
+                        addressline1: 123 Main St
+                        addressline2: Apt 4B
+                        addressline3: ''
+                        city: Anytown
+                        state: CA
+                        province: ''
+                        zipcode: '12345'
+                        region: West
+                        country: USA
+              interests:
+              - type: Blitzball
+                importance: 5
+                proficiency: 5
+                requests_contact: true
+                candidate_comments: A candid comment
+              current_school:
+                school: Mailahst School
+                other_name: The Mailahst School for Military Endeavors
+                current_grade: 8th
+                city: Springfield
+                state: IL
+                country: United States
+                gpa: 3.4
+              referral:
+                type: Friend
+                text: A friend at the school
+                referrers:
+                - is_existing_family: true
+                  family_name: Jones
+                  notes: Super nice guy
+              requests_financial_aid: true
+              custom_fields_text:
+              - field_identifier: text_field_7
+                field_name: Favorite color
+                field_value: Burnt sienna
+              custom_fields_date:
+              - field_identifier: date_field_7
+                field_name: Favorite day
+                field_value: '2023-03-29'
+              custom_fields_defined:
+              - field_identifier: defined_field_7
+                field_name: T-shirt size
+                field_value: Medium
+      responses:
+        '200':
+          description: Returns inquiry id on success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1InquiriesPost200ApplicationJsonResponse'
+              example: 0
+      tags:
+      - Inquiries
+    get:
+      operationId: V1InquiriesGet
+      summary: Inquiry list (Get)
+      description: 'Returns list of inquiry and its data.
+
+
+        Requires the following role in the Education Management system:
+
+
+        Admissions Manager
+
+
+        Admissions Staff'
+      parameters:
+      - name: entering_year
+        in: query
+        required: false
+        schema:
+          type: string
+        description: The ID or label of the school year.
+      - name: as_of_date
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Set to a date to limit results to inquiries submitted on or after that date. Use ISO 8601 date format: 2023-04-30'
+      responses:
+        '200':
+          description: Returns list of inquiry and its data.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1InquiriesGet200ApplicationJsonResponse'
+              example:
+                count: 1
+                value:
+                - id: 1
+                  date_submitted: '2015-05-31T12:00:00Z'
+                  date_processed: '2015-05-31T12:00:00Z'
+                  user_id: 1
+                  candidate:
+                    first_name: John
+                    last_name: Smith
+                    middle_name: Holmes
+                    preferred_name: Jack
+                    prefix: Mr.
+                    suffix: Jr.
+                    gender:
+                      abbreviation: M
+                      id: 1
+                      description: Male
+                    pronouns:
+                      id: 1
+                      description: He/Him/His
+                    birthdate: '2015-05-31T12:00:00Z'
+                    home_address:
+                      addressline1: 123 Main St
+                      addressline2: Apt 4B
+                      addressline3: ''
+                      city: Anytown
+                      state: CA
+                      province: ''
+                      zipcode: '12345'
+                      region: West
+                      country: USA
+                    home_number: 555-1234
+                    business_number: 555-5678
+                    email: jsmith@example.com
+                    races:
+                    - id: 1
+                      description: White
+                    ethnicity:
+                      id: 1
+                      description: Korean
+                    citizenship:
+                      id: 1
+                      description: Korea
+                    boarding_or_day: D
+                    is_international: false
+                    school_program:
+                      id: 1
+                      description: 5-Day Program
+                    religion:
+                      id: 1
+                      description: Christian
+                    languages_at_home:
+                    - id: 1
+                      description: English
+                    - id: 2
+                      description: Korean
+                    person_inquiring:
+                      name: Suwen Cho
+                      relationship_type:
+                        id: 1
+                        description: Mother
+                  form:
+                    id: 1
+                    description: Api Form
+                  entering_year:
+                    school_year:
+                      id: 1
+                      description: 2024 - 2025
+                    grade_level:
+                      abbreviation: '9'
+                      id: 1
+                      description: Ninth
+                    school_level:
+                      id: 1
+                      description: Upper school
+                    session:
+                      id: 1
+                      description: Fall Session
+                  households:
+                  - address_same_as_student: true
+                    home_address:
+                      addressline1: 123 Main St
+                      addressline2: Apt 4B
+                      addressline3: ''
+                      city: Anytown
+                      state: CA
+                      province: ''
+                      zipcode: '12345'
+                      region: West
+                      country: USA
+                    home_phone: 555-1234
+                    resides_with: true
+                    relationship1:
+                      type: Parent
+                      is_custodial_parent: true
+                      user:
+                        first_name: John
+                        middle_name: Holmes
+                        last_name: Smith
+                        preferred_name: Jack
+                        email: johnsmith@gmail.com
+                        prefix: Mr.
+                        suffix: Jr.
+                        gender:
+                          abbreviation: M
+                          id: 1
+                          description: Male
+                        pronouns:
+                          id: 1
+                          description: He/Him/His
+                        living_status:
+                          id: 1
+                          description: Single
+                        wireless_phone: 555-1234
+                        business:
+                          job_title: Product Manager
+                          name: Blackbaud
+                          business_phone: 555-1234
+                          business_fax: 555-1234
+                          business_address:
+                            addressline1: 123 Main St
+                            addressline2: Apt 4B
+                            addressline3: ''
+                            city: Anytown
+                            state: CA
+                            province: ''
+                            zipcode: '12345'
+                            region: West
+                            country: USA
+                    relationship2:
+                      type: Parent
+                      is_custodial_parent: true
+                      user:
+                        first_name: John
+                        middle_name: Holmes
+                        last_name: Smith
+                        preferred_name: Jack
+                        email: johnsmith@gmail.com
+                        prefix: Mr.
+                        suffix: Jr.
+                        gender:
+                          abbreviation: M
+                          id: 1
+                          description: Male
+                        pronouns:
+                          id: 1
+                          description: He/Him/His
+                        living_status:
+                          id: 1
+                          description: Single
+                        wireless_phone: 555-1234
+                        business:
+                          job_title: Product Manager
+                          name: Blackbaud
+                          business_phone: 555-1234
+                          business_fax: 555-1234
+                          business_address:
+                            addressline1: 123 Main St
+                            addressline2: Apt 4B
+                            addressline3: ''
+                            city: Anytown
+                            state: CA
+                            province: ''
+                            zipcode: '12345'
+                            region: West
+                            country: USA
+                  current_school:
+                    school:
+                      id: 5664
+                      description: Advanced  Academy
+                    other_name: The Mailahst School for Military Endeavors
+                    current_grade:
+                      abbreviation: 9th
+                      id: 1
+                      description: Ninth Grade
+                    city: Springfield
+                    state: IL
+                    province: ''
+                    country: United States
+                    gpa: 3.4
+                  referral:
+                    type: Friend
+                    text: A friend at the school
+                    referrers:
+                    - is_existing_family: true
+                      family_name: Jones
+                      notes: Super nice guy.
+                  requests_financial_aid: false
+                  interests:
+                  - candidate_comments: A candid comment
+                    importance: 5
+                    proficiency: 5
+                    requests_contact: true
+                    type:
+                      id: 2
+                      description: Basketball
+                  custom_text_fields:
+                  - identifier: text_field_1
+                    name: Bus Number
+                    value: '106'
+                  custom_date_fields:
+                  - identifier: date_field_1
+                    name: Confirmation date
+                    value: '2022-05-31T05:30:00Z'
+                  custom_defined_fields:
+                  - identifier: defined_field_1
+                    name: Tee-shirt size
+                    value: X-large
+      tags:
+      - Inquiries
+  /v1/inquiries/{inquiry_id}:
+    delete:
+      operationId: V1InquiriesByInquiry_idDelete
+      summary: Inquiry (Delete)
+      description: 'Deletes an inquiry.
+
+
+        Requires the following role in the Education Management system:
+
+
+        Admissions Manager
+
+
+        Admissions Staff'
+      parameters:
+      - name: inquiry_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The ID of the inquiry.
+      responses:
+        '200':
+          description: Returns inquiry ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Inquiries-inquiry_id-Delete200ApplicationJsonResponse'
+              example: 0
+      tags:
+      - Inquiries
+    get:
+      operationId: V1InquiriesByInquiry_idGet
+      summary: Inquiry (Get)
+      description: 'Returns an inquiry and its data.
+
+
+        Requires the following role in the Education Management system:
+
+
+        Admissions Manager
+
+
+        Admissions Staff'
+      parameters:
+      - name: inquiry_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The ID of the inquiry.
+      responses:
+        '200':
+          description: Returns an inquiry and its data.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InquiryRead'
+              example:
+                id: 1
+                date_submitted: '2015-05-31T12:00:00Z'
+                date_processed: '2015-05-31T12:00:00Z'
+                user_id: 1
+                candidate:
+                  first_name: John
+                  last_name: Smith
+                  middle_name: Holmes
+                  preferred_name: Jack
+                  prefix: Mr.
+                  suffix: Jr.
+                  gender:
+                    abbreviation: M
+                    id: 1
+                    description: Male
+                  pronouns:
+                    id: 1
+                    description: He/Him/His
+                  birthdate: '2015-05-31T12:00:00Z'
+                  home_address:
+                    addressline1: 123 Main St
+                    addressline2: Apt 4B
+                    addressline3: ''
+                    city: Anytown
+                    state: CA
+                    province: ''
+                    zipcode: '12345'
+                    region: West
+                    country: USA
+                  home_number: 555-1234
+                  business_number: 555-5678
+                  email: jsmith@example.com
+                  races:
+                  - id: 1
+                    description: White
+                  ethnicity:
+                    id: 1
+                    description: Korean
+                  citizenship:
+                    id: 1
+                    description: Korea
+                  boarding_or_day: D
+                  is_international: false
+                  school_program:
+                    id: 1
+                    description: 5-Day Program
+                  religion:
+                    id: 1
+                    description: Christian
+                  languages_at_home:
+                  - id: 1
+                    description: English
+                  - id: 2
+                    description: Korean
+                  person_inquiring:
+                    name: Suwen Cho
+                    relationship_type:
+                      id: 1
+                      description: Mother
+                form:
+                  id: 1
+                  description: Api Form
+                entering_year:
+                  school_year:
+                    id: 1
+                    description: 2024 - 2025
+                  grade_level:
+                    abbreviation: '9'
+                    id: 1
+                    description: Ninth
+                  school_level:
+                    id: 1
+                    description: Upper school
+                  session:
+                    id: 1
+                    description: Fall Session
+                households:
+                - address_same_as_student: true
+                  home_address:
+                    addressline1: 123 Main St
+                    addressline2: Apt 4B
+                    addressline3: ''
+                    city: Anytown
+                    state: CA
+                    province: ''
+                    zipcode: '12345'
+                    region: West
+                    country: USA
+                  home_phone: 555-1234
+                  resides_with: true
+                  relationship1:
+                    type: Parent
+                    is_custodial_parent: true
+                    user:
+                      first_name: John
+                      middle_name: Holmes
+                      last_name: Smith
+                      preferred_name: Jack
+                      email: johnsmith@gmail.com
+                      prefix: Mr.
+                      suffix: Jr.
+                      gender:
+                        abbreviation: M
+                        id: 1
+                        description: Male
+                      pronouns:
+                        id: 1
+                        description: He/Him/His
+                      living_status:
+                        id: 1
+                        description: Single
+                      wireless_phone: 555-1234
+                      business:
+                        job_title: Product Manager
+                        name: Blackbaud
+                        business_phone: 555-1234
+                        business_fax: 555-1234
+                        business_address:
+                          addressline1: 123 Main St
+                          addressline2: Apt 4B
+                          addressline3: ''
+                          city: Anytown
+                          state: CA
+                          province: ''
+                          zipcode: '12345'
+                          region: West
+                          country: USA
+                  relationship2:
+                    type: Parent
+                    is_custodial_parent: true
+                    user:
+                      first_name: John
+                      middle_name: Holmes
+                      last_name: Smith
+                      preferred_name: Jack
+                      email: johnsmith@gmail.com
+                      prefix: Mr.
+                      suffix: Jr.
+                      gender:
+                        abbreviation: M
+                        id: 1
+                        description: Male
+                      pronouns:
+                        id: 1
+                        description: He/Him/His
+                      living_status:
+                        id: 1
+                        description: Single
+                      wireless_phone: 555-1234
+                      business:
+                        job_title: Product Manager
+                        name: Blackbaud
+                        business_phone: 555-1234
+                        business_fax: 555-1234
+                        business_address:
+                          addressline1: 123 Main St
+                          addressline2: Apt 4B
+                          addressline3: ''
+                          city: Anytown
+                          state: CA
+                          province: ''
+                          zipcode: '12345'
+                          region: West
+                          country: USA
+                current_school:
+                  school:
+                    id: 5664
+                    description: Advanced  Academy
+                  other_name: The Mailahst School for Military Endeavors
+                  current_grade:
+                    abbreviation: 9th
+                    id: 1
+                    description: Ninth Grade
+                  city: Springfield
+                  state: IL
+                  province: ''
+                  country: United States
+                  gpa: 3.4
+                referral:
+                  type: Friend
+                  text: A friend at the school
+                  referrers:
+                  - is_existing_family: true
+                    family_name: Jones
+                    notes: Super nice guy.
+                requests_financial_aid: false
+                interests:
+                - candidate_comments: A candid comment
+                  importance: 5
+                  proficiency: 5
+                  requests_contact: true
+                  type:
+                    id: 2
+                    description: Basketball
+                custom_text_fields:
+                - identifier: text_field_1
+                  name: Bus Number
+                  value: '106'
+                custom_date_fields:
+                - identifier: date_field_1
+                  name: Confirmation date
+                  value: '2022-05-31T05:30:00Z'
+                custom_defined_fields:
+                - identifier: defined_field_1
+                  name: Tee-shirt size
+                  value: X-large
+      tags:
+      - Inquiries
+components:
+  schemas:
+    HouseholdRelationshipUser:
+      required:
+      - first_name
+      - last_name
+      type: object
+      properties:
+        first_name:
+          minLength: 1
+          type: string
+          description: The first name of the user.
+        middle_name:
+          type:
+          - string
+          - 'null'
+          description: The middle name of the user.
+        last_name:
+          minLength: 1
+          type: string
+          description: The last name of the user.
+        preferred_name:
+          type:
+          - string
+          - 'null'
+          description: The preferred name of the user.
+        email:
+          type:
+          - string
+          - 'null'
+          description: The email of the user.
+        prefix:
+          type:
+          - string
+          - 'null'
+          description: The prefix of the user.
+        suffix:
+          type:
+          - string
+          - 'null'
+          description: The suffix of the user.
+        gender:
+          type:
+          - string
+          - 'null'
+          description: The gender ID or description of the user.
+        pronouns:
+          type:
+          - string
+          - 'null'
+          description: The pronouns ID or description of the user.
+        living_status:
+          type:
+          - string
+          - 'null'
+          description: The living status ID or description of the user.
+        wireless_phone:
+          type:
+          - string
+          - 'null'
+          description: Wireless phone information.
+        business:
+          $ref: '#/components/schemas/HouseholdBusiness'
+      additionalProperties: false
+      description: HouseholdRelationshipUser model for a household relationship user in an inquiry household.
+    UserLanguage:
+      type: object
+      properties:
+        language:
+          type:
+          - string
+          - 'null'
+          description: The language id or description
+      additionalProperties: false
+      description: User language model
+    TableValueBase:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the table value
+          format: int32
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the table value
+      additionalProperties: false
+      description: 'Table value base model. Used for table entry fields (i.e. dropdown controls) to provide both ID and Description information for the selected value. General system tables can be retrieved by School API endpoints: GET Types table types and GET Types table values.'
+    Household:
+      required:
+      - relationship1
+      type: object
+      properties:
+        address_same_as_student:
+          type: boolean
+          description: Is the address shared with the student.
+        home_address:
+          $ref: '#/components/schemas/UserAddress'
+        home_phone:
+          type:
+          - string
+          - 'null'
+          description: Home phone information.
+        resides_with:
+          type: boolean
+          description: True if the candidate lives with the relationship.
+        relationship1:
+          $ref: '#/components/schemas/HouseholdRelationship'
+        relationship2:
+          $ref: '#/components/schemas/HouseholdRelationship'
+      additionalProperties: false
+      description: Household model with household information.
+    TableValue:
+      type: object
+      properties:
+        abbreviation:
+          type:
+          - string
+          - 'null'
+          description: The abbreviation of the table value
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the table value
+          format: int32
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the table value
+      additionalProperties: false
+      description: 'Table value model. Used for table entry fields (i.e. dropdown controls) to provide both ID and Description information for the selected value. General system tables can be retrieved by School API endpoints: GET Types table types and GET Types table values.'
+    InquiryReferrerEdit:
+      type: object
+      properties:
+        is_existing_family:
+          type: boolean
+          description: True if the referral was by existing family.
+        family_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the referring family.
+        notes:
+          type:
+          - string
+          - 'null'
+          description: The additional referral notes.
+      additionalProperties: false
+      description: An object with referred by information.
+    HouseholdBusiness:
+      type: object
+      properties:
+        job_title:
+          type:
+          - string
+          - 'null'
+          description: The job title at the business.
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the business.
+        business_phone:
+          type:
+          - string
+          - 'null'
+          description: Business phone information.
+        business_fax:
+          type:
+          - string
+          - 'null'
+          description: Business fax information.
+        business_address:
+          $ref: '#/components/schemas/UserAddress'
+      additionalProperties: false
+      description: HouseholdBusiness model for household business information.
+    CustomFieldText:
+      type: object
+      properties:
+        field_identifier:
+          type:
+          - string
+          - 'null'
+          description: 'Specifies the field. Uses the field identifier format: field_# (e.g. text_field_1 or text_field_7).'
+        field_name:
+          type:
+          - string
+          - 'null'
+          description: The user-defined name (e.g. Tee shirt size) for the custom field.
+        field_value:
+          type:
+          - string
+          - 'null'
+          description: The value to store in the specified field.
+      additionalProperties: false
+      description: An object with custom candidate field information
+    HouseholdRelationship:
+      required:
+      - relationship_to_student
+      - user
+      type: object
+      properties:
+        relationship_to_student:
+          minLength: 1
+          type: string
+          description: The relationship to the student.
+        is_custodial_parent:
+          type: boolean
+          description: True if this is the primary relationship.
+        user:
+          $ref: '#/components/schemas/HouseholdRelationshipUser'
+      additionalProperties: false
+      description: HouseholdRelationship model for the Inquiry Candidate relationship information.
+    HouseholdReadModel:
+      type: object
+      properties:
+        address_same_as_student:
+          type:
+          - boolean
+          - 'null'
+          description: Is the address shared with the student.
+        home_address:
+          $ref: '#/components/schemas/UserAddress'
+        home_phone:
+          type:
+          - string
+          - 'null'
+          description: Home phone information.
+        resides_with:
+          type:
+          - boolean
+          - 'null'
+          description: True if the candidate lives with the relationship.
+        relationship1:
+          $ref: '#/components/schemas/HouseholdRelationshipReadModel'
+        relationship2:
+          $ref: '#/components/schemas/HouseholdRelationshipReadModel'
+      additionalProperties: false
+      description: Household read model with household information.
+    V1Inquiries-inquiry_id-Delete200ApplicationJsonResponse:
+      type: integer
+      format: int32
+      x-apim-inline: true
+    UserAddress:
+      type: object
+      properties:
+        addressline1:
+          type:
+          - string
+          - 'null'
+          description: The first line of the address.
+        addressline2:
+          type:
+          - string
+          - 'null'
+          description: The second line of the address.
+        addressline3:
+          type:
+          - string
+          - 'null'
+          description: The third line of the address.
+        city:
+          type:
+          - string
+          - 'null'
+          description: The city of the address.
+        state:
+          type:
+          - string
+          - 'null'
+          description: The state of the address.
+        province:
+          type:
+          - string
+          - 'null'
+          description: The province of the address.
+        zipcode:
+          type:
+          - string
+          - 'null'
+          description: The zipcode of the address.
+        region:
+          type:
+          - string
+          - 'null'
+          description: The region of the address.
+        country:
+          type:
+          - string
+          - 'null'
+          description: The country of the address.
+      additionalProperties: false
+      description: Represents an address with multiple lines, city, state, province, zipcode, region, and country.
+    CustomFieldDate:
+      type: object
+      properties:
+        field_identifier:
+          type:
+          - string
+          - 'null'
+          description: 'Specifies the field. Uses the field identifier format: date_field_# (e.g. date_field_1 or date_field_7).'
+        field_name:
+          type:
+          - string
+          - 'null'
+          description: The user-defined name (e.g. Tee shirt size) for the custom field.
+        field_value:
+          type:
+          - string
+          - 'null'
+          description: 'The value to store in the specified field. Must be a date. Use ISO-8601 date format: 2025-04-30'
+      additionalProperties: false
+      description: An object with custom candidate field information
+    InquiryReferralEdit:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: The ID or description of the referral type (how hear).
+        text:
+          type:
+          - string
+          - 'null'
+          description: The text for the referral (how hear text).
+        referrers:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/InquiryReferrerEdit'
+          description: An array of referrer objects.
+      additionalProperties: false
+      description: An object with referral information.
+    InquiryEntering:
+      required:
+      - grade_level
+      - school_year
+      type: object
+      properties:
+        school_year:
+          minLength: 1
+          type: string
+          description: The ID or label of the entering school year
+        grade_level:
+          minLength: 1
+          type: string
+          description: The ID or description of the entering grade level
+        session:
+          type:
+          - string
+          - 'null'
+          description: The ID or description of the school session
+      additionalProperties: false
+      description: InquiryEntering object model
+    CurrentSchool:
+      type: object
+      properties:
+        school:
+          type:
+          - string
+          - 'null'
+          description: The ID or name of their current school
+        other_name:
+          type:
+          - string
+          - 'null'
+          description: The other name of the current school
+        current_grade:
+          type:
+          - string
+          - 'null'
+          description: The ID or description of their current grade at the school
+        city:
+          type:
+          - string
+          - 'null'
+          description: The city of the current school
+        state:
+          type:
+          - string
+          - 'null'
+          description: The state of the current school
+        province:
+          type:
+          - string
+          - 'null'
+          description: The province of the current school
+        country:
+          type:
+          - string
+          - 'null'
+          description: The country of the current school
+        gpa:
+          type: number
+          description: The GPA at the current school
+          format: double
+      additionalProperties: false
+      description: CurrentSchool object model
+    CustomDateField:
+      type: object
+      properties:
+        identifier:
+          type:
+          - string
+          - 'null'
+          description: The identifier for the custom field
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the custom field
+        value:
+          type:
+          - string
+          - 'null'
+          description: The value of the custom field
+          format: date-time
+      additionalProperties: false
+      description: Custom date field model
+    CustomFieldDefined:
+      type: object
+      properties:
+        field_identifier:
+          type:
+          - string
+          - 'null'
+          description: 'Specifies the field. Uses the field identifier format: defined_field_# (e.g. defined_field_1 or defined_field_7).'
+        field_name:
+          type:
+          - string
+          - 'null'
+          description: The user-defined name (e.g. Tee shirt size) for the custom field.
+        field_value:
+          type:
+          - string
+          - 'null'
+          description: The value to store in the specified field. Use the user-defined value (e.g. Extra-large)
+      additionalProperties: false
+      description: An object with custom candidate field information
+    CreateInquiryRequest:
+      required:
+      - candidate
+      - entering
+      type: object
+      properties:
+        candidate:
+          $ref: '#/components/schemas/InquiryCandidate'
+        entering:
+          $ref: '#/components/schemas/InquiryEntering'
+        households:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Household'
+          description: An array of household objects
+        interests:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/InquiryInterestEdit'
+          description: An array of interest objects
+        current_school:
+          $ref: '#/components/schemas/CurrentSchool'
+        referral:
+          $ref: '#/components/schemas/InquiryReferralEdit'
+        requests_financial_aid:
+          type:
+          - boolean
+          - 'null'
+          description: True if the candidate requests financial aid
+        custom_fields_text:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CustomFieldText'
+          description: An array of custom field objects for text fields
+        custom_fields_date:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CustomFieldDate'
+          description: An array of custom field objects for date fields
+        custom_fields_defined:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CustomFieldDefined'
+          description: An array of custom field objects for defined value fields
+      additionalProperties: false
+      description: create inquiry request model
+    InquiryReferrerRead:
+      type: object
+      properties:
+        is_existing_family:
+          type: boolean
+          description: True if the referral was by existing family.
+        family_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the referring family.
+        notes:
+          type:
+          - string
+          - 'null'
+          description: The additional referral notes.
+      additionalProperties: false
+      description: An object with referred by information.
+    InquiryCandidateRead:
+      type: object
+      properties:
+        first_name:
+          type:
+          - string
+          - 'null'
+          description: The first name of the candidate.
+        last_name:
+          type:
+          - string
+          - 'null'
+          description: The last name of the candidate.
+        middle_name:
+          type:
+          - string
+          - 'null'
+          description: The middle name of the candidate.
+        preferred_name:
+          type:
+          - string
+          - 'null'
+          description: The preferred name of the candidate.
+        prefix:
+          type:
+          - string
+          - 'null'
+          description: The prefix of the candidate.
+        suffix:
+          type:
+          - string
+          - 'null'
+          description: The suffix of the candidate.
+        gender:
+          $ref: '#/components/schemas/TableValue'
+        pronouns:
+          $ref: '#/components/schemas/TableValueBase'
+        birthdate:
+          type:
+          - string
+          - 'null'
+          description: The birthdate of the candidate.
+          format: date-time
+        home_address:
+          $ref: '#/components/schemas/UserAddress'
+        home_number:
+          type:
+          - string
+          - 'null'
+          description: Home phone number
+        business_number:
+          type:
+          - string
+          - 'null'
+          description: Business phone number
+        email:
+          type:
+          - string
+          - 'null'
+          description: The email of the candidate.
+        races:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/TableValueBase'
+          description: An array of races
+        ethnicity:
+          $ref: '#/components/schemas/TableValueBase'
+        citizenship:
+          $ref: '#/components/schemas/TableValueBase'
+        boarding_or_day:
+          type:
+          - string
+          - 'null'
+          description: The boarding or day status of the candidate. Returns “B” for boarding and “D” for Day
+        is_international:
+          type:
+          - boolean
+          - 'null'
+          description: True if candidate is international.
+        school_program:
+          $ref: '#/components/schemas/TableValueBase'
+        religion:
+          $ref: '#/components/schemas/TableValueBase'
+        languages_at_home:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/TableValueBase'
+          description: The languages spoken at home
+        person_inquiring:
+          $ref: '#/components/schemas/PersonInquiringRead'
+      additionalProperties: false
+      description: InquiryCandidateRead object model
+    InquiryInterestEdit:
+      required:
+      - type
+      type: object
+      properties:
+        type:
+          minLength: 1
+          type: string
+          description: The interest type’s ID or description
+        importance:
+          type:
+          - integer
+          - 'null'
+          description: The importance of the interest to the candidate
+          format: int32
+        proficiency:
+          type:
+          - integer
+          - 'null'
+          description: The candidate’s proficiency at the interest
+          format: int32
+        requests_contact:
+          type:
+          - boolean
+          - 'null'
+          description: Set to true if the candidate would like to talk to the coach or director about the interest
+        candidate_comments:
+          type:
+          - string
+          - 'null'
+          description: The candidate’s comments about their interest
+      additionalProperties: false
+      description: Interest information to edit
+    InquiryRead:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the inquiry
+          format: int32
+        date_submitted:
+          type:
+          - string
+          - 'null'
+          description: The date and time the inquiry was submitted.
+          format: date-time
+        date_processed:
+          type:
+          - string
+          - 'null'
+          description: The date and time the inquiry was processed.
+          format: date-time
+        user_id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the candidate, if the inquiry has been processed.
+          format: int32
+        candidate:
+          $ref: '#/components/schemas/InquiryCandidateRead'
+        form:
+          $ref: '#/components/schemas/TableValueBase'
+        entering_year:
+          $ref: '#/components/schemas/InquiryEnteringRead'
+        households:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/HouseholdReadModel'
+          description: An array of household objects
+        current_school:
+          $ref: '#/components/schemas/InquirySchoolRead'
+        referral:
+          $ref: '#/components/schemas/InquiryReferralRead'
+        requests_financial_aid:
+          type: boolean
+          description: True if the candidate requests financial aid
+        interests:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/InquiryInterest'
+          description: An array of interest objects
+        custom_text_fields:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CustomTextField'
+          description: An array of custom text fields
+        custom_date_fields:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CustomDateField'
+          description: An array of custom date fields
+        custom_defined_fields:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CustomDefinedField'
+          description: An array of custom user-defined fields
+      additionalProperties: false
+      description: Inquiry read model
+    HouseholdRelationshipReadModel:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: The relationship to the student.
+        is_custodial_parent:
+          type:
+          - boolean
+          - 'null'
+          description: True if this is custodial relationship.
+        user:
+          $ref: '#/components/schemas/HouseholdRelationshipUserReadModel'
+      additionalProperties: false
+      description: HouseholdRelationship read model for the Inquiry Candidate relationship information.
+    HouseholdRelationshipUserReadModel:
+      type: object
+      properties:
+        first_name:
+          type:
+          - string
+          - 'null'
+          description: The first name of the user.
+        middle_name:
+          type:
+          - string
+          - 'null'
+          description: The middle name of the user.
+        last_name:
+          type:
+          - string
+          - 'null'
+          description: The last name of the user.
+        preferred_name:
+          type:
+          - string
+          - 'null'
+          description: The preferred name of the user.
+        email:
+          type:
+          - string
+          - 'null'
+          description: The email of the user.
+        prefix:
+          type:
+          - string
+          - 'null'
+          description: The prefix of the user.
+        suffix:
+          type:
+          - string
+          - 'null'
+          description: The suffix of the user.
+        gender:
+          $ref: '#/components/schemas/TableValue'
+        pronouns:
+          $ref: '#/components/schemas/TableValueBase'
+        living_status:
+          $ref: '#/components/schemas/TableValueBase'
+        wireless_phone:
+          type:
+          - string
+          - 'null'
+          description: The wireless phone information.
+        business:
+          $ref: '#/components/schemas/HouseholdBusiness'
+      additionalProperties: false
+      description: HouseholdRelationshipUser read model for a household relationship user in an inquiry household.
+    V1InquiriesGet200ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/InquiryRead'
+      x-apim-inline: true
+    CustomTextField:
+      type: object
+      properties:
+        identifier:
+          type:
+          - string
+          - 'null'
+          description: The identifier for the custom field
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the custom field
+        value:
+          type:
+          - string
+          - 'null'
+          description: The value of the custom field
+      additionalProperties: false
+      description: Custom text field model
+    InquirySchoolRead:
+      type: object
+      properties:
+        school:
+          $ref: '#/components/schemas/TableValueBase'
+        other_name:
+          type:
+          - string
+          - 'null'
+          description: The other name of the current school
+        current_grade:
+          $ref: '#/components/schemas/TableValue'
+        city:
+          type:
+          - string
+          - 'null'
+          description: The city of the current school
+        state:
+          type:
+          - string
+          - 'null'
+          description: The state of the current school
+        province:
+          type:
+          - string
+          - 'null'
+          description: The province of the current school
+        country:
+          type:
+          - string
+          - 'null'
+          description: The country of the current school
+        gpa:
+          type:
+          - number
+          - 'null'
+          description: The GPA at the current school
+          format: double
+      additionalProperties: false
+      description: An object with current school information
+    V1InquiriesPost200ApplicationJsonResponse:
+      type:
+      - integer
+      - 'null'
+      format: int32
+      x-apim-inline: true
+    InquiryCandidate:
+      required:
+      - first_name
+      - last_name
+      type: object
+      properties:
+        first_name:
+          minLength: 1
+          type: string
+          description: The first name of the candidate.
+        last_name:
+          minLength: 1
+          type: string
+          description: The last name of the candidate.
+        middle_name:
+          type:
+          - string
+          - 'null'
+          description: The middle name of the candidate.
+        preferred_name:
+          type:
+          - string
+          - 'null'
+          description: The preferred name of the candidate.
+        prefix:
+          type:
+          - string
+          - 'null'
+          description: The prefix of the candidate.
+        suffix:
+          type:
+          - string
+          - 'null'
+          description: The suffix of the candidate.
+        gender:
+          type:
+          - string
+          - 'null'
+          description: The gender of the candidate.
+        birthdate:
+          type:
+          - string
+          - 'null'
+          description: The birthdate of the candidate.
+          format: date-time
+        home_address:
+          $ref: '#/components/schemas/UserAddress'
+        home_number:
+          type:
+          - string
+          - 'null'
+          description: Home phone number
+        business_number:
+          type:
+          - string
+          - 'null'
+          description: Business phone number
+        email:
+          type:
+          - string
+          - 'null'
+          description: The email of the candidate.
+        races:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: An array of race IDs or descriptions
+        ethnicity:
+          type:
+          - string
+          - 'null'
+          description: The ID or description of the ethnicity of the candidate.
+        citizenship:
+          type:
+          - string
+          - 'null'
+          description: The ID or description of the citizenship of the candidate.
+        boarding_or_day:
+          type:
+          - string
+          - 'null'
+          description: 'The boarding or day status of the candidate. Allowed values: B, D, Boarding, Day'
+        is_international:
+          type: boolean
+          description: True if candidate is international.
+        school_program:
+          type:
+          - string
+          - 'null'
+          description: The ID or description of the school program.
+        religion:
+          type:
+          - string
+          - 'null'
+          description: The ID or description of the religion of the candidate.
+        languages_at_home:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UserLanguage'
+          description: The languages spoken at home
+        person_inquiring:
+          $ref: '#/components/schemas/PersonInquiringInfo'
+      additionalProperties: false
+      description: InquiryCandidate object model
+    InquiryEnteringRead:
+      type: object
+      properties:
+        school_year:
+          $ref: '#/components/schemas/TableValueBase'
+        grade_level:
+          $ref: '#/components/schemas/TableValue'
+        school_level:
+          $ref: '#/components/schemas/TableValueBase'
+        session:
+          $ref: '#/components/schemas/TableValueBase'
+      additionalProperties: false
+      description: InquiryEnteringRead object model
+    CustomDefinedField:
+      type: object
+      properties:
+        identifier:
+          type:
+          - string
+          - 'null'
+          description: The identifier for the custom field
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the custom field
+        value:
+          type:
+          - string
+          - 'null'
+          description: The value of the custom field
+      additionalProperties: false
+      description: Custom user defined field model
+    PersonInquiringInfo:
+      type: object
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the person inquiring
+        relationship_type:
+          type:
+          - string
+          - 'null'
+          description: The ID or description of the relationship type of the person inquiring
+      additionalProperties: false
+      description: An object with information on the person inquiring
+    InquiryReferralRead:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: The ID or description of the referral type (how hear).
+        text:
+          type:
+          - string
+          - 'null'
+          description: The text for the referral (how hear text).
+        referrers:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/InquiryReferrerRead'
+          description: An array of referrer objects.
+      additionalProperties: false
+      description: An object with referral information.
+    InquiryInterest:
+      type: object
+      properties:
+        candidate_comments:
+          type:
+          - string
+          - 'null'
+          description: The candidate’s comments about their interest
+        importance:
+          type:
+          - integer
+          - 'null'
+          description: The importance of the interest to the candidate
+          format: int32
+        proficiency:
+          type:
+          - integer
+          - 'null'
+          description: The candidate’s proficiency at the interest
+          format: int32
+        requests_contact:
+          type:
+          - boolean
+          - 'null'
+          description: True if the candidate would like to talk to the coach or director about the interest
+        type:
+          $ref: '#/components/schemas/TableValueBase'
+      additionalProperties: false
+      description: An object with interest information
+    PersonInquiringRead:
+      type: object
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the person inquiring
+        relationship_type:
+          $ref: '#/components/schemas/TableValueBase'
+      additionalProperties: false
+      description: An object with information on the person inquiring
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

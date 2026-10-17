@@ -1,0 +1,1024 @@
+openapi: 3.2.0
+info:
+  title: Blackbaud Registrants API
+  version: '1.0'
+  x-refined-note:
+  - x-apievangelist-provenance differs across the merged source definitions and was not carried
+  description: 'Operations tagged Registrants across 2 of this provider''s published API definitions: blackbaud-altru-event-api-openapi.yml, blackbaud-crm-event-api-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.sky.blackbaud.com/alt-evtmg
+- url: https://api.sky.blackbaud.com/crm-evtmg
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Registrants
+paths:
+  /registrants:
+    post:
+      operationId: CreateEventRegistrant
+      summary: Create an event registrant
+      description: Operation used for adding a registrant record along with guests and registrations.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewEventRegistrant'
+            example:
+              event_id: 0caf136c-12ee-4125-9df0-0ba180967086
+              constituent_id: 4b581e1b-4d22-4cc9-aef2-e52e9fd85de7
+              date_purchased: '2025-08-25T12:00:00Z'
+              waive_benefits: false
+              single_event_registrations:
+              - single_event_registration_id: 168bac7c-9e78-440d-ac55-61d221f4c571
+                singleeventregistrationeventprice: cf1fe3f6-ec00-4ca7-9d32-11d6b1564c83
+                quantity: '1'
+                amount: '42'
+                receipt_amount: '31'
+                registrationcount: '1'
+              registrant_mappings:
+              - event_id: 0caf136c-12ee-4125-9df0-0ba180967086
+                event_price_id: cf1fe3f6-ec00-4ca7-9d32-11d6b1564c83
+                registrations_collection_id: 168bac7c-9e78-440d-ac55-61d221f4c571
+                registrant_waive_benefits:
+                - event_id: 0caf136c-12ee-4125-9df0-0ba180967086
+                  waive_benefits: false
+                guest_constituent_id: 4b581e1b-4d22-4cc9-aef2-e52e9fd85de7
+                waive_registration_fee: false
+                has_notifications: false
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully creates the resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to create the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Registrants
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-evtmg
+  /registrants/search:
+    get:
+      operationId: SearchEventRegistrants
+      summary: Search for event registrants
+      description: Search screen for event registrant records.
+      parameters:
+      - name: event_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: eventid
+      - name: exclude_guests
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: excludeguests
+      - name: full_name
+        in: query
+        required: false
+        schema:
+          type: string
+        description: full name
+      - name: key_name
+        in: query
+        required: false
+        schema:
+          type: string
+        description: last/org name
+      - name: first_name
+        in: query
+        required: false
+        schema:
+          type: string
+        description: first name
+      - name: lookup_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: lookup id
+      - name: include_unknown_guest
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: include unnamed guests
+      - name: include_will_not_attend
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: include registrants that will not attend
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Limits the number of records to return.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of result entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventRegistrantSearchCollection'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to view the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+      tags:
+      - Registrants
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-evtmg
+  /registrants/{registrant_id}:
+    delete:
+      operationId: DeleteEventRegistrant
+      summary: Delete an event registrant
+      description: Removes a registrant from the given event.
+      parameters:
+      - name: registrant_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The registrant id
+      responses:
+        '200':
+          description: Returned when the operation successfully deletes the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to delete the resource.
+      tags:
+      - Registrants
+    patch:
+      operationId: EditEventRegistrant
+      summary: Edit an event registrant
+      description: Operation used for editing a registrant record.
+      parameters:
+      - name: registrant_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The registrant id.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditEventRegistrant'
+            example:
+              constituent_name: Julie Bach
+              attended: false
+              event_seating_note: ''
+              will_not_attend: false
+              cancelled: false
+              walk_in: false
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully edits the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to edit the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Registrants
+    get:
+      operationId: GetEventRegistrant
+      summary: Get an event registrant
+      description: Operation used for editing a registrant record.
+      parameters:
+      - name: registrant_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The registrant id.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the specified resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventRegistrant'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to get the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Registrants
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-evtmg
+components:
+  schemas:
+    NewEventRegistrantSingleEventList:
+      type: object
+      properties:
+        id:
+          type: string
+          description: id
+      description: NewEventRegistrantSingleEventList
+      x-display-name: single_event_list
+      x-display-id: single_event_list
+    NewEventRegistrantSingleEventRegistrations:
+      required:
+      - singleeventregistrationevent
+      - singleeventregistrationeventprice
+      - quantity
+      type: object
+      properties:
+        single_event_registration_id:
+          type: string
+          description: single event registration id
+        singleeventregistrationevent:
+          type: string
+          description: The event. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/7c63d7a2-02a4-4472-ab69-14d46c5400f3?parameters=main_event_id,{main_event_id}.
+        singleeventregistrationeventprice:
+          type: string
+          description: The registration option. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/3be79f65-49fc-49da-9765-3a34dd269011?parameters=event_id,{single_event_registration_event_id}.
+        quantity:
+          type: integer
+          description: quantity
+        amount:
+          type: number
+          description: registration fee
+        receipt_amount:
+          type: number
+          description: receipt amount
+        registrationcount:
+          type: integer
+          description: registration count
+      description: NewEventRegistrantSingleEventRegistrations
+      x-display-name: single_event_registrations
+      x-display-id: single_event_registrations
+    NewEventRegistrantEventcurrency:
+      type: object
+      properties:
+        event_currency_event_id:
+          type: string
+          description: eventcurrencyeventid
+        base_currency_id:
+          type: string
+          description: basecurrencyid
+        team_fundraising_base_currency_id:
+          type: string
+          description: teamfundraisingbasecurrencyid
+      description: NewEventRegistrantEventcurrency
+      x-display-name: eventcurrency
+      x-display-id: eventcurrency
+    NewEventRegistrantMultiComponentEventSchedules:
+      type: object
+      properties:
+        id:
+          type: string
+          description: id
+        name:
+          type: string
+          description: name
+        start_date:
+          type: string
+          description: startdate
+          format: date
+        start_time:
+          $ref: '#/components/schemas/HourMinute'
+        end_date:
+          type: string
+          description: enddate
+          format: date
+        end_time:
+          $ref: '#/components/schemas/HourMinute'
+      description: NewEventRegistrantMultiComponentEventSchedules
+      x-display-name: multi_component_event_schedules
+      x-display-id: multi_component_event_schedules
+    NewEventRegistrantRegistrantMappings:
+      type: object
+      properties:
+        registrant_package_id:
+          type: string
+          description: registrantpackageid
+        registration_package_id:
+          type: string
+          description: registrationpackageid
+        event_id:
+          type: string
+          description: eventid
+        event_price_id:
+          type: string
+          description: eventpriceid
+        registrations_collection_id:
+          type: string
+          description: registrationscollectionid
+        registrant_registration_maps:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewEventRegistrantRegistrantmappingsRegistrantRegistrationMaps'
+          description: Registrant registration maps.
+        registrant_waive_benefits:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewEventRegistrantRegistrantmappingsRegistrantWaiveBenefits'
+          description: Registrant waive benefits.
+        name:
+          type: string
+          description: event/package
+        guest_constituent_id:
+          type: string
+          description: guest
+        waive_registration_fee:
+          type: boolean
+          description: waive registration fee
+        has_notifications:
+          type: boolean
+          description: has notifications
+        team_fundraising:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewEventRegistrantRegistrantmappingsTeamFundraising'
+          description: Team fundraising.
+        preferences:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewEventRegistrantRegistrantmappingsPreferences'
+          description: Preferences.
+      description: NewEventRegistrantRegistrantMappings
+      x-display-name: registrant_mappings
+      x-display-id: registrant_mappings
+    EventRegistrantSearchCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items available for retrieval into the collection after applying any request parameters.
+          format: int32
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventRegistrantSearchSummary'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+      additionalProperties: false
+      description: A collection of items. Data lists can contain paginated results.
+    EventRegistrantSearchSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID.
+        registrant:
+          type: string
+          description: The registrant.
+        host:
+          type: string
+          description: The host.
+        attended:
+          type: boolean
+          description: Indicates whether attended.
+        number_of_guests:
+          type: integer
+          description: The number of guests.
+          format: int32
+        lookup_id:
+          type: string
+          description: The lookup ID.
+      additionalProperties: false
+      description: SearchEventRegistrants
+      x-display-name: Registrant Search
+      x-display-id: Registrant Search
+    NewEventRegistrantMultiComponentEventPreferenceGroups:
+      type: object
+      properties:
+        event_preference_group_id:
+          type: string
+          description: eventpreferencegroupid
+        event_preference_group_event_id:
+          type: string
+          description: eventpreferencegroupeventid
+        event_preference_group_event_name:
+          type: string
+          description: eventpreferencegroupeventname
+        event_preference_group_name:
+          type: string
+          description: eventpreferencegroupname
+      description: NewEventRegistrantMultiComponentEventPreferenceGroups
+      x-display-name: multi_component_event_preference_groups
+      x-display-id: multi_component_event_preference_groups
+    NewEventRegistrant:
+      required:
+      - event_id
+      - constituent_id
+      type: object
+      properties:
+        event_id:
+          type: string
+          description: The event ID.
+        eventname:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The event. Read-only in the SOAP API.
+        main_event_id:
+          type: string
+          description: The maineventid. Read-only in the SOAP API.
+        main_event_name:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The main event. Read-only in the SOAP API.
+        constituent_id:
+          type: string
+          description: The registrant.
+        date_purchased:
+          type: string
+          description: 'The date. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        package_registrations:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewEventRegistrantPackageRegistrations'
+          description: Package registrations.
+        packages_prices:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewEventRegistrantPackagesPrices'
+          description: Packages prices.
+        single_event_registrations:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewEventRegistrantSingleEventRegistrations'
+          description: Single event registrations.
+        multi_component_events_with_prices:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewEventRegistrantMultiComponentEventsWithPrices'
+          description: Multi component events with prices.
+        multi_component_event_price_benefits:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewEventRegistrantMultiComponentEventPriceBenefits'
+          description: Multi component event price benefits.
+        multi_component_event_preference_groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewEventRegistrantMultiComponentEventPreferenceGroups'
+          description: Multi component event preference groups.
+        multi_component_event_appeals:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewEventRegistrantMultiComponentEventAppeals'
+          description: Multi component event appeals.
+        waive_benefits:
+          type: boolean
+          description: Indicates whether waive benefits.
+        registrant_mappings:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewEventRegistrantRegistrantMappings'
+          description: Registrant mappings.
+        constituent_record_type_id:
+          type: string
+          description: The constituent record type ID. Read-only in the SOAP API.
+        multi_component_event_schedules:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewEventRegistrantMultiComponentEventSchedules'
+          description: Multi component event schedules.
+        single_event_list:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewEventRegistrantSingleEventList'
+          description: Single event list.
+        eventcurrency:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewEventRegistrantEventcurrency'
+          description: Eventcurrency.
+        registration_type_code:
+          type: string
+          description: The registration type. Available values are <i>preregistration</i>, <i>walk-in registration</i>
+        event_has_started:
+          type: boolean
+          description: Indicates whether event has started. Read-only in the SOAP API.
+      additionalProperties: false
+      description: CreateEventRegistrant
+      example:
+        event_id: 0caf136c-12ee-4125-9df0-0ba180967086
+        constituent_id: 4b581e1b-4d22-4cc9-aef2-e52e9fd85de7
+        date_purchased: '2025-08-25T12:00:00Z'
+        waive_benefits: false
+        single_event_registrations:
+        - single_event_registration_id: 168bac7c-9e78-440d-ac55-61d221f4c571
+          singleeventregistrationeventprice: cf1fe3f6-ec00-4ca7-9d32-11d6b1564c83
+          quantity: '1'
+          amount: '42'
+          receipt_amount: '31'
+          registrationcount: '1'
+        registrant_mappings:
+        - event_id: 0caf136c-12ee-4125-9df0-0ba180967086
+          event_price_id: cf1fe3f6-ec00-4ca7-9d32-11d6b1564c83
+          registrations_collection_id: 168bac7c-9e78-440d-ac55-61d221f4c571
+          registrant_waive_benefits:
+          - event_id: 0caf136c-12ee-4125-9df0-0ba180967086
+            waive_benefits: false
+          guest_constituent_id: 4b581e1b-4d22-4cc9-aef2-e52e9fd85de7
+          waive_registration_fee: false
+          has_notifications: false
+      x-display-name: Registrant Unified Add Form
+      x-display-id: Registrant Unified Add Form
+    EditEventRegistrant:
+      type: object
+      properties:
+        constituent_name:
+          maxLength: 700
+          minLength: 0
+          type: string
+          description: The registrant. Read-only in the SOAP API.
+        attended:
+          type: boolean
+          description: Indicates whether attended.
+        event_seating_note:
+          maxLength: 250
+          minLength: 0
+          type: string
+          description: The seating note.
+        will_not_attend:
+          type: boolean
+          description: Indicates whether will not attend. Read-only in the SOAP API.
+        cancelled:
+          type: boolean
+          description: Indicates whether cancelled. Read-only in the SOAP API.
+        walk_in:
+          type: boolean
+          description: Indicates whether walk in. Read-only in the SOAP API.
+      additionalProperties: false
+      description: EditEventRegistrant
+      example:
+        constituent_name: Julie Bach
+        attended: false
+        event_seating_note: ''
+        will_not_attend: false
+        cancelled: false
+        walk_in: false
+      x-display-name: Registrant Edit Form
+      x-display-id: Registrant Edit Form
+    HourMinute:
+      type: object
+      properties:
+        hour:
+          type: integer
+          description: The hour.
+          format: int32
+        minute:
+          type: integer
+          description: The minute.
+          format: int32
+      description: HourMinute
+      x-display-name: Hour Minute
+      x-display-id: Hour Minute
+    NewEventRegistrantPackageregistrationsPackageRegistrantRegistrations:
+      type: object
+      properties:
+        packageeventpriceid:
+          type: string
+          description: event price id
+        amount:
+          type: number
+          description: amount
+        receipt_amount:
+          type: number
+          description: receipt amount
+      description: NewEventRegistrantPackageregistrationsPackageRegistrantRegistrations
+      x-display-name: package_registrant_registrations
+      x-display-id: package_registrant_registrations
+    NewEventRegistrantPackageRegistrations:
+      required:
+      - packageregistrationpackage
+      - quantity
+      type: object
+      properties:
+        package_registration_id:
+          type: string
+          description: package registration id
+        packageregistrationpackage:
+          type: string
+          description: The package. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/05ea588e-c0ac-4089-92b2-7680f6a3e471?parameters=main_event_id,{main_event_id}.
+        quantity:
+          type: integer
+          description: quantity
+        amount:
+          type: number
+          description: registration fee
+        receipt_amount:
+          type: number
+          description: receipt amount
+        registrationcount:
+          type: integer
+          description: registration count
+        package_registrant_registrations:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewEventRegistrantPackageregistrationsPackageRegistrantRegistrations'
+          description: Package registrant registrations.
+      description: NewEventRegistrantPackageRegistrations
+      x-display-name: package_registrations
+      x-display-id: package_registrations
+    NewEventRegistrantMultiComponentEventPriceBenefits:
+      type: object
+      properties:
+        event_price_benefit_id:
+          type: string
+          description: eventpricebenefitid
+        benefit_id:
+          type: string
+          description: benefitid
+        benefit_name:
+          type: string
+          description: benefitname
+        benefit_total_value:
+          type: number
+          description: benefittotalvalue
+        benefit_description:
+          type: string
+          description: benefitdescription
+        event_price_benefit_details:
+          type: string
+          description: eventpricebenefitdetails
+        event_price_id:
+          type: string
+          description: eventpriceid
+      description: NewEventRegistrantMultiComponentEventPriceBenefits
+      x-display-name: multi_component_event_price_benefits
+      x-display-id: multi_component_event_price_benefits
+    NewEventRegistrantPackagesPrices:
+      type: object
+      properties:
+        id:
+          type: string
+          description: id
+        name:
+          type: string
+          description: name
+        event_price_id:
+          type: string
+          description: eventpriceid
+        event_price_event_id:
+          type: string
+          description: eventpriceeventid
+        eventname:
+          type: string
+          description: eventname
+        event_registration_type_id:
+          type: string
+          description: eventregistrationtypeid
+        event_registration_type_description:
+          type: string
+          description: eventregistrationtypedescription
+        amount:
+          type: number
+          description: amount
+        receipt_amount:
+          type: number
+          description: receiptamount
+        cost:
+          type: number
+          description: cost
+        registrationcount:
+          type: integer
+          description: registrationcount
+        show_package:
+          type: boolean
+          description: showpackage
+      description: NewEventRegistrantPackagesPrices
+      x-display-name: packages_prices
+      x-display-id: packages_prices
+    NewEventRegistrantRegistrantmappingsTeamfundraisingTeamfundraisingteams:
+      type: object
+      properties:
+        teamfundraisingteammemberid:
+          type: string
+          description: teamfundraisingteammemberid
+        teamfundraisingteamid:
+          type: string
+          description: team
+        isteamcaptain:
+          type: boolean
+          description: team captain
+      description: NewEventRegistrantRegistrantmappingsTeamfundraisingTeamfundraisingteams
+      x-display-name: teamfundraisingteams
+      x-display-id: teamfundraisingteams
+    NewEventRegistrantRegistrantmappingsRegistrantWaiveBenefits:
+      type: object
+      properties:
+        event_id:
+          type: string
+          description: eventid
+        waive_benefits:
+          type: boolean
+          description: waivebenefits
+      description: NewEventRegistrantRegistrantmappingsRegistrantWaiveBenefits
+      x-display-name: registrant_waive_benefits
+      x-display-id: registrant_waive_benefits
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type: integer
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type: string
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: false
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-display-name: Problem details
+      x-display-id: ProblemDetails
+    NewEventRegistrantRegistrantmappingsPreferences:
+      required:
+      - event_preference_group_id
+      type: object
+      properties:
+        event_preference_group_id:
+          type: string
+          description: preference type
+        eventpreference:
+          type: string
+          description: The choice. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/98c86e0a-3e53-47f6-9088-52677fc1053f?parameters=event_preference_group_id,{event_preference_group_id}.
+      description: NewEventRegistrantRegistrantmappingsPreferences
+      x-display-name: preferences
+      x-display-id: preferences
+    NewEventRegistrantRegistrantmappingsRegistrantRegistrationMaps:
+      type: object
+      properties:
+        event_id:
+          type: string
+          description: eventid
+        registrantregistrationmapid:
+          type: string
+          description: registrantregistrationmapid
+      description: NewEventRegistrantRegistrantmappingsRegistrantRegistrationMaps
+      x-display-name: registrant_registration_maps
+      x-display-id: registrant_registration_maps
+    EventRegistrant:
+      type: object
+      properties:
+        constituent_name:
+          maxLength: 700
+          minLength: 0
+          type: string
+          description: The registrant. Read-only in the SOAP API.
+        attended:
+          type: boolean
+          description: Indicates whether attended.
+        event_seating_note:
+          maxLength: 250
+          minLength: 0
+          type: string
+          description: The seating note.
+        will_not_attend:
+          type: boolean
+          description: Indicates whether will not attend. Read-only in the SOAP API.
+        cancelled:
+          type: boolean
+          description: Indicates whether cancelled. Read-only in the SOAP API.
+        walk_in:
+          type: boolean
+          description: Indicates whether walk in. Read-only in the SOAP API.
+      additionalProperties: false
+      description: GetEventRegistrant
+      x-display-name: Registrant Edit Form
+      x-display-id: Registrant Edit Form
+    NewEventRegistrantMultiComponentEventsWithPrices:
+      type: object
+      properties:
+        id:
+          type: string
+          description: id
+        eventname:
+          type: string
+          description: eventname
+        event_price_id:
+          type: string
+          description: eventpriceid
+        event_price_name:
+          type: string
+          description: eventpricename
+        event_registration_type_id:
+          type: string
+          description: eventregistrationtypeid
+        event_registration_type_description:
+          type: string
+          description: eventregistrationtypedescription
+        event_price_amount:
+          type: number
+          description: eventpriceamount
+        event_price_receipt_amount:
+          type: number
+          description: eventpricereceiptamount
+        event_price_cost:
+          type: number
+          description: eventpricecost
+        event_price_registration_count:
+          type: integer
+          description: eventpriceregistrationcount
+        show_event:
+          type: boolean
+          description: showevent
+        registration_type_active:
+          type: boolean
+          description: registrationtypeactive
+      description: NewEventRegistrantMultiComponentEventsWithPrices
+      x-display-name: multi_component_events_with_prices
+      x-display-id: multi_component_events_with_prices
+    NewEventRegistrantRegistrantmappingsTeamFundraising:
+      type: object
+      properties:
+        event_id:
+          type: string
+          description: eventid
+        teamfundraisergoal:
+          type: number
+          description: goal
+        teamfundraisingteams:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewEventRegistrantRegistrantmappingsTeamfundraisingTeamfundraisingteams'
+          description: Teamfundraisingteams.
+        teamfundraisercurrencyid:
+          type: string
+          description: teamfundraisercurrencyid
+      description: NewEventRegistrantRegistrantmappingsTeamFundraising
+      x-display-name: team_fundraising
+      x-display-id: team_fundraising
+    PostResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The newly created ID.
+      additionalProperties: false
+      description: Defines the shape of a post response object.
+    NewEventRegistrantMultiComponentEventAppeals:
+      type: object
+      properties:
+        event_id:
+          type: string
+          description: eventid
+        appeal_id:
+          type: string
+          description: appealid
+      description: NewEventRegistrantMultiComponentEventAppeals
+      x-display-name: multi_component_event_appeals
+      x-display-id: multi_component_event_appeals
+    NewEventRegistrantSingleEventRegistrations_2:
+      required:
+      - singleeventregistrationevent
+      - singleeventregistrationeventprice
+      - quantity
+      type: object
+      properties:
+        single_event_registration_id:
+          type: string
+          description: single event registration id
+        singleeventregistrationevent:
+          type: string
+          description: The event. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/7c63d7a2-02a4-4472-ab69-14d46c5400f3?parameters=main_event_id,{main_event_id}.
+        singleeventregistrationeventprice:
+          type: string
+          description: The registration option. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/3be79f65-49fc-49da-9765-3a34dd269011?parameters=event_id,{single_event_registration_event_id}.
+        quantity:
+          type: integer
+          description: quantity
+        amount:
+          type: number
+          description: registration fee
+        receipt_amount:
+          type: number
+          description: receipt amount
+        registrationcount:
+          type: integer
+          description: registration count
+      description: NewEventRegistrantSingleEventRegistrations
+      x-display-name: single_event_registrations
+      x-display-id: single_event_registrations
+    NewEventRegistrantPackageRegistrations_2:
+      required:
+      - packageregistrationpackage
+      - quantity
+      type: object
+      properties:
+        package_registration_id:
+          type: string
+          description: package registration id
+        packageregistrationpackage:
+          type: string
+          description: The package. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/05ea588e-c0ac-4089-92b2-7680f6a3e471?parameters=main_event_id,{main_event_id}.
+        quantity:
+          type: integer
+          description: quantity
+        amount:
+          type: number
+          description: registration fee
+        receipt_amount:
+          type: number
+          description: receipt amount
+        registrationcount:
+          type: integer
+          description: registration count
+        package_registrant_registrations:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewEventRegistrantPackageregistrationsPackageRegistrantRegistrations'
+          description: Package registrant registrations.
+      description: NewEventRegistrantPackageRegistrations
+      x-display-name: package_registrations
+      x-display-id: package_registrations
+    NewEventRegistrantRegistrantmappingsPreferences_2:
+      required:
+      - event_preference_group_id
+      type: object
+      properties:
+        event_preference_group_id:
+          type: string
+          description: preference type
+        eventpreference:
+          type: string
+          description: The choice. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/98c86e0a-3e53-47f6-9088-52677fc1053f?parameters=event_preference_group_id,{event_preference_group_id}.
+      description: NewEventRegistrantRegistrantmappingsPreferences
+      x-display-name: preferences
+      x-display-id: preferences
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+x-refined-from:
+- blackbaud-altru-event-api-openapi.yml
+- blackbaud-crm-event-api-openapi.yml

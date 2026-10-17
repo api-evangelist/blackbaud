@@ -1,0 +1,3687 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: School Athletics API'
+  description: This API is used to provide access to school information such as users, academics, admissions, athletics, content, lists, and general school info.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/school
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/school
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Athletics
+paths:
+  /v1/athletics/highlights/{highlight_id}:
+    get:
+      operationId: V1AthleticsHighlightsByHighlight_idGet
+      summary: Athletics highlights by ID
+      description: 'Returns an athletic game''s highlights for the specified ```highlight_id```.
+
+
+        This ID can be obtained via the GET athletics schedules endpoint for a game if highlights exist for that game.
+
+
+        If Public access is not added via group page access, the endpoint requires at least one of the following roles in the Education Management system to return content
+
+
+        Athletic Group Manager
+
+
+        Team Schedule Manager
+
+
+        Schedule Manager
+
+
+        Page Manager
+
+
+        Coach
+
+
+        Pending Coach'
+      parameters:
+      - name: highlight_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the highlight to be returned.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Highlight'
+              example:
+                id: 1234
+                athletic_schedule_id: 9876
+                author: John Smith
+                headline: We won!
+                brief_description: Our team won the big game!
+                long_description: The next opponent we face on Saturday is much tougher.
+                publish_date: '2021-10-10T12:00:00Z'
+                expire_date: '2021-10-15T12:00:00Z'
+                photos:
+                - id: 2345
+                  caption: Photo caption
+                  large_filename: Large Filename
+                  large_filename_url: /images/large_filename.jpg
+                  thumb_filename: Thumb Filename
+                  thumb_filename_url: images/thumb_filename.jpg
+      tags:
+      - Athletics
+  /v1/athletics/locations:
+    post:
+      operationId: V1AthleticsLocationsPost
+      summary: Athletics location create
+      description: 'Creates a new athletic location.
+
+
+        The location can optionally be tied to an opponent using the ```opponent_id``` from the GET opponents endpoint.
+
+
+        Requires at least one of the following roles in the Education Management system:
+
+
+        Athletic Group Manager
+
+
+        Team Schedule Manager
+
+
+        Schedule Manager
+
+
+        Coach
+
+
+        Pending Coach'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LocationCreateModel'
+            example:
+              opponent_id: 864549
+              name: South City Main Field
+              directions: Go straight, take left at light
+              travel_time: 15
+              address_line1: 123a Main Street
+              address_line2: ''
+              address_line3: ''
+              city: Springfield
+              state: Texas
+              state_short: TX
+              country: USA
+              zip: 12345-0954
+              province: ''
+              map_url: http://www.somemap.com/
+        description: The location to be created
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostIdResponse'
+              example:
+                id: 0
+      tags:
+      - Athletics
+    get:
+      operationId: V1AthleticsLocationsGet
+      summary: Athletics locations
+      description: 'Returns a collection of athletic locations.
+
+
+        Requires at least one of the following roles in the Education Management system:
+
+
+        Athletic Group Manager
+
+
+        Team Schedule Manager
+
+
+        Schedule Manager
+
+
+        Coach
+
+
+        Pending Coach'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocationCollection'
+              example:
+                count: 1
+                value:
+                - id: 75389
+                  name: South City Main Field
+                  address_line1: 123 Main Street
+                  address_line2: ''
+                  address_line3: ''
+                  city: Springfield
+                  state: Texas
+                  state_short: TX
+                  country: USA
+                  zip: 12345-0954
+                  province: ''
+                  map_url: http://www.somemap.com/
+                  directions: Go straight, take left at light
+                  travel_time: 15
+                  opponent_id: 8765
+      tags:
+      - Athletics
+  /v1/athletics/opponents:
+    post:
+      operationId: V1AthleticsOpponentsPost
+      summary: Athletics opponent create
+      description: 'Creates a new athletic opponent.
+
+
+        Requires at least one of the following roles in the Education Management system:
+
+
+        Athletic Group Manager
+
+
+        Team Schedule Manager
+
+
+        Schedule Manager
+
+
+        Page Manager
+
+
+        Coach
+
+
+        Pending Coach'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OpponentUpdateModel'
+            example:
+              name: South City Jets
+              phone1: (123) 456-9568
+              ad_first_name: Pat
+              ad_last_name: Malone
+              ad_email: AthleticDirector@southcity.edu
+              fax: (987) 654-4321
+              phone2: ''
+              asst_ad_first_name: Chris
+              asst_ad_last_name: Humphrey
+              asst_ad_email: AsstAthleticDirector@southcity.edu
+              address_id: 195095
+              address_line1: 123 Main Street
+              address_line2: ''
+              address_line3: ''
+              city: Springfield
+              state_short: ''
+              country: Canada
+              province: ''
+              zip: 12345-0954
+              conference_id: 45958
+        description: The opponent to be created
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostIdResponse'
+              example:
+                id: 0
+      tags:
+      - Athletics
+    get:
+      operationId: V1AthleticsOpponentsGet
+      summary: Athletics opponents
+      description: 'Returns a collection of athletic opponents.
+
+
+        Requires at least one of the following roles in the Education Management system:
+
+
+        Athletic Group Manager
+
+
+        Team Schedule Manager
+
+
+        Page Manager
+
+
+        Coach
+
+
+        Pending Coach'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OpponentFlyweightCollection'
+              example:
+                count: 1
+                value:
+                - id: 75389
+                  name: Oregon Dark Stars
+                  in_use: true
+      tags:
+      - Athletics
+  /v1/athletics/result:
+    post:
+      operationId: V1AthleticsResultPost
+      summary: Athletics game result
+      description: 'Creates a result/score for the specified athletic game ``` schedule_id ```.
+
+
+        Existing schedule IDs can be retrieved via the GET athletics schedules endpoint as well as after calling POST athletics game.
+
+
+        NOTE: There are two types of game results: Team vs team scores (schedule_type: 0) and Team placement or team total points scores (schedule_type: 1). The score reporting for the two types is distinctly different.
+
+        For team vs team scores
+
+
+        Each opponent will list in the opponents array with a value for ```win_loss```, ```score``` and ```score_versus```.
+
+
+        Example:
+
+
+        ```
+
+
+        {
+
+        "schedule_id": 1331482,
+
+        "send_notification": false,
+
+        "schedule_type": 0,
+
+        "opponents": [
+
+        {
+
+        "opponent_id": 41406,
+
+        "win_loss": "Win",
+
+        "score": "5",
+
+        "score_versus": "2",
+
+        },
+
+        {
+
+        "opponent_id": 41407,
+
+        "win_loss": "Loss",
+
+        "score": "1",
+
+        "score_versus": "3",
+
+        }
+
+        ]
+
+        }
+
+        ```
+
+        For team placement or team total points scores
+
+
+        The Home team and each opponent will list in the opponents array with a value for ```score``` but only the home team will have a value for ```win_loss``` and ```score_versus``` can be omitted for all. The home team�s ```opponent_id``` will be -1 in the opponents array.
+
+
+        Example:
+
+
+        ```
+
+        {
+
+        "schedule_id": 1331482,
+
+        "send_notification": false,
+
+        "schedule_type": 1,
+
+        "opponents": [
+
+        {
+
+        "opponent_id": -1,
+
+        "score": "1st",
+
+        "win_loss": "Win"
+
+        },
+
+        {
+
+        "opponent_id": 41406,
+
+        "score": "2nd",
+
+        "win_loss": ""
+
+        },
+
+        {
+
+        "opponent_id": 41407,
+
+        "score": "3rd",
+
+        "win_loss": ""
+
+        }
+
+        ]
+
+        }
+
+
+        ```
+
+
+        Requires at least one of the following roles in the Education Management system:
+
+
+        Team Schedule Manager
+
+
+        Page Manager
+
+
+        Coach
+
+
+        Pending Coach'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResultCreate'
+            example:
+              schedule_id: 12345
+              schedule_type: 0
+              send_notification: false
+              opponents:
+              - opponent_id: 7654
+                score: '5'
+                win_loss: Win
+                score_versus: '2'
+      responses:
+        '200':
+          description: OK
+      tags:
+      - Athletics
+  /v1/athletics/rosters:
+    get:
+      operationId: V1AthleticsRostersGet
+      summary: Athletics rosters
+      description: 'Returns the athletic rosters for a selected year. Uses current school year by default.
+
+
+        Requires the following role in the Education Management system:
+
+
+        Schedule Manager
+
+
+        Athletic Group Manager'
+      parameters:
+      - name: school_year
+        in: query
+        required: false
+        schema:
+          type: string
+        description: The ID or label of the school year. Defaults to the current school year.
+      - name: school_level
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Limits rosters returned to school level specified.
+      - name: section_ids
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Limits rosters returned to sections specified.Provide comma-delimited list of section_id values.
+      - name: last_modified
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Limits rosters returned to sections that were modified on or after the date provided. Use ISO-8601 date-time format: 2024-09-01T00:00:00-5:00.'
+      - name: include_dropped
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: 'false'
+        description: Set to True to include dropped students in the rosters. Defaults to false, if omitted.
+      - name: include_inactive
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: 'false'
+        description: Set to True to include inactive sections. Defaults to false.
+      responses:
+        '200':
+          description: A List of Athletic rosters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1AthleticsRostersGet200ApplicationJsonResponse'
+              example:
+              - section:
+                  id: 1
+                  name: Fencing – 2 (Boys)
+                  identifier: 2 (Boys)
+                  offering:
+                    id: 1
+                    name: Fencing
+                    type:
+                      id: 9
+                      description: Athletics
+                    course_code: CHR240
+                    description: Fun with pointy sticks
+                    length: 1
+                    credits: 0.5
+                    status: Active
+                    publish_to_website: true
+                    record_attendance: true
+                    school_level:
+                      id: 1
+                      abbreviation: US
+                      name: Upper School
+                    school_year: 2023 - 2024
+                  duration:
+                    id: 1
+                    name: Fall
+                  school_year:
+                    id: 1234
+                    begin_date: '2019-08-30T12:00:00Z'
+                    current_year: true
+                    end_date: '2020-08-30T12:00:00Z'
+                    published: true
+                    begin_billing_year_date: '2019-08-30T12:00:00Z'
+                    end_billing_year_date: '2020-08-30T12:00:00Z'
+                  lead_section_id: 1
+                  modified: '2024-09-30T01:30:05Z'
+                  sport:
+                    id: 1
+                    description: Fencing
+                  gender: Co-Ed
+                  level_of_play:
+                    id: 1
+                    description: Varsity
+                roster:
+                - player:
+                    id: 1
+                    accolades: Best jumper
+                    first_name: Player
+                    height: 5'1
+                    hometown: Mushroom Kingdom
+                    jersey: 1
+                    last_name: One
+                    position: First
+                    returning_letter: true
+                    team_captain: true
+                    weight: '250'
+                    preferred_name: Best
+                    photos:
+                      large_filename_url: //some.cdn.com/pathTo/largeFilename1
+                      thumb_filename_url: //some.cdn.com/pathTo/thumbFilename1
+                    publish_name: true
+                    publish_height: true
+                    publish_weight: true
+                    publish_photo: true
+                    level_of_play:
+                      id: 1
+                      description: Varsity
+                    sport:
+                      id: 1
+                      description: Fencing
+                    gender: Co-Ed
+                  user:
+                    id: 1
+                    email: JohnJr@domain.com
+                    first_name: John
+                    last_name: Smith
+                    maiden_name: Brannigan
+                    middle_name: Robert
+                    preferred_name: Jack
+                    preferred_last_name: Brannigan
+                    prefix: Mr.
+                    suffix: Jr.
+                  enroll_date: '2024-09-30T01:30:05Z'
+                  depart_date: '2024-09-30T01:30:05Z'
+                  leader:
+                    is_leader: true
+                    is_head: true
+                    is_faculty: true
+                    type: Teacher
+                  photo:
+                    large_filename_url: //some.cdn.com/pathTo/largeFilename
+                    thumb_filename_url: //some.cdn.com/pathTo/thumbFilename
+                  status: Enrolled
+      tags:
+      - Athletics
+  /v1/athletics/schedules:
+    get:
+      operationId: V1AthleticsSchedulesGet
+      summary: Athletics schedules
+      description: 'Returns a collection of athletic games for the current school year.
+
+
+        Use the ```start_date``` and/or ```end_date``` to filter to a specific timeframe.
+
+
+        Returns data for a specific team by setting the ```team_id``` using the GET teams endpoint.
+
+
+        Returns both games and practices by setting ```include_practice``` to true.
+
+
+        Requires at least one of the following roles in the Education Management system:
+
+
+        Athletic Group Manager
+
+
+        Team Schedule Manager
+
+
+        Schedule Manager
+
+
+        Coach
+
+
+        Pending Coach'
+      parameters:
+      - name: start_date
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filter games/practices after this date
+      - name: end_date
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filter games/practices before this date
+      - name: school_year
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filter on a specific school year. Defaults to current school year.
+      - name: include_practice
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: 'false'
+        description: Set to ```true``` to include practices with games. Defaults to false.
+      - name: team_id
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: '0'
+        description: Filter games/practices for a specific team. Defaults to all teams.
+      - name: last_modified
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Set date to limit results to games with information changed on and after that date.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScheduleItemCollection'
+              example:
+                count: 1
+                value:
+                - id: 12345
+                  alumni: false
+                  cancelled: false
+                  created: '2021-03-20T12:00:00Z'
+                  departure_location: Front Door
+                  departure_time: '2026-10-06'
+                  time_type: Specific time
+                  description: Some details about the event
+                  directions: Go out the front door, then take a left
+                  dismissal_time: '2026-10-06'
+                  end_time: '2026-10-06'
+                  end_time_span: '2026-10-06'
+                  event_time:
+                    date: '2021-03-20T12:00:00Z'
+                    start: '2026-10-06'
+                    end: '2026-10-06'
+                    duration: '2026-10-06'
+                  title: Week 7 Scrimmage
+                  faculty: false
+                  game_date: '2021-03-20T12:00:00Z'
+                  game_time:
+                    date: '2021-03-20T12:00:00Z'
+                    start: '2026-10-06'
+                    end: '2026-10-06'
+                    duration: '2026-10-06'
+                  highlight_id: 1234567
+                  home_or_away: Home
+                  invitational: false
+                  last_modified: '2021-03-20T12:00:00Z'
+                  league: false
+                  location: 'Back field #2'
+                  location_address:
+                    address_line1: Back field
+                    address_line2: '#2'
+                    address_line3: Test Address
+                    city: Groton
+                    state: Sample state
+                    country: Iraq
+                    zip: '54321'
+                    province: Province test
+                  map_url: http://maps.google.com/someplace/somewhere
+                  meet: 90123456
+                  opponents:
+                  - id: 9014556
+                    name: Alabaster Brightwings
+                    score: 77 - 11
+                    win_loss: Win
+                    opponent_score: '11'
+                    team_score: '77'
+                  transportation:
+                  - type:
+                      id: 2345678
+                      description: Bus
+                    time_range: Specific time
+                    start: '2021-03-20T12:00:00Z'
+                    end: '2021-03-20T04:30:00Z'
+                  pickup_time: '2026-10-06'
+                  pickup_location: Front Door
+                  playoff: false
+                  practice: false
+                  published: true
+                  require_dinner: false
+                  require_lunch: false
+                  rescheduled: true
+                  rescheduled_date: '2021-03-20T12:00:00Z'
+                  rescheduled_note: Rescheduled from last month to next month
+                  room_id: 5678901
+                  schedule_type: 1
+                  scrimmage: true
+                  section_id: 8901234
+                  show_details: false
+                  show_directions: true
+                  show_versus: true
+                  start_time: '2026-10-06'
+                  team_id: 67890
+                  time: '2026-10-06'
+                  tournament: false
+                  uniform_color: White (away)
+      tags:
+      - Athletics
+  /v1/athletics/sports:
+    get:
+      operationId: V1AthleticsSportsGet
+      summary: Athletics sports
+      description: 'Returns a collection of athletic sports.
+
+
+        Use the optional ```season_id``` to filter the results by season.
+
+
+        Requires at least one of the following roles in the Education Management system:
+
+
+        Athletic Group Manager
+
+
+        Schedule Manager
+
+
+        Page Manager
+
+
+        Coach
+
+
+        Pending Coach'
+      parameters:
+      - name: season_id
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Season ID
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SportCollection'
+              example:
+                count: 2
+                value:
+                - id: 10162
+                  level:
+                    id: 0
+                    abbreviation: Upper School, Lower School, Entire School
+                  name: Soccer
+                  season:
+                    id: 643
+                    name: Fall
+                - id: 20220
+                  level:
+                    id: 0
+                    abbreviation: Upper School
+                  name: Football
+                  season:
+                    id: 643
+                    name: Fall
+      tags:
+      - Athletics
+  /v1/athletics/sportslevels:
+    get:
+      operationId: V1AthleticsSportslevelsGet
+      summary: Athletics sports levels
+      description: 'Returns a collection of athletic sports levels.
+
+
+        Requires at least one of the following roles in the Education Management system:
+
+
+        Team Schedule Manager
+
+
+        Coach
+
+
+        Pending Coach
+
+
+        Any Manager Role'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SportsLevelCollection'
+              example:
+                count: 1
+                value:
+                - id: 78789
+                  name: Girls Soccer Varsity
+                  description: Upper School
+                  gender: F
+                  level_of_play: Varsity
+                  sport_id: 10162
+                  sport: Soccer
+                  season_id: 643
+                  season: Fall
+      tags:
+      - Athletics
+  /v1/athletics/teams:
+    get:
+      operationId: V1AthleticsTeamsGet
+      summary: Athletics teams
+      description: 'Returns a collection of athletic teams for the current school year.
+
+
+        Use the optional ```school_year``` parameter to specify a different year.
+
+
+        Requires at least one of the following roles in the Education Management system:
+
+
+        Athletic Group Manager
+
+
+        Team Schedule Manager
+
+
+        Coach
+
+
+        Pending Coach'
+      parameters:
+      - name: school_year
+        in: query
+        required: false
+        schema:
+          type: string
+        description: School year
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamCollection'
+              example:
+                count: 2
+                value:
+                - id: 4316266
+                  name: Average Joes
+                  sport:
+                    id: 31080
+                    name: Dodgeball
+                  levelof_play:
+                    id: 1
+                    description: Varsity
+                  gender: Co-Ed
+                  status: Active
+                  description: Brookfield girls soccer at its best.
+                - id: 4316264
+                  name: YAY
+                  sport:
+                    id: 31076
+                    name: Extreme Ball
+                  levelof_play:
+                    id: 2
+                    description: Club
+                  gender: Male
+                  status: Inactive
+      tags:
+      - Athletics
+  /v1/athletics/teams/{team_id}/roster:
+    get:
+      operationId: V1AthleticsTeamsByTeam_idRosterGet
+      summary: Athletics team roster
+      description: 'Returns a collection of players and coaches for the specified athletic team''s ID.
+
+
+        The ```team_id``` can be retrieved using the GET athletics teams endpoint.
+
+
+        Requires at least one of the following roles in the Education Management system:
+
+
+        Athletic Group Manager
+
+
+        Team Schedule Manager
+
+
+        Coach
+
+
+        Pending Coach'
+      parameters:
+      - name: team_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The ID for the team to get the roster for.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Roster'
+              example:
+                id: 12345
+                coaches:
+                  count: 1
+                  value:
+                  - id: 3
+                    first_name: Coach
+                    last_name: One
+                    title: Head Coach
+                    preferred_name: Coach
+                players:
+                  count: 2
+                  value:
+                  - id: 1
+                    accolades: Best jumper
+                    first_name: Player
+                    height: 5'1
+                    hometown: Mushroom Kingdom
+                    jersey: 1
+                    last_name: One
+                    position: First
+                    returning_letter: true
+                    team_captain: true
+                    weight: '250'
+                    preferred_name: Best
+                    photos:
+                      large_filename_url: //some.cdn.com/pathTo/largeFilename1
+                      thumb_filename_url: //some.cdn.com/pathTo/thumbFilename1
+                    publish_name: true
+                    publish_height: true
+                    publish_weight: true
+                    publish_photo: true
+                  - id: 2
+                    accolades: ''
+                    first_name: Player
+                    height: 5'6
+                    hometown: Mushroom Kingdom
+                    jersey: 2
+                    last_name: Two
+                    position: Second
+                    returning_letter: true
+                    team_captain: false
+                    weight: '170'
+                    preferred_name: King
+                    photos:
+                      large_filename_url: //some.cdn.com/pathTo/largeFilename2
+                      thumb_filename_url: //some.cdn.com/pathTo/thumbFilename2
+                    publish_name: true
+                    publish_height: true
+                    publish_weight: true
+                    publish_photo: true
+      tags:
+      - Athletics
+  /v1/athletics/teams/{team_id}/schedule:
+    post:
+      operationId: V1AthleticsTeamsByTeam_idSchedulePost
+      summary: Athletics game create
+      description: 'Creates a new athletic game for the specified ```team_id```.
+
+
+        Requires at least one of the following roles in the Education Management system:
+
+
+        Athletic Group Manager
+
+
+        Team Schedule Manager
+
+
+        Schedule Manager
+
+
+        Coach
+
+
+        Pending Coach'
+      parameters:
+      - name: team_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the team for the game to be created
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GameCreate'
+            example:
+              schedule_type: 0
+              title: Game Title
+              game_date: '2021-10-05T01:30:00Z'
+              game_date_end: '2021-10-05T03:30:00Z'
+              home_away_type: 1
+              location_id: 5489
+              dismissal_time: '2026-10-06'
+              departure_time: '2026-10-06'
+              departure_note: We are departing at lunch
+              pickup_time: '2026-10-06'
+              pickup_note: We will return at end of school
+              league_ind: true
+              scrimmage_ind: false
+              tournament_ind: false
+              invitational_ind: true
+              playoff_ind: false
+              additional_notes: Please read this.
+              send_notifications: true
+              skip_validation: false
+              transportation:
+              - transportation_id: 54095
+                full_day: false
+                begin_use: '2021-10-05T12:00:00Z'
+                end_use: '2021-10-05T04:15:00Z'
+              opponents:
+              - opponent_id: 94508
+        description: Information about the game to be created
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostIdResponse'
+              example:
+                id: 0
+      tags:
+      - Athletics
+    patch:
+      operationId: V1AthleticsTeamsByTeam_idSchedulePatch
+      summary: Athletics game update
+      description: 'Updates the game data for the specified ```team_id``` and athletic ```game_id```.
+
+
+        Requires at least one of the following roles in the Education Management system:
+
+
+        Athletic Group Manager
+
+
+        Team Schedule Manager
+
+
+        Schedule Manager
+
+
+        Coach
+
+
+        Pending Coach'
+      parameters:
+      - name: team_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the team for the game to be updated
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GameUpdate'
+            example:
+              game_id: 84509
+              schedule_type: 0
+              title: Game Title
+              game_date: '2021-10-05T01:30:00Z'
+              game_date_end: '2021-10-05T03:30:00Z'
+              home_away_type: 1
+              location_id: 5489
+              dismissal_time: '2026-10-06'
+              departure_time: '2026-10-06'
+              departure_note: We are departing at lunch
+              pickup_time: '2026-10-06'
+              pickup_note: We will return at end of school
+              league_ind: true
+              scrimmage_ind: false
+              tournament_ind: false
+              invitational_ind: true
+              playoff_ind: false
+              additional_notes: Please read this.
+              send_notifications: true
+              skip_validation: false
+              transportation:
+              - transportation_id: 54095
+                full_day: false
+                begin_use: '2021-10-05T12:00:00Z'
+                end_use: '2021-10-05T04:15:00Z'
+              opponents:
+              - opponent_id: 94508
+        description: Information for the game to be updated
+      responses:
+        '200':
+          description: OK
+      tags:
+      - Athletics
+  /v1/athletics/teams/{team_id}/schedule/practice:
+    post:
+      operationId: V1AthleticsTeamsByTeam_idSchedulePracticePost
+      summary: Athletics practice create
+      description: 'Creates a new athletic practice for the specified ```team_id```.
+
+
+        Requires at least one of the following roles in the Education Management system:
+
+
+        Team Schedule Manager
+
+
+        Page Manager'
+      parameters:
+      - name: team_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the team for the practice to be created
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PracticeCreate'
+            example:
+              send_notification: true
+              title: JV Softball extra practice
+              practice_start_date: '2021-10-04T04:30:00Z'
+              practice_end_date: '2021-10-04T06:00:00Z'
+              location_id: 2454
+              transportation_id: 5689
+              dismissal_time: '2021-10-04T04:00:00Z'
+              departure_time: '2021-10-04T04:20:00Z'
+              pickup_time: '2021-10-04T06:10:00Z'
+              practice_note: some note about this practice
+              skip_validation: false
+        description: Information about the practice to be created
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostIdResponse'
+              example:
+                id: 0
+      tags:
+      - Athletics
+    patch:
+      operationId: V1AthleticsTeamsByTeam_idSchedulePracticePatch
+      summary: Athletics practice update
+      description: 'Updates the practice data for the specified athletic practice ```id```.
+
+
+        Requires at least one of the following roles in the Education Management system:
+
+
+        Athletic Group Manager'
+      parameters:
+      - name: team_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The ID of the team for the practice to be updated
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PracticeUpdate'
+            example:
+              id: 45623
+              send_notification: true
+              title: JV Softball extra practice
+              practice_start_date: '2021-10-04T04:30:00Z'
+              practice_end_date: '2021-10-04T06:00:00Z'
+              location_id: 2454
+              transportation_id: 5689
+              dismissal_time: '2021-10-04T04:00:00Z'
+              departure_time: '2021-10-04T04:20:00Z'
+              pickup_time: '2021-10-04T06:10:00Z'
+              practice_note: some note about this practice
+              skip_validation: false
+        description: Information about the practice to be updated
+      responses:
+        '200':
+          description: OK
+      tags:
+      - Athletics
+  /v1/athletics/teams/{team_id}/schedule/practice/{practice_id}:
+    delete:
+      operationId: V1AthleticsTeamsByTeam_idSchedulePracticeByPractice_idDelete
+      summary: Athletics practice delete
+      description: 'Removes the athletic ```practice_id``` for the specified ```team_id```.
+
+
+        Requires at least one of the following roles in the Education Management system:
+
+
+        Team Schedule Manager
+
+
+        Page Manager'
+      parameters:
+      - name: team_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the team for the practice to be deleted
+      - name: practice_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the practice to be deleted
+      responses:
+        '200':
+          description: OK
+      tags:
+      - Athletics
+  /v1/athletics/teams/{team_id}/schedule/{game_id}:
+    delete:
+      operationId: V1AthleticsTeamsByTeam_idScheduleByGame_idDelete
+      summary: Athletics game delete
+      description: 'Removes an athletic ```game_id``` for the specified ```team_id```.
+
+
+        Requires at least one of the following roles in the Education Management system:
+
+
+        Team Schedule Manager
+
+
+        Page Manager'
+      parameters:
+      - name: team_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the team for the game to be deleted
+      - name: game_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the game to be deleted
+      responses:
+        '200':
+          description: OK
+      tags:
+      - Athletics
+  /v1/athletics/transportationtypes:
+    get:
+      operationId: V1AthleticsTransportationtypesGet
+      summary: Athletics transportation types
+      description: 'Returns a collection of athletic transportation types.
+
+
+        Requires at least one of the following roles in the Education Management system:
+
+
+        Athletic Group Manager
+
+
+        Team Schedule Manager
+
+
+        Schedule Manager
+
+
+        Coach
+
+
+        Pending Coach
+
+
+        Any Manager Role'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransportationCollection'
+              example:
+                count: 1
+                value:
+                - id: 65238
+                  name: School Bus (25)
+      tags:
+      - Athletics
+  /v1/athletics/venues:
+    get:
+      operationId: V1AthleticsVenuesGet
+      summary: Athletics venues
+      description: 'Returns a collection of athletic venues.
+
+
+        Requires at least one of the following roles in the Education Management system:
+
+
+        Athletic Group Manager
+
+
+        Team Schedule Manager
+
+
+        Coach
+
+
+        Pending Coach'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AthleticVenueCollection'
+              example:
+                count: 1
+                value:
+                - id: 454521
+                  name: Main field
+      tags:
+      - Athletics
+components:
+  schemas:
+    GameTime:
+      type: object
+      properties:
+        date:
+          type:
+          - string
+          - 'null'
+          description: 'Date of the game or practice. Uses <a href="https://tools.ietf.org/html/rfc3339" target="_blank">ISO-8601</a> (24H) format: 2003-04-21T10:29:43'
+          format: date-time
+        start:
+          type:
+          - string
+          - 'null'
+          description: The time a game or practice starts
+        end:
+          type:
+          - string
+          - 'null'
+          description: The time a game or practice ends
+        duration:
+          type:
+          - string
+          - 'null'
+          description: The duration of a game or practice
+      additionalProperties: false
+      description: ''
+    HighlightPhoto:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: Photo ID
+          format: int32
+        caption:
+          type:
+          - string
+          - 'null'
+          description: Photo Caption
+        large_filename:
+          type:
+          - string
+          - 'null'
+          description: Large Filename
+        large_filename_url:
+          type:
+          - string
+          - 'null'
+          description: Large Filename URL
+        thumb_filename:
+          type:
+          - string
+          - 'null'
+          description: Thumb Filename
+        thumb_filename_url:
+          type:
+          - string
+          - 'null'
+          description: Thumb Filename URL
+      additionalProperties: false
+      description: Photo model
+    UserBaseRead:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID associated with a user
+          format: int32
+        email:
+          type:
+          - string
+          - 'null'
+          description: The email address of a user
+        first_name:
+          type:
+          - string
+          - 'null'
+          description: The first name of a user
+        last_name:
+          type:
+          - string
+          - 'null'
+          description: The last name of a user
+        maiden_name:
+          type:
+          - string
+          - 'null'
+          description: The maiden name of a user
+        middle_name:
+          type:
+          - string
+          - 'null'
+          description: The middle name of a user
+        preferred_name:
+          type:
+          - string
+          - 'null'
+          description: The nickname of a user
+        preferred_last_name:
+          type:
+          - string
+          - 'null'
+          description: The preferred last name of a user
+        prefix:
+          type:
+          - string
+          - 'null'
+          description: The prefix of a user
+        suffix:
+          type:
+          - string
+          - 'null'
+          description: The suffix of a user
+      additionalProperties: false
+      description: UserBaseRead Model
+    Transportation:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: ID for the transportation
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: Name of the transportation and capacity where applicable
+      additionalProperties: false
+      description: ''
+    EventTime:
+      type: object
+      properties:
+        date:
+          type:
+          - string
+          - 'null'
+          description: 'Date of the game or practice. Uses <a href="https://tools.ietf.org/html/rfc3339" target="_blank">ISO-8601</a> (24H) format: 2003-04-21T10:29:43'
+          format: date-time
+        start:
+          type:
+          - string
+          - 'null'
+          description: The time a game or practice starts
+        end:
+          type:
+          - string
+          - 'null'
+          description: The time a game or practice ends
+        duration:
+          type:
+          - string
+          - 'null'
+          description: The duration of a game or practice
+      additionalProperties: false
+      description: Event time object
+    Season:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the season
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the season
+      additionalProperties: false
+      description: Season Model
+    SportsLevel:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the sport level
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the sport level
+        description:
+          type:
+          - string
+          - 'null'
+          description: A description of the sport level
+        gender:
+          type:
+          - string
+          - 'null'
+          description: Gender classification associated with this sport level ("M" or "F" et al)
+        level_of_play:
+          type:
+          - string
+          - 'null'
+          description: Indicates where this sport competes (e.g. varsity or JV)
+        sport_id:
+          type:
+          - integer
+          - 'null'
+          description: ID of the sport
+          format: int32
+        sport:
+          type:
+          - string
+          - 'null'
+          description: Name of the sport
+        season_id:
+          type:
+          - integer
+          - 'null'
+          description: ID of the season during which the sport competes
+          format: int32
+        season:
+          type:
+          - string
+          - 'null'
+          description: Name of the season during which the sport competes
+      additionalProperties: false
+      description: ''
+    OpponentFlyweight:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: ID ofthe opponent
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: Name of the opponent
+        in_use:
+          type:
+          - boolean
+          - 'null'
+          description: indicates of the opponent is currently being used
+      additionalProperties: false
+      description: ''
+    OfferingModel:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The Id of the Offering
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the offering
+        type:
+          $ref: '#/components/schemas/OfferingType'
+        course_code:
+          type:
+          - string
+          - 'null'
+          description: The course code for the offering
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the offering
+        length:
+          type:
+          - integer
+          - 'null'
+          description: The length of the offering in terms
+          format: int32
+        credits:
+          type:
+          - number
+          - 'null'
+          description: The credits for the offering
+          format: float
+        status:
+          type:
+          - string
+          - 'null'
+          description: 'The status of the offering. Possible values: Active, Inactive.'
+        publish_to_website:
+          type:
+          - boolean
+          - 'null'
+          description: True when the Publish to Website setting is selected; otherwise, false.
+        record_attendance:
+          type:
+          - boolean
+          - 'null'
+          description: True when the Record Attendance setting is selected; otherwise, false. This is always FALSE for Community Groups offering type.
+        max_requests:
+          type:
+          - integer
+          - 'null'
+          description: The maximum number of requests for the offering. This is NULL for Athletics and Community Groups offering types.
+          format: int32
+        school_level:
+          $ref: '#/components/schemas/Level'
+        school_year:
+          type:
+          - string
+          - 'null'
+          description: The School year of the offering
+      additionalProperties: false
+      description: An object with offering information
+    GameOpponent:
+      type: object
+      properties:
+        opponent_id:
+          type: integer
+          description: the opponent id
+          format: int32
+      additionalProperties: false
+      description: A game opponent
+    AthleticSectionRoster:
+      type: object
+      properties:
+        section:
+          $ref: '#/components/schemas/AthleticSection'
+        roster:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/AthleticRosters'
+          description: An array of roster users assigned to the section. This includes members and leaders.
+      additionalProperties: false
+      description: An object with section roster information
+    CoachCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items in the collection
+          format: int32
+          readOnly: true
+        next_link:
+          type:
+          - string
+          - 'null'
+          description: For paginated responses, the URI for the next page of results
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Coach'
+          description: The set of items included in the response. This may be a subset of the items in the collection
+      additionalProperties: false
+      description: A Collection
+    Team:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the team
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the team
+        sport:
+          $ref: '#/components/schemas/Sport'
+        levelof_play:
+          $ref: '#/components/schemas/IdDescriptorField'
+        gender:
+          type:
+          - string
+          - 'null'
+          description: The gender of the team
+        status:
+          type:
+          - string
+          - 'null'
+          description: The status of the team
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description for the team
+      additionalProperties: false
+      description: Team Model
+    ScheduleItemCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items in the collection
+          format: int32
+          readOnly: true
+        next_link:
+          type:
+          - string
+          - 'null'
+          description: For paginated responses, the URI for the next page of results
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ScheduleItem'
+          description: The set of items included in the response. This may be a subset of the items in the collection
+      additionalProperties: false
+      description: A Collection
+    LocationCreateModel:
+      required:
+      - name
+      type: object
+      properties:
+        opponent_id:
+          type:
+          - integer
+          - 'null'
+          description: ID of the opponent
+          format: int32
+        name:
+          minLength: 1
+          type: string
+          description: Name of the location
+        directions:
+          type:
+          - string
+          - 'null'
+          description: Directions to the location
+        travel_time:
+          type:
+          - integer
+          - 'null'
+          description: Travel time (minutes) to the location
+          format: int32
+        address_line1:
+          type:
+          - string
+          - 'null'
+          description: Location Address Line 1
+        address_line2:
+          type:
+          - string
+          - 'null'
+          description: Location Address Line 2
+        address_line3:
+          type:
+          - string
+          - 'null'
+          description: Location Address Line 3
+        city:
+          type:
+          - string
+          - 'null'
+          description: Location City
+        state:
+          type:
+          - string
+          - 'null'
+          description: Location State
+        state_short:
+          type:
+          - string
+          - 'null'
+          description: Location State abbreviation
+        country:
+          type:
+          - string
+          - 'null'
+          description: Location Country
+        zip:
+          type:
+          - string
+          - 'null'
+          description: Location Zip
+        province:
+          type:
+          - string
+          - 'null'
+          description: Location Province
+        map_url:
+          type:
+          - string
+          - 'null'
+          description: URL to the directions/map
+      additionalProperties: false
+      description: ''
+    IdDescriptorField:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID of the field
+          format: int32
+        description:
+          type:
+          - string
+          - 'null'
+          description: Description of the field
+      additionalProperties: false
+      description: ''
+    ScheduleItem:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: ID of the schedule item
+          format: int32
+        alumni:
+          type:
+          - boolean
+          - 'null'
+          description: Returns True if the game or practice is marked as alumni
+        cancelled:
+          type:
+          - boolean
+          - 'null'
+          description: Returns True if the game or practice was cancelled
+        created:
+          type:
+          - string
+          - 'null'
+          description: 'Created date of the game or practice. Uses <a href="https://tools.ietf.org/html/rfc3339" target="_blank">ISO-8601</a> (24H) format: 2003-04-21T10:29:43'
+          format: date-time
+        departure_location:
+          type:
+          - string
+          - 'null'
+          description: Departure location of the game or practice
+        departure_time:
+          type:
+          - string
+          - 'null'
+          description: The time of departure before the game or practice
+        time_type:
+          type:
+          - string
+          - 'null'
+          description: Indicates whether the event time is TBD or a specific time
+        description:
+          type:
+          - string
+          - 'null'
+          description: The game or practice description
+        directions:
+          type:
+          - string
+          - 'null'
+          description: Directions to the game or practice
+        dismissal_time:
+          type:
+          - string
+          - 'null'
+          description: The time of dismissal before the game or practice
+        end_time:
+          type:
+          - string
+          - 'null'
+          description: The time a game or practice ends
+        end_time_span:
+          type:
+          - string
+          - 'null'
+          description: The end time of the game or practice
+        event_time:
+          $ref: '#/components/schemas/EventTime'
+        title:
+          type:
+          - string
+          - 'null'
+          description: The title of the game or practice
+        faculty:
+          type:
+          - boolean
+          - 'null'
+          description: Returns True if the game or practice is marked as faculty
+        game_date:
+          type:
+          - string
+          - 'null'
+          description: 'Date of the game or practice. Uses <a href="https://tools.ietf.org/html/rfc3339" target="_blank">ISO-8601</a> (24H) format: 2003-04-21T10:29:43'
+          format: date-time
+        game_time:
+          $ref: '#/components/schemas/GameTime'
+        highlight_id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the game highlight
+          format: int32
+        home_or_away:
+          type:
+          - string
+          - 'null'
+          description: Indicates whether the game is a home game or an away game
+        invitational:
+          type:
+          - boolean
+          - 'null'
+          description: Returns True if the game or practice is an invitational
+        last_modified:
+          type:
+          - string
+          - 'null'
+          description: 'Modified date of the game or practice. Uses <a href="https://tools.ietf.org/html/rfc3339" target="_blank">ISO-8601</a> (24H) format: 2003-04-21T10:29:43'
+          format: date-time
+        league:
+          type:
+          - boolean
+          - 'null'
+          description: Returns True if the game is a league event
+        location:
+          type:
+          - string
+          - 'null'
+          description: Location of the game or practice
+        location_address:
+          $ref: '#/components/schemas/Location'
+        map_url:
+          type:
+          - string
+          - 'null'
+          description: Directions url to the game or practice
+        meet:
+          type:
+          - integer
+          - 'null'
+          description: Returns 1 if the game is a meet, otherwise returns 0
+          format: int32
+        opponents:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Opponent'
+          description: Opponents for the gsame or practice
+        transportation:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ScheduleTransportation'
+          description: Transportation assigned to the game or practice
+          readOnly: true
+        pickup_time:
+          type:
+          - string
+          - 'null'
+          description: The pickup time after the game or practice
+        pickup_location:
+          type:
+          - string
+          - 'null'
+          description: The pickup location after the game
+        playoff:
+          type:
+          - boolean
+          - 'null'
+          description: Returns True if the game or practice is a playoff
+        practice:
+          type:
+          - boolean
+          - 'null'
+          description: Returns True if the event is a practice
+        previous_schedule_id:
+          type:
+          - integer
+          - 'null'
+          description: The id of the game or practice where this event was previously scheduled
+          format: int32
+        published:
+          type:
+          - boolean
+          - 'null'
+          description: Returns True if the game schedule is published
+        require_dinner:
+          type:
+          - boolean
+          - 'null'
+          description: Returns True if the game or practice requires dinner
+        require_lunch:
+          type:
+          - boolean
+          - 'null'
+          description: Returns True if the game or practice requires a lunch
+        rescheduled:
+          type:
+          - boolean
+          - 'null'
+          description: Returns True if the game or practice was rescheduled
+        rescheduled_date:
+          type:
+          - string
+          - 'null'
+          description: 'The date and time a game or practice has been rescheduled. Uses <a href="https://tools.ietf.org/html/rfc3339" target="_blank">ISO-8601</a> (24H) format: 2003-04-21T10:29:43'
+          format: date-time
+        rescheduled_note:
+          type:
+          - string
+          - 'null'
+          description: The resaon a game or practice was rescheduled
+        room_id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the room a game or practice is being held
+          format: int32
+        schedule_type:
+          type:
+          - integer
+          - 'null'
+          description: The schedule type
+          format: int32
+        scrimmage:
+          type:
+          - boolean
+          - 'null'
+          description: Returns True if the game or practice is a scrimmage
+        section_id:
+          type:
+          - integer
+          - 'null'
+          description: The section ID
+          format: int32
+        show_details:
+          type:
+          - boolean
+          - 'null'
+          description: Returns True if details for a game or practice are avalible
+        show_directions:
+          type:
+          - boolean
+          - 'null'
+          description: Returns true if the game or practice should display "the directions on the school website
+        show_versus:
+          type:
+          - boolean
+          - 'null'
+          description: Returns true if the game or practice should display "vs" on the school website
+        start_time:
+          type:
+          - string
+          - 'null'
+          description: The start time of the game or practice
+        team_id:
+          type: integer
+          description: ID of the team
+          format: int32
+        time:
+          type:
+          - string
+          - 'null'
+          description: Time of the game or practice
+        tournament:
+          type:
+          - boolean
+          - 'null'
+          description: Returns True if the game or practice is a tournament
+        uniform_color:
+          type:
+          - string
+          - 'null'
+          description: The color of the uniforms for the game or practice
+      additionalProperties: false
+      description: ''
+    ScheduleTransportation:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/IdDescriptorField'
+        time_range:
+          type:
+          - string
+          - 'null'
+          description: Indicates whether transportation is booked for all day or a specific time
+        start:
+          type:
+          - string
+          - 'null'
+          description: Transportation start date and time
+          format: date-time
+        end:
+          type:
+          - string
+          - 'null'
+          description: Transportation end date and time
+          format: date-time
+      additionalProperties: false
+      description: Transportation assigned to an athletics schedule item
+    V1AthleticsRostersGet200ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/AthleticSectionRoster'
+      x-apim-inline: true
+    Player:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID of the player
+          format: int32
+        accolades:
+          type:
+          - string
+          - 'null'
+          description: A description of a players awards and achievments
+        first_name:
+          type:
+          - string
+          - 'null'
+          description: Players first name
+        height:
+          type:
+          - string
+          - 'null'
+          description: Height
+        hometown:
+          type:
+          - string
+          - 'null'
+          description: Hometown
+        jersey:
+          type:
+          - integer
+          - 'null'
+          description: Jersey number
+          format: int32
+        last_name:
+          type:
+          - string
+          - 'null'
+          description: Players last name
+        position:
+          type:
+          - string
+          - 'null'
+          description: Player's position
+        returning_letter:
+          type: boolean
+          description: Returning letter
+        team_captain:
+          type: boolean
+          description: Returns true if the player is a team captian
+        weight:
+          type:
+          - string
+          - 'null'
+          description: Weight
+        preferred_name:
+          type:
+          - string
+          - 'null'
+          description: Preferred Name
+        photos:
+          $ref: '#/components/schemas/PhotoUrls'
+        publish_name:
+          type: boolean
+          description: Returns true if the player name is published
+        publish_height:
+          type: boolean
+          description: Returns true if the player height is published
+        publish_weight:
+          type: boolean
+          description: Returns true if the player weight is published
+        publish_photo:
+          type: boolean
+          description: Returns true if the player photo is published
+        level_of_play:
+          $ref: '#/components/schemas/IdDescriptorField'
+        sport:
+          $ref: '#/components/schemas/IdDescriptorField'
+        gender:
+          type:
+          - string
+          - 'null'
+          description: The gender of the team
+      additionalProperties: false
+      description: Player
+    OpponentUpdateModel:
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          minLength: 1
+          type: string
+          description: Opponents name. Required.
+        phone1:
+          type:
+          - string
+          - 'null'
+          description: Opponents phone1
+        ad_first_name:
+          type:
+          - string
+          - 'null'
+          description: Athletic Directors first name
+        ad_last_name:
+          type:
+          - string
+          - 'null'
+          description: Athletic Directors last name
+        ad_email:
+          type:
+          - string
+          - 'null'
+          description: Athletic Directors email
+        fax:
+          type:
+          - string
+          - 'null'
+          description: Opponent fax
+        phone2:
+          type:
+          - string
+          - 'null'
+          description: Opponent phone2
+        asst_ad_first_name:
+          type:
+          - string
+          - 'null'
+          description: Asst. Athletic Directors first name
+        asst_ad_last_name:
+          type:
+          - string
+          - 'null'
+          description: Asst. Athletic Directors last name
+        asst_ad_email:
+          type:
+          - string
+          - 'null'
+          description: Asst. Athletic Directors email
+        address_id:
+          type:
+          - integer
+          - 'null'
+          description: Opponents Address Id
+          format: int32
+        address_line1:
+          type:
+          - string
+          - 'null'
+          description: Opponents Address Line 1
+        address_line2:
+          type:
+          - string
+          - 'null'
+          description: Opponents Address Line 2
+        address_line3:
+          type:
+          - string
+          - 'null'
+          description: Opponents Address Line 3
+        city:
+          type:
+          - string
+          - 'null'
+          description: Opponents City
+        state_short:
+          type:
+          - string
+          - 'null'
+          description: Opponents State
+        country:
+          type:
+          - string
+          - 'null'
+          description: Opponents Country
+        province:
+          type:
+          - string
+          - 'null'
+          description: Opponents Province
+        zip:
+          type:
+          - string
+          - 'null'
+          description: Opponents Zip
+        conference_id:
+          type:
+          - integer
+          - 'null'
+          description: Opponents Conference Id
+          format: int32
+      additionalProperties: false
+      description: ''
+    Roster:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The Team ID
+          format: int32
+        coaches:
+          $ref: '#/components/schemas/CoachCollection'
+        players:
+          $ref: '#/components/schemas/PlayerCollection'
+      additionalProperties: false
+      description: ''
+    AthleticVenueCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items in the collection
+          format: int32
+          readOnly: true
+        next_link:
+          type:
+          - string
+          - 'null'
+          description: For paginated responses, the URI for the next page of results
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/AthleticVenue'
+          description: The set of items included in the response. This may be a subset of the items in the collection
+      additionalProperties: false
+      description: A Collection
+    PostIdResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Id
+          format: int32
+      additionalProperties: false
+      description: ''
+    SportCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items in the collection
+          format: int32
+          readOnly: true
+        next_link:
+          type:
+          - string
+          - 'null'
+          description: For paginated responses, the URI for the next page of results
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Sport'
+          description: The set of items included in the response. This may be a subset of the items in the collection
+      additionalProperties: false
+      description: A Collection
+    Year:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of a school year
+          format: int32
+        begin_date:
+          type:
+          - string
+          - 'null'
+          description: 'The begin date in a school year date range. Uses <a href="https://tools.ietf.org/html/rfc3339" target="_blank">ISO-8601</a> (24H) format: 2003-04-21T10:29:43'
+          format: date-time
+        current_year:
+          type:
+          - boolean
+          - 'null'
+          description: Returns True if Current Year is enabled for the respective school year
+        end_date:
+          type:
+          - string
+          - 'null'
+          description: 'The end date in a school year date range. Uses <a href="https://tools.ietf.org/html/rfc3339" target="_blank">ISO-8601</a> (24H) format: 2003-04-21T10:29:43'
+          format: date-time
+        published:
+          type:
+          - boolean
+          - 'null'
+          description: Gets or sets the published flag
+        school_year_label:
+          type:
+          - string
+          - 'null'
+          description: The label used to identify the range of dates in a school year
+        begin_billing_year_date:
+          type:
+          - string
+          - 'null'
+          description: 'The begin billing year date in a school year date range. Uses <a href="https://tools.ietf.org/html/rfc3339" target="_blank">ISO-8601</a> (24H) format: 2003-04-21T10:29:43'
+          format: date-time
+        end_billing_year_date:
+          type:
+          - string
+          - 'null'
+          description: 'The end billing year date in a school year date range. Uses <a href="https://tools.ietf.org/html/rfc3339" target="_blank">ISO-8601</a> (24H) format: 2003-04-21T10:29:43'
+          format: date-time
+      additionalProperties: false
+      description: An object with school year information
+    AthleticSection:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the section. This is the the class ID for academics, team ID for athletics, building_id for dorms, etc. dependent on offering type
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the roster group
+        identifier:
+          type:
+          - string
+          - 'null'
+          description: The section identifier
+        offering:
+          $ref: '#/components/schemas/OfferingModel'
+        duration:
+          $ref: '#/components/schemas/Duration'
+        school_year:
+          $ref: '#/components/schemas/Year'
+        lead_section_id:
+          type:
+          - integer
+          - 'null'
+          description: The section id for the lead section (i.e. first term) of the class.
+          format: int32
+        modified:
+          type:
+          - string
+          - 'null'
+          description: The last modified date for the section
+          format: date-time
+        photo:
+          $ref: '#/components/schemas/ProfilePictureUrls'
+        sport:
+          $ref: '#/components/schemas/IdDescriptorField'
+        gender:
+          type:
+          - string
+          - 'null'
+          description: The gender of the team
+          example: Co-Ed
+        level_of_play:
+          $ref: '#/components/schemas/IdDescriptorField'
+      additionalProperties: false
+      description: An object with athletic section information
+    GameTransportation:
+      type: object
+      properties:
+        transportation_id:
+          type: integer
+          description: ID of the transportation item to be used
+          format: int32
+        full_day:
+          type:
+          - boolean
+          - 'null'
+          description: Toggle if transportation should be booked for the full day
+        begin_use:
+          type:
+          - string
+          - 'null'
+          description: "Start date/time for transportation use \n\nUses <a href=\"https://tools.ietf.org/html/rfc3339\" target=\"_blank\">ISO-8601</a> format: ```2022-01-20T16:30:00-05:00```"
+          format: date-time
+        end_use:
+          type:
+          - string
+          - 'null'
+          description: "End date/time for transportation use \n\nUses <a href=\"https://tools.ietf.org/html/rfc3339\" target=\"_blank\">ISO-8601</a> format: ```2022-01-20T16:30:00-05:00```"
+          format: date-time
+      additionalProperties: false
+      description: ''
+    Opponent:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: Opponents team ID
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: Opponents team name
+        score:
+          type:
+          - string
+          - 'null'
+          description: The final score of the game.
+        win_loss:
+          type:
+          - string
+          - 'null'
+          description: The outcome of the game.
+        opponent_score:
+          type:
+          - string
+          - 'null'
+          description: The opponents part of the score
+        team_score:
+          type:
+          - string
+          - 'null'
+          description: The teams part of the score
+      additionalProperties: false
+      description: ''
+    SportsLevelCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items in the collection
+          format: int32
+          readOnly: true
+        next_link:
+          type:
+          - string
+          - 'null'
+          description: For paginated responses, the URI for the next page of results
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SportsLevel'
+          description: The set of items included in the response. This may be a subset of the items in the collection
+      additionalProperties: false
+      description: A Collection
+    PracticeCreate:
+      required:
+      - practice_start_date
+      type: object
+      properties:
+        send_notification:
+          type:
+          - boolean
+          - 'null'
+          description: Toggle to true to send a notification of this event
+        title:
+          type:
+          - string
+          - 'null'
+          description: Title of the practice
+        practice_start_date:
+          type: string
+          description: "Date and time for practice to start \n\nUses <a href=\"https://tools.ietf.org/html/rfc3339\" target=\"_blank\">ISO-8601</a> format: ```2022-01-20T16:30:00-05:00```"
+          format: date-time
+        practice_end_date:
+          type:
+          - string
+          - 'null'
+          description: "Date and time for practice to end \n\nUses <a href=\"https://tools.ietf.org/html/rfc3339\" target=\"_blank\">ISO-8601</a> format: ```2022-01-20T16:30:00-05:00```"
+          format: date-time
+        location_id:
+          type:
+          - integer
+          - 'null'
+          description: ID of the location of the practice
+          format: int32
+        room_id:
+          type:
+          - integer
+          - 'null'
+          description: ID of the venue of the practice
+          format: int32
+        transportation_id:
+          type:
+          - integer
+          - 'null'
+          description: ID of the transportation method for the practice
+          format: int32
+        dismissal_time:
+          type:
+          - string
+          - 'null'
+          description: "Time that participants should be dismissed \n\nUses <a href=\"https://tools.ietf.org/html/rfc3339\" target=\"_blank\">ISO-8601</a> format: ```2022-01-20T16:30:00-05:00```"
+          format: date-time
+        departure_time:
+          type:
+          - string
+          - 'null'
+          description: "Time that team will depart for practice \n\nUses <a href=\"https://tools.ietf.org/html/rfc3339\" target=\"_blank\">ISO-8601</a> format: ```2022-01-20T16:30:00-05:00```"
+          format: date-time
+        pickup_time:
+          type:
+          - string
+          - 'null'
+          description: "Time that participants should be picked up \n\nUses <a href=\"https://tools.ietf.org/html/rfc3339\" target=\"_blank\">ISO-8601</a> format: ```2022-01-20T16:30:00-05:00```"
+          format: date-time
+        practice_note:
+          type:
+          - string
+          - 'null'
+          description: Free form notes about this practice
+        skip_validation:
+          type:
+          - boolean
+          - 'null'
+          description: Set to true to skip validation of this event
+      additionalProperties: false
+      description: ''
+    OpponentFlyweightCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items in the collection
+          format: int32
+          readOnly: true
+        next_link:
+          type:
+          - string
+          - 'null'
+          description: For paginated responses, the URI for the next page of results
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/OpponentFlyweight'
+          description: The set of items included in the response. This may be a subset of the items in the collection
+      additionalProperties: false
+      description: A Collection
+    Highlight:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Highlight ID
+          format: int32
+        athletic_schedule_id:
+          type:
+          - integer
+          - 'null'
+          description: Athletic Schedule ID
+          format: int32
+        author:
+          type:
+          - string
+          - 'null'
+          description: Author
+        headline:
+          type:
+          - string
+          - 'null'
+          description: Headline
+        brief_description:
+          type:
+          - string
+          - 'null'
+          description: Brief Description
+        long_description:
+          type:
+          - string
+          - 'null'
+          description: Long Description
+        publish_date:
+          type:
+          - string
+          - 'null'
+          description: Publish Date
+          format: date-time
+        expire_date:
+          type:
+          - string
+          - 'null'
+          description: Expire Date
+          format: date-time
+        photos:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/HighlightPhoto'
+          description: List of Photos
+      additionalProperties: false
+      description: Highlight model for athletic game highlights
+    TeamCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items in the collection
+          format: int32
+          readOnly: true
+        next_link:
+          type:
+          - string
+          - 'null'
+          description: For paginated responses, the URI for the next page of results
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Team'
+          description: The set of items included in the response. This may be a subset of the items in the collection
+      additionalProperties: false
+      description: A Collection
+    PlayerCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items in the collection
+          format: int32
+          readOnly: true
+        next_link:
+          type:
+          - string
+          - 'null'
+          description: For paginated responses, the URI for the next page of results
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Player'
+          description: The set of items included in the response. This may be a subset of the items in the collection
+      additionalProperties: false
+      description: A Collection
+    ResultCreateOpponent:
+      type: object
+      properties:
+        opponent_id:
+          type: integer
+          description: "For ```schedule_type=0```: the id of opponent. \n\nFor ```schedule_type=1```: Use -1 for the home team�s entry.Use the id of the opponent for the opponent entries."
+          format: int32
+        score:
+          type:
+          - string
+          - 'null'
+          description: "For ```schedule_type=0```: the score of the home team \n\nFor ```schedule_type=1```: the place(�1st\", �2nd\", etc.) or team point total of the opponent"
+        win_loss:
+          type:
+          - string
+          - 'null'
+          description: "For ```schedule_type=0```: include value for each opponent. \n\nFor ```schedule_type=1```: include value for home team only.Not used/omitted for opponents."
+        score_versus:
+          type:
+          - string
+          - 'null'
+          description: "For ```schedule_type=0```: the score of the opponent \n\nFor ```schedule_type=1```: not used/omitted"
+      additionalProperties: false
+      description: ''
+    ResultCreate:
+      required:
+      - schedule_id
+      type: object
+      properties:
+        schedule_id:
+          type: integer
+          description: ID for the scheduled event (game)
+          format: int32
+        schedule_type:
+          type: integer
+          description: "Set to 0 for Versus scoring results \n\nSet to 1 for Place/Points scoring results"
+          format: int32
+        send_notification:
+          type: boolean
+          description: Toggle to true to send a notification of this event change
+        opponents:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ResultCreateOpponent'
+          description: List of opponents to record results for
+      additionalProperties: false
+      description: Result Create Model
+    AthleticVenue:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: ID for the venue
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: Name of the venue
+      additionalProperties: false
+      description: ''
+    PhotoUrls:
+      type: object
+      properties:
+        large_filename_url:
+          type:
+          - string
+          - 'null'
+          description: URL to players Large photo
+        thumb_filename_url:
+          type:
+          - string
+          - 'null'
+          description: URL to player Thumbnail photo
+      additionalProperties: false
+      description: Player Photos Url (roster photo or profile photo)
+    ProfilePictureUrls:
+      type: object
+      properties:
+        large_filename_url:
+          type:
+          - string
+          - 'null'
+          description: URL to users Large profile picture
+        thumb_filename_url:
+          type:
+          - string
+          - 'null'
+          description: URL to users Thumbnail profile picture
+      additionalProperties: false
+      description: An object with profile photo and thumbnail
+    Location:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: ID of the location
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: Name of the location
+        address_line1:
+          type:
+          - string
+          - 'null'
+          description: Address Line 1
+        address_line2:
+          type:
+          - string
+          - 'null'
+          description: Address Line 2
+        address_line3:
+          type:
+          - string
+          - 'null'
+          description: Address Line 3
+        city:
+          type:
+          - string
+          - 'null'
+          description: City
+        state:
+          type:
+          - string
+          - 'null'
+          description: State
+        state_short:
+          type:
+          - string
+          - 'null'
+          description: State abbreviation
+        country:
+          type:
+          - string
+          - 'null'
+          description: Country
+        zip:
+          type:
+          - string
+          - 'null'
+          description: Zip
+        province:
+          type:
+          - string
+          - 'null'
+          description: Province
+        map_url:
+          type:
+          - string
+          - 'null'
+          description: URL to the directions/map
+        directions:
+          type:
+          - string
+          - 'null'
+          description: Directions to the location
+        travel_time:
+          type:
+          - integer
+          - 'null'
+          description: Travel time (minutes) to the location
+          format: int32
+        opponent_id:
+          type:
+          - integer
+          - 'null'
+          description: Opponent ID associated with this location
+          format: int32
+      additionalProperties: false
+      description: ''
+    Duration:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the duration
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The Name of the duration
+      additionalProperties: false
+      description: An object describing the term or season for the section
+    GameCreate:
+      required:
+      - game_date
+      type: object
+      properties:
+        schedule_type:
+          type:
+          - integer
+          - 'null'
+          description: The Type of the event
+          format: int32
+        title:
+          type:
+          - string
+          - 'null'
+          description: Title of the game
+        game_date:
+          type: string
+          description: "Date and time of the game \n\nUses <a href=\"https://tools.ietf.org/html/rfc3339\" target=\"_blank\">ISO-8601</a> format: ```2022-01-20T16:30:00-05:00```"
+          format: date-time
+        game_date_end:
+          type:
+          - string
+          - 'null'
+          description: "Date and time the game is set to end \n\nUses <a href=\"https://tools.ietf.org/html/rfc3339\" target=\"_blank\">ISO-8601</a> format: ```2022-01-20T16:30:00-05:00```"
+          format: date-time
+        cancel_type:
+          type:
+          - integer
+          - 'null'
+          description: Defaults to 0 for a new game
+          format: int32
+        home_away_type:
+          type:
+          - integer
+          - 'null'
+          description: "Set to 0 for Home \n\nSet to 1 for Away \n\nSet to 2 for Neutral \n\nSet to 3 for TBD"
+          format: int32
+        location_id:
+          type:
+          - integer
+          - 'null'
+          description: ID of the location/venue for the game
+          format: int32
+        location_ind:
+          type:
+          - integer
+          - 'null'
+          description: 'For Home games (location_ind=0), the ```location_id``` is an ID for an athletic field or room/building. Both of these are returned by GET Athletics venues.
+
+
+            For Away games (location_ind=1), the ```location_id``` is an ID for an opponent location. These are returned by GET Athletics locations.'
+          format: int32
+        dismissal_time:
+          type:
+          - string
+          - 'null'
+          description: 'Time for dismissal using 24-hour format: ```HH:mm```'
+        departure_time:
+          type:
+          - string
+          - 'null'
+          description: 'Time for departure using 24-hour format: ```HH:mm```'
+        departure_note:
+          type:
+          - string
+          - 'null'
+          description: Notes related to departure
+        pickup_time:
+          type:
+          - string
+          - 'null'
+          description: 'Time for pickup using 24-hour format: ```HH:mm```'
+        pickup_note:
+          type:
+          - string
+          - 'null'
+          description: Notes related to pickup
+        league_ind:
+          type:
+          - boolean
+          - 'null'
+          description: Set to true to indicate a league event
+        scrimmage_ind:
+          type:
+          - boolean
+          - 'null'
+          description: Set to true to indicate a scrimmage event
+        tournament_ind:
+          type:
+          - boolean
+          - 'null'
+          description: Set to true to indicate a tournament event
+        invitational_ind:
+          type:
+          - boolean
+          - 'null'
+          description: Set to true to indicate an invitational event
+        playoff_ind:
+          type:
+          - boolean
+          - 'null'
+          description: Set to true to indicate a playoff event
+        additional_notes:
+          type:
+          - string
+          - 'null'
+          description: Additional notes for the event
+        news_id:
+          type:
+          - integer
+          - 'null'
+          description: News ID
+          format: int32
+        send_notifications:
+          type:
+          - boolean
+          - 'null'
+          description: Toggles 'Send Notification' option
+        clear_reschedule:
+          type:
+          - boolean
+          - 'null'
+          description: Set to true to remove the original scheduled game
+        skip_validation:
+          type:
+          - boolean
+          - 'null'
+          description: Set to true to skip validation of this event
+        transportation:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/GameTransportation'
+          description: List of the transportation to be used for this game
+        opponents:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/GameOpponent'
+          description: List of Opponent ID's involved in this game
+      additionalProperties: false
+      description: ''
+    RosterLeader:
+      type: object
+      properties:
+        is_leader:
+          type:
+          - boolean
+          - 'null'
+          description: True if the roster user is a leader.
+        is_head:
+          type:
+          - boolean
+          - 'null'
+          description: True if the leader is the head teacher, head coach, etc.
+        is_faculty:
+          type:
+          - boolean
+          - 'null'
+          description: True if the leader is a faculty user
+        type:
+          type:
+          - string
+          - 'null'
+          description: The type of leader
+      additionalProperties: false
+      description: An object with leader information
+    Sport:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the sport
+          format: int32
+        level:
+          $ref: '#/components/schemas/Level'
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the sport
+        season:
+          $ref: '#/components/schemas/Season'
+      additionalProperties: false
+      description: Sports Model
+    Level:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of a school level
+          format: int32
+        abbreviation:
+          type:
+          - string
+          - 'null'
+          description: The abbreviation associated with a school level
+        name:
+          type:
+          - string
+          - 'null'
+          description: The label used to identify a school level
+        address:
+          $ref: '#/components/schemas/SchoolAddress'
+        school_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the School
+        school_address:
+          $ref: '#/components/schemas/SchoolAddress'
+      additionalProperties: false
+      description: An object with school level information
+    Coach:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID of the coach
+          format: int32
+        first_name:
+          type:
+          - string
+          - 'null'
+          description: Coach's first name
+        last_name:
+          type:
+          - string
+          - 'null'
+          description: Coach's last name
+        title:
+          type:
+          - string
+          - 'null'
+          description: Coach's title
+        preferred_name:
+          type:
+          - string
+          - 'null'
+          description: Preferred Name
+      additionalProperties: false
+      description: ''
+    PracticeUpdate:
+      required:
+      - practice_start_date
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the practice
+          format: int32
+        send_notification:
+          type:
+          - boolean
+          - 'null'
+          description: Toggle to true to send a notification of this event
+        title:
+          type:
+          - string
+          - 'null'
+          description: The title of the practice
+        practice_start_date:
+          type: string
+          description: "Date and time for practice to start \n\nUses <a href=\"https://tools.ietf.org/html/rfc3339\" target=\"_blank\">ISO-8601</a> format: ```2022-01-20T16:30:00-05:00```"
+          format: date-time
+        practice_end_date:
+          type:
+          - string
+          - 'null'
+          description: "Date and time for practice to end \n\nUses <a href=\"https://tools.ietf.org/html/rfc3339\" target=\"_blank\">ISO-8601</a> format: ```2022-01-20T16:30:00-05:00```"
+          format: date-time
+        location_id:
+          type:
+          - integer
+          - 'null'
+          description: ID of the location of the practice
+          format: int32
+        room_id:
+          type:
+          - integer
+          - 'null'
+          description: ID of the venue of the practice
+          format: int32
+        transportation_id:
+          type:
+          - integer
+          - 'null'
+          description: ID of the transportation method for the practice
+          format: int32
+        dismissal_time:
+          type:
+          - string
+          - 'null'
+          description: "Time that participants should be dismissed \n\nUses <a href=\"https://tools.ietf.org/html/rfc3339\" target=\"_blank\">ISO-8601</a> format: ```2022-01-20T16:30:00-05:00```"
+          format: date-time
+        departure_time:
+          type:
+          - string
+          - 'null'
+          description: "Time that team will depart for practice \n\nUses <a href=\"https://tools.ietf.org/html/rfc3339\" target=\"_blank\">ISO-8601</a> format: ```2022-01-20T16:30:00-05:00```"
+          format: date-time
+        pickup_time:
+          type:
+          - string
+          - 'null'
+          description: "Time that participants should be picked up \n\nUses <a href=\"https://tools.ietf.org/html/rfc3339\" target=\"_blank\">ISO-8601</a> format: ```2022-01-20T16:30:00-05:00```"
+          format: date-time
+        practice_note:
+          type:
+          - string
+          - 'null'
+          description: Free form notes about this practice
+        skip_validation:
+          type:
+          - boolean
+          - 'null'
+          description: Set to true to skip validation of this event
+      additionalProperties: false
+      description: ''
+    SchoolAddress:
+      type: object
+      properties:
+        address1:
+          type:
+          - string
+          - 'null'
+          description: The address line
+        address2:
+          type:
+          - string
+          - 'null'
+          description: The address line
+        address3:
+          type:
+          - string
+          - 'null'
+          description: The address line
+        city:
+          type:
+          - string
+          - 'null'
+          description: The city
+        state:
+          type:
+          - string
+          - 'null'
+          description: TThe state for the address
+        zip:
+          type:
+          - string
+          - 'null'
+          description: The postal/ZIP code for the address
+        county_province:
+          type:
+          - string
+          - 'null'
+          description: The county or province for the address
+        country:
+          type:
+          - string
+          - 'null'
+          description: The country for the address
+        phone:
+          type:
+          - string
+          - 'null'
+          description: The phone number for the address
+        fax:
+          type:
+          - string
+          - 'null'
+          description: The fax number for the address
+        website:
+          type:
+          - string
+          - 'null'
+          description: The website for the address
+      additionalProperties: false
+      description: An object with information about the address of the school level, including address fields, phone fields and website.
+    OfferingType:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of an offering type
+          format: int32
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of an offering type
+      additionalProperties: false
+      description: An object with offering type information
+    LocationCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items in the collection
+          format: int32
+          readOnly: true
+        next_link:
+          type:
+          - string
+          - 'null'
+          description: For paginated responses, the URI for the next page of results
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Location'
+          description: The set of items included in the response. This may be a subset of the items in the collection
+      additionalProperties: false
+      description: A Collection
+    GameUpdate:
+      required:
+      - game_id
+      type: object
+      properties:
+        game_id:
+          type: integer
+          description: ID of the game to be updated
+          format: int32
+        schedule_type:
+          type:
+          - integer
+          - 'null'
+          description: The Type of the event
+          format: int32
+        title:
+          type:
+          - string
+          - 'null'
+          description: Title of the game
+        game_date:
+          type:
+          - string
+          - 'null'
+          description: "Date and time of the game \n\nUses <a href=\"https://tools.ietf.org/html/rfc3339\" target=\"_blank\">ISO-8601</a> format: ```2022-01-20T16:30:00-05:00```"
+          format: date-time
+        game_date_end:
+          type:
+          - string
+          - 'null'
+          description: "Date and time the game is set to end \n\nUses <a href=\"https://tools.ietf.org/html/rfc3339\" target=\"_blank\">ISO-8601</a> format: ```2022-01-20T16:30:00-05:00```"
+          format: date-time
+        cancel_type:
+          type:
+          - integer
+          - 'null'
+          description: "Set to 0 to Uncancel a game \n\nSet to 1 to Cancel a game \n\nSet to 2 to Reschedule a game \n"
+          format: int32
+        home_away_type:
+          type:
+          - integer
+          - 'null'
+          description: "Set to 0 for Home \n\nSet to 1 for Away \n\nSet to 2 for Neutral \n\nSet to 3 for TBD"
+          format: int32
+        location_id:
+          type:
+          - integer
+          - 'null'
+          description: ID of the location/venue of the game
+          format: int32
+        location_ind:
+          type:
+          - integer
+          - 'null'
+          description: 'Set to 0 when using a venue for ```location_id```
+
+
+            Set to 1 when using a location for ```location_id```'
+          format: int32
+        dismissal_time:
+          type:
+          - string
+          - 'null'
+          description: 'Time for dismissal using 24-hour format: ```HH:mm```'
+        departure_time:
+          type:
+          - string
+          - 'null'
+          description: 'Time for departure using 24-hour format: ```HH:mm```'
+        departure_note:
+          type:
+          - string
+          - 'null'
+          description: Notes related to departure
+        pickup_time:
+          type:
+          - string
+          - 'null'
+          description: 'Time for pickup using 24-hour format: ```HH:mm```'
+        pickup_note:
+          type:
+          - string
+          - 'null'
+          description: Notes related to pickup
+        league_ind:
+          type:
+          - boolean
+          - 'null'
+          description: Set to true to indicate a league event
+        scrimmage_ind:
+          type:
+          - boolean
+          - 'null'
+          description: Set to true to indicate a scrimmage event
+        tournament_ind:
+          type:
+          - boolean
+          - 'null'
+          description: Set to true to indicate a tournament event
+        invitational_ind:
+          type:
+          - boolean
+          - 'null'
+          description: Set to true to indicate an invitational event
+        playoff_ind:
+          type:
+          - boolean
+          - 'null'
+          description: Set to true to indicate a playoff event
+        additional_notes:
+          type:
+          - string
+          - 'null'
+          description: Additional notes for the event
+        news_id:
+          type:
+          - integer
+          - 'null'
+          description: News ID
+          format: int32
+        send_notifications:
+          type:
+          - boolean
+          - 'null'
+          description: Toggles 'Send Notification' option
+        clear_reschedule:
+          type:
+          - boolean
+          - 'null'
+          description: Set to true to remove the original scheduled game
+        skip_validation:
+          type:
+          - boolean
+          - 'null'
+          description: Set to true to skip validation of this event
+        transportation:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/GameTransportation'
+          description: List of the transportation to be used for this game
+        opponents:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/GameOpponent'
+          description: List of Opponent ID's involved in this game
+      additionalProperties: false
+      description: ''
+    EnrollmentType:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the enrollment type
+          format: int32
+        description:
+          type:
+          - string
+          - 'null'
+          description: The enrollment type
+        earns_credit:
+          type:
+          - boolean
+          - 'null'
+          description: True if the school tracks attempted and earned credit for students with this enrollment type.
+        use_all_grades:
+          type:
+          - boolean
+          - 'null'
+          description: True if a student with this enrollment type can earn any grades valid for the section. False if the grades get translated, such as if the enrollment type only allows Pass/Fail grades.
+        takes_attendance:
+          type:
+          - boolean
+          - 'null'
+          description: True if the school tracks attendance for students with this enrollment type.
+        is_default:
+          type:
+          - boolean
+          - 'null'
+          description: True if this is the default enrollment type
+      additionalProperties: false
+      description: An object with information about the enrollment type, including whether attendance is tracked, whether students can earn credit, or whether grades are limited to pass/fail.
+    AthleticRosters:
+      type: object
+      properties:
+        player:
+          $ref: '#/components/schemas/Player'
+        user:
+          $ref: '#/components/schemas/UserBaseRead'
+        enroll_date:
+          type:
+          - string
+          - 'null'
+          description: The date enrolled
+          format: date-time
+        depart_date:
+          type:
+          - string
+          - 'null'
+          description: The date dropped or left
+          format: date-time
+        leader:
+          $ref: '#/components/schemas/RosterLeader'
+        photo:
+          $ref: '#/components/schemas/ProfilePictureUrls'
+        status:
+          type:
+          - string
+          - 'null'
+          description: The status of the enrollment
+        enrollment_type:
+          $ref: '#/components/schemas/EnrollmentType'
+      additionalProperties: false
+      description: An object with athletic roster user information
+    TransportationCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items in the collection
+          format: int32
+          readOnly: true
+        next_link:
+          type:
+          - string
+          - 'null'
+          description: For paginated responses, the URI for the next page of results
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Transportation'
+          description: The set of items included in the response. This may be a subset of the items in the collection
+      additionalProperties: false
+      description: A Collection
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

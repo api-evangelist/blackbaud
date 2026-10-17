@@ -1,0 +1,517 @@
+# x-archived-from: blackbaud-standard-reports-api-openapi.yml
+# x-archived-on: 2026-10-16
+openapi: 3.0.1
+info:
+  title: 'Blackbaud SKY API: Standard Reports'
+  description: The Standard Reports API supports a set of endpoints that allow users to start a report job and retrieve its
+    results.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/rxr-mngmt
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations,
+      examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/rxr-mngmt
+paths:
+  /reports/executereport:
+    post:
+      operationId: StartReportExecution
+      summary: Start a report execution job (PREVIEW)
+      description: 'Starts a report execution and returns the IDs of the report jobs
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReportExecutionRequest'
+            example:
+              report_type_id: 1200
+              execution_parameters:
+                time_zone_offset_in_minutes: 300
+                report_instance_id: 1234
+                output_format: PDF
+                query_ask_fields:
+                  ask_field_sets:
+                  - fields:
+                    - filter_values:
+                      - Value1
+                      - Value2
+                      operator: OneOf
+                    - filter_values:
+                      - Value3
+                      operator: Equals
+                    query_id: 0
+        description: The report execution request.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportExecutionResponse'
+              example:
+                job_ids:
+                - bdec1161-4de3-4165-9c23-388787e4c7da
+  /reports/reportjobs:
+    get:
+      operationId: GetRecentReportJobs
+      summary: Get recent report jobs (PREVIEW)
+      description: 'Returns report jobs executed in the last 7 days by the current user
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportJobExecutions'
+              example:
+                items:
+                - job_id: bdec1161-4de3-4165-9c23-388787e4c7da
+                  status: Completed
+                  report_type_name: Gift Detail and Summary Report
+                  report_type_id: 1200
+                  date_added: '2023-06-01T01:00:00Z'
+                  date_completed: '2023-06-01T01:30:00Z'
+                  total_processing_time: 1.00:00:00
+                  total_processing_time_caption: One day
+                  report_name: Report Name Example
+                  output_format: PDF
+                  report_view:
+                    id: 1
+                    name: Detail
+  /reports/reportjobs/{job_id}:
+    get:
+      operationId: GetReportJob
+      summary: Get a report job (PREVIEW)
+      description: 'Returns a report job.
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: job_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The ID of the report job.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportExecutionJob'
+              example:
+                id: bdec1161-4de3-4165-9c23-388787e4c7da
+                status: Completed
+                sas_uri: https://app.blackbaud.net/mngmt/blobs/report-exports/gift_detail.csv
+                report_view:
+                  id: 1
+                  name: Detail
+  /reports/reporttypes:
+    get:
+      operationId: GetReportTypes
+      summary: Get report types (PREVIEW)
+      description: 'Gets a list of supported report types
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetReportTypesResponse'
+              example:
+                report_types:
+                - name: Gift Detail and Summary Report
+                  category: Financial Reports
+                  id: 1200
+                  report_type_id: 1200
+  /reports/{report_type}/reportinstances:
+    get:
+      operationId: GetReportInstances
+      summary: Get report instances (PREVIEW)
+      description: 'Gets a list of report instances of the specified type
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: report_type
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The ID of the report type.
+      - name: only_owned_reports
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: Return only owned reports
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetReportInstancesResponse'
+              example:
+                items:
+                - id: '563'
+                  name: Monthly Giving
+                  date_added: '2024-06-01T09:30:15Z'
+                  added_by: '280'
+                  added_by_user_name: Robert Hernandez
+                  date_modified: '2024-08-12T11:05:22Z'
+                  modified_by: '280'
+                  modified_by_user_name: Robert Hernandez
+                  description: Monthly financial report for Board Meeting
+                  others_can_modify: true
+                  others_can_execute: true
+                  date_last_run: '2024-08-12T11:15:02Z'
+                  processing_time: '2026-10-13'
+components:
+  schemas:
+    Blackbaud.RENXT.Report.Management.Core.Models.AskFieldItemModel:
+      type: object
+      properties:
+        filter_values:
+          type: array
+          items: {}
+          description: Gets or sets the collection of filter values used to refine data queries.
+        operator:
+          type: string
+          description: Gets or sets the operator used in the operation.
+      additionalProperties: false
+      description: Represents an ask field item used for filtering data in report queries.
+    Blackbaud.RENXT.Report.Management.Core.Models.AskFieldSetModel:
+      type: object
+      properties:
+        fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/Blackbaud.RENXT.Report.Management.Core.Models.AskFieldItemModel'
+          description: Collection of ask field items
+        query_id:
+          type: integer
+          description: Represents the query identifier associated with the ask field set.
+          format: int32
+      additionalProperties: false
+      description: Represents a set of ask fields associated with a specific query.
+    Blackbaud.RENXT.Report.Management.Core.Models.CriteriaLocationModel:
+      enum:
+      - None
+      - FirstPage
+      - LastPage
+      type: string
+      description: Specifies the location of a criteria within a report.<p>Members:</p><ul><li><i>None</i> - Represent the
+        abscence of a criteria location</li><li><i>FirstPage</i> - Represents the criteria being located on the first page
+        of a report</li><li><i>LastPage</i> - Represent the criteria being located on the last page of a report</li></ul>
+    Blackbaud.RENXT.Report.Management.Core.Models.OutputFormat:
+      enum:
+      - PDF
+      - CSV
+      type: string
+      description: The output format for a report job<p>Members:</p><ul><li><i>PDF</i> - Pdf format</li><li><i>CSV</i> - Csv
+        format</li></ul>
+    Blackbaud.RENXT.Report.Management.Core.Models.QueryAskFieldsModel:
+      type: object
+      properties:
+        ask_field_sets:
+          type: array
+          items:
+            $ref: '#/components/schemas/Blackbaud.RENXT.Report.Management.Core.Models.AskFieldSetModel'
+          description: Collection of ask field sets associated with different queries.
+      additionalProperties: false
+      description: Represents a collection of ask field sets for multiple queries.
+    Blackbaud.RENXT.Report.Management.Core.Models.ReportJobExecutionStatusType:
+      enum:
+      - Created
+      - DataProcessing
+      - DataProcessed
+      - PdfProcessing
+      - PdfProcessed
+      - Completed
+      - Canceled
+      - Failed
+      - NoRecordsFound
+      type: string
+      description: Status types for a report job execution<p>Members:</p><ul><li><i>Created</i> - Job has been created.</li><li><i>DataProcessing</i>
+        - Data is processing for the job.</li><li><i>DataProcessed</i> - Data has been retrieved and written to blob.</li><li><i>PdfProcessing</i>
+        - PDF processing has started.</li><li><i>PdfProcessed</i> - PDF processing has completed.</li><li><i>Completed</i>
+        - Job has completed successfully.</li><li><i>Canceled</i> - The job has been canceled.</li><li><i>Failed</i> - The
+        job has failed.</li><li><i>NoRecordsFound</i> - The job has no records.</li></ul>
+    Blackbaud.RENXT.Report.Metadata.AnonymousOption:
+      enum:
+      - UseAnonymous
+      - UseAsterisk
+      type: string
+      description: <p>Members:</p><ul><li><i>UseAnonymous</i></li><li><i>UseAsterisk</i></li></ul>
+    GetReportInstancesResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReportInstanceItem'
+          description: Gets the collection of reports of a given report type.
+      additionalProperties: false
+      description: Gets the collection of reports of a given report type.
+    GetReportTypesResponse:
+      type: object
+      properties:
+        report_types:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReportTypeInstance'
+          description: Gets the collection of supported report types.
+      additionalProperties: false
+      description: List of all supported report types
+    ReportExecutionJob:
+      required:
+      - id
+      - status
+      type: object
+      properties:
+        id:
+          minLength: 1
+          type: string
+          description: Gets or sets the identifier.
+        status:
+          $ref: '#/components/schemas/Blackbaud.RENXT.Report.Management.Core.Models.ReportJobExecutionStatusType'
+        sas_uri:
+          type: string
+          description: SAS URI for accessing the report results
+        report_view:
+          $ref: '#/components/schemas/ReportView'
+        output_query_id:
+          type: integer
+          description: Output query ID
+          format: int32
+          nullable: true
+      additionalProperties: false
+      description: Contains details about a report job
+    ReportExecutionParameters:
+      required:
+      - output_format
+      - report_instance_id
+      - time_zone_offset_in_minutes
+      type: object
+      properties:
+        time_zone_offset_in_minutes:
+          type: integer
+          description: The time zone offset for the user's current timezone. Used to determine relative dates.
+          format: int32
+        report_instance_id:
+          type: integer
+          description: The report instance ID
+          format: int32
+        output_format:
+          $ref: '#/components/schemas/Blackbaud.RENXT.Report.Management.Core.Models.OutputFormat'
+        anonymous_option:
+          $ref: '#/components/schemas/Blackbaud.RENXT.Report.Metadata.AnonymousOption'
+        criteria_location:
+          $ref: '#/components/schemas/Blackbaud.RENXT.Report.Management.Core.Models.CriteriaLocationModel'
+        query_ask_fields:
+          $ref: '#/components/schemas/Blackbaud.RENXT.Report.Management.Core.Models.QueryAskFieldsModel'
+      additionalProperties: false
+      description: Parameters for a given report execution job
+    ReportExecutionRequest:
+      required:
+      - execution_parameters
+      - report_type_id
+      type: object
+      properties:
+        report_type_id:
+          type: integer
+          description: Gets or sets the report type identifier.
+          format: int32
+        execution_parameters:
+          $ref: '#/components/schemas/ReportExecutionParameters'
+      additionalProperties: false
+      description: Details for executing a report job.
+    ReportExecutionResponse:
+      type: object
+      properties:
+        job_ids:
+          type: array
+          items:
+            type: string
+          description: The set of report job identifiers created by the report execution. Reports configured to generate multiple
+            report views, such as detail and summary reports, will return multiple job IDs.
+      additionalProperties: false
+      description: Response when starting a report execution job.
+    ReportInstanceItem:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The report ID.
+        name:
+          type: string
+          description: The report name.
+        date_added:
+          type: string
+          description: The date the report was added.
+          format: date-time
+        added_by:
+          type: string
+          description: The ID of the user who added the report.
+        added_by_user_name:
+          type: string
+          description: The name of the user who added the report.
+          x-bb-suppressions:
+          - parameter_property_name
+        date_modified:
+          type: string
+          description: The date the report was last modified.
+          format: date-time
+        modified_by:
+          type: string
+          description: The ID of the user who last modified the report.
+        modified_by_user_name:
+          type: string
+          description: The name of the user who last modified the report.
+          x-bb-suppressions:
+          - parameter_property_name
+        description:
+          type: string
+          description: The description for the report.
+        others_can_modify:
+          type: boolean
+          description: Whether users other than the user that created the report can modify the report.
+        others_can_execute:
+          type: boolean
+          description: Whether users other than the user that created the report can execute the report.
+        date_last_run:
+          type: string
+          description: Date the report was last run.
+          format: date-time
+          nullable: true
+        processing_time:
+          type: string
+          description: Amount of time the report took to process when last run.
+          format: date-span
+          nullable: true
+      additionalProperties: false
+      description: Contains details about a report.
+    ReportJobExecutionItem:
+      required:
+      - date_added
+      - report_type_name
+      - status
+      type: object
+      properties:
+        job_id:
+          type: string
+          description: The job ID
+        status:
+          $ref: '#/components/schemas/Blackbaud.RENXT.Report.Management.Core.Models.ReportJobExecutionStatusType'
+        report_type_name:
+          minLength: 1
+          type: string
+          description: The report type name.
+        report_type_id:
+          type: integer
+          description: The report type ID for this report job.
+          format: int32
+        date_added:
+          type: string
+          description: The date when the report job was added.
+          format: date-time
+        date_completed:
+          type: string
+          description: The date when the report job completed.
+          format: date-time
+          nullable: true
+        total_processing_time:
+          type: string
+          description: The total processing time of a report job
+          format: date-span
+          nullable: true
+        total_processing_time_caption:
+          type: string
+          description: Gets or sets the total processing time caption
+        report_name:
+          type: string
+          description: The report name
+        output_format:
+          $ref: '#/components/schemas/Blackbaud.RENXT.Report.Management.Core.Models.OutputFormat'
+        report_view:
+          $ref: '#/components/schemas/ReportView'
+        scheduled:
+          type: boolean
+          description: Indicates if the report execution is scheduled
+          nullable: true
+      additionalProperties: false
+      description: Report job information item
+    ReportJobExecutions:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReportJobExecutionItem'
+          description: Enumerable of ReportJobExecutionItem
+      additionalProperties: false
+      description: Report job information collection
+    ReportTypeInstance:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the report type.
+        category:
+          type: string
+          description: Category name to which the report type belongs.
+        id:
+          type: integer
+          description: The unique ID for this report type.
+          format: int32
+      additionalProperties: false
+      description: Details for a report type.
+    ReportView:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The indentifier for this report view
+          format: int32
+        name:
+          type: string
+          description: The display name for this instance
+      additionalProperties: false
+      description: Defines a report view, i.e. detail or summary
+    ReportsReportjobs-job_id-GetRequest:
+      type: string
+      x-apim-inline: true
+    Reports-report_type-ReportinstancesGetRequest:
+      type: integer
+      format: int32
+      x-apim-inline: true
+    Reports-report_type-ReportinstancesGetRequest-1:
+      type: boolean
+      x-apim-inline: true
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []

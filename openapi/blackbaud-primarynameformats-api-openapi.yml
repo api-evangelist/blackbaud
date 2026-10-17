@@ -1,0 +1,170 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Constituent Primarynameformats API'
+  description: This API manages constituent information and related entities such as addresses, phones, emails, and notes.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/56b76470069a0509c8f1c5b3
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/constituent/v1
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Primarynameformats
+paths:
+  /primarynameformats:
+    post:
+      operationId: CreateConstituentPrimaryNameFormat
+      summary: Primary name format (Create)
+      description: Creates a primary name format.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PrimaryNameFormatAdd'
+            example:
+              configuration_id: '47'
+              constituent_id: '281'
+              custom_format: false
+              primary_type: Addressee
+        description: An object that represents the primary name format to create.
+      responses:
+        '200':
+          description: Returned when the operation successfully creates an primary name format. The response body contains the ID of the new primary name format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse'
+              example:
+                id: '1281'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+        '403':
+          description: Returned when the user does not have permission to create the primary name format.
+        '404':
+          description: Returned when the specified constituent is not found.
+      tags:
+      - Primarynameformats
+  /primarynameformats/{primary_name_format_id}:
+    delete:
+      operationId: DeleteConstituentPrimaryNameFormat
+      summary: Primary name format (Delete)
+      description: Deletes a constituent primary name format.
+      parameters:
+      - name: primary_name_format_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The immutable system record ID of the constituent primary name format to delete.
+      responses:
+        '200':
+          description: Returned when the operation successfully deletes the primary name format.
+        '400':
+          description: Returned when the specified primary name format ID in the request URL is not in the appropriate format.
+        '403':
+          description: Returned when the user does not have permission to delete the primary name format.
+      tags:
+      - Primarynameformats
+    patch:
+      operationId: EditConstituentPrimaryNameFormat
+      summary: Primary name format (Edit)
+      description: Edits a primary name format for a constituent.
+      parameters:
+      - name: primary_name_format_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The immutable system record ID of the primary name format to edit.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PrimaryNameFormatEdit'
+            example:
+              configuration_id: '47'
+              custom_format: false
+        description: An object that represents the properties of the primary name format to edit.
+      responses:
+        '200':
+          description: Returned when the operation successfully edits the primary name format.
+        '400':
+          description: Returned when the specified primary name format ID in the request URL or the specified request parameters are not in the appropriate format.
+        '404':
+          description: Returned when the specified primary name format is not found.
+      tags:
+      - Primarynameformats
+components:
+  schemas:
+    PostResponse:
+      description: Defines the shape of a post response object.
+      type: object
+      properties:
+        id:
+          description: The newly created ID
+          type: string
+      x-hidden: true
+    PrimaryNameFormatAdd:
+      description: Primary name formats are elevated name formats used for the constituent's most commonly used addressee and salutation.
+      required:
+      - constituent_id
+      - primary_type
+      type: object
+      properties:
+        configuration_id:
+          description: The primary name format configuration identifier. Required when custom_format is false.
+          type: string
+        constituent_id:
+          description: The immutable system record ID of the constituent associated with the primary name format.
+          type: string
+        custom_format:
+          description: Whether the primary name format uses a custom format. Defaults to false.
+          type: boolean
+        formatted_name:
+          description: 'The primary name format formatted name. Required when custom_format is true. Character limit: 255.'
+          maxLength: 255
+          minLength: 0
+          type: string
+        primary_type:
+          description: The primary name format type. Available values are <i>Addressee</i> and <i>Salutation</i>.
+          enum:
+          - Addressee
+          - Salutation
+          type: string
+      x-hidden: true
+      x-display-name: Create primary name format
+      x-display-id: CreatePrimaryNameFormat
+    PrimaryNameFormatEdit:
+      description: Primary name formats are elevated name formats used for the constituent's most commonly used addressee and salutation name formats.
+      type: object
+      properties:
+        configuration_id:
+          description: The name format configuration identifier. Required when custom_format is false.
+          type: string
+        custom_format:
+          description: Whether the name format uses a custom format.
+          type: boolean
+        formatted_name:
+          description: 'The name format formatted name. Required when custom_format is true. Character limit: 255.'
+          maxLength: 255
+          minLength: 0
+          type: string
+      x-hidden: true
+      x-display-name: Edit primary name format
+      x-display-id: EditPrimaryNameFormat
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

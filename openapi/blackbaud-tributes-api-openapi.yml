@@ -1,0 +1,248 @@
+openapi: 3.2.0
+info:
+  title: Blackbaud Tributes API
+  version: '1.0'
+  x-refined-note:
+  - x-apievangelist-provenance differs across the merged source definitions and was not carried
+  description: 'Operations tagged Tributes across 2 of this provider''s published API definitions: blackbaud-altru-constituent-api-openapi.yml, blackbaud-crm-constituent-api-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.sky.blackbaud.com/alt-conmg
+- url: https://api.sky.blackbaud.com/crm-conmg
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Tributes
+paths:
+  /tributes/search:
+    get:
+      operationId: SearchTributes
+      summary: Search for tributes
+      description: Search for tributes.
+      parameters:
+      - name: tribute_text
+        in: query
+        required: false
+        schema:
+          type: string
+        description: tribute text
+      - name: tributee_key_name
+        in: query
+        required: false
+        schema:
+          type: string
+        description: tributee last/org name
+      - name: tributee_first_name
+        in: query
+        required: false
+        schema:
+          type: string
+        description: tributee first name
+      - name: tributee_lookup_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: tributee lookup id
+      - name: tribute_type
+        in: query
+        required: false
+        schema:
+          type: string
+        description: tribute type This code table can be queried at https://api.sky.blackbaud.com/alt-adnmg/codetables/TRIBUTETYPECODE/entries
+      - name: acknowledgee_key_name
+        in: query
+        required: false
+        schema:
+          type: string
+        description: acknowledgee last/org name
+      - name: acknowledgee_first_name
+        in: query
+        required: false
+        schema:
+          type: string
+        description: acknowledgee first name
+      - name: date_filter
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - This week
+          - This month
+          - This quarter
+          - This year
+        description: date created
+      - name: designation
+        in: query
+        required: false
+        schema:
+          type: string
+        description: default designation
+      - name: site_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: site
+      - name: include_inactive
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: include inactive tributes
+      - name: exact_match_only
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: match all criteria exactly
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Limits the number of records to return.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of result entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TributeSearchCollection'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to view the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+      tags:
+      - Tributes
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-conmg
+  /tributes/{revenue_tribute_id}:
+    delete:
+      operationId: DeleteTribute
+      summary: Delete a tribute
+      description: Deletes a revenue tribute record from the system.
+      parameters:
+      - name: revenue_tribute_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The revenue tribute id
+      responses:
+        '200':
+          description: Returned when the operation successfully deletes the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to delete the resource.
+      tags:
+      - Tributes
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-conmg
+components:
+  schemas:
+    TributeSearchSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID.
+        tribute_text:
+          type: string
+          description: The tribute text.
+        tributee_name:
+          type: string
+          description: The tributee.
+        tribute_type:
+          type: string
+          description: The tribute type.
+        date_created:
+          type: string
+          description: 'The date created. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        active:
+          type: boolean
+          description: Indicates whether is active.
+        designation_id:
+          type: string
+          description: The default designation ID.
+        designation:
+          type: string
+          description: The default designation.
+        site_id:
+          type: string
+          description: The site.
+      additionalProperties: false
+      description: SearchTributes
+      x-display-name: Tribute Search
+      x-display-id: Tribute Search
+    TributeSearchCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items available for retrieval into the collection after applying any request parameters.
+          format: int32
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/TributeSearchSummary'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+      additionalProperties: false
+      description: A collection of items. Data lists can contain paginated results.
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type: integer
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type: string
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: false
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-display-name: Problem details
+      x-display-id: ProblemDetails
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+x-refined-from:
+- blackbaud-altru-constituent-api-openapi.yml
+- blackbaud-crm-constituent-api-openapi.yml

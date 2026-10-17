@@ -1,0 +1,191 @@
+openapi: 3.2.0
+info:
+  title: Blackbaud Background Process API
+  version: '1.0'
+  x-refined-note:
+  - x-apievangelist-provenance differs across the merged source definitions and was not carried
+  description: 'Operations tagged BackgroundProcess across 2 of this provider''s published API definitions: blackbaud-accounts-payable-api-openapi.yml, blackbaud-general-ledger-api-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.sky.blackbaud.com/accountspayable/v1
+- url: https://api.sky.blackbaud.com/generalledger/v1
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: BackgroundProcess
+paths:
+  /backgroundProcess/{process_id}/result:
+    get:
+      operationId: GetBackgroundProcessResult
+      summary: Background process result (Get)
+      description: Returns the record ID as result of the registered process. Use this with the "Invoice process (Create)" and "Background process status (Get)" endpoints to enhance invoice processing.
+      parameters:
+      - name: process_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: Process identifier
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the id of the created record.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BackgroundProcessResult'
+              example:
+                record_id: 4975
+        '404':
+          description: Returned when the specified record could not be found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                Error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+        '403':
+          description: Returned when the user does not have permission to view the record.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                Error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - BackgroundProcess
+    servers:
+    - url: https://api.sky.blackbaud.com/accountspayable/v1
+  /backgroundProcess/{process_id}/status:
+    get:
+      operationId: GetBackgroundProcessStatus
+      summary: Background process status (Get)
+      description: Returns the background process status of the process identifier. Use this with the "Invoice process (Create)" and "Background process result (Get)" endpoints to enhance invoice processing.
+      parameters:
+      - name: process_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: Process identifier
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the specified background process status message.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BackgroundProcessStatus'
+              example:
+                status: 0
+                status_message: Waiting for server to pick up request...
+                process_id: 1234
+        '404':
+          description: Returned when the specified background could not be found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                Error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+        '403':
+          description: Returned when the user does not have permission to view status.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                Error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - BackgroundProcess
+    servers:
+    - url: https://api.sky.blackbaud.com/accountspayable/v1
+components:
+  schemas:
+    BackgroundProcessStatus:
+      type: object
+      properties:
+        status:
+          type: integer
+          description: The background process status.<p>Members:</p><ul><li><i>0</i> - Job created.</li><li><i>1</i> - Job waiting to be scheduled.</li><li><i>2</i> - Job scheduled.</li><li><i>3</i> - Job running.</li><li><i>4</i> - Job finished processing and is completing.</li><li><i>5</i> - Job completed successfully.</li><li><i>6</i> - Job canceled.</li><li><i>7</i> - Job failed.</li></ul>
+          format: int32
+        status_message:
+          type:
+          - string
+          - 'null'
+          description: The background process status message.
+        process_id:
+          type: integer
+          description: The background process identifier.
+          format: int32
+      additionalProperties: false
+      description: The registered background process status.
+    BasicErrorMessage:
+      type: object
+      properties:
+        Error:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    BackgroundProcessResult:
+      type: object
+      properties:
+        record_id:
+          type: integer
+          description: The record identifier created by the background process.
+          format: int32
+      additionalProperties: false
+      description: Background process result by process id
+    BackgroundProcessStatus_2:
+      description: The registered background process status.
+      type: object
+      properties:
+        status:
+          format: int32
+          description: The background process status.<p>Members:</p><ul><li><i>0</i> - Job created.</li><li><i>1</i> - Job waiting to be scheduled.</li><li><i>2</i> - Job scheduled.</li><li><i>3</i> - Job running.</li><li><i>4</i> - Job finished processing and is completing.</li><li><i>5</i> - Job completed successfully.</li><li><i>6</i> - Job canceled.</li><li><i>7</i> - Job failed.</li></ul>
+          type: integer
+          x-ms-summary: Status
+        status_message:
+          description: The background process status message.
+          type: string
+          x-ms-summary: Status message
+        process_id:
+          format: int32
+          description: The background process identifier.
+          type: integer
+          x-ms-summary: Process id
+      x-display-name: Background process status
+      x-ms-summary: Background process status
+    BasicErrorMessage_2:
+      type: object
+      properties:
+        Error:
+          type: string
+          x-ms-summary: Error
+      x-display-name: Basic error message
+      x-ms-summary: Basic error message
+    BackgroundProcessResult_2:
+      description: Background process result by process id
+      type: object
+      properties:
+        record_id:
+          format: int32
+          description: The record identifier created by the background process.
+          type: integer
+          x-ms-summary: Record id
+      x-display-name: Background process result
+      x-ms-summary: Background process result
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+x-refined-from:
+- blackbaud-accounts-payable-api-openapi.yml
+- blackbaud-general-ledger-api-openapi.yml

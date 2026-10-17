@@ -1,0 +1,853 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Grantmaking Contacts API'
+  description: This API manages grantmaking information.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/grantmaking
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/grantmaking
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Contacts
+paths:
+  /api/v1/contacts/classifications:
+    get:
+      operationId: GetContactClassifications
+      summary: Gets the classifications for Contacts
+      description: Fetches the coding tables associated with the Contacts. Includes coding sheet properties when applicable.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationResponse'
+              example:
+                classifications:
+                - code_table_id: 0
+                  code_table:
+                  - id: 0
+                    code: string
+                    description: string
+                    description_with_code: string
+                    full_path_description_code: string
+                    full_path_description: string
+                    depth: 0
+                    parent_id: 0
+                    is_active: true
+                    full_path: string
+                    full_path_with_code: string
+      tags:
+      - Contacts
+  /api/v1/contacts/search:
+    post:
+      operationId: SearchContact
+      summary: Search for Contacts which meet the provided criteria
+      description: Fetches Grantmaking Contacts that meet the provided search criteria.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContactSearchRequest'
+            example:
+              id: string
+              state:
+                is: string
+                contains: string
+                begins_with: string
+                ends_with: string
+              city:
+                is: string
+                contains: string
+                begins_with: string
+                ends_with: string
+              postal_code:
+                is: string
+                contains: string
+                begins_with: string
+                ends_with: string
+              contact_type_id: 0
+              reviewer_type_id: 0
+              active_student: true
+              create_date:
+                start_date: string
+                end_date: string
+                is: string
+              change_date:
+                start_date: string
+                end_date: string
+                is: string
+              custom_fields:
+              - string
+              per_page: 0
+              page: 0
+        description: An instance of Blackbaud.CFS.MiddlewareService.DataAccess.Models.SKYAPI.Contact.ContactSearchRequest.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContactSearchResponse'
+              example:
+                contacts:
+                - id: string
+                  first_name: string
+                  middle_name: string
+                  last_name: string
+                  email: string
+                  primary_organization:
+                    organization_id: string
+                    name: string
+                  informal_salutation: string
+                  addressee_salutation: string
+                  suffix: string
+                  salutation: string
+                  is_student: true
+                  prefix: string
+                  type:
+                    classification_id: 0
+                    code: string
+                    description: string
+                  highest_degree_year: 0
+                  highest_degree:
+                    classification_id: 0
+                    code: string
+                    description: string
+                  notes: string
+                  reviewer_type:
+                    classification_id: 0
+                    code: string
+                    description: string
+                  reviewer_user:
+                    login_id: string
+                    name: string
+                  birth_date: string
+                  spouse_name: string
+                  country_of_citizenship: string
+                  primary_address:
+                    id: 0
+                    address_1: string
+                    address_2: string
+                    city: string
+                    state_province: string
+                    country: string
+                    postal_code: string
+                    telephone: string
+                    telephone_ext: string
+                    alternate_telephone: string
+                    alternate_telephone_ext: string
+                  office_address:
+                    id: 0
+                    address_1: string
+                    address_2: string
+                    city: string
+                    state_province: string
+                    country: string
+                    postal_code: string
+                    telephone: string
+                    telephone_ext: string
+                    alternate_telephone: string
+                    alternate_telephone_ext: string
+                  home_address:
+                    id: 0
+                    address_1: string
+                    address_2: string
+                    city: string
+                    state_province: string
+                    country: string
+                    postal_code: string
+                    telephone: string
+                    telephone_ext: string
+                    alternate_telephone: string
+                    alternate_telephone_ext: string
+                  branch:
+                    classification_id: 0
+                    code: string
+                    description: string
+                  alert_text: string
+                  codings:
+                  - id: 0
+                    code_table:
+                      id: 0
+                      description: string
+                    level_1:
+                      classification_id: 0
+                      code: string
+                      description: string
+                    level_2:
+                      classification_id: 0
+                      code: string
+                      description: string
+                    level_3:
+                      classification_id: 0
+                      code: string
+                      description: string
+                    level_4:
+                      classification_id: 0
+                      code: string
+                      description: string
+                    level_5:
+                      classification_id: 0
+                      code: string
+                      description: string
+                    allocation_percentage: 0
+                    allocation_amount: 0
+                    primary_flag: true
+                  create_date: string
+                  change_date: string
+                  codes_ids: string
+                  custom_fields: {}
+      tags:
+      - Contacts
+  /api/v1/contacts/{contact_id}:
+    get:
+      operationId: GetContact
+      summary: Return a Contact
+      description: Fetches a Contact from the Grantmaking system.
+      parameters:
+      - name: contact_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: A contact ID.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiContact'
+              example:
+                id: string
+                first_name: string
+                middle_name: string
+                last_name: string
+                email: string
+                primary_organization:
+                  organization_id: string
+                  name: string
+                informal_salutation: string
+                addressee_salutation: string
+                suffix: string
+                salutation: string
+                is_student: true
+                prefix: string
+                type:
+                  classification_id: 0
+                  code: string
+                  description: string
+                highest_degree_year: 0
+                highest_degree:
+                  classification_id: 0
+                  code: string
+                  description: string
+                notes: string
+                reviewer_type:
+                  classification_id: 0
+                  code: string
+                  description: string
+                reviewer_user:
+                  login_id: string
+                  name: string
+                birth_date: string
+                spouse_name: string
+                country_of_citizenship: string
+                primary_address:
+                  id: 0
+                  address_1: string
+                  address_2: string
+                  city: string
+                  state_province: string
+                  country: string
+                  postal_code: string
+                  telephone: string
+                  telephone_ext: string
+                  alternate_telephone: string
+                  alternate_telephone_ext: string
+                office_address:
+                  id: 0
+                  address_1: string
+                  address_2: string
+                  city: string
+                  state_province: string
+                  country: string
+                  postal_code: string
+                  telephone: string
+                  telephone_ext: string
+                  alternate_telephone: string
+                  alternate_telephone_ext: string
+                home_address:
+                  id: 0
+                  address_1: string
+                  address_2: string
+                  city: string
+                  state_province: string
+                  country: string
+                  postal_code: string
+                  telephone: string
+                  telephone_ext: string
+                  alternate_telephone: string
+                  alternate_telephone_ext: string
+                branch:
+                  classification_id: 0
+                  code: string
+                  description: string
+                alert_text: string
+                codings:
+                - id: 0
+                  code_table:
+                    id: 0
+                    description: string
+                  level_1:
+                    classification_id: 0
+                    code: string
+                    description: string
+                  level_2:
+                    classification_id: 0
+                    code: string
+                    description: string
+                  level_3:
+                    classification_id: 0
+                    code: string
+                    description: string
+                  level_4:
+                    classification_id: 0
+                    code: string
+                    description: string
+                  level_5:
+                    classification_id: 0
+                    code: string
+                    description: string
+                  allocation_percentage: 0
+                  allocation_amount: 0
+                  primary_flag: true
+                create_date: string
+                change_date: string
+                codes_ids: string
+                custom_fields: {}
+      tags:
+      - Contacts
+components:
+  schemas:
+    CodeInfo:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the coding table value
+          format: int32
+        code:
+          type:
+          - string
+          - 'null'
+          description: The code value of the coding table value
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description value of the coding table value
+        description_with_code:
+          type:
+          - string
+          - 'null'
+          description: The code and the description shown to the user
+        full_path_description_code:
+          type:
+          - string
+          - 'null'
+          description: The code and the description shown to the user preceded by the parent values
+        full_path_description:
+          type:
+          - string
+          - 'null'
+          description: The description shown to the user
+        depth:
+          type: integer
+          description: The level that this code resides in within the coding table hierarchy
+          format: int32
+        parent_id:
+          type: integer
+          description: The ID of the parent code to this one, 0 if this is a top level code
+          format: int32
+        is_active:
+          type: boolean
+          description: To determine if this is an active code
+          x-bb-suppressions:
+          - parameter_property_name
+        full_path:
+          type:
+          - string
+          - 'null'
+          description: The full path to the description in the coding table hierarchy
+        full_path_with_code:
+          type:
+          - string
+          - 'null'
+          description: The full path including code and description to the code in the coding table hierarchy
+      additionalProperties: false
+      description: Model for coding options data
+    Address:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The address's ID.
+          format: int32
+        address_1:
+          type:
+          - string
+          - 'null'
+          description: The address's address line 1.
+        address_2:
+          type:
+          - string
+          - 'null'
+          description: The address's address line 2.
+        city:
+          type:
+          - string
+          - 'null'
+          description: The address's city.
+        state_province:
+          type:
+          - string
+          - 'null'
+          description: The address's state/province.
+        country:
+          type:
+          - string
+          - 'null'
+          description: The address's country.
+        postal_code:
+          type:
+          - string
+          - 'null'
+          description: The address's postal code.
+        telephone:
+          type:
+          - string
+          - 'null'
+          description: The address's telephone number.
+        telephone_ext:
+          type:
+          - string
+          - 'null'
+          description: The address's telephone extension.
+        alternate_telephone:
+          type:
+          - string
+          - 'null'
+          description: The address's alternate telephone number.
+        alternate_telephone_ext:
+          type:
+          - string
+          - 'null'
+          description: The address's alternate telephone extension.
+      additionalProperties: false
+      description: Represents an entity's address.
+    ApiContact:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: The Contact's ID.
+        first_name:
+          type:
+          - string
+          - 'null'
+          description: The Contact's first name.
+        middle_name:
+          type:
+          - string
+          - 'null'
+          description: The Contact's middle name.
+        last_name:
+          type:
+          - string
+          - 'null'
+          description: The Contact's last name.
+        email:
+          type:
+          - string
+          - 'null'
+          description: The Contact's email.
+        primary_organization:
+          $ref: '#/components/schemas/OrganizationReference'
+        informal_salutation:
+          type:
+          - string
+          - 'null'
+          description: The Contact's informal salutation.
+        addressee_salutation:
+          type:
+          - string
+          - 'null'
+          description: The Contact's addressee salutation.
+        suffix:
+          type:
+          - string
+          - 'null'
+          description: The Contact's suffix.
+        salutation:
+          type:
+          - string
+          - 'null'
+          description: The Contact's salutation.
+        is_student:
+          type:
+          - boolean
+          - 'null'
+          description: The Contact is student.
+          x-bb-suppressions:
+          - parameter_property_name
+        prefix:
+          type:
+          - string
+          - 'null'
+          description: The Contact's prefix.
+        type:
+          $ref: '#/components/schemas/IdCodeDescription'
+        highest_degree_year:
+          type:
+          - integer
+          - 'null'
+          description: The Contact's highest degree year.
+          format: int32
+        highest_degree:
+          $ref: '#/components/schemas/IdCodeDescription'
+        notes:
+          type:
+          - string
+          - 'null'
+          description: The Contact's notes.
+        reviewer_type:
+          $ref: '#/components/schemas/IdCodeDescription'
+        reviewer_user:
+          $ref: '#/components/schemas/Staff'
+        birth_date:
+          type:
+          - string
+          - 'null'
+          description: The Contact's birth date.
+          format: date-time
+        spouse_name:
+          type:
+          - string
+          - 'null'
+          description: The Contact's spouse name.
+        country_of_citizenship:
+          type:
+          - string
+          - 'null'
+          description: The Contact's citizenship.
+        primary_address:
+          $ref: '#/components/schemas/Address'
+        office_address:
+          $ref: '#/components/schemas/Address'
+        home_address:
+          $ref: '#/components/schemas/Address'
+        branch:
+          $ref: '#/components/schemas/IdCodeDescription'
+        alert_text:
+          type:
+          - string
+          - 'null'
+          description: The Contact's alert text.
+        codings:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Coding'
+          description: The Contact's codings list.
+        create_date:
+          type:
+          - string
+          - 'null'
+          description: The Contact's create date.
+          format: date-time
+        change_date:
+          type:
+          - string
+          - 'null'
+          description: The Contact's change date.
+          format: date-time
+        codes_ids:
+          type:
+          - string
+          - 'null'
+          description: The Contact's list of code IDs.
+        custom_fields:
+          type:
+          - object
+          - 'null'
+          additionalProperties: {}
+          description: The Entity's custom field data.
+      additionalProperties: false
+      description: A SKY API specific version of a Grantmaking Contact entity.
+    OrganizationReference:
+      type: object
+      properties:
+        organization_id:
+          type:
+          - string
+          - 'null'
+          description: The related Organization's ID.
+        name:
+          type:
+          - string
+          - 'null'
+          description: Related Organization's name.
+      additionalProperties: false
+      description: Represents related Contact information.
+    ClassificationResponse:
+      type: object
+      properties:
+        classifications:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CodeInfoList'
+          description: The classifications for the entity type.
+      additionalProperties: false
+      description: A response model for classifications.
+    ContactSearchResponse:
+      type: object
+      properties:
+        contacts:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ApiContact'
+          description: The results of the contact search.
+      additionalProperties: false
+      description: A response model for contact search.
+    StringSearchCriteria:
+      type: object
+      properties:
+        is:
+          type:
+          - string
+          - 'null'
+          description: A exact match criteria.
+        contains:
+          type:
+          - string
+          - 'null'
+          description: A partial match criteria.
+        begins_with:
+          type:
+          - string
+          - 'null'
+          description: A beginning match criteria.
+        ends_with:
+          type:
+          - string
+          - 'null'
+          description: A ending match criteria.
+      additionalProperties: false
+      description: A model with string search criteria.
+    Staff:
+      type: object
+      properties:
+        login_id:
+          type:
+          - string
+          - 'null'
+          description: The staff member's login ID.
+        name:
+          type:
+          - string
+          - 'null'
+          description: The staff member's name.
+      additionalProperties: false
+      description: Represents a Grantmaking staff user.
+    CodeInfoList:
+      type: object
+      properties:
+        code_table_id:
+          type: integer
+          description: Gets or sets the table ID.
+          format: int32
+        code_table:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CodeInfo'
+          description: Gets or sets the list of coding values in the table.
+      additionalProperties: false
+      description: Coding table model.
+    DateSearchCriteria:
+      type: object
+      properties:
+        start_date:
+          type:
+          - string
+          - 'null'
+          description: An earliest date criteria.
+          format: date-time
+        end_date:
+          type:
+          - string
+          - 'null'
+          description: A latest date criteria.
+          format: date-time
+        is:
+          type:
+          - string
+          - 'null'
+          description: An exact match criteria.
+          format: date-time
+      additionalProperties: false
+      description: A model with date search criteria.
+    IdCodeDescription:
+      type: object
+      properties:
+        classification_id:
+          type: integer
+          description: Classification's ID.
+          format: int32
+        code:
+          type:
+          - string
+          - 'null'
+          description: Classification's code.
+        description:
+          type:
+          - string
+          - 'null'
+          description: Classification's description.
+      additionalProperties: false
+      description: Represents a Classification value.
+    Coding:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The coding selection's ID.
+          format: int32
+        code_table:
+          $ref: '#/components/schemas/CodeTable'
+        level_1:
+          $ref: '#/components/schemas/IdCodeDescription'
+        level_2:
+          $ref: '#/components/schemas/IdCodeDescription'
+        level_3:
+          $ref: '#/components/schemas/IdCodeDescription'
+        level_4:
+          $ref: '#/components/schemas/IdCodeDescription'
+        level_5:
+          $ref: '#/components/schemas/IdCodeDescription'
+        allocation_percentage:
+          type:
+          - integer
+          - 'null'
+          description: The coding selection's allocation percentage.
+          format: int32
+        allocation_amount:
+          type:
+          - number
+          - 'null'
+          description: The coding selection's allocation amount.
+          format: double
+        primary_flag:
+          type: boolean
+          description: The coding selection's primary flag.
+          x-bb-suppressions:
+          - parameter_property_name
+      additionalProperties: false
+      description: Represents a Coding Sheet Classification selection.
+    ContactSearchRequest:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: An Contact ID.
+        state:
+          $ref: '#/components/schemas/StringSearchCriteria'
+        city:
+          $ref: '#/components/schemas/StringSearchCriteria'
+        postal_code:
+          $ref: '#/components/schemas/StringSearchCriteria'
+        contact_type_id:
+          type:
+          - integer
+          - 'null'
+          description: A classification ID value representing the Contact type.
+          format: int32
+        reviewer_type_id:
+          type:
+          - integer
+          - 'null'
+          description: A classification ID value representing the Reviewer type.
+          format: int32
+        active_student:
+          type:
+          - boolean
+          - 'null'
+          description: A boolean value representing whether the Contact is a student.
+        create_date:
+          $ref: '#/components/schemas/DateSearchCriteria'
+        change_date:
+          $ref: '#/components/schemas/DateSearchCriteria'
+        custom_fields:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: Represents the list of custom fields to return on the entities in the result.
+        per_page:
+          maximum: 100
+          minimum: 1
+          type: integer
+          description: The page size for paged output.
+          format: int32
+        page:
+          type: integer
+          description: The page number for paged output.
+          format: int32
+      additionalProperties: false
+      description: A request model for searching Contacts.
+      x-bb-suppressions:
+      - request_body_has_required_property
+    CodeTable:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The code's ID.
+          format: int32
+        description:
+          type:
+          - string
+          - 'null'
+          description: The code's description.
+      additionalProperties: false
+      description: Represents a Classification value.
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

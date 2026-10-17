@@ -1,0 +1,1792 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Enrollment Management Candidates API'
+  description: Blackbaud Education Management API for Enrollment Management
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/afe-edems
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/afe-edems
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Candidates
+paths:
+  /v1/candidates:
+    post:
+      operationId: V1CandidatesPost
+      summary: Candidate (Create)
+      description: 'Creates a candidate record for the user for a specified school year.
+
+
+        Requires the following role in the Education Management system:
+
+
+        Admissions Manager
+
+
+        Admissions Staff
+
+
+        Platform Manager
+
+
+        SKY API Data Sync'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCandidateRequest'
+            example:
+              user_id: 1
+              entering_year: 2024 - 2025
+              entering_grade: 1st grade
+              checklist_type: 1
+      responses:
+        '200':
+          description: Returns user id on success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1CandidatesPost200ApplicationJsonResponse'
+              example: 0
+      tags:
+      - Candidates
+    get:
+      operationId: V1CandidatesGet
+      summary: Candidate list (Get)
+      description: 'Returns a collection of admission candidates.
+
+
+        Requires the following role in the Education Management system:
+
+
+        Admissions Manager
+
+
+        Admissions Staff
+
+
+        Platform Manager
+
+
+        SKY API Data Sync'
+      parameters:
+      - name: school_year
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Specify the ID or label of a school year to limit results to candidates for that entry year. Defaults to current admissions year.
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Specify the ID or description of the candidate status to limit results to candidates with that status.
+      - name: modified_date
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Specify a date to limit results to candidates modified on or after that date. Use ISO-8601 date format: 2025-04-30'
+      - name: size
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: '3000'
+        description: The number of records per page (Default record size is 3000).
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: '1'
+        description: The page of results to start from (Default start page is 1).
+      - name: school_level
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Provide the ID of the school level to limit results to candidates for that school level.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CandidateReadCollection'
+              example:
+                count: 1
+                value:
+                - user:
+                    id: 1
+                    first_name: John
+                    last_name: Smith
+                    middle_name: Quincy
+                    preferred_name: Jack
+                    prefix: Mr.
+                    suffix: Jr.
+                    email: john@example.com
+                    cc_email: john2@example.com
+                    gender:
+                      abbreviation: M
+                      id: 1
+                      description: Male
+                    pronouns:
+                      id: 1
+                      description: He/Him
+                    ethnicity:
+                      id: 1
+                      description: Korean
+                    is_international: false
+                    boarding_or_day: D
+                    school_program:
+                      id: 1
+                      description: College Prep
+                    race:
+                    - id: 1
+                      description: Asian
+                  entering_year:
+                    id: 1
+                    description: 2025 - 2026
+                  entering_grade:
+                    abbreviation: 9th
+                    id: 1
+                    description: Ninth Grade
+                  role:
+                    id: 1
+                    description: Candidate
+                  candidate_status: Active
+                  status:
+                    date: '2024-03-31T12:00:00Z'
+                    id: 1
+                    description: Under Review
+                  school_decision:
+                    id: 1
+                    decision:
+                      id: 1
+                      description: Accepted with conditions
+                      type:
+                        id: 1
+                        description: Sample Value
+                    date: '2024-03-31T12:00:00Z'
+                    publish_date: '2024-03-31T12:00:00Z'
+                    expire_date: '2024-04-30T12:00:00Z'
+                    comment: A schooled comment
+                    candidate_response:
+                      id: 1
+                      response:
+                        description: Declined due to finances
+                        type:
+                          id: 1
+                          description: Sample Value
+                      date: '2024-03-31T12:00:00Z'
+                      decline_reason:
+                        id: 1
+                        description: Sample Value
+                      chosen_school:
+                        id: 1
+                        description: Sample Value
+                  family_photo:
+                    url: somesite/photos/john.jpg
+                    keep_private: false
+                  inquiry:
+                    id: 1
+                    form:
+                      id: 1
+                      description: API Form
+                    source:
+                      id: 1
+                      description: Sample value
+                    date_submitted: '2024-03-03T12:00:00Z'
+                    date_processed: '2024-03-03T12:00:00Z'
+                  referral:
+                    id: 1
+                    description: Friend
+                    comment: A friend at the school
+                  has_i20_form: false
+                  languages_at_home: English, Korean
+                  requested_financial_aid: false
+                  has_iep: false
+                  has_504_plan: false
+                  has_private_evaluation: false
+                  bbtm_family_id: 1
+                  created_by: Created by User
+                  created: '2024-03-01T12:00:00Z'
+                  modified_by: Modified by User
+                  modified: '2024-03-03T12:00:00Z'
+                  reapply:
+                    has_previously_applied: true
+                    school_comment: A schooled comment
+                    candidate_comment: A candid comment
+                  skipped_grade:
+                    has_skipped_grade: true
+                    school_comment: A schooled comment
+                    candidate_comment: A candid comment
+                  withdrawn:
+                    has_withdrawn: true
+                    school_comment: A schooled comment
+                    candidate_comment: A candid comment
+                  special_concerns:
+                    has_special_concerns: true
+                    school_comment: A schooled comment
+                    candidate_comment: A candid comment
+                  educational_support:
+                    has_educational_support: true
+                    documentational_url: somesite/files/edu_supp.doc
+                    school_comment: A schooled comment
+                    candidate_comment: A candid comment
+                  tutoring:
+                    requires_tutoring: true
+                    reason: At remedial math levels
+                  application:
+                    id: 1
+                    form:
+                      id: 1
+                      description: API Form
+                    date_submitted: '2024-03-31T12:00:00Z'
+                    date_processed: '2024-03-31T12:00:00Z'
+                  relationships:
+                  - id: 1
+                    type: Parent
+                    user:
+                      id: 1
+                      first_name: John
+                      last_name: Smith
+                      preferred_name: Jack
+                      email: johnsr@example.com
+                  admissions_staff:
+                    id: 1
+                    prefix: Mr.
+                    first_name: Kianna
+                    middle_name: Mark
+                    last_name: Reed
+                    suffix: Jr.
+                    preferred_name: ''
+                    preferred_last_name: Reed
+                    maiden_name: ''
+                    email: kianna@example.com
+                  consultant:
+                    id: 1
+                    prefix: Mrs.
+                    first_name: Sally
+                    middle_name: ''
+                    last_name: Greene
+                    suffix: Sr.
+                    preferred_name: Sally
+                    preferred_last_name: ''
+                    maiden_name: ''
+                    email: sally@example.com
+                  sending_school:
+                    id: 1
+                    school:
+                      id: 1
+                      name: Lowcountry Montessori
+                    type:
+                      id: 1
+                      description: Early Education
+                    grade_level:
+                      abbreviation: 3rd
+                      id: 1
+                      description: Third grade
+                    date_from: '2022-03-31T12:00:00Z'
+                    date_to: '2024-03-31T12:00:00Z'
+                  events:
+                  - id: 1
+                    name: Open House
+                    start_time: '2024-03-31T12:00:00Z'
+                    is_registered: true
+                    attended: false
+                    comment: An eventful comment
+                  interviews:
+                  - id: 1
+                    start_time: '2024-03-31T12:00:00Z'
+                    end_time: '2024-03-31T12:00:00Z'
+                    interviewer_other: John Bridges
+                    rating: 10
+                    is_rescheduled: false
+                    comment: A candid comment
+                  visits:
+                  - id: 1
+                    start_time: '2024-03-31T12:00:00Z'
+                    end_time: '2024-03-31T12:00:00Z'
+                    guide_other: John Bridges
+                    is_rescheduled: false
+                    comment: A candid comment
+                  candidate_checklist:
+                    id: 1
+                    name: Standard Checklist
+                  custom_fields_text:
+                  - field_identifier: text_field_7
+                    field_name: Favorite color
+                    field_value: Burnt sienna
+                  custom_fields_date:
+                  - field_identifier: date_field_7
+                    field_name: Favorite day
+                    field_value: '2023-03-29'
+                  custom_fields_defined:
+                  - field_identifier: defined_field_7
+                    field_name: T-shirt size
+                    field_value: Medium
+      tags:
+      - Candidates
+  /v1/candidates/{candidate_id}:
+    patch:
+      operationId: V1CandidatesByCandidate_idPatch
+      summary: Candidate (Edit)
+      description: 'Updates candidate information for the specified entering year.
+
+
+        Requires the following role in the Education Management system:
+
+
+        Admissions Manager
+
+
+        Admissions Staff'
+      parameters:
+      - name: candidate_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The user ID of the candidate.
+      - name: school_year
+        in: query
+        required: false
+        schema:
+          type: string
+        description: The ID or description of the school year the candidate is entering. Defaults to current admission year.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CandidateUpdateRequest'
+            example:
+              entering_year: 2024 - 2025
+              entering_grade: Ninth grade
+              status: active
+              inactive_status_reason: Denied Acceptance
+              staff_id: 1
+              consultants:
+              - 1
+              has_i20_form: false
+              source: Recruiter
+              referral: Friend
+              referral_text: A friend at the school
+              languages_at_home: English, Korean
+              requested_financial_aid: false
+              has_iep: false
+              has504: false
+              has_private_evaluation: false
+              reapply:
+                has_previously_applied: true
+                school_comment: A schooled comment
+                candidate_comment: A candid comment
+              skipped_grade:
+                has_skipped_grade: true
+                school_comment: A schooled comment
+                candidate_comment: A candid comment
+              withdrawn:
+                has_withdrawn: true
+                school_comment: A schooled comment
+                candidate_comment: A candid comment
+              special_concerns:
+                has_special_concerns: true
+                school_comment: A schooled comment
+                candidate_comment: A candid comment
+              tutoring:
+                requires_tutoring: true
+                reason: At remedial math levels
+              custom_fields_text:
+              - field_identifier: text_field_7
+                field_name: Favorite color
+                field_value: Burnt sienna
+              custom_fields_date:
+              - field_identifier: date_field_7
+                field_name: Favorite day
+                field_value: '2023-03-29'
+              custom_fields_defined:
+              - field_identifier: defined_field_7
+                field_name: T-shirt size
+                field_value: Medium
+        description: The candidate details to update.
+      responses:
+        '200':
+          description: Returns user id on success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Candidates-candidate_id-Patch200ApplicationJsonResponse'
+              example: 0
+      tags:
+      - Candidates
+    get:
+      operationId: V1CandidatesByCandidate_idGet
+      summary: Candidate (Get)
+      description: 'Returns a candidate''s information for a specific year. Defaults to the current admissions year.
+
+
+        Requires the following role in the Education Management system:
+
+
+        Admissions Manager
+
+
+        Admissions Staff'
+      parameters:
+      - name: candidate_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The user ID of the candidate
+      - name: school_year
+        in: query
+        required: false
+        schema:
+          type: string
+        description: The ID or description for the school year. Defaults to the current admissions year.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CandidateRead'
+              example:
+                user:
+                  id: 1
+                  first_name: John
+                  last_name: Smith
+                  middle_name: Quincy
+                  preferred_name: Jack
+                  prefix: Mr.
+                  suffix: Jr.
+                  email: john@example.com
+                  cc_email: john2@example.com
+                  gender:
+                    abbreviation: M
+                    id: 1
+                    description: Male
+                  pronouns:
+                    id: 1
+                    description: He/Him
+                  ethnicity:
+                    id: 1
+                    description: Korean
+                  is_international: false
+                  boarding_or_day: D
+                  school_program:
+                    id: 1
+                    description: College Prep
+                  race:
+                  - id: 1
+                    description: Asian
+                entering_year:
+                  id: 1
+                  description: 2025 - 2026
+                entering_grade:
+                  abbreviation: 9th
+                  id: 1
+                  description: Ninth Grade
+                role:
+                  id: 1
+                  description: Candidate
+                status:
+                  date: '2024-03-31T12:00:00Z'
+                  id: 1
+                  description: Under Review
+                school_decision:
+                  id: 1
+                  decision:
+                    id: 1
+                    description: Accepted with conditions
+                    type:
+                      id: 1
+                      description: Sample Value
+                  date: '2024-03-31T12:00:00Z'
+                  publish_date: '2024-03-31T12:00:00Z'
+                  expire_date: '2024-04-30T12:00:00Z'
+                  comment: A schooled comment
+                  candidate_response:
+                    id: 1
+                    response:
+                      description: Declined due to finances
+                      type:
+                        id: 1
+                        description: Sample Value
+                    date: '2024-03-31T12:00:00Z'
+                    decline_reason:
+                      id: 1
+                      description: Sample Value
+                    chosen_school:
+                      id: 1
+                      description: Sample Value
+                family_photo:
+                  url: somesite/photos/john.jpg
+                  keep_private: false
+                inquiry:
+                  id: 1
+                  form:
+                    id: 1
+                    description: API Form
+                  source:
+                    id: 1
+                    description: Sample value
+                  date_submitted: '2024-03-03T12:00:00Z'
+                  date_processed: '2024-03-03T12:00:00Z'
+                referral:
+                  id: 1
+                  description: Friend
+                  comment: A friend at the school
+                has_i20_form: false
+                languages_at_home: English, Korean
+                requested_financial_aid: false
+                has_iep: false
+                has_504_plan: false
+                has_private_evaluation: false
+                bbtm_family_id: 1
+                created_by: Created by User
+                created: '2024-03-01T12:00:00Z'
+                modified_by: Modified by User
+                modified: '2024-03-03T12:00:00Z'
+                reapply:
+                  has_previously_applied: true
+                  school_comment: A schooled comment
+                  candidate_comment: A candid comment
+                skipped_grade:
+                  has_skipped_grade: true
+                  school_comment: A schooled comment
+                  candidate_comment: A candid comment
+                withdrawn:
+                  has_withdrawn: true
+                  school_comment: A schooled comment
+                  candidate_comment: A candid comment
+                special_concerns:
+                  has_special_concerns: true
+                  school_comment: A schooled comment
+                  candidate_comment: A candid comment
+                educational_support:
+                  has_educational_support: true
+                  documentational_url: somesite/files/edu_supp.doc
+                  school_comment: A schooled comment
+                  candidate_comment: A candid comment
+                tutoring:
+                  requires_tutoring: true
+                  reason: At remedial math levels
+                application:
+                  id: 1
+                  form:
+                    id: 1
+                    description: API Form
+                  date_submitted: '2024-03-31T12:00:00Z'
+                  date_processed: '2024-03-31T12:00:00Z'
+                relationships:
+                - id: 1
+                  type: Parent
+                  user:
+                    id: 1
+                    first_name: John
+                    last_name: Smith
+                    preferred_name: Jack
+                    email: johnsr@example.com
+                admissions_staff:
+                  id: 1
+                  prefix: Mr.
+                  first_name: Kianna
+                  middle_name: Mark
+                  last_name: Reed
+                  suffix: Jr.
+                  preferred_name: ''
+                  preferred_last_name: Reed
+                  maiden_name: ''
+                  email: kianna@example.com
+                consultant:
+                  id: 1
+                  prefix: Mrs.
+                  first_name: Sally
+                  middle_name: ''
+                  last_name: Greene
+                  suffix: Sr.
+                  preferred_name: Sally
+                  preferred_last_name: ''
+                  maiden_name: ''
+                  email: sally@example.com
+                sending_school:
+                  id: 1
+                  school:
+                    id: 1
+                    name: Lowcountry Montessori
+                  type:
+                    id: 1
+                    description: Early Education
+                  grade_level:
+                    abbreviation: 3rd
+                    id: 1
+                    description: Third grade
+                  date_from: '2022-03-31T12:00:00Z'
+                  date_to: '2024-03-31T12:00:00Z'
+                events:
+                - id: 1
+                  name: Open House
+                  start_time: '2024-03-31T12:00:00Z'
+                  is_registered: true
+                  attended: false
+                  comment: An eventful comment
+                interviews:
+                - id: 1
+                  start_time: '2024-03-31T12:00:00Z'
+                  end_time: '2024-03-31T12:00:00Z'
+                  interviewer_other: John Bridges
+                  rating: 10
+                  is_rescheduled: false
+                  comment: A candid comment
+                visits:
+                - id: 1
+                  start_time: '2024-03-31T12:00:00Z'
+                  end_time: '2024-03-31T12:00:00Z'
+                  guide_other: John Bridges
+                  is_rescheduled: false
+                  comment: A candid comment
+                candidate_checklist:
+                  id: 1
+                  name: Standard Checklist
+                custom_fields_text:
+                - field_identifier: text_field_7
+                  field_name: Favorite color
+                  field_value: Burnt sienna
+                custom_fields_date:
+                - field_identifier: date_field_7
+                  field_name: Favorite day
+                  field_value: '2023-03-29'
+                custom_fields_defined:
+                - field_identifier: defined_field_7
+                  field_name: T-shirt size
+                  field_value: Medium
+      tags:
+      - Candidates
+components:
+  schemas:
+    CandidateInterviewRead:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the candidate interview
+          format: int32
+        type:
+          $ref: '#/components/schemas/TableValueBase'
+        start_time:
+          type:
+          - string
+          - 'null'
+          description: The start time of the interview
+          format: date-time
+        end_time:
+          type:
+          - string
+          - 'null'
+          description: The end time of the interview
+          format: date-time
+        interviewer:
+          $ref: '#/components/schemas/UserBaseRead'
+        interviewer_other:
+          type:
+          - string
+          - 'null'
+          description: Information for non-user interviewer
+        accompanying_adults:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UserBaseRead'
+          description: An array of accompanying adult objects
+        rating:
+          type:
+          - integer
+          - 'null'
+          description: The rating of the interview
+          format: int32
+        is_rescheduled:
+          type:
+          - boolean
+          - 'null'
+          description: True if interview was rescheduled
+        did_not_show:
+          type:
+          - boolean
+          - 'null'
+          description: True if candidate did not show for interview
+        comment:
+          type:
+          - string
+          - 'null'
+          description: The comment for the interview
+      additionalProperties: false
+      description: An object with candidate interview information
+    Referral:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the referral table value
+          format: int32
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the referral
+        comment:
+          type:
+          - string
+          - 'null'
+          description: The comment for the referral
+      additionalProperties: false
+      description: An object with candidate referral information
+    UserBaseRead:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The user ID of the user
+          format: int32
+        prefix:
+          type:
+          - string
+          - 'null'
+          description: The prefix of the user
+        first_name:
+          type:
+          - string
+          - 'null'
+          description: The first name of the user
+        middle_name:
+          type:
+          - string
+          - 'null'
+          description: The middle name of the user
+        last_name:
+          type:
+          - string
+          - 'null'
+          description: The last name of the user
+        suffix:
+          type:
+          - string
+          - 'null'
+          description: The suffix of the user
+        preferred_name:
+          type:
+          - string
+          - 'null'
+          description: The preferred first name of the user
+        preferred_last_name:
+          type:
+          - string
+          - 'null'
+          description: The preferred last name of the user
+        maiden_name:
+          type:
+          - string
+          - 'null'
+          description: The former or maiden name of the user
+        email:
+          type:
+          - string
+          - 'null'
+          description: The email of the user
+      additionalProperties: false
+      description: User base model
+    SpecialConcerns:
+      type: object
+      properties:
+        has_special_concerns:
+          type:
+          - boolean
+          - 'null'
+          description: True if the candidate has special concerns
+        school_comment:
+          type:
+          - string
+          - 'null'
+          description: The school’s comment
+        candidate_comment:
+          type:
+          - string
+          - 'null'
+          description: The candidate’s comment
+      additionalProperties: false
+      description: An object with candidate special concern information
+    TableValueBase:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the table value
+          format: int32
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the table value
+      additionalProperties: false
+      description: 'Table value base model. Used for table entry fields (i.e. dropdown controls) to provide both ID and Description information for the selected value. General system tables can be retrieved by School API endpoints: GET Types table types and GET Types table values.'
+    EducationalSupport:
+      type: object
+      properties:
+        has_educational_support:
+          type:
+          - boolean
+          - 'null'
+          description: True if the candidate has educational support
+        documentational_url:
+          type:
+          - string
+          - 'null'
+          description: The url of the educational support document file
+        school_comment:
+          type:
+          - string
+          - 'null'
+          description: The school’s comment
+        candidate_comment:
+          type:
+          - string
+          - 'null'
+          description: The candidate’s comment
+      additionalProperties: false
+      description: An object with educational support information
+    Tutoring:
+      type: object
+      properties:
+        requires_tutoring:
+          type:
+          - boolean
+          - 'null'
+          description: True if the candidate requires tutoring
+        reason:
+          type:
+          - string
+          - 'null'
+          description: The reason the candidate requires tutoring
+      additionalProperties: false
+      description: An object with candidate tutoring information
+    CandidateVisitRead:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the candidate visit
+          format: int32
+        type:
+          $ref: '#/components/schemas/TableValueBase'
+        start_time:
+          type:
+          - string
+          - 'null'
+          description: The start time of the visit
+          format: date-time
+        end_time:
+          type:
+          - string
+          - 'null'
+          description: The end time of the visit
+          format: date-time
+        guide:
+          $ref: '#/components/schemas/UserBaseRead'
+        guide_other:
+          type:
+          - string
+          - 'null'
+          description: Information for non-user guide
+        accompanying_adults:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UserBaseRead'
+          description: An array of accompanying adult objects
+        is_rescheduled:
+          type:
+          - boolean
+          - 'null'
+          description: True if visit was rescheduled
+        did_not_show:
+          type:
+          - boolean
+          - 'null'
+          description: True if candidate did not show for visit
+        comment:
+          type:
+          - string
+          - 'null'
+          description: The comment for the visit
+      additionalProperties: false
+      description: An object with candidate visit information
+    TableValue:
+      type: object
+      properties:
+        abbreviation:
+          type:
+          - string
+          - 'null'
+          description: The abbreviation of the table value
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the table value
+          format: int32
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the table value
+      additionalProperties: false
+      description: 'Table value model. Used for table entry fields (i.e. dropdown controls) to provide both ID and Description information for the selected value. General system tables can be retrieved by School API endpoints: GET Types table types and GET Types table values.'
+    CreateCandidateRequest:
+      required:
+      - checklist_type
+      - entering_grade
+      - entering_year
+      - user_id
+      type: object
+      properties:
+        user_id:
+          type: integer
+          description: The ID of the user
+          format: int32
+        entering_year:
+          minLength: 1
+          type: string
+          description: The ID or description of the school year the candidate is entering.
+        entering_grade:
+          minLength: 1
+          type: string
+          description: The ID or description of the grade level the candidate is entering.
+        checklist_type:
+          type: integer
+          description: The ID of the checklist type assigned to the candidate
+          format: int32
+      additionalProperties: false
+      description: create candidate request model
+    DecisionResponse:
+      type: object
+      properties:
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the response
+        type:
+          $ref: '#/components/schemas/TableValueBase'
+      additionalProperties: false
+      description: An object with decision response information
+    CandidateInfo:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The user ID of the user
+          format: int32
+        first_name:
+          type:
+          - string
+          - 'null'
+          description: The first name of the user
+        last_name:
+          type:
+          - string
+          - 'null'
+          description: The last name of the user
+        middle_name:
+          type:
+          - string
+          - 'null'
+          description: The middle name of the user
+        preferred_name:
+          type:
+          - string
+          - 'null'
+          description: The preferred name of the user
+        prefix:
+          type:
+          - string
+          - 'null'
+          description: The prefix of the user
+        suffix:
+          type:
+          - string
+          - 'null'
+          description: The suffix of the user
+        email:
+          type:
+          - string
+          - 'null'
+          description: The email of the user
+        cc_email:
+          type:
+          - string
+          - 'null'
+          description: The copy email of the user
+        gender:
+          $ref: '#/components/schemas/TableValue'
+        pronouns:
+          $ref: '#/components/schemas/TableValueBase'
+        ethnicity:
+          $ref: '#/components/schemas/TableValueBase'
+        is_international:
+          type:
+          - boolean
+          - 'null'
+          description: True if the candidate is international
+        boarding_or_day:
+          type:
+          - string
+          - 'null'
+          description: The boarding/day status of the candidate. Returns B if boarding or D if day.
+        school_program:
+          $ref: '#/components/schemas/TableValueBase'
+        race:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/TableValueBase'
+          description: An array of objects for race information
+      additionalProperties: false
+      description: Candidate info model
+    SchoolInformation:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the school
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the school
+      additionalProperties: false
+      description: School informatoin
+    Inquiry:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the inquiry
+          format: int32
+        form:
+          $ref: '#/components/schemas/TableValueBase'
+        source:
+          $ref: '#/components/schemas/TableValueBase'
+        date_submitted:
+          type:
+          - string
+          - 'null'
+          description: The date the inquiry was submitted
+          format: date-time
+        date_processed:
+          type:
+          - string
+          - 'null'
+          description: The date the inquiry was processed
+          format: date-time
+      additionalProperties: false
+      description: An object with candidate inquiry information
+    CustomFieldText:
+      type: object
+      properties:
+        field_identifier:
+          type:
+          - string
+          - 'null'
+          description: 'Specifies the field. Uses the field identifier format: field_# (e.g. text_field_1 or text_field_7).'
+        field_name:
+          type:
+          - string
+          - 'null'
+          description: The user-defined name (e.g. Tee shirt size) for the custom field.
+        field_value:
+          type:
+          - string
+          - 'null'
+          description: The value to store in the specified field.
+      additionalProperties: false
+      description: An object with custom candidate field information
+    Status:
+      type: object
+      properties:
+        date:
+          type:
+          - string
+          - 'null'
+          description: The date changed of the current admissions status
+          format: date-time
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the admissions status
+          format: int32
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the admissions status
+      additionalProperties: false
+      description: Admissions Status
+    Application:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the application
+          format: int32
+        form:
+          $ref: '#/components/schemas/TableValueBase'
+        date_submitted:
+          type:
+          - string
+          - 'null'
+          description: The date the application was submitted
+          format: date-time
+        date_processed:
+          type:
+          - string
+          - 'null'
+          description: The date the application was processed
+          format: date-time
+      additionalProperties: false
+      description: An object for application information
+    CustomFieldDate:
+      type: object
+      properties:
+        field_identifier:
+          type:
+          - string
+          - 'null'
+          description: 'Specifies the field. Uses the field identifier format: date_field_# (e.g. date_field_1 or date_field_7).'
+        field_name:
+          type:
+          - string
+          - 'null'
+          description: The user-defined name (e.g. Tee shirt size) for the custom field.
+        field_value:
+          type:
+          - string
+          - 'null'
+          description: 'The value to store in the specified field. Must be a date. Use ISO-8601 date format: 2025-04-30'
+      additionalProperties: false
+      description: An object with custom candidate field information
+    Withdrawn:
+      type: object
+      properties:
+        has_withdrawn:
+          type:
+          - boolean
+          - 'null'
+          description: True if the candidate has withdrawn
+        school_comment:
+          type:
+          - string
+          - 'null'
+          description: The school’s comment
+        candidate_comment:
+          type:
+          - string
+          - 'null'
+          description: The candidate’s comment
+      additionalProperties: false
+      description: An object with candidate withdrawal information
+    V1Candidates-candidate_id-Patch200ApplicationJsonResponse:
+      type: integer
+      format: int32
+      x-apim-inline: true
+    CandidateChecklistBase:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The checklist id for the candidate that year
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The checklist name
+      additionalProperties: false
+      description: An object with checklist information
+    CustomFieldDefined:
+      type: object
+      properties:
+        field_identifier:
+          type:
+          - string
+          - 'null'
+          description: 'Specifies the field. Uses the field identifier format: defined_field_# (e.g. defined_field_1 or defined_field_7).'
+        field_name:
+          type:
+          - string
+          - 'null'
+          description: The user-defined name (e.g. Tee shirt size) for the custom field.
+        field_value:
+          type:
+          - string
+          - 'null'
+          description: The value to store in the specified field. Use the user-defined value (e.g. Extra-large)
+      additionalProperties: false
+      description: An object with custom candidate field information
+    CandidateReadCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items in the collection
+          format: int32
+          readOnly: true
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CandidateRead'
+          description: The set of items included in the response. This may be a subset of the items in the collection
+      additionalProperties: false
+      description: A Collection
+    SendingSchool:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The id of the candidate�s sending school
+          format: int32
+        school:
+          $ref: '#/components/schemas/SchoolInformation'
+        type:
+          $ref: '#/components/schemas/TableValueBase'
+        grade_level:
+          $ref: '#/components/schemas/TableValue'
+        date_from:
+          type:
+          - string
+          - 'null'
+          description: The date the candidate started at the school
+          format: date-time
+        date_to:
+          type:
+          - string
+          - 'null'
+          description: The date the candidate left the school
+          format: date-time
+      additionalProperties: false
+      description: Candidate sending school information
+    Decision:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the decision
+          format: int32
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the decision
+        type:
+          $ref: '#/components/schemas/TableValueBase'
+      additionalProperties: false
+      description: An object with decision information
+    CandidateUpdateRequest:
+      type: object
+      properties:
+        entering_year:
+          type:
+          - string
+          - 'null'
+          description: The ID or description of the school year the candidate is entering
+        entering_grade:
+          type:
+          - string
+          - 'null'
+          description: The ID or description of the grade level the candidate is entering
+        status:
+          type:
+          - string
+          - 'null'
+          description: 'The current status of the candidate. Allowed values: active, inactive. Defaults to active.'
+        inactive_status_reason:
+          type:
+          - string
+          - 'null'
+          description: The ID or description of inactive status reason
+        staff_id:
+          type:
+          - integer
+          - 'null'
+          description: The user ID of the admissions staff assigned to the candidate.
+          format: int32
+        consultants:
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+            format: int32
+          description: An array of consultant user IDs.
+        has_i20_form:
+          type:
+          - boolean
+          - 'null'
+          description: Set to true if the I-20 form has been received.
+        source:
+          type:
+          - string
+          - 'null'
+          description: The ID or description of the source of the inquiry.
+        referral:
+          type:
+          - string
+          - 'null'
+          description: The ID or description of the referral type (how hear).
+        referral_text:
+          type:
+          - string
+          - 'null'
+          description: The text for the referral (how hear text).
+        languages_at_home:
+          type:
+          - string
+          - 'null'
+          description: The languages spoken at home.
+        requested_financial_aid:
+          type:
+          - boolean
+          - 'null'
+          description: Set to true if the candidate requested financial aid.
+        has_iep:
+          type:
+          - boolean
+          - 'null'
+          description: Set to true if the candidate has an individual education plan
+        has504:
+          type:
+          - boolean
+          - 'null'
+          description: Set to true if the candidate has a 504 plan
+        has_private_evaluation:
+          type:
+          - boolean
+          - 'null'
+          description: Set to true if the candidate has a private evaluation
+        reapply:
+          $ref: '#/components/schemas/Reapply'
+        skipped_grade:
+          $ref: '#/components/schemas/SkippedGrade'
+        withdrawn:
+          $ref: '#/components/schemas/Withdrawn'
+        special_concerns:
+          $ref: '#/components/schemas/SpecialConcerns'
+        tutoring:
+          $ref: '#/components/schemas/Tutoring'
+        custom_fields_text:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CustomFieldText'
+          description: An array of custom field objects for text fields
+        custom_fields_date:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CustomFieldDate'
+          description: An array of custom field objects for date fields
+        custom_fields_defined:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CustomFieldDefined'
+          description: An array of custom field objects for defined value fields
+      additionalProperties: false
+      description: Candidate update model
+    Reapply:
+      type: object
+      properties:
+        has_previously_applied:
+          type:
+          - boolean
+          - 'null'
+          description: True if the candidate has previously applied
+        school_comment:
+          type:
+          - string
+          - 'null'
+          description: The school’s comment
+        candidate_comment:
+          type:
+          - string
+          - 'null'
+          description: The candidate’s comment
+      additionalProperties: false
+      description: An object with candidate reapply information
+    SkippedGrade:
+      type: object
+      properties:
+        has_skipped_grade:
+          type:
+          - boolean
+          - 'null'
+          description: True if the candidate has skipped a grade
+        school_comment:
+          type:
+          - string
+          - 'null'
+          description: The school’s comment
+        candidate_comment:
+          type:
+          - string
+          - 'null'
+          description: The candidate’s comment
+      additionalProperties: false
+      description: An object with candidate skipped grade information
+    V1CandidatesPost200ApplicationJsonResponse:
+      type: integer
+      format: int32
+      x-apim-inline: true
+    CandidateResponse:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the candidate�s response to the school decision
+          format: int32
+        response:
+          $ref: '#/components/schemas/DecisionResponse'
+        date:
+          type:
+          - string
+          - 'null'
+          description: The date of the candidate�s response
+          format: date-time
+        decline_reason:
+          $ref: '#/components/schemas/TableValueBase'
+        chosen_school:
+          $ref: '#/components/schemas/TableValueBase'
+      additionalProperties: false
+      description: An object with candidate response information
+    Relationship:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the user relationship
+          format: int32
+        type:
+          type:
+          - string
+          - 'null'
+          description: The relationship type
+        user:
+          $ref: '#/components/schemas/UserBaseRead'
+      additionalProperties: false
+      description: User relationship information
+    SchoolDecision:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the school�s decision for the candidate
+          format: int32
+        decision:
+          $ref: '#/components/schemas/Decision'
+        date:
+          type:
+          - string
+          - 'null'
+          description: The date of the school decision
+          format: date-time
+        publish_date:
+          type:
+          - string
+          - 'null'
+          description: The publish date of the school decision
+          format: date-time
+        expire_date:
+          type:
+          - string
+          - 'null'
+          description: The expiry date of the school decision
+          format: date-time
+        comment:
+          type:
+          - string
+          - 'null'
+          description: The comment on the school�s decision
+        candidate_response:
+          $ref: '#/components/schemas/CandidateResponse'
+      additionalProperties: false
+      description: An object with candidate school decision information
+    FamilyPhoto:
+      type: object
+      properties:
+        url:
+          type:
+          - string
+          - 'null'
+          description: The url of the photo
+        keep_private:
+          type:
+          - boolean
+          - 'null'
+          description: True if the photo should be kept private
+      additionalProperties: false
+      description: An object with candidate family photo information
+    CandidateEventRead:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the candidate event
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the event
+        type:
+          $ref: '#/components/schemas/TableValueBase'
+        start_time:
+          type:
+          - string
+          - 'null'
+          description: The start time of the event
+          format: date-time
+        is_registered:
+          type:
+          - boolean
+          - 'null'
+          description: True if the candidate is registered
+        attended:
+          type:
+          - boolean
+          - 'null'
+          description: True if the candidate attended the event
+        comment:
+          type:
+          - string
+          - 'null'
+          description: The comment on the candidate event
+      additionalProperties: false
+      description: An object with candidate event information
+    CandidateRead:
+      type: object
+      properties:
+        user:
+          $ref: '#/components/schemas/CandidateInfo'
+        entering_year:
+          $ref: '#/components/schemas/TableValueBase'
+        entering_grade:
+          $ref: '#/components/schemas/TableValue'
+        role:
+          $ref: '#/components/schemas/TableValueBase'
+        candidate_status:
+          type:
+          - string
+          - 'null'
+          description: The candidate status for the entering year
+        status:
+          $ref: '#/components/schemas/Status'
+        school_decision:
+          $ref: '#/components/schemas/SchoolDecision'
+        family_photo:
+          $ref: '#/components/schemas/FamilyPhoto'
+        inquiry:
+          $ref: '#/components/schemas/Inquiry'
+        referral:
+          $ref: '#/components/schemas/Referral'
+        has_i20_form:
+          type:
+          - boolean
+          - 'null'
+          description: True if the candidate has an I-20 form
+        languages_at_home:
+          type:
+          - string
+          - 'null'
+          description: The language spoken at the candidate�s home
+        requested_financial_aid:
+          type:
+          - boolean
+          - 'null'
+          description: True if the candidate requested financial aid
+        has_iep:
+          type:
+          - boolean
+          - 'null'
+          description: True if the candidate has an individual education plan
+        has_504_plan:
+          type:
+          - boolean
+          - 'null'
+          description: True if the candidate has a 504 plan
+        has_private_evaluation:
+          type:
+          - boolean
+          - 'null'
+          description: True if the candidate has a private evaluation
+        bbtm_family_id:
+          type:
+          - integer
+          - 'null'
+          description: The BBTM family ID of the candidate
+          format: int32
+        created_by:
+          type:
+          - string
+          - 'null'
+          description: Candidate created by
+        created:
+          type:
+          - string
+          - 'null'
+          description: Candidate creation date
+          format: date-time
+        modified_by:
+          type:
+          - string
+          - 'null'
+          description: User modified candidate information or checklist status or user information
+        modified:
+          type:
+          - string
+          - 'null'
+          description: The timestamp of the latest change from candidate information or checklist status or user information
+          format: date-time
+        reapply:
+          $ref: '#/components/schemas/Reapply'
+        skipped_grade:
+          $ref: '#/components/schemas/SkippedGrade'
+        withdrawn:
+          $ref: '#/components/schemas/Withdrawn'
+        special_concerns:
+          $ref: '#/components/schemas/SpecialConcerns'
+        educational_support:
+          $ref: '#/components/schemas/EducationalSupport'
+        tutoring:
+          $ref: '#/components/schemas/Tutoring'
+        application:
+          $ref: '#/components/schemas/Application'
+        relationships:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Relationship'
+          description: An array of user relationship objects for the candidate
+        admissions_staff:
+          $ref: '#/components/schemas/UserBaseRead'
+        consultant:
+          $ref: '#/components/schemas/UserBaseRead'
+        sending_school:
+          $ref: '#/components/schemas/SendingSchool'
+        events:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CandidateEventRead'
+          description: An array of candidate event objects
+        interviews:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CandidateInterviewRead'
+          description: An array of candidate interview objects
+        visits:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CandidateVisitRead'
+          description: An array of candidate visit objects
+        candidate_checklist:
+          $ref: '#/components/schemas/CandidateChecklistBase'
+        custom_fields_text:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CustomFieldText'
+          description: An array of custom field objects for text fields
+        custom_fields_date:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CustomFieldDate'
+          description: An array of custom field objects for date fields
+        custom_fields_defined:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CustomFieldDefined'
+          description: An array of custom field objects for defined value fields
+      additionalProperties: false
+      description: Candidate read model
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

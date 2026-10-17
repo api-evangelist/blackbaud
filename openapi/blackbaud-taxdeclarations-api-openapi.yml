@@ -1,0 +1,612 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Gift Aid Taxdeclarations API'
+  description: This API manages gift aid information.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/gar-gfacr
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/gar-gfacr
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Taxdeclarations
+paths:
+  /v1/taxdeclarations/constituents/{constituent_id}:
+    post:
+      operationId: CreateTaxDeclaration
+      summary: Add constituent tax declaration
+      description: Add tax declaration
+      parameters:
+      - name: constituent_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The immutable system record ID.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaxDeclarationAdd'
+            example:
+              constituent_pays_tax: 'Yes'
+              declaration_made_date: '2000-04-06'
+              confirmation_sent_date: '2000-04-07'
+              confirmation_returned_date: '2000-04-07'
+              tax_notes: sample tax notes
+              declaration_end_date: '2000-04-07'
+              declaration_start_date: '2000-04-06'
+              declaration_indicator:
+                table_entries_id: 1077
+                long_description: Oral
+              scanned_docs_exist: false
+              tax_payer_status:
+                table_entries_id: 1069
+                long_description: Employee
+              declaration_source:
+                table_entries_id: 1088
+                long_description: back office
+        description: Tax declaration
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the new tax declaration ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse'
+              example:
+                id: '120'
+        '401':
+          description: Returned when the user does not have permission to execute this operation.
+        '403':
+          description: Returned when the constituent add tax declaration capability is not enabled.
+        '404':
+          description: Returned when the specified constituent is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: urn:blackbaud:resource-not-found
+                title: The requested resource could not be found.
+                status: 404
+      tags:
+      - Taxdeclarations
+    get:
+      operationId: GetTaxDeclarationListByConstituentId
+      summary: Get tax declarations for constituent
+      description: Returned tax declarations by constituent ID
+      parameters:
+      - name: constituent_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The immutable system record ID.
+      - name: sort_direction
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - Ascending
+          - Descending
+        description: Use 'asc' or 'dsc' to arrange a grid, list, or repeater in ascending or descending order based on the passed value for sorting.
+      - name: sort_by
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - StartDate
+          - MadeDate
+        description: Order By clause for sorting operations.
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: '500'
+        description: Represents the number of records to return. The default is 500.
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: '0'
+        description: Represents the number of records to skip. For use with pagination.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains tax declarations.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaxDeclarationCollection'
+              example:
+                tax_declarations:
+                - declaration_id: '1'
+                  sequence: 1
+                  constituent_id: '2'
+                  constituent_pays_tax: 'Yes'
+                  declaration_made_date: '2000-04-06'
+                  confirmation_sent_date: '2000-04-07'
+                  confirmation_returned_date: '2000-04-07'
+                  tax_notes: Tax notes
+                  declaration_end_date: '2000-04-07'
+                  declaration_start_date: '2000-04-06'
+                  tax_payer_status: 1069
+                  declaration_indicator: 1077
+                  scanned_docs_exist: true
+                  declaration_source: 1088
+                  declaration_source_text: back office
+                  declaration_indicator_text: Oral
+                  tax_payer_status_text: employee
+                count: 1
+                offset: 0
+                limit: 0
+        '401':
+          description: Returned when the user does not have permission to execute this operation or does not have permission to view the requested constituents tax declarations list.
+        '403':
+          description: Returned when the user does not have permission to view constituent.
+        '400':
+          description: Returned when the specified constituent ID in the request URL is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/BadRequest400ResponseTypes'
+              example:
+                type: urn:blackbaud:model-validation-error
+                title: One or more validation errors occurred.
+                status: 400
+                detail: Field is required
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '404':
+          description: Returned when the specified constituent is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: urn:blackbaud:resource-not-found
+                title: The requested resource could not be found.
+                status: 404
+      tags:
+      - Taxdeclarations
+  /v1/taxdeclarations/{declaration_id}:
+    delete:
+      operationId: DeleteTaxDeclaration
+      summary: Deletes a constituent tax declaration
+      parameters:
+      - name: declaration_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The immutable system tax declaration ID.
+      responses:
+        '200':
+          description: Returned when the operation successfully deletes the tax declaration.
+        '401':
+          description: Returned when the user does not have permission to execute this operation or does not have permission to delete the requested constituents tax declaration.
+        '403':
+          description: Returned when the user does not have permission to delete constituent.
+        '404':
+          description: Returned when the specified tax declaration is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: urn:blackbaud:resource-not-found
+                title: The requested resource could not be found.
+                status: 404
+      tags:
+      - Taxdeclarations
+    patch:
+      operationId: EditTaxDeclarationAsync
+      summary: Update constituent tax declaration
+      description: Update tax declaration
+      parameters:
+      - name: declaration_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The immutable system ID of the tax declaration to edit.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaxDeclarationUpdate'
+            example:
+              constituent_pays_tax: 'Yes'
+              declaration_made_date: '2000-04-06'
+              confirmation_sent_date: '2000-04-07'
+              confirmation_returned_date: '2000-04-07'
+              tax_notes: sample tax notes
+              declaration_end_date: '2000-04-07'
+              declaration_start_date: '2000-04-06'
+              declaration_indicator:
+                table_entries_id: 1077
+                long_description: Oral
+              scanned_docs_exist: false
+              tax_payer_status:
+                table_entries_id: 1069
+                long_description: Employee
+              declaration_source:
+                table_entries_id: 1088
+                long_description: back office
+        description: An object that represents the properties of the tax declaration to edit
+      responses:
+        '200':
+          description: Returned when the operation succeeds.
+        '401':
+          description: Returned when the user does not have permission to execute this operation.
+        '403':
+          description: Returned when the constituent add tax declaration capability is not enabled.
+        '404':
+          description: Returned when the specified tax declaration is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: urn:blackbaud:resource-not-found
+                title: The requested resource could not be found.
+                status: 404
+      tags:
+      - Taxdeclarations
+components:
+  schemas:
+    TaxDeclarationCollection:
+      required:
+      - limit
+      - offset
+      type: object
+      properties:
+        tax_declarations:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/TaxDeclaration'
+          description: The list of tax declaration.
+        count:
+          type: integer
+          description: The total count of items.
+          format: int32
+        offset:
+          type: integer
+          description: The offset value used for pagination or positioning within a collection.
+          format: int32
+        limit:
+          type: integer
+          description: The limit representing the maximum number of items to retrieve or display.
+          format: int32
+      additionalProperties: false
+      description: Tax declaration collection
+      x-bb-suppressions:
+      - list_operation_pagination_style
+    TaxDeclaration:
+      type: object
+      properties:
+        declaration_id:
+          type:
+          - string
+          - 'null'
+          description: The immutable system record ID of the tax declaration.
+        sequence:
+          type:
+          - integer
+          - 'null'
+          description: The sequence number of the tax declaration.
+          format: int32
+        constituent_id:
+          type:
+          - string
+          - 'null'
+          description: The constituent ID of the individual.
+        constituent_pays_tax:
+          $ref: '#/components/schemas/ConstituentPayTax'
+        declaration_made_date:
+          type:
+          - string
+          - 'null'
+          description: The specific date by which declaration was made.
+          format: date
+        confirmation_sent_date:
+          type:
+          - string
+          - 'null'
+          description: The specific date by which a confirmation is sent.
+          format: date
+        confirmation_returned_date:
+          type:
+          - string
+          - 'null'
+          description: The specific date by which a confirmation is returned.
+          format: date
+        tax_notes:
+          type:
+          - string
+          - 'null'
+          description: Refers to any Comments on tax declaration.
+        declaration_end_date:
+          type:
+          - string
+          - 'null'
+          description: The specific date by which a declaration is end.
+          format: date
+        declaration_start_date:
+          type:
+          - string
+          - 'null'
+          description: The specific date by which a declaration is start.
+          format: date
+        tax_payer_status:
+          type:
+          - integer
+          - 'null'
+          description: Indicates the status of the tax payer.
+          format: int32
+        declaration_indicator:
+          type:
+          - integer
+          - 'null'
+          description: Indicates the tax declaration.
+          format: int32
+        scanned_docs_exist:
+          type: boolean
+          description: Indicates whether scanned documents exist or not.
+        declaration_source:
+          type:
+          - integer
+          - 'null'
+          description: Source from which the declaration was received.
+          format: int32
+        declaration_source_text:
+          type:
+          - string
+          - 'null'
+          description: Text that refers source from which the declaration was received.
+        declaration_indicator_text:
+          type:
+          - string
+          - 'null'
+          description: Text that shows whether a declaration has been made or is required.
+        tax_payer_status_text:
+          type:
+          - string
+          - 'null'
+          description: Text that indicates the status of the tax payer.
+      additionalProperties: false
+      description: Tax declaration list model
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".
+        title:
+          type:
+          - string
+          - 'null'
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type:
+          - integer
+          - 'null'
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: {}
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+    CodeTableEntry:
+      type: object
+      properties:
+        table_entries_id:
+          type:
+          - integer
+          - 'null'
+          description: The table entry ID
+          format: int32
+        long_description:
+          type:
+          - string
+          - 'null'
+          description: The long description.
+      additionalProperties: false
+      description: Code table entry
+    TaxDeclarationUpdate:
+      required:
+      - declaration_made_date
+      - declaration_start_date
+      type: object
+      properties:
+        constituent_pays_tax:
+          $ref: '#/components/schemas/ConstituentPayTax'
+        declaration_made_date:
+          type: string
+          description: The specific date by which declaration was made.
+          format: date
+        confirmation_sent_date:
+          type:
+          - string
+          - 'null'
+          description: The specific date by which a confirmation is sent.
+          format: date
+        confirmation_returned_date:
+          type:
+          - string
+          - 'null'
+          description: The specific date by which a confirmation is returned.
+          format: date
+        tax_notes:
+          maxLength: 255
+          type:
+          - string
+          - 'null'
+          description: Refers to any Comments on tax declaration.
+        declaration_end_date:
+          type:
+          - string
+          - 'null'
+          description: The specific date by which a declaration is end.
+          format: date
+        declaration_start_date:
+          type: string
+          description: The specific date by which a declaration is start.
+          format: date
+        declaration_indicator:
+          $ref: '#/components/schemas/CodeTableEntry'
+        scanned_docs_exist:
+          type: boolean
+          description: Indicates whether scanned documents exist or not.
+        tax_payer_status:
+          $ref: '#/components/schemas/CodeTableEntry'
+        declaration_source:
+          $ref: '#/components/schemas/CodeTableEntry'
+      additionalProperties: false
+      description: Tax declaration edit model
+    BadRequest400ResponseTypes:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".<br/><br/>Available values:<table><tr><th>type</th><th>detail</th></tr><tr><td>urn:blackbaud:model-validation-error</td><td>A model validation rule was violated, such as a missing required field.</td></tr><tr><td>urn:blackbaud:invalid-value</td><td>'{0}' is not a valid value for {1}.</td></tr></table>
+        title:
+          type:
+          - string
+          - 'null'
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type:
+          - integer
+          - 'null'
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: {}
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-bb-error-types:
+      - urn:blackbaud:model-validation-error
+      - urn:blackbaud:invalid-value
+    ConstituentPayTax:
+      enum:
+      - 'No'
+      - 'Yes'
+      - Unknown
+      type: string
+      description: <p>Members:</p><ul><li><i>No</i></li><li><i>Yes</i></li><li><i>Unknown</i></li></ul>
+    TaxDeclarationAdd:
+      required:
+      - declaration_made_date
+      - declaration_start_date
+      type: object
+      properties:
+        constituent_pays_tax:
+          $ref: '#/components/schemas/ConstituentPayTax'
+        declaration_made_date:
+          type: string
+          description: The specific date by which declaration was made.
+          format: date
+        confirmation_sent_date:
+          type:
+          - string
+          - 'null'
+          description: The specific date by which a confirmation is sent.
+          format: date
+        confirmation_returned_date:
+          type:
+          - string
+          - 'null'
+          description: The specific date by which a confirmation is returned.
+          format: date
+        tax_notes:
+          maxLength: 255
+          type:
+          - string
+          - 'null'
+          description: Refers to Comments on tax declaration.
+        declaration_end_date:
+          type:
+          - string
+          - 'null'
+          description: The specific date by which a declaration is end.
+          format: date
+        declaration_start_date:
+          type: string
+          description: The specific date by which a declaration is start.
+          format: date
+        declaration_indicator:
+          $ref: '#/components/schemas/CodeTableEntry'
+        scanned_docs_exist:
+          type: boolean
+          description: Indicates whether scanned documents exist or not.
+        tax_payer_status:
+          $ref: '#/components/schemas/CodeTableEntry'
+        declaration_source:
+          $ref: '#/components/schemas/CodeTableEntry'
+      additionalProperties: false
+      description: Tax declaration create model
+    PostResponse:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: The ID field.
+      additionalProperties: false
+      description: Post Api response model
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

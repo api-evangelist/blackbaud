@@ -1,0 +1,496 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: School Attendance API'
+  description: This API is used to provide access to school information such as users, academics, admissions, athletics, content, lists, and general school info.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/school
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/school
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Attendance
+paths:
+  /v1/attendance:
+    get:
+      operationId: V1AttendanceGet
+      summary: Attendance record
+      description: 'Returns a collection of student attendance records for the specified day.
+
+
+        Please use this Attendance Setup Guide to verify your attendance settings.
+
+
+        Requires the following role in the Education Management system:
+
+
+        Attendance Manager'
+      parameters:
+      - name: level_id
+        in: query
+        required: true
+        schema:
+          type: integer
+        description: The ID of the school level to retrieve attendance records.
+      - name: day
+        in: query
+        required: true
+        schema:
+          type: string
+        description: The date to return attendance for.
+      - name: offering_type
+        in: query
+        required: true
+        schema:
+          type: integer
+        description: The offering type to retrieve records for.
+      - name: excuse_type
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Filters results to a specific excuse type.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AttendanceGetCollection'
+              example:
+                count: 2
+                value:
+                - id: 3520290
+                  attendance_of_record: true
+                  attendance_type: false
+                  block_name: A
+                  comment: Field Trip
+                  date: '2018-08-30T12:00:00Z'
+                  excuse_category_description: Field Trip Category
+                  excuse_category_id: 0
+                  excuse_description: Field Trip
+                  excuse_type_id: 396
+                  excused: 1
+                  grad_year: '2013'
+                  grade: '12'
+                  grade_level_sort: 1200
+                  group_name: Sculture - 1 (A)
+                  photo_file_name: thumb_user2845263_109153.jpg
+                  section: '1'
+                  section_id: 1300129
+                  student_name: Arai, Emilia '13
+                  student_user_id: 2845263
+                  teacher_name: Viens, George
+                - id: 3520291
+                  attendance_of_record: true
+                  attendance_type: false
+                  block_name: E
+                  comment: Field Trip
+                  date: '2018-08-30T12:00:00Z'
+                  excuse_category_description: Field Trip Category
+                  excuse_category_id: 0
+                  excuse_description: Field Trip
+                  excuse_type_id: 396
+                  excused: 1
+                  grad_year: '2013'
+                  grade: '11'
+                  grade_level_sort: 1100
+                  group_name: Latin III - 1 (E)
+                  photo_file_name: thumb_user2845263_109162.jpg
+                  section: '1'
+                  section_id: 1300129
+                  student_name: Smith, Ian
+                  student_user_id: 2845263
+                  teacher_name: Sapsin, Flora
+      tags:
+      - Attendance
+    post:
+      operationId: V1AttendancePost
+      summary: Attendance record create
+      description: 'Creates a new attendance record for the specified student.
+
+
+        Please use this Attendance Setup Guide to verify your attendance settings.
+
+
+        Requires the following role in the Education Management system:
+
+
+        Attendance Manager'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AttendanceCreate'
+            example:
+              student_user_id: 10
+              begin_date: '2021-09-30T12:00:00Z'
+              end_date: '2021-09-30T12:00:00Z'
+              start_time: '2026-10-06'
+              end_time: '2026-10-06'
+              excuse_type_id: 153
+              excuse_comment: College Trip
+              reported_by: 11
+        description: Information about the attendance report
+      responses:
+        '200':
+          description: OK
+      tags:
+      - Attendance
+  /v1/attendance/attendancetaken:
+    patch:
+      operationId: V1AttendanceAttendancetakenPatch
+      summary: Attendance section attendance taken update
+      description: 'Updates the attendance taken status for all meetings on the date specified, up to the current time. This action has no affect on future dates.
+
+
+        Please use this Attendance Setup Guide to verify your attendance settings.
+
+
+        Requires the following role in the Education Management system:
+
+
+        Attendance Manager'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AttendanceTakenRequest'
+            example:
+              date: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1AttendanceAttendancetakenPatch200ApplicationJsonResponse'
+              example:
+                count: 2
+                value:
+                - section_id: 1300128
+                  meeting_start_time: '2025-03-18T12:00:00Z'
+                - section_id: 1300129
+                  meeting_start_time: '2025-03-18T12:00:00Z'
+      tags:
+      - Attendance
+  /v1/attendance/sections/{section_id}/attendance:
+    post:
+      operationId: V1AttendanceSectionsBySection_idAttendancePost
+      summary: Attendance by section update
+      description: 'Updates student attendance records for a specified section (academic, advisory, activity or athletic).
+
+
+        Will mark the section as ''attendance taken'' for the meeting.
+
+
+        Students with no data will be considered present.
+
+
+        To remove any existing attendance for a student, an explicit Present code must be included.
+
+
+        Please use this Attendance Setup Guide to verify your attendance settings.
+
+
+        Requires the following role in the Education Management system:
+
+
+        Attendance Manager'
+      parameters:
+      - name: section_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The ID of the section
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SectionAttendanceCreate'
+            example:
+              meeting_start_time: '2021-09-30T02:20:00Z'
+              mark_class_canceled: false
+              reported_by: 11
+              student_attendances:
+              - student_user_id: 10
+                excuse_type_id: 153
+                comment: College Trip
+      responses:
+        '200':
+          description: OK
+      tags:
+      - Attendance
+components:
+  schemas:
+    AttendanceTaken:
+      type: object
+      properties:
+        section_id:
+          type:
+          - integer
+          - 'null'
+          description: ''
+          format: int32
+        meeting_start_time:
+          type:
+          - string
+          - 'null'
+          description: ''
+          format: date-time
+      additionalProperties: false
+      description: ''
+    StudentAttendance:
+      type: object
+      properties:
+        student_user_id:
+          type:
+          - integer
+          - 'null'
+          description: The user ID of the student.
+          format: int32
+        excuse_type_id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the excuse type (reason).
+          format: int32
+        comment:
+          type:
+          - string
+          - 'null'
+          description: The comment for the attendance entry
+      additionalProperties: false
+      description: ''
+    SectionAttendanceCreate:
+      required:
+      - meeting_start_time
+      type: object
+      properties:
+        meeting_start_time:
+          type: string
+          description: 'The date and time of the start of the meeting. Use ISO-8601 date-time format: 2022-08-31T08:20:00.'
+          format: date-time
+        mark_class_canceled:
+          type: boolean
+          description: Set to true to mark the class as canceled. Defaults to false.
+        reported_by:
+          type:
+          - integer
+          - 'null'
+          description: The user ID of who reported the attendance. User must be allowed to record attendance. Defaults to calling user if omitted.
+          format: int32
+        student_attendances:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/StudentAttendance'
+          description: An array of student attendance objects.
+      additionalProperties: false
+      description: ''
+    AttendanceTakenRequest:
+      type: object
+      properties:
+        date:
+          type:
+          - string
+          - 'null'
+          description: 'The date of the meetings to mark as attendance taken. Defaults to the current date. Use ISO-8601 date format: 2022-08-31.'
+          format: date-time
+      additionalProperties: false
+      description: ''
+    AttendanceGet:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the attendance
+          format: int64
+        attendance_of_record:
+          type: boolean
+          description: Attendance of record
+        attendance_type:
+          type: boolean
+          description: True if the attendance entry is future attendance. This is not the type field shown in the UI for tardy/absent - that value is part of the reason/excuse type and is returned by <a href="https://developer.sky.blackbaud.com/api#api=school&operation=V1TypesExcusedtypesGet" target="_blank">Types excused types</a>.
+        block_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the block
+        comment:
+          type:
+          - string
+          - 'null'
+          description: Attendance record comment
+        date:
+          type:
+          - string
+          - 'null'
+          description: 'The date of the attendance record. Uses <a href="https://tools.ietf.org/html/rfc3339" target="_blank">ISO-8601</a> (24H) format: 2003-04-21T10:29:43'
+          format: date-time
+        excuse_category_description:
+          type:
+          - string
+          - 'null'
+          description: The category description of the excuse
+        excuse_category_id:
+          type: integer
+          description: The category of the excuse
+          format: int32
+        excuse_description:
+          type:
+          - string
+          - 'null'
+          description: The description of the excuse
+        excuse_type_id:
+          type: integer
+          description: The type of the excuse
+          format: int32
+        excused:
+          type: integer
+          description: Whether the absence was excused
+          format: int32
+        grad_year:
+          type:
+          - string
+          - 'null'
+          description: The graduation year of the student
+        grade:
+          type:
+          - string
+          - 'null'
+          description: The grade of the student
+        grade_level_sort:
+          type: integer
+          description: Grade level sort order
+          format: int32
+        group_name:
+          type:
+          - string
+          - 'null'
+          description: The group name
+        photo_file_name:
+          type:
+          - string
+          - 'null'
+          description: The phone file name
+        section:
+          type:
+          - string
+          - 'null'
+          description: The section
+        section_id:
+          type: integer
+          description: The ID of the section
+          format: int32
+        student_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the student
+        student_user_id:
+          type: integer
+          description: The student user ID
+          format: int32
+        teacher_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the teacher
+      additionalProperties: false
+      description: Attendance Model
+    AttendanceCreate:
+      type: object
+      properties:
+        student_user_id:
+          type:
+          - integer
+          - 'null'
+          description: ID of the student
+          format: int32
+        begin_date:
+          type:
+          - string
+          - 'null'
+          description: Start date of the Attendance report. The timestamp is required, but only the date portion is used. To specify a specific start time, use the start_time field.
+          format: date-time
+        end_date:
+          type:
+          - string
+          - 'null'
+          description: End date of the Attendance report. The timestamp is required, but only the date portion is used. To specific a specific end time, use the end_time field.
+          format: date-time
+        start_time:
+          type:
+          - string
+          - 'null'
+          description: Start time of the Attendance report. If blank, will default to the beginning of the day ("00:00:00").
+        end_time:
+          type:
+          - string
+          - 'null'
+          description: End time of the Attendance report. If blank, will default to the end of the day ("23:59:00").
+        excuse_type_id:
+          type:
+          - integer
+          - 'null'
+          description: ID of the attendace execuse
+          format: int32
+        excuse_comment:
+          type:
+          - string
+          - 'null'
+          description: Description of the attendance report
+        reported_by:
+          type:
+          - integer
+          - 'null'
+          description: The user reporting the attendance. Defaults to user calling endpoint.
+          format: int32
+      additionalProperties: false
+      description: ''
+    V1AttendanceAttendancetakenPatch200ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/AttendanceTaken'
+      x-apim-inline: true
+    AttendanceGetCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items in the collection
+          format: int32
+          readOnly: true
+        next_link:
+          type:
+          - string
+          - 'null'
+          description: For paginated responses, the URI for the next page of results
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/AttendanceGet'
+          description: The set of items included in the response. This may be a subset of the items in the collection
+      additionalProperties: false
+      description: A Collection
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

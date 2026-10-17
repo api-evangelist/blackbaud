@@ -1,0 +1,202 @@
+openapi: 3.2.0
+info:
+  title: Blackbaud Mergetwoconstituents API
+  version: '1.0'
+  x-refined-note:
+  - x-apievangelist-provenance differs across the merged source definitions and was not carried
+  description: 'Operations tagged Mergetwoconstituents across 2 of this provider''s published API definitions: blackbaud-altru-constituent-api-openapi.yml, blackbaud-crm-constituent-api-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.sky.blackbaud.com/alt-conmg
+- url: https://api.sky.blackbaud.com/crm-conmg
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Mergetwoconstituents
+paths:
+  /mergetwoconstituents:
+    post:
+      operationId: CreateMergeTwoConstituents
+      summary: Create merge two constituents
+      description: This operation lets the user merge two selected constituent records.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewConstituentMerge'
+            example:
+              source_id: ''
+              target_id: ''
+              config: ''
+              delete_source: false
+              constituent_inactivity_reason_code: ''
+              constituent_inactivity_details: ''
+              delete_source_constituent: Delete source constituent
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully creates the resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to create the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Mergetwoconstituents
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-conmg
+components:
+  schemas:
+    NewConstituentMerge:
+      required:
+      - source_id
+      - target_id
+      - config
+      - delete_source
+      - delete_source_constituent
+      type: object
+      properties:
+        source_id:
+          type: string
+          description: The the constituent whose data will be merged into the target constituent..
+        target_id:
+          type: string
+          description: The the constituent record that will represent the consolidated view of the constituent's data after the merge has completed..
+        config:
+          type: string
+          description: The the merge configuration that will be used to merge the two constituents.. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/c18b465c-c012-4839-952b-4bb8aae7cb3f.
+        delete_source:
+          type: boolean
+          description: Indicates whether if true then the source constituent will be deleted after the merge operation is complete..
+        constituent_inactivity_reason_code:
+          type: string
+          description: The inactive reason. This simple list can be queried at https://api.sky.blackbaud.com/alt-adnmg/simplelists/71b29b04-d70f-4d38-bab1-e44a2528d0e8.
+        constituent_inactivity_details:
+          maxLength: 300
+          minLength: 0
+          type: string
+          description: The inactive details.
+        delete_source_constituent:
+          type: string
+          description: The delete source constituent. Available values are <i>delete source constituent</i>, <i>mark source constituent inactive</i>
+      additionalProperties: false
+      description: CreateMergeTwoConstituents
+      example:
+        source_id: ''
+        target_id: ''
+        config: ''
+        delete_source: false
+        constituent_inactivity_reason_code: ''
+        constituent_inactivity_details: ''
+        delete_source_constituent: Delete source constituent
+      x-display-name: Merge Two Constituents Add Form
+      x-display-id: Merge Two Constituents Add Form
+    PostResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The newly created ID.
+      additionalProperties: false
+      description: Defines the shape of a post response object.
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type: integer
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type: string
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: false
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-display-name: Problem details
+      x-display-id: ProblemDetails
+    NewConstituentMerge_2:
+      required:
+      - source_id
+      - target_id
+      - config
+      - delete_source
+      - delete_source_constituent
+      type: object
+      properties:
+        source_id:
+          type: string
+          description: The the constituent whose data will be merged into the target constituent..
+        target_id:
+          type: string
+          description: The the constituent record that will represent the consolidated view of the constituent's data after the merge has completed..
+        config:
+          type: string
+          description: The the merge configuration that will be used to merge the two constituents.. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/c18b465c-c012-4839-952b-4bb8aae7cb3f.
+        delete_source:
+          type: boolean
+          description: Indicates whether if true then the source constituent will be deleted after the merge operation is complete..
+        constituent_inactivity_reason_code:
+          type: string
+          description: The inactive reason. This simple list can be queried at https://api.sky.blackbaud.com/crm-adnmg/simplelists/71b29b04-d70f-4d38-bab1-e44a2528d0e8.
+        constituent_inactivity_details:
+          maxLength: 300
+          minLength: 0
+          type: string
+          description: The inactive details.
+        delete_source_constituent:
+          type: string
+          description: The delete source constituent. Available values are <i>delete source constituent</i>, <i>mark source constituent inactive</i>
+      additionalProperties: false
+      description: CreateMergeTwoConstituents
+      example:
+        source_id: ''
+        target_id: ''
+        config: ''
+        delete_source: false
+        constituent_inactivity_reason_code: ''
+        constituent_inactivity_details: ''
+        delete_source_constituent: Delete source constituent
+      x-display-name: Merge Two Constituents Add Form
+      x-display-id: Merge Two Constituents Add Form
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+x-refined-from:
+- blackbaud-altru-constituent-api-openapi.yml
+- blackbaud-crm-constituent-api-openapi.yml

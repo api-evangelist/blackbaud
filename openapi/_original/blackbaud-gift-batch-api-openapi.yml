@@ -1,0 +1,376 @@
+# x-archived-from: blackbaud-gift-batch-api-openapi.yml
+# x-archived-on: 2026-10-16
+openapi: 3.0.1
+info:
+  title: 'Blackbaud SKY API: Gift Batch'
+  description: This API manages gift batch information.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/gift-batch
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations,
+      examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/gift-batch
+paths:
+  /v1/giftbatches:
+    post:
+      operationId: CreateGiftBatch
+      summary: Create gift batch
+      description: Creates a gift batch.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateBatch'
+            example:
+              batch_description: description
+              batch_number: '1'
+              expected_batch_total: 22.5
+              expected_number: 3
+        description: An object that represents the gift batch to create.
+      responses:
+        '200':
+          description: Returned when the operation successfully creates a gift batch. The response body contains the ID of
+            the new batch.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreatedBatch'
+              example:
+                batch_id: '120'
+        '403':
+          description: Returned when the user does not have permission to create the gift batch.
+        '400':
+          description: Returned when the specified request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponseProblemDetails'
+              example:
+                type: urn:blackbaud:model-validation-error
+                title: One or more validation errors occurred.
+                status: 400
+                detail: The date field is required.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+    get:
+      operationId: ListGiftBatches
+      summary: List gift batches
+      description: Returns a list of gift batches.
+      parameters:
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: '500'
+        description: Represents the number of records to return.
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Represents the number of records to skip. For use with pagination.
+      - name: added_by
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Represents a filter for gift batches created by the specified user.
+      - name: search_text
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Represents a filter for text included in the batch_description or batch_number fields
+      - name: approved
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: Represents a filter for the status of the gift batch.
+      - name: has_exceptions
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: Represents a filter for whether the gift batch contains exceptions.
+      - name: batch_number
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Represents a filter for results that match the specified number.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of gift batches.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GiftBatchCollection'
+              example:
+                count: 2
+                giftbatches:
+                - id: '101'
+                  actual_amount: 100
+                  batch_description: Approved batch text
+                  batch_number: GFT-100
+                  added_by: Utena Tenjou
+                  date_added: '2021-09-01T12:25:00Z'
+                  has_exceptions: false
+                  approved: true
+                  number_of_gifts: 10
+                - id: '102'
+                  actual_amount: 200
+                  batch_description: Approved batch text
+                  batch_number: GFT-101
+                  added_by: Utena Tenjou
+                  date_added: '2021-09-02T12:25:00Z'
+                  has_exceptions: false
+                  approved: true
+                  number_of_gifts: 20
+                limit: 0
+                offset: 0
+        '403':
+          description: Returned when the user does not have rights to view the set of gift batches.
+  /v1/giftbatches/{batch_id}:
+    delete:
+      operationId: DeleteBatch
+      summary: Delete gift batch
+      description: Deletes a gift batch.
+      parameters:
+      - name: batch_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The immutable system record ID of the gift batch to delete.
+      responses:
+        '200':
+          description: Returned when the operation successfully deletes the gift batch.
+        '400':
+          description: Returned when the batch is approved or if the batch contains gifts with processed credit card or direct
+            debit payments.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponseProblemDetails'
+              example:
+                type: urn:blackbaud:model-validation-error
+                title: One or more validation errors occurred.
+                status: 400
+                detail: The date field is required.
+                trace_id: 0092384aa2c24842a550a0137bbf3172
+                span_id: f7c9d108335d479588f5f165ca17a5e3
+        '403':
+          description: Returned when the user does not have the right to delete a gift batch.
+components:
+  schemas:
+    BadRequestResponseProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when
+            dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]).
+            When this member is not present, its value is assumed to be "about:blank".<br/><br/>Available values:<table><tr><th>type</th><th>detail</th></tr><tr><td>urn:blackbaud:model-validation-error</td><td>A
+            model validation rule was violated, such as a missing required field.</td></tr><tr><td>urn:blackbaud:bad-request</td><td>Request
+            was not in an acceptable format.</td></tr></table>
+          nullable: true
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence
+            of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231],
+            Section 3.4).
+          nullable: true
+        status:
+          type: integer
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the
+            problem.
+          format: int32
+          nullable: true
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+          nullable: true
+        instance:
+          type: string
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further
+            information if dereferenced.
+          nullable: true
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+          nullable: true
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+          nullable: true
+      additionalProperties: {}
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-bb-error-types:
+      - urn:blackbaud:model-validation-error
+      - urn:blackbaud:bad-request
+    CreateBatch:
+      type: object
+      properties:
+        batch_description:
+          type: string
+          description: The description of the batch.
+          nullable: true
+        batch_number:
+          type: string
+          description: The unique ID specific to the batch.
+          nullable: true
+        expected_batch_total:
+          type: number
+          description: The total value of all gifts the batch is expected to contain.
+          format: double
+          nullable: true
+        expected_number:
+          type: integer
+          description: The total number of gifts the batch is expected to contain.
+          format: int32
+          nullable: true
+      additionalProperties: false
+      description: Defines fields for a batch to be added to the data store
+      x-bb-suppressions:
+      - request_body_has_required_property
+    CreatedBatch:
+      type: object
+      properties:
+        batch_id:
+          type: string
+          description: The immutable system record ID of the created batch.
+          nullable: true
+      additionalProperties: false
+      description: Defines fields returned when a batch is created
+    GiftBatch:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The batch identifier
+          nullable: true
+        actual_amount:
+          type: number
+          description: The actual batch amount
+          format: double
+          nullable: true
+        batch_description:
+          type: string
+          description: The batch description
+          nullable: true
+        batch_number:
+          type: string
+          description: The batch number
+          nullable: true
+        added_by:
+          type: string
+          description: The user who created the batch
+          nullable: true
+        date_added:
+          type: string
+          description: 'The date the batch was created. Includes an offset from UTC in <a href="https://tools.ietf.org/html/rfc3339">ISO-8601
+            format: </a><i>1969-11-21T10:29:43-04:00</i>.'
+          format: date-time
+          nullable: true
+        has_exceptions:
+          type: boolean
+          description: Indicates whether the batch has exceptions
+          nullable: true
+        approved:
+          type: boolean
+          description: Indicates whether the batch is approved
+          nullable: true
+        number_of_gifts:
+          type: integer
+          description: The actual number of gifts in the batch
+          format: int32
+          nullable: true
+        projected_amount:
+          type: number
+          description: The projected amount
+          format: double
+          nullable: true
+        projected_number_of_gifts:
+          type: integer
+          description: The projected number of gifts
+          format: int32
+          nullable: true
+      additionalProperties: false
+      description: Represents the gift batch object
+    GiftBatchCollection:
+      required:
+      - limit
+      - offset
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of batch records included in the response.
+          format: int32
+          readOnly: true
+        giftbatches:
+          type: array
+          items:
+            $ref: '#/components/schemas/GiftBatch'
+          description: The set of gift batches included in the response.
+          nullable: true
+        limit:
+          type: integer
+          description: Limit used for the request.
+          format: int32
+        offset:
+          type: integer
+          description: Offset used for the request.
+          format: int32
+      additionalProperties: false
+      description: Represents a collection of gift batches
+      x-bb-suppressions:
+      - list_operation_pagination_style
+    V1GiftbatchesGetRequest:
+      maximum: 5000
+      minimum: 0
+      type: integer
+      format: int32
+      default: 500
+      x-apim-inline: true
+    V1GiftbatchesGetRequest-1:
+      type: integer
+      format: int32
+      x-apim-inline: true
+    V1GiftbatchesGetRequest-2:
+      type: string
+      x-apim-inline: true
+    V1GiftbatchesGetRequest-3:
+      type: string
+      x-apim-inline: true
+    V1GiftbatchesGetRequest-4:
+      type: boolean
+      x-apim-inline: true
+    V1GiftbatchesGetRequest-5:
+      type: boolean
+      x-apim-inline: true
+    V1GiftbatchesGetRequest-6:
+      type: string
+      x-apim-inline: true
+    V1Giftbatches-batch_id-DeleteRequest:
+      type: string
+      x-apim-inline: true
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []

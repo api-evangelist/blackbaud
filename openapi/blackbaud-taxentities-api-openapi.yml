@@ -1,0 +1,95 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Accounts Payable Taxentities API'
+  description: This API is used to manage accounts payable, including vendors and invoices.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/57a342f1d7dcde1c28a749fe
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/accountspayable/v1
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Taxentities
+paths:
+  /taxentities:
+    get:
+      operationId: ListTaxEntities
+      summary: Tax entities (List)
+      description: Returns the tax entity list.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains a list of tax entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaxEntityApiCollection'
+              example:
+                count: 2
+                value:
+                - id: 1
+                  description: Goods and Services Tax
+                  value: GST
+                  inactive: false
+                - id: 2
+                  description: GST Free
+                  value: FRE
+                  inactive: false
+      tags:
+      - Taxentities
+components:
+  schemas:
+    TaxEntityApiCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/TaxEntity'
+      additionalProperties: false
+      description: Collection Response
+    TaxEntity:
+      required:
+      - id
+      - inactive
+      - value
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Tax Entity Id.
+          format: int32
+        description:
+          type:
+          - string
+          - 'null'
+          description: Tax Entity Description.
+        value:
+          minLength: 1
+          type: string
+          description: Tax Entity Code.
+        inactive:
+          type: boolean
+          description: Tax Entity active or not.
+      additionalProperties: false
+      description: Contract for tax entity.
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

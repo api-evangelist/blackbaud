@@ -1,0 +1,786 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Lists V2 Datamodels API'
+  description: This API manages lists of records
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/lst-lists
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/lst-lists
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Datamodels
+paths:
+  /datamodels:
+    get:
+      operationId: GetDataModels
+      summary: Get data model list (PREVIEW)
+      description: 'Returns the list of available data models
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: allowReportInsights
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: 'true'
+        description: whether or not to allow report insights
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Blackbaud.List.Service.Models.DataModel.ExternalDataModelsResponse'
+              example:
+                data_models:
+                - name: person-organization-search
+                  allow_report_insights: false
+                - name: contribution
+                  allow_report_insights: false
+      tags:
+      - Datamodels
+  /datamodels/{modelName}:
+    get:
+      operationId: GetDataModel
+      summary: Get a data model (PREVIEW)
+      description: 'Returns information about a specific data model
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: modelName
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The name of the data model.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Blackbaud.List.Service.Models.DataModel.ExternalDataModel'
+              example:
+                search_definitions:
+                - name: people
+                  output:
+                  - field_id: lookup_id
+                    display_name: Lookup Id
+                  - field_id: person_surname
+                    display_name: Last name
+                  - field_id: person_given_name
+                    display_name: First name
+                  - field_id: primary_address
+                    display_name: Address
+                  search_fields:
+                  - field_id: lookup_id
+                  - field_id: person_surname
+                  - field_id: person_given_name
+                - name: organizations
+                  output:
+                  - field_id: lookup_id
+                    display_name: Lookup Id
+                  - field_id: organization_name
+                    display_name: Name
+                  search_fields:
+                  - field_id: lookup_id
+                  - field_id: organization_name
+                  - field_id: primary_address
+                fields:
+                - type: String
+                  is_output: false
+                  is_hidden: false
+                  is_sortable: false
+                  fields:
+                  - type: String
+                    is_output: false
+                    is_hidden: false
+                    is_sortable: false
+                    supports_group_by: false
+                    supports_aggregation: false
+                    filter_options:
+                      custom_boolean_options:
+                        option_true: 'true'
+                        option_false: 'false'
+                        option_all: all
+                      static_values:
+                      - id: lookup_id
+                    is_filter: false
+                    include_identifier: false
+                  supports_group_by: false
+                  supports_aggregation: false
+                  filter_options:
+                    custom_boolean_options:
+                      option_true: 'true'
+                      option_false: 'false'
+                      option_all: all
+                    static_values:
+                    - id: lookup_id
+                  is_filter: false
+                  include_identifier: false
+                default_sort:
+                  sort_fields:
+                  - field_id: lookup_id
+                    sort_order: asc
+                default_output:
+                  items:
+                  - field_id: lookup_id
+                    aggregation_filter:
+                      filter_items:
+                      - field:
+                          value: {}
+                          field_id: lookup_id
+                          operator: None
+                        grouping:
+                          items:
+                          - field:
+                              value: {}
+                              field_id: lookup_id
+                              operator: None
+                            collection_field:
+                              field_id: lookup_id
+                              filter_fields:
+                              - value: {}
+                                field_id: lookup_id
+                                operator: None
+                          operator: None
+                        collection_field:
+                          filter_fields:
+                          - value: {}
+                            field_id: lookup_id
+                            operator: None
+                      - collection_field:
+                          field_id: lookup_id
+                default_filter:
+                  filter_items:
+                  - field:
+                      value: {}
+                      field_id: lookup_id
+                      operator: None
+                    grouping:
+                      grouping_id: lookup_id
+                      operator: None
+                    collection_field:
+                      field_id: lookup_id
+                      filter_fields:
+                      - value: {}
+                        field_id: lookup_id
+                        operator: None
+                allow_report_insights: false
+                enable_tabbed_list: false
+      tags:
+      - Datamodels
+components:
+  schemas:
+    Blackbaud.List.Service.Models.OutputItem:
+      type: object
+      properties:
+        field_id:
+          type:
+          - string
+          - 'null'
+          description: Field information for a specific field to return
+        display_name:
+          type:
+          - string
+          - 'null'
+          description: The user-friendly display name of the output field
+        aggregation_filter:
+          $ref: '#/components/schemas/Blackbaud.List.Service.Models.Filter'
+      additionalProperties: false
+      description: Represents an individual item in the output of a query execution.
+    Blackbaud.List.Service.Models.SelectedFilter:
+      type: object
+      properties:
+        field_id:
+          type:
+          - string
+          - 'null'
+          description: The identifier of the field the filter applies to
+      additionalProperties: false
+      description: Represents a filter that is present but has not been applied
+    Blackbaud.List.Service.Models.StaticValue:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: Gets or sets the identifier.
+        label:
+          type:
+          - string
+          - 'null'
+          description: Gets or sets the description.
+        permissions:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: The set of permissions that should be evaluated when determining if an filter value should be included
+      additionalProperties: false
+      description: Defines a static value that can be used with a lookup filter
+    Blackbaud.List.Service.Models.DataModel.ExternalDataModel:
+      type: object
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+          description: Name of the data model.
+        caption:
+          type:
+          - string
+          - 'null'
+          description: User friendly caption for the data model
+        search_definitions:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Blackbaud.List.Service.Models.API.ApiSearchDefinition'
+          description: Search definitions of known searches available to use in a simple search request.
+        fields:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Blackbaud.List.Service.Models.DataModel.ExternalField'
+          description: List of fields available in the data model.
+        default_sort:
+          $ref: '#/components/schemas/Blackbaud.List.Service.Models.Sort'
+        default_output:
+          $ref: '#/components/schemas/Blackbaud.List.Service.Models.Output'
+        default_filter:
+          $ref: '#/components/schemas/Blackbaud.List.Service.Models.Filter'
+        column_categories:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: List of column categories in the data model
+        filter_categories:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: List of filter categories in the data model
+        description:
+          type:
+          - string
+          - 'null'
+          description: Description of the data model
+        allow_report_insights:
+          type: boolean
+          description: Whether or not report insights are allowed for this data model.
+        enable_tabbed_list:
+          type: boolean
+          description: Enables tabbed list experience on a specific data model
+      additionalProperties: false
+      description: Represents the properties of a data model that are exposed to external teams
+    Blackbaud.List.Service.Models.DataModel.ExternalField:
+      type: object
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the field
+        caption:
+          type:
+          - string
+          - 'null'
+          description: Localized caption for the field.
+        type:
+          title: FieldType
+          enum:
+          - String
+          - Boolean
+          - Integer
+          - Currency
+          - Double
+          - DateTimeOffset
+          - FuzzyDate
+          - ComplexType
+          - ComplexTypeCollection
+          - StringCollection
+          - Composite
+          - Keyword
+          - EmailUrl
+          - PhoneNumber
+          - MonthDay
+          - Byte
+          - Short
+          - Money
+          - ScaledFloat
+          - LocalDate
+          - Long
+          - RelatedOutputField
+          - EffectiveDateRange
+          - DynamicFieldCollection
+          - Year
+          - Aggregation
+          - TopResultAggregation
+          - BBID
+          - ExportLink
+          type: string
+          description: The type of the field
+        filter_type:
+          type:
+          - string
+          - 'null'
+          description: Gets or sets the type of the filter.
+        is_output:
+          type: boolean
+          description: Whether this field can be requested as output.
+          x-bb-suppressions:
+          - parameter_property_name
+        is_hidden:
+          type: boolean
+          description: Whether this field is marked as hidden.
+          x-bb-suppressions:
+          - parameter_property_name
+        is_sortable:
+          type: boolean
+          description: Whether this field can be used for sorting.
+          x-bb-suppressions:
+          - parameter_property_name
+        fields:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Blackbaud.List.Service.Models.DataModel.ExternalField'
+          description: Child fields for a ComplexType or ComplexTypeCollection field.
+        category:
+          type:
+          - string
+          - 'null'
+          description: The category used for this field.
+        supports_group_by:
+          type: boolean
+          description: Whether this field can be used as a group by field for an aggregation.
+        supports_aggregation:
+          type: boolean
+          description: Whether an aggregation can be performed on this field.
+        filter_options:
+          $ref: '#/components/schemas/Blackbaud.List.Service.Models.DataModel.FilterFieldOptions'
+        filter_category:
+          type:
+          - string
+          - 'null'
+          description: The filter category for this field
+        column_category:
+          type:
+          - string
+          - 'null'
+          description: The column category for this field
+        is_filter:
+          type: boolean
+          description: Whether this field is a filter
+          x-bb-suppressions:
+          - parameter_property_name
+        description:
+          type:
+          - string
+          - 'null'
+          description: Description of the field
+        include_identifier:
+          type: boolean
+          description: Whether the field includes an identifier value in the response when the field is translated to a user-friendly value.
+          x-bb-suppressions:
+          - parameter_property_name
+      additionalProperties: false
+      description: Represents a field in the datamodel
+    Blackbaud.List.Service.Models.DataModel.FilterFieldOptions:
+      type: object
+      properties:
+        display_false_option_first:
+          type: boolean
+          description: For boolean filters, this setting indicates whether the first choice that will be used when presenting filter options is the 'false' option
+        use_custom_boolean_options:
+          type: boolean
+          description: Gets or sets a value indicating whether custom values are used for filter options for boolean filters. When true, options are expected to be defined as resource items
+        custom_boolean_options:
+          $ref: '#/components/schemas/Blackbaud.List.Service.Models.DataModel.CustomBooleanOptions'
+        date_range_types:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: For date filters, provides a list of allowable operators
+        use_simple_toggle:
+          type: boolean
+          description: For boolean filters, this setting indicates whether a simple toggle option should be used in the UI instead of the standard radio buttons
+        static_values:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Blackbaud.List.Service.Models.StaticValue'
+          description: For lookup filters, provides a list of static values to use when filtering
+        use_single_select:
+          type:
+          - boolean
+          - 'null'
+          description: For lookup filters, whether the filter should only allow selecting a single value
+        supported_operators:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: Allows displaying an operator control with the specified custom operators
+        collection_supports_filter_grouping:
+          type:
+          - boolean
+          - 'null'
+          description: Indicates to the SPA whether a ComplexTypeCollection filter supports filter grouping
+        allow_inactive_filter:
+          type: boolean
+          description: This setting indicates whether a show inactive option for lookup filters should be present
+        allow_server_side_search:
+          type: boolean
+          description: This setting indicates whether lookup filters support server side search
+        code_table_id:
+          type:
+          - string
+          - 'null'
+          description: Defines the code table ID for a lookup field
+        index_lookup_description_field:
+          type:
+          - string
+          - 'null'
+          description: For lookup fields based on values in the index, this field points to a description to support scenarios where there is an ID and a description
+        use_starts_with_for_text_collection:
+          type:
+          - boolean
+          - 'null'
+          description: For text collection filters, use StartsWith operator instead of Equality operator
+        external:
+          type: boolean
+          description: This setting indicates that the filter uses an external workflow
+      additionalProperties: false
+      description: Defines additional filter options
+    Blackbaud.List.Service.Models.DataModel.CustomBooleanOptions:
+      type: object
+      properties:
+        option_true:
+          type:
+          - string
+          - 'null'
+          description: Gets or sets the "true" resource string
+        option_false:
+          type:
+          - string
+          - 'null'
+          description: Gets or sets the "false" resource string
+        option_all:
+          type:
+          - string
+          - 'null'
+          description: Gets or sets the "all" resource string
+      additionalProperties: false
+      description: Defines a set of resource strings for a boolean field filter
+    Blackbaud.List.Service.Models.API.ApiSearchDefinitionOutputItem:
+      type: object
+      properties:
+        field_id:
+          type:
+          - string
+          - 'null'
+          description: The identifier for the output field
+        display_name:
+          type:
+          - string
+          - 'null'
+          description: The user-friendly display name of the output field
+      additionalProperties: false
+      description: The output to return when this search request is executed
+    Blackbaud.List.Service.Models.FilterGrouping:
+      type: object
+      properties:
+        grouping_id:
+          type:
+          - string
+          - 'null'
+          description: The identifier of the grouping the filter applies to
+        items:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Blackbaud.List.Service.Models.FilterItem'
+          description: The set of filter items in the grouping
+        operator:
+          title: FilterGroupingOperator
+          enum:
+          - None
+          - AllOf
+          - OneOf
+          type: string
+          description: The operator for how the items in the group relate
+      additionalProperties: false
+      description: Represents a group of filter items and how they relate
+    Blackbaud.List.Service.Models.Filter:
+      type: object
+      properties:
+        filter_items:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Blackbaud.List.Service.Models.FilterItem'
+          description: The set of filter items in the filter
+        time_zone_offset_in_minutes:
+          type:
+          - integer
+          - 'null'
+          description: Gets or sets the time zone offset to support dynamic date filtering
+          format: int32
+        first_day_of_week:
+          title: FirstDayOfWeekType
+          enum:
+          - Sunday
+          - Monday
+          type:
+          - string
+          - 'null'
+          description: Gets or sets the first day of week when using certain date filters.
+        selected_filters:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Blackbaud.List.Service.Models.SelectedFilter'
+          description: The set of selected filter items in the filter
+      additionalProperties: false
+      description: Filter information for a query or report execution
+    Blackbaud.List.Service.Models.API.ApiSearchDefinition:
+      type: object
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the search definition
+        output:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Blackbaud.List.Service.Models.API.ApiSearchDefinitionOutputItem'
+          description: The output to return when this search request is executed
+        search_fields:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Blackbaud.List.Service.Models.API.ApiSearchField'
+          description: The list of fields to search when executing a search.
+      additionalProperties: false
+      description: Search definitions of known searches available to use in a search request.
+    Blackbaud.List.Service.Models.DataModel.ExternalDataModelInfo:
+      type: object
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name for a data model.
+        caption:
+          type:
+          - string
+          - 'null'
+          description: User friendly caption for data model.
+        description:
+          type:
+          - string
+          - 'null'
+          description: User friendly description for the data model
+        allow_report_insights:
+          type: boolean
+          description: Whether or not report insights are allowed for this data model.
+      additionalProperties: false
+      description: Information about a data model
+    Blackbaud.List.Service.Models.Output:
+      type: object
+      properties:
+        items:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Blackbaud.List.Service.Models.OutputItem'
+          description: The items to include in the output
+      additionalProperties: false
+      description: Output information for a query execution
+    Blackbaud.List.Service.Models.FilterValue:
+      type: object
+      properties:
+        value:
+          description: The value for the filter
+        label:
+          type:
+          - string
+          - 'null'
+          description: An optional label associated with the Blackbaud.List.Service.Models.FilterValue
+        filter_value_options:
+          type:
+          - String
+          - 'null'
+          description: Defines additional options that can be used for filtering
+      additionalProperties: false
+      description: Represents the value for a filter field
+    Blackbaud.List.Service.Models.FilterItem:
+      type: object
+      properties:
+        field:
+          $ref: '#/components/schemas/Blackbaud.List.Service.Models.FilterField'
+        grouping:
+          $ref: '#/components/schemas/Blackbaud.List.Service.Models.FilterGrouping'
+        collection_field:
+          $ref: '#/components/schemas/Blackbaud.List.Service.Models.CollectionFilterField'
+      additionalProperties: false
+      description: 'Represents an individual item in a group of filter items.  This item can contain filter information for a specific
+
+        field or contain another group of filter items.  It cannot contain both.'
+    Blackbaud.List.Service.Models.CollectionFilterField:
+      type: object
+      properties:
+        field_id:
+          type:
+          - string
+          - 'null'
+          description: The identifier of the field the filter applies to
+        filter_fields:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Blackbaud.List.Service.Models.FilterField'
+          description: The set of filters to be applied to items in the collection.  An indidivudal item must meet the entire set of filter criteria.
+      additionalProperties: false
+      description: Represents filter information for a collection.  This is used for filtering to records that have a single item in a collection that match a set of filters.
+    Blackbaud.List.Service.Models.Sort:
+      type: object
+      properties:
+        sort_fields:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Blackbaud.List.Service.Models.SortField'
+          description: Gets or sets the sort fields for a list request
+      additionalProperties: false
+      description: 'Describes how to sort a list request
+
+        ///'
+    Blackbaud.List.Service.Models.SortField:
+      type: object
+      properties:
+        field_id:
+          type:
+          - string
+          - 'null'
+          description: Gets or sets the name of the sort field
+        sort_order:
+          title: SortOrder
+          enum:
+          - asc
+          - desc
+          type: string
+          description: Gets or sets the direction of the sort order
+          x-bb-suppressions:
+          - enum_standards
+      additionalProperties: false
+      description: 'Describes a field to be sorted by
+
+        ///'
+    Blackbaud.List.Service.Models.API.ApiSearchField:
+      type: object
+      properties:
+        field_id:
+          type:
+          - string
+          - 'null'
+          description: The identifier for the search field
+      additionalProperties: false
+      description: The fields to be included in a search
+    Blackbaud.List.Service.Models.DataModel.ExternalDataModelsResponse:
+      type: object
+      properties:
+        data_models:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Blackbaud.List.Service.Models.DataModel.ExternalDataModelInfo'
+          description: This list of data models.
+      additionalProperties: false
+      description: Response when requesting the list of data models to which a user has access.
+    Blackbaud.List.Service.Models.FilterField:
+      type: object
+      properties:
+        value:
+          $ref: '#/components/schemas/Blackbaud.List.Service.Models.FilterValue'
+        field_id:
+          type:
+          - string
+          - 'null'
+          description: The identifier of the field the filter applies to
+        operator:
+          title: FilterOperator
+          enum:
+          - None
+          - Equal
+          - NotEqual
+          - GreaterThan
+          - LessThan
+          - GreaterThanOrEqual
+          - LessThanOrEqual
+          - OneOf
+          - NotOneOf
+          - Blank
+          - NotBlank
+          - Between
+          - StartsWith
+          - DoesNotStartWith
+          - AllOf
+          - NotBetween
+          - NotNull
+          type: string
+          description: The operator for the filter
+        is_aggregate:
+          type:
+          - boolean
+          - 'null'
+          description: Whether this filter represents an aggregate filter field.
+          x-bb-suppressions:
+          - parameter_property_name
+      additionalProperties: false
+      description: Represents filter information for a specific field
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

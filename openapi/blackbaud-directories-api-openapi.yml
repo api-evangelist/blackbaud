@@ -1,0 +1,419 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: School Directories API'
+  description: This API is used to provide access to school information such as users, academics, admissions, athletics, content, lists, and general school info.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/school
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/school
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Directories
+paths:
+  /v1/directories:
+    get:
+      operationId: V1DirectoriesGet
+      summary: Directories
+      description: 'Returns a collection of directories the logged in user has access to
+
+        Requires at least one of the following roles in the Education Management System:
+
+
+        Parent
+
+
+        Faculty
+
+
+        Student'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DirectoryModelCollection'
+              example:
+                count: 2
+                value:
+                - id: 1
+                  name: Faculty
+                  sort: 1
+                - id: 2
+                  name: Coaches
+                  sort: 2
+      tags:
+      - Directories
+  /v1/directories/{directory_id}:
+    get:
+      operationId: V1DirectoriesByDirectory_idGet
+      summary: Directories results
+      description: 'Returns a collection of directory results the logged in user has access to
+
+        ```search``` is an optional search string to filter directory results.
+
+        ```search_all``` allows the search string to be used for all fields.
+
+
+        When set to ```false```, only searches name fields. defaults to ```true```.
+
+
+        Requires at least one of the following roles in the Education Management System:
+
+
+        Parent
+
+
+        Faculty
+
+
+        Student'
+      parameters:
+      - name: directory_id
+        in: path
+        required: true
+        schema:
+          type: integer
+      - name: search
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: search_all
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: 'true'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DirectoryResultCollection'
+              example:
+                count: 1
+                value:
+                - user_id: 12345
+                  first_name: Tony
+                  last_name: Stark
+                  email: example@example.com
+                  address_line1: 1 Blackbaud Way
+                  address_line2: ''
+                  address_line3: ''
+                  city: Bedford
+                  state: NH
+                  zip: '03303'
+                  country: USA
+                  home_phone: 555-555-5555
+                  cell_phone: 556-555-5555
+                  home_phone2: ''
+                  has_relationships: true
+                  prefix: ''
+                  preferred_name: Iron Man
+                  profile_photo: //media.myschoolcdn.com/ftpimages/236/user/large_user_12345_1.jpg
+                  middlename: ''
+                  maiden_name: ''
+                  suffix: ''
+                  grad_year: '2022'
+                  grade: '10'
+                  grade_display: Tenth
+                  department: ''
+                  department_display: ''
+                  spouse_id: 0
+                  child_names: ''
+                  grade_numeric: 10
+                  grade_numeric_display: '10'
+                  total_count: 1
+                  deceased: false
+                  student: true
+                  preferred_address_id: 0
+                  preferred_address_lat: 0
+                  preferred_address_lng: 0
+                  job_title: ''
+      tags:
+      - Directories
+components:
+  schemas:
+    DirectoryModel:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The Id of the directory
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+          description: the name of the directory
+        sort:
+          type: integer
+          description: The sort order that the directory should be displayed
+          format: int32
+      additionalProperties: false
+      description: ''
+    DirectoryModelCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items in the collection
+          format: int32
+          readOnly: true
+        next_link:
+          type:
+          - string
+          - 'null'
+          description: For paginated responses, the URI for the next page of results
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/DirectoryModel'
+          description: The set of items included in the response. This may be a subset of the items in the collection
+      additionalProperties: false
+      description: A Collection
+    DirectoryResultCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items in the collection
+          format: int32
+          readOnly: true
+        next_link:
+          type:
+          - string
+          - 'null'
+          description: For paginated responses, the URI for the next page of results
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/DirectoryResult'
+          description: The set of items included in the response. This may be a subset of the items in the collection
+      additionalProperties: false
+      description: A Collection
+    DirectoryResult:
+      type: object
+      properties:
+        user_id:
+          type:
+          - integer
+          - 'null'
+          description: The Id of the user
+          format: int32
+        first_name:
+          type:
+          - string
+          - 'null'
+          description: The first name of the user
+        last_name:
+          type:
+          - string
+          - 'null'
+          description: The last name of the user
+        email:
+          type:
+          - string
+          - 'null'
+          description: The email address of the user
+        address_line1:
+          type:
+          - string
+          - 'null'
+          description: The first line of the user address
+        address_line2:
+          type:
+          - string
+          - 'null'
+          description: The second line of the user address
+        address_line3:
+          type:
+          - string
+          - 'null'
+          description: The third line of the user address
+        city:
+          type:
+          - string
+          - 'null'
+          description: The city the user lives in
+        state:
+          type:
+          - string
+          - 'null'
+          description: The state the user lives in
+        zip:
+          type:
+          - string
+          - 'null'
+          description: The zip code the user lives in
+        country:
+          type:
+          - string
+          - 'null'
+          description: The country the user lives in
+        home_phone:
+          type:
+          - string
+          - 'null'
+          description: The user's home phone number
+        cell_phone:
+          type:
+          - string
+          - 'null'
+          description: The user's cell phone number
+        office_phone:
+          type:
+          - string
+          - 'null'
+          description: The user's office phone number
+        home_phone2:
+          type:
+          - string
+          - 'null'
+          description: The user's secondary home phone number
+        has_relationships:
+          type:
+          - boolean
+          - 'null'
+          description: Returns true if the user has relationships
+        prefix:
+          type:
+          - string
+          - 'null'
+          description: The user's prefix
+        preferred_name:
+          type:
+          - string
+          - 'null'
+          description: The user's preferred name
+        profile_photo:
+          type:
+          - string
+          - 'null'
+          description: The user's profile photo
+        middlename:
+          type:
+          - string
+          - 'null'
+          description: The user's middle name
+        maiden_name:
+          type:
+          - string
+          - 'null'
+          description: The user's maiden name
+        suffix:
+          type:
+          - string
+          - 'null'
+          description: The user's suffix
+        grad_year:
+          type:
+          - string
+          - 'null'
+          description: The user's graduation year
+        grade:
+          type:
+          - string
+          - 'null'
+          description: The user's grade
+        grade_display:
+          type:
+          - string
+          - 'null'
+          description: Grade display
+        department:
+          type:
+          - string
+          - 'null'
+          description: The department the user belongs to
+        department_display:
+          type:
+          - string
+          - 'null'
+          description: How the user's department should be displayed
+        spouse_id:
+          type:
+          - integer
+          - 'null'
+          description: The Id of the user's spouse
+          format: int32
+        child_names:
+          type:
+          - string
+          - 'null'
+          description: The user's children
+        grade_numeric:
+          type:
+          - integer
+          - 'null'
+          description: The numeric grade of the user
+          format: int32
+        grade_numeric_display:
+          type:
+          - string
+          - 'null'
+          description: The way the numeric grade should be displayed
+        total_count:
+          type:
+          - integer
+          - 'null'
+          description: The total count of records
+          format: int32
+        deceased:
+          type:
+          - boolean
+          - 'null'
+          description: Returns true if the user is deceased
+        student:
+          type:
+          - boolean
+          - 'null'
+          description: Returns true if the user is a student
+        preferred_address_id:
+          type:
+          - integer
+          - 'null'
+          description: The Id of the preferred address for the user
+          format: int32
+        preferred_address_lat:
+          type:
+          - number
+          - 'null'
+          description: Preferred address latitude
+          format: double
+        preferred_address_lng:
+          type:
+          - number
+          - 'null'
+          description: Preferred address longitude
+          format: double
+        job_title:
+          type:
+          - string
+          - 'null'
+          description: The user's job title
+      additionalProperties: false
+      description: Directory Result Model
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

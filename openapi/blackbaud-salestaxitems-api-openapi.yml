@@ -1,0 +1,207 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Accounts Payable Salestaxitems API'
+  description: This API is used to manage accounts payable, including vendors and invoices.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/57a342f1d7dcde1c28a749fe
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/accountspayable/v1
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Salestaxitems
+paths:
+  /salestaxitems:
+    get:
+      operationId: ListSalesTaxItems
+      summary: Sales tax items (List)
+      description: Returns a list of sales tax items.
+      parameters:
+      - name: includeNegative
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: 'false'
+        description: True if negative sales tax items should be returned. Default = false.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains the list of sales tax items.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SalesTaxItemDetailApiCollection'
+              example:
+                count: 2
+                value:
+                - id: 8
+                  sales_tax_item_tax_id: GST
+                  inactive: false
+                  description: Goods and Services Tax
+                  comment: Test comment 1
+                  sales_tax_entities:
+                  - id: 8
+                    sequence: 1
+                    tax_entity_code_id: 427
+                    entry_id: GST
+                    rate: 3
+                    compound_tax: true
+                - id: 9
+                  sales_tax_item_tax_id: Hst
+                  inactive: false
+                  description: Harmonized Sales Tax
+                  comment: Test comment 2
+                  sales_tax_entities:
+                  - id: 9
+                    sequence: 1
+                    tax_entity_code_id: 427
+                    entry_id: GST
+                    rate: 4
+                    compound_tax: false
+                  - id: 9
+                    sequence: 2
+                    tax_entity_code_id: 428
+                    entry_id: PST
+                    rate: 6
+                    compound_tax: true
+        '400':
+          description: Returned when the request is not in the correct format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DomainErrorMessage'
+              example:
+                Error: Invalid Request
+                Details:
+                - The value 'fake' is not valid for transaction_status.
+        '403':
+          description: Returned when the user does not have permission to view sales tax items.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorMessage'
+              example:
+                Error: The specified record could not be found. The record has either been deleted or you do not have rights to view it.
+      tags:
+      - Salestaxitems
+components:
+  schemas:
+    SalesTaxItemDetail:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Sales tax item identifier.
+          format: int32
+        sales_tax_item_tax_id:
+          type:
+          - string
+          - 'null'
+          description: The tax id for this sales tax item.
+        inactive:
+          type: boolean
+          description: Whether or not the sales tax item is active.
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the sales tax item.
+        comment:
+          type:
+          - string
+          - 'null'
+          description: The comment for this sales tax item.
+        sales_tax_entities:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SalesTaxEntityDetail'
+          description: The sales tax entities of this sales tax item.
+      additionalProperties: false
+      description: Sales tax items information (Only for CANADA and AUSTRALIA)
+    SalesTaxItemDetailApiCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SalesTaxItemDetail'
+      additionalProperties: false
+      description: Collection Response
+    DomainErrorMessage:
+      type: object
+      properties:
+        Error:
+          type:
+          - string
+          - 'null'
+        Details:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+        ErrorPath:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    SalesTaxEntityDetail:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Sales tax entity identifier.
+          format: int32
+        sequence:
+          type: integer
+          description: Sales tax entity sequence.
+          format: int32
+        tax_entity_code_id:
+          type: integer
+          description: Sales tax entity code identifier.
+          format: int32
+        entry_id:
+          type:
+          - string
+          - 'null'
+          description: The tax id for this sales tax entity.
+        rate:
+          type: number
+          description: The rate of this sales tax entity.
+          format: decimal
+        compound_tax:
+          type: boolean
+          description: Whether or not the compound tax is selected.
+      additionalProperties: false
+      description: Sales tax entity information (Only for CANADA and AUSTRALIA)
+    BasicErrorMessage:
+      type: object
+      properties:
+        Error:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

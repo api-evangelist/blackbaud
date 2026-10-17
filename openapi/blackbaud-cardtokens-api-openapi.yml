@@ -1,0 +1,124 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Payments Cardtokens API'
+  description: This API enables users to accept and manage payments via Blackbaud Merchant Services.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/payments
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/payments
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Cardtokens
+paths:
+  /v1/cardtokens:
+    post:
+      operationId: CreateCardToken
+      summary: Card token
+      description: Securely stores credit or debit card information and returns a token to use in future transactions. For credit cards, tokens will be registered in Credit Card Updater for enrolled customers.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CardTokenAdd'
+            example:
+              exp_month: 2
+              exp_year: 1985
+              issue_number: '443'
+              name: Blackbaud
+              number: '4111111111111111'
+              valid_from_month: 1
+              valid_from_year: 1980
+        description: An object that represents the credit card information to store.
+      responses:
+        '200':
+          description: Returned when the operation successfully stores credit card information. The response body contains a token to use in future transactions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardTokenRead'
+              example:
+                card_token: 2405227f-848d-4f17-979e-88e17298a543
+        '400':
+          description: Returned when the request body is not in the appropriate format. The response body contains error details.
+      tags:
+      - Cardtokens
+components:
+  schemas:
+    CardTokenRead:
+      type: object
+      properties:
+        card_token:
+          type:
+          - string
+          - 'null'
+          description: Gets the card token.
+      additionalProperties: false
+      description: Defines the data model for the card token endpoint response.
+    CardTokenAdd:
+      required:
+      - exp_month
+      - exp_year
+      - name
+      - number
+      type: object
+      properties:
+        exp_month:
+          type: integer
+          description: The expiration month for the card.
+          format: int32
+        exp_year:
+          type: integer
+          description: The 4-digit expiration year for the card.
+          format: int32
+        id:
+          type:
+          - string
+          - 'null'
+          description: Gets or sets the ID.
+        is_backoffice:
+          type:
+          - boolean
+          - 'null'
+          description: Optional parameter that requests exemption from <a href="https://developer.blackbaud.com/skyapi/apis/payments/key-considerations#strong-customer-authentication">Strong Customer Authentication</a>.
+          x-bb-suppressions:
+          - parameter_property_name
+        issue_number:
+          type:
+          - string
+          - 'null'
+          description: Optional issue number for the card.
+        name:
+          minLength: 1
+          type: string
+          description: The name of the card holder.
+        number:
+          minLength: 1
+          type: string
+          description: The primary account number for this card.
+        valid_from_month:
+          type: integer
+          description: Optional issue month for the card.
+          format: int32
+        valid_from_year:
+          type: integer
+          description: Optional issue year for the card.
+          format: int32
+      additionalProperties: false
+      description: Defines the data model for the card token request.
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

@@ -1,0 +1,246 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: OneRoster Demographics API'
+  description: OneRoster v1.1 API. For details on the OneRoster Version 1.1 Specification, click here. The Authorization page provides steps to setup and test these endpoints.
+  version: v1p1
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/afe-rostr
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/afe-rostr/ims/oneroster
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Demographics
+paths:
+  /demographics:
+    get:
+      operationId: getAllDemographics
+      summary: Demographics all
+      description: Returns a collection of user's demographic data.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DemographicsOutputModel'
+              example:
+                demographics:
+                - birthDate: '2006-07-26'
+                  sex: male
+                  americanIndianOrAlaskaNative: 'false'
+                  asian: 'false'
+                  blackOrAfricanAmerican: 'false'
+                  nativeHawaiianOrOtherPacificIslander: 'false'
+                  white: 'true'
+                  demographicRaceTwoOrMoreRaces: 'false'
+                  hispanicOrLatinoEthnicity: 'false'
+                  cityOfBirth: Concord
+                  sourcedId: usr-222-66778899
+                  status: active
+                  dateLastModified: '2023-08-01T11:00:00Z'
+                  metadata:
+                    iepStatus: 'true'
+                    ellStatus: 'false'
+                    frlStatus: Reduced
+                - birthDate: '2006-08-01'
+                  sex: female
+                  americanIndianOrAlaskaNative: 'false'
+                  asian: 'true'
+                  blackOrAfricanAmerican: 'false'
+                  nativeHawaiianOrOtherPacificIslander: 'false'
+                  white: 'true'
+                  demographicRaceTwoOrMoreRaces: 'true'
+                  hispanicOrLatinoEthnicity: 'false'
+                  cityOfBirth: Boston
+                  sourcedId: usr-222-66778896
+                  status: active
+                  dateLastModified: '2023-08-01T11:00:00Z'
+                  metadata:
+                    iepStatus: 'false'
+                    ellStatus: 'true'
+                    frlStatus: Free
+      tags:
+      - Demographics
+  /demographics/{id}:
+    get:
+      operationId: getDemographics
+      summary: Demographics by id
+      description: Returns a single user's demographic data for the specified ```id```..
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: sourcedId for the user
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DemographicOutputModel'
+              example:
+                demographic:
+                  birthDate: '2006-07-26'
+                  sex: male
+                  americanIndianOrAlaskaNative: 'false'
+                  asian: 'false'
+                  blackOrAfricanAmerican: 'false'
+                  nativeHawaiianOrOtherPacificIslander: 'false'
+                  white: 'true'
+                  demographicRaceTwoOrMoreRaces: 'false'
+                  hispanicOrLatinoEthnicity: 'false'
+                  cityOfBirth: Concord
+                  sourcedId: usr-222-66778899
+                  status: active
+                  dateLastModified: '2023-08-01T11:00:00Z'
+                  metadata:
+                    iepStatus: 'true'
+                    ellStatus: 'false'
+                    frlStatus: Reduced
+      tags:
+      - Demographics
+components:
+  schemas:
+    StatusInfoModel:
+      type: object
+      properties:
+        imsx_codeMajor:
+          type:
+          - string
+          - 'null'
+        imsx_severity:
+          type:
+          - string
+          - 'null'
+        imsx_messageRefIdentifier:
+          type:
+          - string
+          - 'null'
+        imsx_operationRefIdentifier:
+          type:
+          - string
+          - 'null'
+        imsx_description:
+          type:
+          - string
+          - 'null'
+        imsx_codeMinor:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    DemographicOutputModel:
+      type: object
+      properties:
+        demographic:
+          $ref: '#/components/schemas/ORDemographicModel'
+      additionalProperties: false
+    DemographicsOutputModel:
+      type: object
+      properties:
+        demographics:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ORDemographicModel'
+        statusInfoSet:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/StatusInfoModel'
+      additionalProperties: false
+    ORDemographicModel:
+      type: object
+      properties:
+        birthDate:
+          type:
+          - string
+          - 'null'
+        sex:
+          type:
+          - string
+          - 'null'
+        americanIndianOrAlaskaNative:
+          type:
+          - boolean
+          - 'null'
+        asian:
+          type:
+          - boolean
+          - 'null'
+        blackOrAfricanAmerican:
+          type:
+          - boolean
+          - 'null'
+        nativeHawaiianOrOtherPacificIslander:
+          type:
+          - boolean
+          - 'null'
+        white:
+          type:
+          - boolean
+          - 'null'
+        demographicRaceTwoOrMoreRaces:
+          type:
+          - boolean
+          - 'null'
+        hispanicOrLatinoEthnicity:
+          type:
+          - boolean
+          - 'null'
+        countryOfBirthCode:
+          type:
+          - string
+          - 'null'
+        stateOfBirthAbbreviation:
+          type:
+          - string
+          - 'null'
+        cityOfBirth:
+          type:
+          - string
+          - 'null'
+        publicSchoolResidenceStatus:
+          type:
+          - string
+          - 'null'
+        sourcedId:
+          type:
+          - string
+          - 'null'
+        status:
+          type:
+          - string
+          - 'null'
+        dateLastModified:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        metadata:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: string
+      additionalProperties: false
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

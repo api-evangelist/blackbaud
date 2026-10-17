@@ -1,0 +1,496 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Academics Learningprofiles API'
+  description: This API is used to provide access to academics information, such as grades, attendance and scheduling.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/afe-edaca
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/afe-edaca
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Learningprofiles
+paths:
+  /v1/learningprofiles:
+    post:
+      operationId: V1LearningprofilesPost
+      summary: Learning profile (Create) (PREVIEW)
+      description: 'Add a student learning profile.
+
+
+        Requires the following role in the Education Management system:
+
+
+        Learning Profile Manager
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StudentLearningProfileAdd'
+            example:
+              student_id: 345
+              author_id: 123
+              profile_form_id: 3
+              start: '2025-01-01T12:00:00Z'
+              status: Needs approval
+              inactive_date: '2026-01-01T12:00:00Z'
+              supplemental_files:
+              - original_name: originalfile.pdf
+                temp_name: file.pdf
+              - original_name: originalfile1.pdf
+                temp_name: file1.pdf
+              learning_profile_file:
+                original_name: originalfile.pdf
+                temp_name: file.pdf
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1LearningprofilesPost200ApplicationJsonResponse'
+              example: 91130
+      tags:
+      - Learningprofiles
+  /v1/learningprofiles/forms:
+    get:
+      operationId: V1LearningprofilesFormsGet
+      summary: Learning profile form list (Get) (PREVIEW)
+      description: 'Returns the list of learning profile forms.
+
+
+        Requires the following role in the Education Management system:
+
+
+        Learning Profile Manager
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1LearningprofilesFormsGet200ApplicationJsonResponse'
+              example:
+              - id: 1
+                description: My Education Plan
+                is_inactive: true
+                approval_required: true
+                type: Template
+      tags:
+      - Learningprofiles
+  /v1/learningprofiles/{student_id}:
+    get:
+      operationId: V1LearningprofilesByStudent_idGet
+      summary: Learning profile list – single student (Get) (PREVIEW)
+      description: 'Returns the list of learning profiles for a student.
+
+
+        Requires the following role in the Education Management system:
+
+
+        Learning Profile Manager
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: student_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The user ID of the student
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Learningprofiles-student_id-Get200ApplicationJsonResponse'
+              example:
+              - id: 1
+                student:
+                  bbid: 8982fb06-cdf4-444b-92b9-265b7ee31725
+                  id: 1
+                  display: Brown
+                  birth_date: '2002-01-01T12:00:00Z'
+                  email: joe@example.com
+                  first_name: Terry
+                  last_name: Brown
+                  maiden_name: John Sign
+                  middle_name: Sign
+                  preferred_name: Brown
+                  preferred_last_name: Terry
+                  prefix: Mrs
+                  suffix: M
+                  username: joe@example.com
+                learning_profile:
+                  id: 1
+                  description: Education Plan
+                  type: Template
+                publish_date: '2025-01-01T12:00:00Z'
+                expire_date: '2025-01-02T12:00:00Z'
+                author:
+                  bbid: 8c0cd633-bbb2-4c7c-98f8-89e8edc3df4c
+                  id: 2
+                  display: John
+                  birth_date: '1980-01-01T12:00:00Z'
+                  email: johnperter@gmail.com
+                  first_name: John
+                  last_name: Peter
+                  maiden_name: John Sign
+                  middle_name: Sign
+                  preferred_name: Peter
+                  preferred_last_name: John
+                  prefix: Mrs
+                  suffix: M
+                  username: John Peter
+                status: Active
+                publish: Ready
+      tags:
+      - Learningprofiles
+  /v1/learningprofiles/{student_id}/{learning_profile_id}:
+    patch:
+      operationId: V1LearningprofilesByStudent_idByLearning_profile_idPatch
+      summary: Learning profile (Edit) (PREVIEW)
+      description: 'Update a student’s learning profile.
+
+
+        Requires the following role in the Education Management system:
+
+
+        Learning Profile Manager
+
+
+        ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
+      parameters:
+      - name: learning_profile_id
+        in: path
+        required: true
+        schema:
+          type: integer
+      - name: student_id
+        in: path
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StudentLearningProfileEdit'
+            example:
+              status: Needs approval
+              inactive_date: '2025-01-01T12:00:00Z'
+              supplemental_files:
+              - original_name: originalfile.pdf
+                temp_name: file.pdf
+              - original_name: originalfile1.pdf
+                temp_name: file1.pdf
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Learningprofiles-student_id-learning_profile_id-Patch200ApplicationJsonResponse'
+              example: 91130
+      tags:
+      - Learningprofiles
+components:
+  schemas:
+    V1Learningprofiles-student_id-Get200ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/StudentLearningProfileRead'
+      x-apim-inline: true
+    StudentLearningProfileRead:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the student’s learning profile
+          format: int32
+        student:
+          $ref: '#/components/schemas/UserBase'
+        learning_profile:
+          $ref: '#/components/schemas/LearningProfileForm'
+        publish_date:
+          type:
+          - string
+          - 'null'
+          description: The start time of the student’s learning profile
+          format: date-time
+        expire_date:
+          type:
+          - string
+          - 'null'
+          description: The end time of the student’s learning profile
+          format: date-time
+        author:
+          $ref: '#/components/schemas/UserBase'
+        status:
+          type:
+          - string
+          - 'null'
+          description: The status of the student’s learning profile
+        publish:
+          type:
+          - string
+          - 'null'
+          description: Whether the student’s learning profile is ready to publish
+      additionalProperties: false
+      description: An object with learning profile information
+    V1LearningprofilesPost200ApplicationJsonResponse:
+      type: integer
+      format: int32
+      x-apim-inline: true
+    LearningProfileFileAttachment:
+      required:
+      - temp_name
+      type: object
+      properties:
+        original_name:
+          type:
+          - string
+          - 'null'
+          description: The original name of the file that may be shown in the UI.
+        temp_name:
+          minLength: 1
+          pattern: .*\S.*
+          type: string
+          description: The temporary file location provided by the Attachment (Create) process.
+      additionalProperties: false
+      description: This field is required if the learning profile form's type is <strong>File</strong> (see <a href="https://developer.sky.blackbaud.com/docs/services/afe-edaca/operations/V1LearningprofilesFormsGet" target="_blank">Learning Profile form list(Get)</a> ). Include an attachment object, including the reference name for the attachment’s temporary storage location and the original file name. The file's reference information is produced using the upload process that begins with the <a href="https://developer.sky.blackbaud.com/api#api=afe-edcor&operation=V1AttachmentsGet" target="_blank">Attachment (Upload) endpoint</a>. See also <a href="https://developer.blackbaud.com/skyapi/docs/in-depth-topics/physical-attachments" target="_blank">Creating physical attachments</a>.
+    V1LearningprofilesFormsGet200ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/LearningProfileForm'
+      x-apim-inline: true
+    StudentLearningProfileAdd:
+      required:
+      - profile_form_id
+      - start
+      - status
+      - student_id
+      type: object
+      properties:
+        student_id:
+          maximum: 2147483647
+          minimum: 1
+          type: integer
+          description: The user ID of the student
+          format: int32
+        author_id:
+          type:
+          - integer
+          - 'null'
+          description: The user ID of the author
+          format: int32
+        profile_form_id:
+          maximum: 2147483647
+          minimum: 1
+          type: integer
+          description: The ID of the learning profile form, See the <a href="https://developer.sky.blackbaud.com/docs/services/afe-edaca/operations/V1LearningprofilesFormsGet" target="_blank">Learning Profile form list(Get)</a> endpoint for this value. If the form type is <strong>File</strong> then the learning_profile_file is required.
+          format: int32
+        start:
+          type: string
+          description: The start date of the student’s learning profile
+          format: date-time
+        status:
+          minLength: 1
+          type: string
+          description: The student's status for the learning profile. This value is based on the ApprovalRequired value of the selected Learning Profile Form (referenced by profile_form_id). When ApprovalRequired is set to True, the valid status values are <strong>Needs Approval and Pending</strong>; when ApprovalRequired is set to False, the valid status values are <strong>Approved and Pending</strong>.
+        inactive_date:
+          type:
+          - string
+          - 'null'
+          description: The date the student’s learning profile is inactive.
+          format: date-time
+        supplemental_files:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/NewAttachment'
+          description: An array of supporting document attachments. Each object in the array has attachment file information, including the reference name for the attachment’s temporary storage location and the original file name. The file's reference information is produced using the upload process that begins with the <a href="https://developer.sky.blackbaud.com/api#api=afe-edcor&operation=V1AttachmentsGet" target="_blank">Attachment (Upload) endpoint</a>. See also <a href="https://developer.blackbaud.com/skyapi/docs/in-depth-topics/physical-attachments" target="_blank">Creating physical attachments</a>.
+        learning_profile_file:
+          $ref: '#/components/schemas/LearningProfileFileAttachment'
+      additionalProperties: false
+      description: ''
+    V1Learningprofiles-student_id-learning_profile_id-Patch200ApplicationJsonResponse:
+      type: integer
+      format: int32
+      x-apim-inline: true
+    LearningProfileFormType:
+      title: LearningProfileFormType
+      enum:
+      - File
+      - Template
+      type: string
+      description: The type of a learning profile form. <strong>File</strong> forms require a learning profile file when a student learning profile is created.
+    StudentLearningProfileEdit:
+      type: object
+      properties:
+        status:
+          type:
+          - string
+          - 'null'
+          description: 'The student''s status for the learning profile. Allowed values: Pending, Needs approval, Approved,Denied'
+        inactive_date:
+          type:
+          - string
+          - 'null'
+          description: The date the student’s learning profile is inactive.
+          format: date-time
+        supplemental_files:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/NewAttachment'
+          description: An array of supporting document attachments. Each object in the array has attachment file information, including the reference name for the attachment’s temporary storage location and the original file name. The file's reference information is produced using the upload process that begins with the <a href="https://developer.sky.blackbaud.com/api#api=afe-edcor&operation=V1AttachmentsGet" target="_blank">Attachment (Upload) endpoint</a>. See also <a href="https://developer.blackbaud.com/skyapi/docs/in-depth-topics/physical-attachments" target="_blank">Creating physical attachments</a>.
+      additionalProperties: false
+      description: ''
+    LearningProfileForm:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the learning profile form
+          format: int32
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description for the learning profile form
+        is_inactive:
+          type:
+          - boolean
+          - 'null'
+          description: True if the form is inactive
+        approval_required:
+          type:
+          - boolean
+          - 'null'
+          description: True if approval is required for student’s assigned this form
+        type:
+          $ref: '#/components/schemas/LearningProfileFormType'
+      additionalProperties: false
+      description: An object with learning profile form information, including id, description, active status and if it requires approval
+    NewAttachment:
+      required:
+      - temp_name
+      type: object
+      properties:
+        original_name:
+          type:
+          - string
+          - 'null'
+          description: The original name of the file that may be shown in the UI.
+        temp_name:
+          minLength: 1
+          pattern: .*\S.*
+          type: string
+          description: The temporary file location provided by the Attachment (Create) process.
+      additionalProperties: false
+      description: An object with attachment file name information, including the reference name for the attachment’s temporary storage location. and the original file name. The file's reference information is produced using the upload process that begins with the <a href="https://developer.sky.blackbaud.com/api#api=afe-edcor&operation=V1AttachmentsGet" target="_blank">Attachment (Upload) endpoint</a>. See also <a href="https://developer.blackbaud.com/skyapi/docs/in-depth-topics/physical-attachments" target="_blank">Creating physical attachments</a>. This field is in Preview.
+    UserBase:
+      type: object
+      properties:
+        bbid:
+          type:
+          - string
+          - 'null'
+          description: The bbid of a user
+          format: uuid
+        id:
+          type: integer
+          description: The ID associated with a user
+          format: int32
+        display:
+          type:
+          - string
+          - 'null'
+          description: The suffix of a user
+        birth_date:
+          type:
+          - string
+          - 'null'
+          description: The birth date of a user
+          format: date-time
+        email:
+          type:
+          - string
+          - 'null'
+          description: The email address of a user
+        first_name:
+          type:
+          - string
+          - 'null'
+          description: The first name of a user
+        last_name:
+          type:
+          - string
+          - 'null'
+          description: The last name of a user
+        maiden_name:
+          type:
+          - string
+          - 'null'
+          description: The maiden name of a user
+        middle_name:
+          type:
+          - string
+          - 'null'
+          description: The middle name of a user
+        preferred_name:
+          type:
+          - string
+          - 'null'
+          description: The nickname of a user
+        preferred_last_name:
+          type:
+          - string
+          - 'null'
+          description: The preferred last name of a user
+        prefix:
+          type:
+          - string
+          - 'null'
+          description: The prefix of a user
+        suffix:
+          type:
+          - string
+          - 'null'
+          description: The suffix of a user
+        username:
+          type:
+          - string
+          - 'null'
+          description: The user name of a user
+      additionalProperties: false
+      description: UserBaseRead Model
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

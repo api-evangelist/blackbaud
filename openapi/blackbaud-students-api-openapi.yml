@@ -1,0 +1,343 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: OneRoster Students API'
+  description: OneRoster v1.1 API. For details on the OneRoster Version 1.1 Specification, click here. The Authorization page provides steps to setup and test these endpoints.
+  version: v1p1
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/afe-rostr
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/afe-rostr/ims/oneroster
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Students
+paths:
+  /students:
+    get:
+      operationId: getAllStudents
+      summary: Students all
+      description: Returns a collection of student user data.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsersOutputModel'
+              example:
+                users:
+                - username: mary.jones@myschool.com
+                  userIds:
+                  - type: stateId
+                    identifier: NH-345-678
+                  - type: StudentId
+                    identifier: '100021'
+                  enabledUser: 'true'
+                  givenName: Mary
+                  familyName: Jones
+                  middleName: Jane
+                  role: student
+                  identifier: '66778899'
+                  email: mary.jones@myschool.com
+                  sms: '6031234567'
+                  phone: '6031234567'
+                  agents:
+                  - sourcedId: usr-p-222-66778900
+                    href: https://api.sky.blackbaud.com/afe-rostr/ims/oneroster/v1p1/users/ousr-p-222-66778900
+                    type: user
+                  orgs:
+                  - sourcedId: org-sch-222-456
+                    href: https://api.sky.blackbaud.com/afe-rostr/ims/oneroster/v1p1/orgs/org-sch-222-456
+                    type: org
+                  grades:
+                  - '12'
+                  sourcedId: usr-222-66778899
+                  status: active
+                  dateLastModified: '2022-12-12T11:00:00Z'
+                  metadata:
+                    grade: 12th Grade
+                    stateId: NH-345-678
+                    address1: 1234 Elm Street
+                    address2: Apartment 3C
+                    address3: basement
+                    city: Manchester
+                    state: NH
+                    postCode: 03101-1001
+                    microsoft.userFlags: iep,ell,freeLunch
+                    title: Sr. Customer Support Analyst
+                - username: jim.smith@myschool.com
+                  enabledUser: 'true'
+                  givenName: Jim
+                  familyName: Smith
+                  role: student
+                  identifier: '987654'
+                  email: jim.smith@myschool.com
+                  orgs:
+                  - sourcedId: org-sch-222-456
+                    href: https://api.sky.blackbaud.com/afe-rostr/ims/oneroster/v1p1/orgs/org-sch-222-456
+                    type: org
+                  grades:
+                  - '11'
+                  sourcedId: usr-222-987654
+                  status: active
+                  dateLastModified: '2022-12-12T11:00:00Z'
+                  metadata:
+                    grade: 11th Grade
+                    microsoft.userFlags: reducedLunch
+                    title: Salesperson
+      tags:
+      - Students
+  /students/{id}:
+    get:
+      operationId: getStudent
+      summary: Student by id
+      description: Returns a single student user for the specified ```id```.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: sourcedId for the student
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserOutputModel'
+              example:
+                user:
+                  username: mary.jones@myschool.com
+                  userIds:
+                  - type: stateId
+                    identifier: NH-345-678
+                  - type: StudentId
+                    identifier: '100021'
+                  enabledUser: 'true'
+                  givenName: Mary
+                  familyName: Jones
+                  middleName: Jane
+                  role: student
+                  identifier: '66778899'
+                  email: mary.jones@myschool.com
+                  sms: '6031234567'
+                  phone: '6031234567'
+                  agents:
+                  - sourcedId: usr-p-222-66778900
+                    href: https://api.sky.blackbaud.com/afe-rostr/ims/oneroster/v1p1/users/ousr-p-222-66778900
+                    type: user
+                  orgs:
+                  - sourcedId: org-sch-222-456
+                    href: https://api.sky.blackbaud.com/afe-rostr/ims/oneroster/v1p1/orgs/org-sch-222-456
+                    type: org
+                  grades:
+                  - '12'
+                  sourcedId: usr-222-66778899
+                  status: active
+                  dateLastModified: '2022-12-12T11:00:00Z'
+                  metadata:
+                    grade: 12th Grade
+                    stateId: NH-345-678
+                    address1: 1234 Elm Street
+                    address2: Apartment 3C
+                    address3: basement
+                    city: Manchester
+                    state: NH
+                    postCode: 03101-1001
+                    microsoft.userFlags: iep,ell,freeLunch
+                    title: Salesperson
+      tags:
+      - Students
+components:
+  schemas:
+    StatusInfoModel:
+      type: object
+      properties:
+        imsx_codeMajor:
+          type:
+          - string
+          - 'null'
+        imsx_severity:
+          type:
+          - string
+          - 'null'
+        imsx_messageRefIdentifier:
+          type:
+          - string
+          - 'null'
+        imsx_operationRefIdentifier:
+          type:
+          - string
+          - 'null'
+        imsx_description:
+          type:
+          - string
+          - 'null'
+        imsx_codeMinor:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    UserOutputModel:
+      type: object
+      properties:
+        user:
+          $ref: '#/components/schemas/ORUserModel'
+        statusInfoSet:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/StatusInfoModel'
+      additionalProperties: false
+    UserIdModel:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+        identifier:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    UsersOutputModel:
+      type: object
+      properties:
+        users:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ORUserModel'
+        statusInfoSet:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/StatusInfoModel'
+      additionalProperties: false
+    ORUserModel:
+      type: object
+      properties:
+        username:
+          type:
+          - string
+          - 'null'
+        userIds:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UserIdModel'
+        enabledUser:
+          type:
+          - boolean
+          - 'null'
+        givenName:
+          type:
+          - string
+          - 'null'
+        familyName:
+          type:
+          - string
+          - 'null'
+        middleName:
+          type:
+          - string
+          - 'null'
+        role:
+          type:
+          - string
+          - 'null'
+        identifier:
+          type:
+          - string
+          - 'null'
+        email:
+          type:
+          - string
+          - 'null'
+        sms:
+          type:
+          - string
+          - 'null'
+        phone:
+          type:
+          - string
+          - 'null'
+        agents:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/GuidRefModel'
+        orgs:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/GuidRefModel'
+        grades:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+        password:
+          type:
+          - string
+          - 'null'
+        sourcedId:
+          type:
+          - string
+          - 'null'
+        status:
+          type:
+          - string
+          - 'null'
+        dateLastModified:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        metadata:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: string
+      additionalProperties: false
+    GuidRefModel:
+      type: object
+      properties:
+        sourcedId:
+          type:
+          - string
+          - 'null'
+        href:
+          type:
+          - string
+          - 'null'
+        type:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}

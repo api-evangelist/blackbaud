@@ -1,17 +1,19 @@
-openapi: 3.0.1
+openapi: 3.2.0
 info:
-  title: 'Blackbaud SKY API: Enrichment'
-  description: This API manages enrichment information and related entities, enabling users to enrich constituent data with
-    analytics and predictive insights. To learn about how to set up your developer account and work with the SKY API, see
-    the [Getting Started](https://developer.blackbaud.com/skyapi/docs/getting-started) guide.
+  title: 'Blackbaud SKY API: Enrichment API'
+  description: This API manages enrichment information and related entities, enabling users to enrich constituent data with analytics and predictive insights. To learn about how to set up your developer account and work with the SKY API, see the Getting Started guide.
   version: '1.0'
   x-apievangelist-provenance:
     source: https://developer.sky.blackbaud.com/developer/apis/tap-enrch
-    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations,
-      examples, stored definitions); nothing authored
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
     assembled: '2026-10-14'
 servers:
 - url: https://api.sky.blackbaud.com/enrichment
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Enrichment
 paths:
   /v1/enrichment/identitythread/match:
     post:
@@ -20,10 +22,7 @@ paths:
       description: 'Send up to 1000 records per request for identity thread matching.
 
 
-        This API manages enrichment information and related entities, enabling users to pinpoint and track unique records
-        across one or multiple databases to key individual or household accounts. To learn about how to set up your developer
-        account and work with the SKY API, see the [Getting Started](https://developer.blackbaud.com/skyapi/docs/getting-started)
-        guide.
+        This API manages enrichment information and related entities, enabling users to pinpoint and track unique records across one or multiple databases to key individual or household accounts. To learn about how to set up your developer account and work with the SKY API, see the Getting Started guide.
 
 
         ***This endpoint is in PREVIEW and may be changed or removed at any time.***'
@@ -86,8 +85,24 @@ paths:
                   records_purchased: 25000000
                   records_used: 10126
                   records_remaining: 24989874
+      tags:
+      - Enrichment
 components:
   schemas:
+    EnrichmentRequest:
+      required:
+      - requested_records
+      type: object
+      properties:
+        requested_records:
+          maxItems: 1000
+          minItems: 1
+          type: array
+          items:
+            $ref: '#/components/schemas/EnrichmentRequestPerson'
+          description: List of records to be matched. Can provide up to 1000 records.
+      additionalProperties: false
+      description: Enrichment request containing records to be matched.
     AnnualContractUsage:
       type: object
       properties:
@@ -105,161 +120,173 @@ components:
           format: int32
       additionalProperties: false
       description: Represents annual contract usage information for enrichment requests.
-    EnrichmentRequest:
-      required:
-      - requested_records
-      type: object
-      properties:
-        requested_records:
-          maxItems: 1000
-          minItems: 1
-          type: array
-          items:
-            $ref: '#/components/schemas/EnrichmentRequestPerson'
-          description: List of records to be matched. Can provide up to 1000 records.
-      additionalProperties: false
-      description: Enrichment request containing records to be matched.
-    EnrichmentRequestPerson:
-      type: object
-      properties:
-        record_id:
-          type: string
-          description: The unique identifier for the person record. This field is not used for matching, but can be passed
-            through for reference.
-          nullable: true
-        first_name:
-          type: string
-          description: The person's first name.
-          nullable: true
-        middle_name:
-          type: string
-          description: The person's middle name.
-          nullable: true
-        last_name:
-          type: string
-          description: The person's last name.
-          nullable: true
-        suffix:
-          type: string
-          description: The person's suffix (e.g., Jr., Sr., III).
-          nullable: true
-        address:
-          type: string
-          description: The person's address.
-          nullable: true
-        city:
-          type: string
-          description: The person's city.
-          nullable: true
-        state:
-          type: string
-          description: The person's state.
-          nullable: true
-        zip_code:
-          type: string
-          description: The person's zip code.
-          nullable: true
-        email:
-          type: string
-          description: The person's email address.
-          nullable: true
-        phone:
-          type: string
-          description: The person's phone number.
-          nullable: true
-      additionalProperties: false
-      description: Person information to be used for matching.
-    IdentityThreadData:
-      type: object
-      properties:
-        individual_id:
-          type: string
-          description: The resolved unique individual ID for the person.
-          nullable: true
-        individual_key_status:
-          type: string
-          description: Status of the individual key (Maintained, Derived, or null).
-          nullable: true
-        household_id:
-          type: string
-          description: The resolved unique household ID for the person.
-          nullable: true
-        household_key_status:
-          type: string
-          description: Status of the individual key (Maintained, Derived, or null).
-          nullable: true
-        match_confidence:
-          type: integer
-          description: The confidence level of the match.
-          format: int32
-          nullable: true
-      additionalProperties: false
-      description: Data that can be appended for Identity Thread.
     IdentityThreadDataEnrichmentResponse:
       type: object
       properties:
         enriched_records:
-          type: array
+          type:
+          - array
+          - 'null'
           items:
             $ref: '#/components/schemas/IdentityThreadDataEnrichmentResponsePerson'
           description: The enriched records returned in the response.
-          nullable: true
         annual_contract_usage:
           $ref: '#/components/schemas/AnnualContractUsage'
       additionalProperties: false
       description: Represents the response from an enrichment request containing enriched records.
+    EnrichmentRequestPerson:
+      type: object
+      properties:
+        record_id:
+          type:
+          - string
+          - 'null'
+          description: The unique identifier for the person record. This field is not used for matching, but can be passed through for reference.
+        first_name:
+          type:
+          - string
+          - 'null'
+          description: The person's first name.
+        middle_name:
+          type:
+          - string
+          - 'null'
+          description: The person's middle name.
+        last_name:
+          type:
+          - string
+          - 'null'
+          description: The person's last name.
+        suffix:
+          type:
+          - string
+          - 'null'
+          description: The person's suffix (e.g., Jr., Sr., III).
+        address:
+          type:
+          - string
+          - 'null'
+          description: The person's address.
+        city:
+          type:
+          - string
+          - 'null'
+          description: The person's city.
+        state:
+          type:
+          - string
+          - 'null'
+          description: The person's state.
+        zip_code:
+          type:
+          - string
+          - 'null'
+          description: The person's zip code.
+        email:
+          type:
+          - string
+          - 'null'
+          description: The person's email address.
+        phone:
+          type:
+          - string
+          - 'null'
+          description: The person's phone number.
+      additionalProperties: false
+      description: Person information to be used for matching.
     IdentityThreadDataEnrichmentResponsePerson:
       type: object
       properties:
         appended_data:
           $ref: '#/components/schemas/IdentityThreadData'
         record_id:
-          type: string
-          description: The unique identifier for the person record. This field is not used for matching, but can be passed
-            through for reference.
-          nullable: true
+          type:
+          - string
+          - 'null'
+          description: The unique identifier for the person record. This field is not used for matching, but can be passed through for reference.
         first_name:
-          type: string
+          type:
+          - string
+          - 'null'
           description: The person's first name.
-          nullable: true
         middle_name:
-          type: string
+          type:
+          - string
+          - 'null'
           description: The person's middle name.
-          nullable: true
         last_name:
-          type: string
+          type:
+          - string
+          - 'null'
           description: The person's last name.
-          nullable: true
         suffix:
-          type: string
+          type:
+          - string
+          - 'null'
           description: The person's suffix (e.g., Jr., Sr., III).
-          nullable: true
         address:
-          type: string
+          type:
+          - string
+          - 'null'
           description: The person's address.
-          nullable: true
         city:
-          type: string
+          type:
+          - string
+          - 'null'
           description: The person's city.
-          nullable: true
         state:
-          type: string
+          type:
+          - string
+          - 'null'
           description: The person's state.
-          nullable: true
         zip_code:
-          type: string
+          type:
+          - string
+          - 'null'
           description: The person's zip code.
-          nullable: true
         email:
-          type: string
+          type:
+          - string
+          - 'null'
           description: The person's email address.
-          nullable: true
         phone:
-          type: string
+          type:
+          - string
+          - 'null'
           description: The person's phone number.
-          nullable: true
       additionalProperties: false
       description: Represents a person in the enrichment response with appended data.
+    IdentityThreadData:
+      type: object
+      properties:
+        individual_id:
+          type:
+          - string
+          - 'null'
+          description: The resolved unique individual ID for the person.
+        individual_key_status:
+          type:
+          - string
+          - 'null'
+          description: Status of the individual key (Maintained, Derived, or null).
+        household_id:
+          type:
+          - string
+          - 'null'
+          description: The resolved unique household ID for the person.
+        household_key_status:
+          type:
+          - string
+          - 'null'
+          description: Status of the individual key (Maintained, Derived, or null).
+        match_confidence:
+          type:
+          - integer
+          - 'null'
+          description: The confidence level of the match.
+          format: int32
+      additionalProperties: false
+      description: Data that can be appended for Identity Thread.
   securitySchemes:
     Bb-Api-Subscription-Key:
       type: apiKey
@@ -272,6 +299,3 @@ components:
           authorizationUrl: https://app.blackbaud.com/oauth/authorize
           tokenUrl: https://oauth2.sky.blackbaud.com/token
           scopes: {}
-security:
-- Bb-Api-Subscription-Key: []
-  OAuth2: []

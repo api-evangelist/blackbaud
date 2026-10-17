@@ -1,0 +1,1058 @@
+openapi: 3.2.0
+info:
+  title: Blackbaud Fundraisers API
+  version: '1.0'
+  x-refined-note:
+  - x-apievangelist-provenance differs across the merged source definitions and was not carried
+  description: 'Operations tagged Fundraisers across 3 of this provider''s published API definitions: blackbaud-altru-constituent-api-openapi.yml, blackbaud-crm-constituent-api-openapi.yml, blackbaud-fundraising-api-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.sky.blackbaud.com/alt-conmg
+- url: https://api.sky.blackbaud.com/crm-conmg
+- url: https://api.sky.blackbaud.com/fundraising/v1
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Fundraisers
+paths:
+  /fundraisers:
+    post:
+      operationId: CreateConstituentFundraiser
+      summary: Create a constituent fundraiser
+      description: This operation is used to add a fundraiser constituency to a constituent.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewConstituentFundraiser'
+            example:
+              constituent_id: 75439455-addc-470e-ac17-b7aa2e4bba33
+              date_from: '2021-11-28T12:00:00Z'
+              date_to: '2022-12-28T12:00:00Z'
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully creates the resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to create the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Fundraisers
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-conmg
+  /fundraisers/List:
+    get:
+      operationId: ListConstituentFundraisers
+      summary: List constituent fundraisers
+      description: Returns a list of all fundraisers
+      parameters:
+      - name: org_positions_selection_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: show for
+      - name: include_stewardship
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: include stewardship steps
+      - name: show_inactive
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: show inactive
+      - name: only_owned_interactions
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: only show steps owned by this fundraiser
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Limits the number of records to return.
+      - name: session_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: A unique key provided by user for paging results. The same key will be returned in a successful response.
+      - name: infinity_session
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Values for cookies related to the Infinity load balancer session.
+      - name: more_rows_range_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Key for accessing cached results on subsequent calls to this data list.
+      - name: start_row_index
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Number of rows to skip,get result after these rows.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a collection of result entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConstituentFundraiserListCollection'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to view the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+      tags:
+      - Fundraisers
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-conmg
+  /fundraisers/{fundraiser_date_range_id}:
+    delete:
+      operationId: DeleteConstituentFundraiser
+      summary: Delete a constituent fundraiser
+      description: This record operation is used to handle the rules of deleting a fundraiser constituency.
+      parameters:
+      - name: fundraiser_date_range_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The fundraiser date range id
+      responses:
+        '200':
+          description: Returned when the operation successfully deletes the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to delete the resource.
+      tags:
+      - Fundraisers
+    patch:
+      operationId: EditConstituentFundraiser
+      summary: Edit a constituent fundraiser
+      description: This operation is used to edit a fundraiser constituency of a constituent.
+      parameters:
+      - name: fundraiser_date_range_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The fundraiser date range id.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditConstituentFundraiser'
+            example:
+              date_from: '2021-11-28T12:00:00Z'
+              date_to: '2022-12-28T12:00:00Z'
+        description: ConfigurationMessage object representing operation intended to be created
+      responses:
+        '200':
+          description: Returned when the operation successfully edits the resource.
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to edit the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Fundraisers
+    get:
+      operationId: GetConstituentFundraiser
+      summary: Get a constituent fundraiser
+      description: This operation is used to edit a fundraiser constituency of a constituent.
+      parameters:
+      - name: fundraiser_date_range_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The fundraiser date range id.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains the specified resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConstituentFundraiser'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Returned when the user does not have permission to get the resource.
+        '404':
+          description: Returned when the specified resource is not found.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+      - Fundraisers
+    servers:
+    - url: https://api.sky.blackbaud.com/alt-conmg
+  /fundraisers/assignments:
+    post:
+      operationId: CreateFundraiserAssignment
+      summary: Fundraiser assignment (Create)
+      description: Creates a fundraiser assignment.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FundraiserAssignmentAdd'
+            example:
+              amount:
+                value: 1000
+              appeal_id: '4'
+              campaign_id: '1'
+              constituent_id: '280'
+              end: '2000-02-22T09:23:08.413Z'
+              fund_id: '6'
+              fundraiser_id: '230'
+              start: '1995-02-22T09:23:08.413Z'
+              type: Staff
+        description: An object that represents the fundraising assignment to create.
+      responses:
+        '200':
+          description: Returned when the operation successfully creates an assignment. The response body contains the ID of the new assignment.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse_2'
+              example:
+                id: '1281'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+        '403':
+          description: Returned when the user does not have permission to create the assignment.
+        '404':
+          description: Returned when the specified constituent is not found.
+      tags:
+      - Fundraisers
+    servers:
+    - url: https://api.sky.blackbaud.com/fundraising/v1
+  /fundraisers/assignments/{assignment_id}:
+    delete:
+      operationId: DeleteFundraiserAssignment
+      summary: Fundraiser assignment (Delete)
+      description: Deletes a fundraiser assignment.
+      parameters:
+      - name: assignment_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The immutable system record ID of the fundraiser assignment to delete.
+      responses:
+        '200':
+          description: Returned when the operation successfully deletes the fundraiser assignment.
+        '400':
+          description: Returned when the specified assignment ID in the request URL is not in the appropriate format.
+        '403':
+          description: Returned when the user does not have permission to delete the fundraiser assignment.
+      tags:
+      - Fundraisers
+    patch:
+      operationId: EditFundraiserAssignment
+      summary: Fundraiser assignment (Edit)
+      description: Edits a fundraiser assignment.
+      parameters:
+      - name: assignment_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The immutable system record ID of the fundraiser assignment to edit.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FundraiserAssignmentEdit'
+            example:
+              amount:
+                value: 10000
+              campaign_id: '45'
+              type: Campaign
+        description: An object that represents the properties of the fundraiser assignment to edit.
+      responses:
+        '200':
+          description: Returned when the operation successfully edits the fundraiser assignment.
+        '400':
+          description: Returned when the specified fundraiser assignment ID in the request URL or the specified request parameters are not in the appropriate format.
+        '404':
+          description: Returned when the specified fundraiser assignment is not found.
+      tags:
+      - Fundraisers
+    servers:
+    - url: https://api.sky.blackbaud.com/fundraising/v1
+  /fundraisers/goals:
+    post:
+      operationId: CreateFundraiserGoal
+      summary: Fundraiser goal (Create)
+      description: Creates a fundraiser goal.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GoalAdd'
+            example:
+              amount:
+                value: 10000
+              campaign_id: '44'
+              fundraiser_id: '280'
+              type: Campaign
+        description: An object that represents the fundraiser goal to create.
+      responses:
+        '200':
+          description: Returned when the operation successfully creates a fundraiser goal. The response body contains the ID of the new fundraiser goal.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse_2'
+              example:
+                id: '1281'
+        '400':
+          description: Returned when the request body is not in the appropriate format.
+        '403':
+          description: Returned when the user does not have permission to create the fundraiser goal.
+        '404':
+          description: Returned when the specified constituent is not found.
+      tags:
+      - Fundraisers
+    servers:
+    - url: https://api.sky.blackbaud.com/fundraising/v1
+  /fundraisers/goals/categories:
+    get:
+      operationId: ListFundraiserGoalCategories
+      summary: Fundraiser goal categories
+      description: Returns a list of active fundraiser goal categories.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a <a href="https://developer.blackbaud.com/skyapi/api/entity-reference/constituent#Collection">collection</a> of string fundraiser goal categories.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiCollection_String'
+              example:
+                count: 10
+                value:
+                - On-boarding
+                - Stretch
+                - Miscellaneous
+        '403':
+          description: Returned when the user does not have permission to view fundraiser goal categories.
+      tags:
+      - Fundraisers
+    servers:
+    - url: https://api.sky.blackbaud.com/fundraising/v1
+  /fundraisers/goals/{goal_id}:
+    delete:
+      operationId: DeleteFundraiserGoal
+      summary: Fundraiser goal (Delete)
+      description: Deletes a fundraiser goal.
+      parameters:
+      - name: goal_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The immutable system record ID of the fundraiser goal to delete.
+      responses:
+        '200':
+          description: Returned when the operation successfully deletes the fundraiser goal.
+        '400':
+          description: Returned when the specified goal ID in the request URL is not in the appropriate format.
+        '403':
+          description: Returned when the user does not have permission to delete the fundraiser goal.
+      tags:
+      - Fundraisers
+    patch:
+      operationId: EditFundraiserGoal
+      summary: Fundraiser goal (Edit)
+      description: Edits a fundraiser goal.
+      parameters:
+      - name: goal_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The immutable system record ID of the fundraiser goal to edit.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GoalEdit'
+            example:
+              amount:
+                value: 10000
+              campaign_id: '45'
+              type: Campaign
+        description: An object that represents the properties of the fundraiser goal to edit.
+      responses:
+        '200':
+          description: Returned when the operation successfully edits the fundraiser goal.
+        '400':
+          description: Returned when the specified fundraiser goal ID in the request URL or the specified request parameters are not in the appropriate format.
+        '404':
+          description: Returned when the specified fundraiser goal is not found.
+      tags:
+      - Fundraisers
+    servers:
+    - url: https://api.sky.blackbaud.com/fundraising/v1
+  /fundraisers/types:
+    get:
+      operationId: ListFundraiserTypes
+      summary: Fundraiser types
+      description: Gets the list of active fundraiser types.
+      responses:
+        '200':
+          description: Returned when the operation is successful. The response body contains a <a href="https://developer.blackbaud.com/skyapi/api/entity-reference/fundraising#Collection">collection</a> of string fundraiser types.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiCollection_String'
+              example:
+                count: 4
+                value:
+                - Event
+                - Volunteer
+                - Staff
+                - Fund
+      tags:
+      - Fundraisers
+    servers:
+    - url: https://api.sky.blackbaud.com/fundraising/v1
+  /fundraisers/{fundraiser_id}/assignments:
+    get:
+      operationId: ListFundraiserAssignmentsSingleFundraiser
+      summary: Fundraiser assignment list (Single fundraiser)
+      description: Returns a list of fundraiser assignments for a fundraiser.
+      parameters:
+      - name: fundraiser_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The immutable system record ID of the fundraiser to retrieve the assignments for.
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Represents the number of records to return. The default is 500. The maximum is 5000.
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Represents the number of records to skip. For use with pagination.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a <a href="https://developer.blackbaud.com/skyapi/api/entity-reference/fundraising#Collection">collection</a> of <a href="https://developer.blackbaud.com/skyapi/api/entity-reference/fundraising#FundraiserAssignment">fundraiser assignment</a> entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiCollection_FundraiserAssignmentRead'
+              example:
+                count: 3
+                value:
+                - id: '108'
+                  amount:
+                    value: 5000
+                  campaign_id: '8'
+                  constituent_id: '186'
+                  fund_id: '11'
+                  fundraiser_id: '635'
+                  type: Major Donor
+                - id: '103'
+                  amount:
+                    value: 7500
+                  appeal_id: '2'
+                  campaign_id: '4'
+                  constituent_id: '186'
+                  fundraiser_id: '213'
+                  type: Fund
+                - id: '102'
+                  amount:
+                    value: 50
+                  campaign_id: '2'
+                  constituent_id: '186'
+                  end: '2001-11-16T11:26:53.52Z'
+                  fund_id: '6'
+                  fundraiser_id: '185'
+                  start: '1995-11-16T11:26:53.52Z'
+                  type: Volunteer
+        '400':
+          description: Returned when the specified ID is not in the appropriate format.
+        '403':
+          description: Returned when the user does not have permission to view the fundraiser assignments.
+        '404':
+          description: Returned when the specified fundraiser is not found.
+      tags:
+      - Fundraisers
+    servers:
+    - url: https://api.sky.blackbaud.com/fundraising/v1
+  /fundraisers/{fundraiser_id}/goals:
+    get:
+      operationId: ListFundraiserGoalsSingleFundraiser
+      summary: Fundraiser goal list (Single fundraiser)
+      description: Returns a list of fundraiser goals for a fundraiser.
+      parameters:
+      - name: fundraiser_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The immutable system record ID of the fundraiser to retrieve the goals for.
+      responses:
+        '200':
+          description: Returned when the operation succeeds. The response body contains a <a href="https://developer.blackbaud.com/skyapi/api/entity-reference/fundraising#Collection">collection</a> of <a href="https://developer.blackbaud.com/skyapi/api/entity-reference/fundraising#FundraiserGoal">fundraiser goal</a> entities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiCollection_GoalRead'
+              example:
+                count: 4
+                value:
+                - id: '8'
+                  amount: 10000
+                  campaign_id: '5'
+                  fundraiser_id: '280'
+                  type: Campaign
+                - id: '131'
+                  amount: 1000
+                  fund_id: '24'
+                  fundraiser_id: '280'
+                  type: Fund
+                - id: '132'
+                  amount: 2000
+                  appeal_id: '15'
+                  fundraiser_id: '280'
+                  type: Appeal
+                - id: '133'
+                  amount: 500
+                  fundraiser_id: '280'
+                  type: UnspecifiedCategory
+                  unspecified_category_name: Short term
+        '400':
+          description: Returned when the specified ID is not in the appropriate format.
+        '403':
+          description: Returned when the user does not have permission to view the fundraiser goals.
+        '404':
+          description: Returned when the specified fundraiser is not found.
+      tags:
+      - Fundraisers
+    servers:
+    - url: https://api.sky.blackbaud.com/fundraising/v1
+components:
+  schemas:
+    NewConstituentFundraiser:
+      required:
+      - constituent_id
+      type: object
+      properties:
+        constituent_id:
+          type: string
+          description: The constituent ID.
+        date_from:
+          type: string
+          description: 'The date from. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        date_to:
+          type: string
+          description: 'The date to. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+      additionalProperties: false
+      description: CreateConstituentFundraiser
+      example:
+        constituent_id: 75439455-addc-470e-ac17-b7aa2e4bba33
+        date_from: '2021-11-28T12:00:00Z'
+        date_to: '2022-12-28T12:00:00Z'
+      x-display-name: Fundraiser Constituency Add Form
+      x-display-id: Fundraiser Constituency Add Form
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). When this member is not present, its value is assumed to be "about:blank".
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type: integer
+          description: The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+          format: int32
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type: string
+          description: A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        trace_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+        span_id:
+          type: string
+          description: A request ID that can be provided to Blackbaud Support that may help with further troubleshooting.
+      additionalProperties: false
+      description: A machine-readable format for specifying errors in HTTP API responses based on https://tools.ietf.org/html/rfc7807.
+      x-display-name: Problem details
+      x-display-id: ProblemDetails
+    ConstituentFundraiserListCollection:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items available for retrieval into the collection after applying any request parameters.
+          format: int32
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConstituentFundraiserListSummary'
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+        infinity_session:
+          type: string
+          description: Values for cookies related to the Infinity load balancer session.
+          format: string
+        session_key:
+          type: string
+          description: Session key for paging provided by user in request query parameter.
+          format: string
+        total_available_rows:
+          type: integer
+          description: The number of total rows available.
+          format: int32
+        more_rows_range_key:
+          type: string
+          description: Key for accessing cached results on subsequent calls to this data list.
+          format: string
+        data_no_longer_available:
+          type: boolean
+          description: Indicates data is no longer available in the context of this session.
+          format: boolean
+      additionalProperties: false
+      description: A collection of items. Data lists can contain paginated results.
+    ConstituentFundraiserListSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID.
+        name:
+          type: string
+          description: The name.
+        prospect_plans_as_primary_manager:
+          type: integer
+          description: The prospect plans (as primary manager).
+          format: int32
+        prospect_plans_relative_to_average:
+          type: string
+          description: The prospect plans (relative to average).
+        planned_steps_next_7_days:
+          type: integer
+          description: The planned steps (next 7 days).
+          format: int32
+        planned_steps_next_30_days:
+          type: integer
+          description: The planned steps (next 30 days).
+          format: int32
+        completed_steps_last_7_days:
+          type: integer
+          description: The completed steps (last 7 days).
+          format: int32
+        completed_steps_last_30_days:
+          type: integer
+          description: The completed steps (last 30 days).
+          format: int32
+      additionalProperties: false
+      description: ListConstituentFundraisers
+      x-display-name: Fundraiser List
+      x-display-id: Fundraiser List
+    EditConstituentFundraiser:
+      type: object
+      properties:
+        date_from:
+          type: string
+          description: 'The date from. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        date_to:
+          type: string
+          description: 'The date to. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+      additionalProperties: false
+      description: EditConstituentFundraiser
+      example:
+        date_from: '2021-11-28T12:00:00Z'
+        date_to: '2022-12-28T12:00:00Z'
+      x-display-name: Fundraiser Constituency Edit Form
+      x-display-id: Fundraiser Constituency Edit Form
+    PostResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The newly created ID.
+      additionalProperties: false
+      description: Defines the shape of a post response object.
+    ConstituentFundraiser:
+      type: object
+      properties:
+        date_from:
+          type: string
+          description: 'The date from. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+        date_to:
+          type: string
+          description: 'The date to. Uses the format YYYY-MM-DDThh:mm:ss. An example date: <i>1955-11-05T22:04:00</i>.'
+          format: date-time
+      additionalProperties: false
+      description: GetConstituentFundraiser
+      x-display-name: Fundraiser Constituency Edit Form
+      x-display-id: Fundraiser Constituency Edit Form
+    FundraiserAssignmentRead:
+      description: Fundraiser constituents interact with other constituents on behalf of your organization to cultivate relationships and request donations. Fundraiser assignments allow you to assign specific constituents to fundraisers for solicitation purposes.
+      type: object
+      properties:
+        id:
+          description: The immutable system record ID of the given assignment.
+          type: string
+        amount:
+          $ref: '#/components/schemas/Currency'
+          description: The goal amount for the fundraiser to solicit from the assigned constituent.
+        appeal_id:
+          description: The immutable system record ID of the appeal the fundraiser should use to request gifts.
+          type: string
+        campaign_id:
+          description: The immutable system record ID of the campaign to apply resulting gifts to.
+          type: string
+        constituent_id:
+          description: The immutable system record ID of the target constituent.
+          type: string
+        end:
+          format: date-time
+          description: 'The fundraiser end date. Uses <a href="https://tools.ietf.org/html/rfc3339">ISO-8601 format: </a><i>2017-05-17T00:00:00</i>.'
+          type: string
+          x-supports-datetime-offset: false
+        fund_id:
+          description: The immutable system record ID of the fund any resulting gifts should be applied to. If a restricted fund is selected, only campaigns and appeals associated with that fund may be selected.
+          type: string
+        fundraiser_id:
+          description: The immutable system record ID of the fundraiser assigned to the constituent.
+          type: string
+        start:
+          format: date-time
+          description: 'The fundraiser start date. Uses <a href="https://tools.ietf.org/html/rfc3339">ISO-8601 format: </a><i>2017-01-29T00:00:00</i>.'
+          type: string
+          x-supports-datetime-offset: false
+        type:
+          description: The type of fundraiser. Available values are the entries in the <a href="https://developer.sky.blackbaud.com/docs/services/58bdd6c8d7dcde06046081d7/operations/ListFundraiserTypes"><b>Solicitor Type</b></a> table.
+          type: string
+      x-display-name: Fundraiser assignment
+      x-display-id: FundraiserAssignment
+    ApiCollection_FundraiserAssignmentRead:
+      description: Fetching data all at once quickly becomes unmanageable. The collection entity helps by returning paginated chunks of large data sets. This entity includes helpful metadata and properties to paginate and iterate through the data.
+      type: object
+      properties:
+        count:
+          format: int32
+          description: The number of items available for retrieval into the collection after applying any request parameters. The <b>limit</b> and <b>offset</b> parameters do not affect the <b>count</b>, but to facilitate paging, they may affect the number of items in the <b>value</b> result set.
+          type: integer
+        next_link:
+          description: For paginated responses, the URI for the next page of results.
+          type: string
+        value:
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+          type: array
+          items:
+            $ref: '#/components/schemas/FundraiserAssignmentRead'
+      x-hidden: true
+      x-base-type: '#/definitions/ApiCollection'
+    FundraiserAssignmentAdd:
+      description: Fundraiser constituents interact with other constituents on behalf of your organization to cultivate relationships and request donations. Fundraiser assignments allow you to assign specific constituents to fundraisers for solicitation purposes.
+      required:
+      - constituent_id
+      - fundraiser_id
+      type: object
+      properties:
+        amount:
+          $ref: '#/components/schemas/Currency'
+          description: The goal amount for the fundraiser to solicit from the assigned constituent.
+        appeal_id:
+          description: The immutable system record ID of the appeal the fundraiser should use to request gifts.
+          type: string
+        campaign_id:
+          description: The immutable system record ID of the campaign to apply resulting gifts to.
+          type: string
+        constituent_id:
+          description: The immutable system record ID of the target constituent.
+          type: string
+        end:
+          format: date-time
+          description: 'The fundraiser end date. Uses <a href="https://tools.ietf.org/html/rfc3339">ISO-8601 format: </a><i>2017-05-17T00:00:00</i>.'
+          type: string
+          x-supports-datetime-offset: false
+        fund_id:
+          description: The immutable system record ID of the fund any resulting gifts should be applied to. If a restricted fund is selected, only campaigns and appeals associated with that fund may be selected.
+          type: string
+        fundraiser_id:
+          description: The immutable system record ID of the fundraiser assigned to the constituent.
+          type: string
+        start:
+          format: date-time
+          description: 'The fundraiser start date. Uses <a href="https://tools.ietf.org/html/rfc3339">ISO-8601 format: </a><i>2017-01-29T00:00:00</i>.'
+          type: string
+          x-supports-datetime-offset: false
+        type:
+          description: The type of fundraiser. Available values are the entries in the <a href="https://developer.sky.blackbaud.com/docs/services/58bdd6c8d7dcde06046081d7/operations/ListFundraiserTypes"><b>Solicitor Type</b></a> table.
+          type: string
+      x-hidden: true
+      x-display-name: Create fundraiser assignment
+      x-display-id: CreateFundraiserAssignment
+    ApiCollection_String:
+      description: Fetching data all at once quickly becomes unmanageable. The collection entity helps by returning paginated chunks of large data sets. This entity includes helpful metadata and properties to paginate and iterate through the data.
+      type: object
+      properties:
+        count:
+          format: int32
+          description: The number of items available for retrieval into the collection after applying any request parameters. The <b>limit</b> and <b>offset</b> parameters do not affect the <b>count</b>, but to facilitate paging, they may affect the number of items in the <b>value</b> result set.
+          type: integer
+        next_link:
+          description: For paginated responses, the URI for the next page of results.
+          type: string
+        value:
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+          type: array
+          items:
+            type: string
+      x-hidden: true
+      x-base-type: '#/definitions/ApiCollection'
+    GoalRead:
+      description: To help motivate fundraisers and track their effectiveness, your organization may set goal amounts to raise toward funds, campaigns, or appeals.
+      type: object
+      properties:
+        id:
+          description: The immutable system record ID of the fundraiser goal.
+          type: string
+        amount:
+          $ref: '#/components/schemas/Currency'
+          description: The fundraiser goal amount.
+        appeal_id:
+          description: The immutable system record ID of the appeal associated with the fundraiser goal.
+          type: string
+        campaign_id:
+          description: The immutable system record ID of the campaign associated with the fundraiser goal.
+          type: string
+        fund_id:
+          description: The immutable system record ID of the fund associated with the fundraiser goal.
+          type: string
+        fundraiser_id:
+          description: The immutable system record ID of the fundraiser associated with the fundraiser goal.
+          type: string
+        type:
+          description: The fundraiser goal type. Available values are <i>Campaign</i>, <i>Fund</i>, <i>UnspecifiedCategory</i>, and <i>Appeal</i>
+          enum:
+          - Campaign
+          - Fund
+          - UnspecifiedCategory
+          - Appeal
+          type: string
+        unspecified_category_name:
+          description: The unspecified category name for the fundraiser goal. Available values are the active entries in the <a href="https://developer.sky.blackbaud.com/docs/services/58bdd6c8d7dcde06046081d7/operations/ListFundraiserGoalCategories"><b>Solicitor Goal Categories</b></a> table.
+          type: string
+      x-display-name: Fundraiser goal
+      x-display-id: FundraiserGoal
+    ApiCollection_GoalRead:
+      description: Fetching data all at once quickly becomes unmanageable. The collection entity helps by returning paginated chunks of large data sets. This entity includes helpful metadata and properties to paginate and iterate through the data.
+      type: object
+      properties:
+        count:
+          format: int32
+          description: The number of items available for retrieval into the collection after applying any request parameters. The <b>limit</b> and <b>offset</b> parameters do not affect the <b>count</b>, but to facilitate paging, they may affect the number of items in the <b>value</b> result set.
+          type: integer
+        next_link:
+          description: For paginated responses, the URI for the next page of results.
+          type: string
+        value:
+          description: The set of items included in the response. This may be a subset of the items in the collection.
+          type: array
+          items:
+            $ref: '#/components/schemas/GoalRead'
+      x-hidden: true
+      x-base-type: '#/definitions/ApiCollection'
+    GoalEdit:
+      description: To help motivate fundraisers and track their effectiveness, your organization may set goal amounts to raise toward funds, campaigns, or appeals.
+      type: object
+      properties:
+        amount:
+          $ref: '#/components/schemas/Currency'
+          description: The fundraiser goal amount.
+        appeal_id:
+          description: The immutable system record ID of the appeal associated with the fundraiser goal.
+          type: string
+        campaign_id:
+          description: The immutable system record ID of the campaign associated with the fundraiser goal.
+          type: string
+        fund_id:
+          description: The immutable system record ID of the fund associated with the fundraiser goal.
+          type: string
+        type:
+          description: The fundraiser goal type. Available values are <i>Campaign</i>, <i>Fund</i>, <i>UnspecifiedCategory</i>, and <i>Appeal</i>.  This property cannot be set to null.
+          enum:
+          - Campaign
+          - Fund
+          - UnspecifiedCategory
+          - Appeal
+          type: string
+        unspecified_category_name:
+          description: The unspecified category name for the fundraiser goal. Available values are the active entries in the <a href="https://developer.sky.blackbaud.com/docs/services/58bdd6c8d7dcde06046081d7/operations/ListFundraiserGoalCategories"><b>Solicitor Goal Categories</b></a> table.
+          type: string
+      x-hidden: true
+      x-display-name: Edit fundraiser goal
+      x-display-id: EditFundraiserGoal
+    GoalAdd:
+      description: To help motivate fundraisers and track their effectiveness, your organization may set goal amounts to raise toward funds, campaigns, or appeals.
+      required:
+      - fundraiser_id
+      - type
+      type: object
+      properties:
+        amount:
+          $ref: '#/components/schemas/Currency'
+          description: The fundraiser goal amount.
+        appeal_id:
+          description: The immutable system record ID of the appeal associated with the fundraiser goal.
+          type: string
+        campaign_id:
+          description: The immutable system record ID of the campaign associated with the fundraiser goal.
+          type: string
+        fund_id:
+          description: The immutable system record ID of the fund associated with the fundraiser goal.
+          type: string
+        fundraiser_id:
+          description: The immutable system record ID of the fundraiser associated with the fundraiser goal.
+          type: string
+        type:
+          description: The fundraiser goal type. Available values are <i>Campaign</i>, <i>Fund</i>, <i>UnspecifiedCategory</i>, and <i>Appeal</i>
+          enum:
+          - Campaign
+          - Fund
+          - UnspecifiedCategory
+          - Appeal
+          type: string
+        unspecified_category_name:
+          description: The unspecified category name for the fundraiser goal. Available values are the active entries in the <a href="https://developer.sky.blackbaud.com/docs/services/58bdd6c8d7dcde06046081d7/operations/ListFundraiserGoalCategories"><b>Solicitor Goal Categories</b></a> table.
+          type: string
+      x-hidden: true
+      x-display-name: Create fundraiser goal
+      x-display-id: CreateFundraiserGoal
+    PostResponse_2:
+      description: Defines the shape of a post response object.
+      type: object
+      properties:
+        id:
+          description: The newly created ID
+          type: string
+      x-hidden: true
+    FundraiserAssignmentEdit:
+      description: Fundraiser constituents interact with other constituents on behalf of your organization to cultivate relationships and request donations. Fundraiser assignments allow you to assign specific constituents to fundraisers for solicitation purposes.
+      type: object
+      properties:
+        amount:
+          $ref: '#/components/schemas/Currency'
+          description: The goal amount for the fundraiser to solicit from the assigned constituent.
+        appeal_id:
+          description: The immutable system record ID of the appeal the fundraiser should use to request gifts.
+          type: string
+        campaign_id:
+          description: The immutable system record ID of the campaign to apply resulting gifts to.
+          type: string
+        end:
+          format: date-time
+          description: 'The fundraiser end date. Uses <a href="https://tools.ietf.org/html/rfc3339">ISO-8601 format: </a><i>2017-05-17T00:00:00</i>.'
+          type: string
+          x-supports-datetime-offset: false
+        fund_id:
+          description: The immutable system record ID of the fund any resulting gifts should be applied to. If a restricted fund is selected, only campaigns and appeals associated with that fund may be selected.
+          type: string
+        start:
+          format: date-time
+          description: 'The fundraiser start date. Uses <a href="https://tools.ietf.org/html/rfc3339">ISO-8601 format: </a><i>2017-01-29T00:00:00</i>.'
+          type: string
+          x-supports-datetime-offset: false
+        type:
+          description: The type of fundraiser. Available values are the entries in the <a href="https://developer.sky.blackbaud.com/docs/services/58bdd6c8d7dcde06046081d7/operations/ListFundraiserTypes"><b>Solicitor Type</b></a> table.
+          type: string
+      x-hidden: true
+      x-display-name: Edit fundraiser assignment
+      x-display-id: EditFundraiserAssignment
+    Currency:
+      description: For consistency, currency is configured at the organization level. This ensures that all monetary amounts are consistent, regardless of where they are entered or viewed.
+      type: object
+      properties:
+        value:
+          format: double
+          description: The monetary value.
+          type: number
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
+x-refined-from:
+- blackbaud-altru-constituent-api-openapi.yml
+- blackbaud-crm-constituent-api-openapi.yml
+- blackbaud-fundraising-api-openapi.yml

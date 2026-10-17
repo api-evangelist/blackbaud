@@ -1,0 +1,232 @@
+openapi: 3.2.0
+info:
+  title: 'Blackbaud SKY API: Event Eventparticipantoptions API'
+  description: This API manages event information and related entities such as participant.
+  version: '1.0'
+  x-apievangelist-provenance:
+    source: https://developer.sky.blackbaud.com/developer/apis/event
+    method: assembled from Blackbaud's public API Management developer data API (operations, parameters, representations, examples, stored definitions); nothing authored
+    assembled: '2026-10-14'
+servers:
+- url: https://api.sky.blackbaud.com/event
+security:
+- Bb-Api-Subscription-Key: []
+  OAuth2: []
+tags:
+- name: Eventparticipantoptions
+paths:
+  /v1/eventparticipantoptions/{option_id}:
+    delete:
+      operationId: DeleteEventParticipantOption
+      summary: Delete an event participant option
+      description: Deletes an event participant option.
+      parameters:
+      - name: option_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The ID of the event participant option.
+      responses:
+        '200':
+          description: Returned when the operation succeeds.
+        '400':
+          description: Returned when the event participant option is still in use on a participant record.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Eventparticipantoptions-option_id-Delete400ApplicationJsonResponse'
+              example:
+              - message: The request body is not in the appropriate format.
+                error_name: BadRequest
+                error_code: 400
+                raw_message: The request body is not in the appropriate format.
+        '403':
+          description: Returned when the user does not have rights to delete the event participant option.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Eventparticipantoptions-option_id-Delete403ApplicationJsonResponse'
+              example:
+              - message: The user does not have the necessary permissions for this task.
+                error_name: Forbidden
+                error_code: 403
+                raw_message: The user does not have the necessary permissions for this task.
+      tags:
+      - Eventparticipantoptions
+    patch:
+      operationId: EditEventParticipantOption
+      summary: Edit an event participant option
+      description: Edits the details about an event participant option.
+      parameters:
+      - name: option_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The ID of the event participant option.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditEventParticipantOption'
+            example:
+              name: List option
+              list_options:
+              - id: 23b71438-4b0b-476b-935a-68e61b3aa015
+                name: Small
+                sequence: 0
+              - id: 00cf35e7-128e-429b-a6bb-a8e5254f3c7b
+                name: Medium
+                sequence: 1
+              - id: 1c58e1dd-6ac6-42a6-9820-1ce594941341
+                name: Large
+                sequence: 2
+              - id: a2aa8654-85f4-486d-8ff7-019ab0012df9
+                name: X-Large
+                sequence: 3
+        description: An object that represents the event participant option to edit.
+      responses:
+        '200':
+          description: Returned when the operation succeeds.
+        '400':
+          description: Returned when the specified request body is not in the appropriate format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Eventparticipantoptions-option_id-Patch400ApplicationJsonResponse'
+              example:
+              - message: The request body is not in the appropriate format.
+                error_name: BadRequest
+                error_code: 400
+                raw_message: The request body is not in the appropriate format.
+        '403':
+          description: Returned when the user does not have rights to modify the event participant option.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Eventparticipantoptions-option_id-Patch403ApplicationJsonResponse'
+              example:
+              - message: The user does not have the necessary permissions for this task.
+                error_name: Forbidden
+                error_code: 403
+                raw_message: The user does not have the necessary permissions for this task.
+        '404':
+          description: Returned when the specified event participant option is not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Eventparticipantoptions-option_id-Patch404ApplicationJsonResponse'
+              example:
+              - message: The requested resource could not be found.
+                error_name: ResourceNotFound
+                error_code: 404
+                raw_message: The requested resource could not be found.
+      tags:
+      - Eventparticipantoptions
+components:
+  schemas:
+    ServiceError:
+      type: object
+      properties:
+        message:
+          type:
+          - string
+          - 'null'
+          description: The description of the error.
+        error_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the error.
+        error_code:
+          type: integer
+          description: The number associated with the error.
+          format: int32
+        raw_message:
+          type:
+          - string
+          - 'null'
+          description: The description of the error which can include argument placeholders.
+        error_args:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: The argument data for the placeholders.
+      additionalProperties: false
+      description: Explains the reason for an error.
+    V1Eventparticipantoptions-option_id-Delete403ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    V1Eventparticipantoptions-option_id-Patch400ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    V1Eventparticipantoptions-option_id-Delete400ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    EditEventParticipantOption:
+      type: object
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the event participant option.
+        list_options:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/EventParticipantOptionListOption'
+          description: The available options for the List input type.
+      additionalProperties: false
+      description: "Event participant options are fields that collects details about participants, such as t-shirt sizes, meal preferences, or seating requests. \nSet options and their values for an event and then add responses for each participant."
+    V1Eventparticipantoptions-option_id-Patch403ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+    EventParticipantOptionListOption:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: The ID of the list option
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the list option
+        sequence:
+          type: integer
+          description: The sequence used to order the list options
+          format: int32
+      additionalProperties: false
+      description: A event participant option list option
+    V1Eventparticipantoptions-option_id-Patch404ApplicationJsonResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceError'
+      x-apim-inline: true
+  securitySchemes:
+    Bb-Api-Subscription-Key:
+      type: apiKey
+      name: Bb-Api-Subscription-Key
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.blackbaud.com/oauth/authorize
+          tokenUrl: https://oauth2.sky.blackbaud.com/token
+          scopes: {}
